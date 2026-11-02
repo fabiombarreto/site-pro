@@ -1,6 +1,6 @@
 # 03 · Design System
 
-> This is a starting proposal. Final colors, content and features are decided in **Stage 1 — Design project** (see [07](07-roadmap-and-decisions.md)).
+> The living design system is published in Claude Design: [site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) (private; share it from its page). It implements this document: tokens for the three themes, typography, spacing, radii, shadows, layout sizes and timings, plus 24 components and a full Workbench composition. When the two disagree, update this document first.
 
 ## Visual direction
 
@@ -40,7 +40,7 @@ Every text/background pair used for content meets **WCAG AA (≥ 4.5:1)**. `--fg
 | `--fg-muted` | `#8b8f9c` | `#59606b` | Secondary text, timestamps |
 | `--fg-subtle` | `#5c606c` | `#9aa0aa` | Decorative only |
 
-**Accent** (the site's signature color, open decision **D3**)
+**Accent** (the site's signature color: blue, decision **D3**)
 
 | Token | Midnight | Classic | Use |
 |---|---|---|---|
@@ -159,7 +159,7 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | `Cursor` | Blinking `█` block | blinking, solid (while typing), hidden |
 | `LogLine` | `[hh:mm:ss] level message` | info, success, warn, error; with spinner or progress bar |
 | `CompletionLine` | `✔ X Section created. (0.84s)` | — |
-| `SkipButton` | `⏭ Skip` next to the active block | visible only while running |
+| `SkipButton` | `» Skip` next to the active block | visible only while running |
 | `BuildSummary` | Final summary + Replay | — |
 
 ### TUI (content)
@@ -173,8 +173,8 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | `AsciiImage` | Image that starts as ASCII and becomes the photo | ASCII, transition, photo |
 | `ProjectCard` | Image, title, year, description, tags, links | rest, hover/focus (double frame) |
 | `TreeView` | `npm ls`-style tree | — |
-| `GitGraph` | `git log --graph`-style timeline | — |
-| `ListTable` | `ls -la`-style listing | — |
+| `GitGraph` | `git log --graph`-style timeline (post-v1) | — |
+| `ListTable` | `ls -la`-style listing (post-v1) | — |
 | `ProgressBar` / `Spinner` | Log indicators | — |
 
 ---
@@ -188,7 +188,7 @@ Personal content (name, subtitle, projects, experience) is placeholder text.
 ```
 ❯ startSite();
 [21:04:31] info   Initializing application...
-[21:04:31] info   Loading modules [██████████████████] 7/7
+[21:04:31] info   Loading modules [██████████████████] 5/5
 [21:04:32] info   Rendering Hero Section... ⠹
 ╭─ main.ts ─────────────────────────────────────────────────────────────╮
 │                                                                       │
@@ -257,7 +257,7 @@ your-name@2026.11.0 /portfolio
 ✔ Stack Section created. (0.41s)
 ```
 
-### Experience (`git log --graph` style)
+### Experience (`git log --graph` style, post-v1)
 
 ```
 ❯ renderExperience();
@@ -273,7 +273,7 @@ your-name@2026.11.0 /portfolio
 ✔ Experience Section created. (0.57s)
 ```
 
-### Articles and talks (`ls -la` style)
+### Articles and talks (`ls -la` style, post-v1)
 
 ```
 ❯ renderWriting({ limit: 5 });

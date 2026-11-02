@@ -1,7 +1,7 @@
 # site-pro — Project documentation
 
-> **Status:** 📝 Draft v0.4, awaiting approval · 2026-11-02
-> **Current stage:** 0 · Foundations (documentation, stack and tools)
+> **Status:** ✅ Approved v1.0 · 2026-11-02
+> **Current stage:** 1 · Design project (content, color, features, design system, screens, animated prototype)
 > **Project rule:** no production code is written until this documentation is approved.
 > **Language:** every project artifact is in English: site, documentation, code, comments, commits.
 
@@ -60,3 +60,6 @@ A personal website for the **developer community** that presents itself as **a p
 | v0.2 | 2026-11-02 | English-only site (D1). Astro × React comparison. New doc 08 (tools). Roadmap reorganized into stages, with decisions grouped by stage. |
 | v0.3 | 2026-11-02 | All documentation translated to English and files renamed. Presentation-only scope confirmed (no login, no API). Decided: Astro + React + TypeScript (D2), Claude Design (D11), public repository (D13); pnpm, ESLint, Prettier, Vitest and Playwright confirmed. GitHub Issues kept as a suggestion (D14). New open decision: license (D16). |
 | v0.4 | 2026-11-02 | Decided: Cloudflare Pages hosting (D9) and MIT license for the code, with personal content all rights reserved (D16). All Stage 0 decisions answered. |
+| v1.0 | 2026-11-02 | Documentation approved. Stage 1 (design project) begins. |
+| v1.1 | 2026-11-02 | Stage 1 decisions: blue accent (D3), essential sections only, with Experience and Articles post-v1 (D4), internal project pages (D5), ASCII → photo hero (D12). First version of the [design system](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) published in Claude Design. Skip button label changed to `» Skip`, avoiding an emoji fallback for `⏭`. |
+| v1.2 | 2026-11-02 | Full animation on every visit (D6). Interactive terminal moved to v1.1 (D7). |

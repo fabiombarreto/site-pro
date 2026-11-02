@@ -34,7 +34,7 @@ pending ──► queued ──► typing ──► logging ──► rendering 
 | State | Explorer | Status bar |
 |---|---|---|
 | `pending` | dimmed `○` | — |
-| `queued` | `○` | `3/7 · queued` |
+| `queued` | `○` | `3/5 · queued` |
 | `typing`, `logging`, `rendering` | `⠹` spinner | `● Running renderProjects()` |
 | `done`, `skipped` | `✓` | `✓ Ready` |
 
@@ -117,7 +117,7 @@ To be evaluated in the design prototype (open decision **D8**):
 
 | Control | Where | Effect |
 |---|---|---|
-| **Skip** | `Esc`, the `⏭ Skip` button, a tap on the block | Finishes the current block immediately |
+| **Skip** | `Esc`, the `» Skip` button, a tap on the block | Finishes the current block immediately |
 | **Run all** | `Run` menu, palette | Finishes every block at once |
 | **Speed** | Status bar (`1×` → `2×` → `∞`), palette | Multiplies every timing. Saved in the browser |
 | **Replay** | Activity bar, `Run` menu, button at the end of the page | Clears the console (like `clear`), scrolls to the top and runs everything again |

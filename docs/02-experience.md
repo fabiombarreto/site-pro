@@ -12,13 +12,13 @@
 │ ▷  │   ✓ about.md       │                                                  │
 │    │   ⠹ projects/      │ ❯ renderProjects({ featured: true });            │
 │    │   ○ stack.json     │ [21:05:02] info  Fetching projects... 6 found    │
-│    │   ○ experience.log │ [21:05:02] info  Creating Projects Section... ⠹  │
-│    │   ○ writing/       │ ┌─ projects/ ─────────────────────────────────┐  │
-│    │   ○ contact.sh     │ │ ░░░░░░░░░░░░ ░░░░░░░░░░░░ ░░░░░░░░░░░░      │  │
+│    │   ○ contact.sh     │ [21:05:02] info  Creating Projects Section... ⠹  │
+│    │                    │ ┌─ projects/ ─────────────────────────────────┐  │
+│    │                    │ │ ░░░░░░░░░░░░ ░░░░░░░░░░░░ ░░░░░░░░░░░░      │  │
 │    │                    │ │ ░░░░░░░░░░░░ ░░░░░░░░░░░░ ░░░░░░░░░░░░      │  │
 │ ◐  │   README.md        │ │ (drawing cards...)                          │  │
 ├────┴────────────────────┴──────────────────────────────────────────────────┤
-│ git:main  ● Running renderProjects()  3/7    Ln 128  1×  UTF-8  ◐ Midnight │
+│ git:main  ● Running renderProjects()  3/5    Ln 128  1×  UTF-8  ◐ Midnight │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -53,8 +53,6 @@ PORTFOLIO
     ✓ about.md          → About
     ⠹ projects/         → Projects (expands to one file per project)
     ○ stack.json        → Stack
-    ○ experience.log    → Experience
-    ○ writing/          → Articles and talks
     ○ contact.sh        → Contact
   README.md             → About this site (how it was built)
 ```
@@ -74,7 +72,7 @@ Clicking a pending file runs every section up to it in turbo mode and scrolls th
 |---|---|---|
 | Left | `git:main` | Link to the site's GitHub repository |
 | Left | `○ Idle` · `● Running renderProjects()` · `✓ Ready` | Program state (the reel's "HUD") |
-| Left | `3/7` | Sections executed |
+| Left | `3/5` | Sections executed |
 | Right | `Ln 128` | Scroll position shown as a "line" (a playful detail) |
 | Right | `1×` | Animation speed. Clicking cycles through `1×`, `2×` and `∞` (instant) |
 | Right | `UTF-8` | Decorative, as in IDEs |
@@ -96,7 +94,7 @@ Notifications appear as IDE-style toasts in the bottom-right corner (e.g. `✔ E
 ```
 ❯ startSite();
 [21:04:31] info   Initializing application...
-[21:04:31] info   Loading modules [██████████████████] 7/7
+[21:04:31] info   Loading modules [██████████████████] 5/5
 [21:04:32] info   Rendering Hero Section... ⠹
 ```
 
@@ -127,7 +125,7 @@ The card grid is drawn: frame → `░` placeholders with their dimensions → i
 
 > **Design note:** in the original brief, *"Creating Projects Section..."* was the typed command. Here, what gets **typed** is always a function call (`renderProjects();`), and *"Creating Projects Section..."* is the **log output**. This way every section follows the same pattern as `startSite();` → *"Initializing application..."*.
 
-### Scenes 3 to 7: the remaining sections
+### Scenes 3 to 5: the remaining sections
 
 They follow the same grammar (below), each with its own output format (see the section map).
 
@@ -139,7 +137,7 @@ They follow the same grammar (below), each with its own output format (see the s
   (...)
 ✔ Contact Section created. (0.64s)
 
-✔ Build complete — 7 sections rendered in 9.42s
+✔ Build complete — 5 sections rendered in 6.84s
   [ ↻ Replay ]   [ ⌘K Command Palette ]   [ ↑ Back to top ]
 
 ❯ █
@@ -171,11 +169,9 @@ Every section follows the same structure. This repetition is what makes the site
 | 2 | About | `about.md` | `renderAbout();` | Reading about.md… | Rendered Markdown (headings with `#`, lists with `-`) |
 | 3 | Projects | `projects/` | `renderProjects({ featured: true });` | Fetching projects… N found · Creating Projects Section… | Grid of clickable TUI cards |
 | 4 | Stack | `stack.json` | `renderStack();` | Resolving dependencies… | `npm ls`-style tree |
-| 5 | Experience | `experience.log` | `renderExperience();` | Reading git history… | `git log --graph`-style graph |
-| 6 | Articles and talks | `writing/` | `renderWriting({ limit: 5 });` | Fetching posts… N found | `ls -la`-style listing |
-| 7 | Contact | `contact.sh` | `renderContact();` | Opening channels… | Clickable commands (`$ open github`) and a copyable email |
+| 5 | Contact | `contact.sh` | `renderContact();` | Opening channels… | Clickable commands (`$ open github`) and a copyable email |
 
-Sections 5 and 6 depend on the available content. See [05 · Content](05-content.md).
+**Post-v1** (decision D4): **Experience** (`experience.log`, `renderExperience();`, a `git log --graph`-style graph) and **Articles and talks** (`writing/`, `renderWriting({ limit: 5 });`, an `ls -la`-style listing). Their specs stay in these docs for later. See [05 · Content](05-content.md).
 
 ## Behavior rules
 
@@ -187,12 +183,12 @@ Sections 5 and 6 depend on the available content. See [05 · Content](05-content
 | **Reserved space** | Each section takes its final height from the start. This makes the page scrollable, avoids layout shifts and keeps the content in the HTML for SEO. Before a block runs, its area is just empty terminal background. |
 | **Fast scrolling (turbo)** | If the visitor scrolls past blocks that have not run yet, they are queued and run accelerated (5–10×) until they catch up with what is on screen. |
 | **Never hijack scrolling** | The runtime never moves the page on its own, except when the visitor asks: a click in the Explorer or the palette, a deep link, or Replay. |
-| **Skip** | `Esc`, the `⏭ Skip` button (next to the active prompt) or a tap on the running block finishes the current block immediately. |
+| **Skip** | `Esc`, the `» Skip` button (next to the active prompt) or a tap on the running block finishes the current block immediately. |
 | **Run all** | `Run › Run All` (or the palette) renders every section at once. |
 | **Deep links** | Arriving via `/#projects` or clicking in the Explorer runs everything before the target in turbo mode and scrolls to it. |
 | **Scrolling up** | Sections that already ran stay as they are. Nothing animates again. |
 | **Immediate interaction** | Content is clickable as soon as it is drawn, even while the block is still finishing. |
-| **Revisits** | Within the same browser session, everything appears instantly. On a new visit, the full animation plays (open decision **D6**). |
+| **Revisits** | Every visit plays the full animation again, reloads included (decision **D6**). The only exception is a visitor who set the speed to `∞`: that choice is saved in the browser and kept. |
 | **Reduced motion** | With `prefers-reduced-motion`, everything appears ready, with no typing and a steady cursor. |
 | **No JavaScript** | The whole site appears statically in its final state, with the logs as plain text. |
 | **Background tab** | Execution pauses while the tab is hidden and resumes when the visitor returns. |
@@ -223,14 +219,14 @@ Planned commands: `Go to: <section>`, `Open project: <name>`, `Run: Skip`, `Run:
 | `Esc` | Skip the current block |
 | `Ctrl/⌘ + K` | Open the Command Palette |
 | `Ctrl/⌘ + B` | Show/hide the Explorer |
-| `Ctrl/⌘ + 1…7` | Go to section 1…7 |
+| `Ctrl/⌘ + 1…5` | Go to section 1…5 |
 | `?` | Show the shortcut list |
 
 ### Projects open as tabs
 
 Clicking a project card **opens a file**: a `project-name.md` tab appears, showing the project detail page rendered as a Markdown file inside the IDE (line numbers in the gutter, headings with `#`, links to the repository and the demo). The page has its own URL (`/projects/project-name`), which helps SEO and sharing. Closing the tab returns to the terminal at the same position.
 
-The alternative is for cards to link straight to GitHub or the demo (open decision **D5**).
+Decided (**D5**): internal pages. Cards still carry direct shortcuts to the repository and the demo.
 
 ### Micro-interactions
 
@@ -241,6 +237,8 @@ The alternative is for cards to link straight to GitHub or the demo (open decisi
 - **Window dots (easter eggs):** the red one "exits" the program (a `Process exited with code 0` screen + `[ Restart ]`), the yellow one collapses the Explorer and the green one turns on Zen mode (hides the chrome).
 
 ### Interactive terminal (v1.1)
+
+Decided (**D7**): not in v1; it comes after launch.
 
 The last prompt accepts real commands: `help`, `ls`, `cd projects`, `open <project>`, `theme <name>`, `clear`, `replay`, `contact`. There are also easter eggs such as `sudo hire-me` or `rm -rf /`, with tongue-in-cheek answers. `Tab` autocompletes and `↑` walks the history.
 
@@ -274,7 +272,7 @@ The last prompt accepts real commands: `help`, `ls`, `cd projects`, `open <proje
 │ ✔ Hero Section created. (1.2s)       │
 │ ❯ █                                  │
 ├──────────────────────────────────────┤
-│ ✓ Ready  1/7                UTF-8  ◐ │
+│ ✓ Ready  1/5                UTF-8  ◐ │
 └──────────────────────────────────────┘
 ```
 

@@ -52,9 +52,9 @@ The reference video (~56 s) shows a portfolio site being **rebuilt live by a swa
 | Building the site **is** the show | Each section is "executed" in front of the visitor |
 | A swarm of cursors (agents) | A terminal cursor typing commands. Optionally, **multi-cursor** (see [04 · Optional effects](04-animations.md#optional-effects)) |
 | Selection boxes and placeholders before the content | TUI frames drawn with characters (`┌─┐`) and `░░░` placeholders before the final content |
-| The *agents · layers · Running* HUD | The IDE **status bar**: `● Running renderProjects() · 3/7` |
+| The *agents · layers · Running* HUD | The IDE **status bar**: `● Running renderProjects() · 3/5` |
 | A section-by-section build, triggered by scrolling | One **execution block** per section, triggered by scrolling |
-| *Rebuilt by 19 agents in 51.4s · Replay* | `✔ Build complete — 7 sections rendered in 9.42s` + `[ ↻ Replay ]` |
+| *Rebuilt by 19 agents in 51.4s · Replay* | `✔ Build complete — 5 sections rendered in 6.84s` + `[ ↻ Replay ]` |
 
 ### What we leave behind
 

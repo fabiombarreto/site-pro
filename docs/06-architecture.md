@@ -74,7 +74,7 @@ Compared with a React-only framework such as Next.js, for this site:
  1. An inline script in <head> picks the mode BEFORE the first paint:
       no JS                  → nothing runs; the site is already complete
       reduced motion         → instant mode
-      revisit in the session → instant mode
+      speed set to ∞         → instant mode
       otherwise              → marks blocks as "pending" (hidden)
  2. The runtime (a small deferred module) wires the triggers and runs blocks as the visitor scrolls.
  3. React islands (Command Palette, menus, interactive terminal) hydrate later, off the critical path.
@@ -91,12 +91,12 @@ site-pro/
 ├─ scripts/                   ← build: figlet, image → ASCII, OG images
 ├─ tests/                     ← Playwright E2E, visual and accessibility tests
 └─ src/
-   ├─ content/                ← profile, projects/, experience/, writing/, stack.json
+   ├─ content/                ← profile, projects/, stack.json
    ├─ components/
    │  ├─ ide/                 ← React: TitleBar, ActivityBar, Explorer, TabBar, StatusBar, CommandPalette
    │  ├─ console/             ← PromptLine, LogLine, Cursor, Block, BuildSummary
-   │  └─ tui/                 ← TuiFrame, AsciiBanner, AsciiImage, ProjectCard, TreeView, GitGraph…
-   ├─ sections/               ← Astro: Hero, About, Projects, Stack, Experience, Writing, Contact
+   │  └─ tui/                 ← TuiFrame, AsciiBanner, AsciiImage, ProjectCard, TreeView…
+   ├─ sections/               ← Astro: Hero, About, Projects, Stack, Contact
    ├─ runtime/                ← scheduler, effects, triggers, controls (framework-agnostic TS)
    ├─ stores/                 ← nanostores shared by the runtime and the islands
    ├─ styles/                 ← tokens.css, themes/, base.css
@@ -114,7 +114,7 @@ site-pro/
 | **Effects** | Registry of the effects in [04](04-animations.md#effects-catalog). Each effect knows how to run and how to finish instantly (for skip) |
 | **Triggers** | `IntersectionObserver` on the waiting prompts |
 | **Controls** | Skip, run all, speed, replay, deep link |
-| **Persistence** | `sessionStorage` (revisit within the session) and `localStorage` (speed, theme) |
+| **Persistence** | `localStorage` for the visitor's speed and theme. Nothing else is remembered: every visit plays the full animation (D6) |
 | **State** | Publishes `currentBlock`, `progress` and `status` to nanostores, and mirrors them as `data-*` attributes for the static chrome |
 
 ## Responsive TUI frames

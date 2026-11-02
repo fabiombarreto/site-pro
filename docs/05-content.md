@@ -10,10 +10,10 @@
 | 2 | **About** | A short story: what you do and what interests you | Yes |
 | 3 | **Projects** | The heart of the site: featured projects, all clickable | Yes |
 | 4 | **Stack** | Technologies you use and how often | Yes |
-| 5 | **Experience** | Career path (jobs, milestones, talks) | Recommended |
-| 6 | **Articles and talks** | Content you produce for the community | Only if there is content |
-| 7 | **Contact** | How to reach you and where to follow you | Yes |
-| — | **Project detail** | One page per project (a `name.md` tab) | Depends on decision **D5** |
+| 5 | **Contact** | How to reach you and where to follow you | Yes |
+| — | **Project detail** | One page per project (a `name.md` tab) | Yes (D5) |
+| — | **Experience** | Career path (jobs, milestones, talks) | Post-v1 (D4) |
+| — | **Articles and talks** | Content you produce for the community | Post-v1 (D4) |
 | — | **README.md** | "How this site was built": stack, credits, link to the source | Recommended (great for the dev community) |
 | — | **404** | A tongue-in-cheek `ENOENT` error | Yes |
 
@@ -61,7 +61,7 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 | `groups[]` | list | `languages`, `frontend`, `backend`, `infra`, `tools`… |
 | `groups[].items[]` | list | `{ name, frequency }`, where `frequency` is `daily`, `often` or `sometimes` |
 
-### `experience`: one file per item
+### `experience`: one file per item (post-v1)
 
 | Field | Type | Rule |
 |---|---|---|
@@ -74,7 +74,7 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 
 The commit hash shown (`a1f3c9e`) is generated from the data: decorative, but stable across builds.
 
-### `writing`: one file per item
+### `writing`: one file per item (post-v1)
 
 | Field | Type | Rule |
 |---|---|---|
@@ -95,14 +95,14 @@ The commit hash shown (`a1f3c9e`) is generated from the data: decorative, but st
 
 | Section | Command | Logs | Completion |
 |---|---|---|---|
-| Hero | `startSite();` | `Initializing application...` · `Loading modules [███] 7/7` · `Rendering Hero Section...` | `✔ Hero Section created.` |
+| Hero | `startSite();` | `Initializing application...` · `Loading modules [███] 5/5` · `Rendering Hero Section...` | `✔ Hero Section created.` |
 | About | `renderAbout();` | `Reading about.md...` | `✔ About Section created.` |
 | Projects | `renderProjects({ featured: true });` | `Fetching projects... 6 found` · `Creating Projects Section...` | `✔ Projects Section created.` |
 | Stack | `renderStack();` | `Resolving dependencies...` | `✔ Stack Section created.` |
-| Experience | `renderExperience();` | `Reading git history...` | `✔ Experience Section created.` |
-| Articles and talks | `renderWriting({ limit: 5 });` | `Fetching posts... 3 found` | `✔ Writing Section created.` |
+| Experience (post-v1) | `renderExperience();` | `Reading git history...` | `✔ Experience Section created.` |
+| Articles and talks (post-v1) | `renderWriting({ limit: 5 });` | `Fetching posts... 3 found` | `✔ Writing Section created.` |
 | Contact | `renderContact();` | `Opening channels...` | `✔ Contact Section created.` |
-| End | — | — | `✔ Build complete — 7 sections rendered in 9.42s` |
+| End | — | — | `✔ Build complete — 5 sections rendered in 6.84s` |
 | Hint | — | `// scroll to continue ↓` | — |
 | 404 | `open('/path')` | `Error: ENOENT: no such file or directory, open '/path'` | `Did you mean: /projects ?` |
 
@@ -127,7 +127,5 @@ All in English.
 
 - [ ] About section bio
 - [ ] Stack list with usage frequency
-- [ ] Experience (if the section is included)
-- [ ] Articles and talks (if the section is included)
-- [ ] Detail page text for each project (if D5 goes with internal pages)
+- [ ] Detail page text for each project (D5)
 - [ ] Domain

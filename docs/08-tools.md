@@ -58,8 +58,8 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 
 | Deliverable | Content |
 |---|---|
-| **Design System** | Theme tokens (Midnight, Classic, Phosphor), typography, TUI character kit, components with previews (IDE chrome, console, cards, frames) |
-| **Screens** | Desktop, tablet and mobile: hero, projects, one tool-style section (stack or experience), contact, Command Palette, 404 |
+| **Design System** | Theme tokens (Midnight, Classic, Phosphor), typography, TUI character kit, components with previews (IDE chrome, console, cards, frames). ✅ First version published: [site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) |
+| **Screens** | Desktop, tablet and mobile: hero, projects, a project detail tab, stack (`npm ls` style), contact, Command Palette, 404 |
 | **Animated prototype** | Hero boot + scroll to Projects, with the timings from [04](04-animations.md#timings-1-speed) and the skip and speed controls, to approve the rhythm |
 | **Review** | Comments directly on the canvas |
 | **Handoff** | Tokens become `tokens.css`, components become React/Astro components, and the prototype becomes the reference for visual tests |
