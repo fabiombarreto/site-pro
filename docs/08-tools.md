@@ -37,8 +37,8 @@ Deployment
 
 | Need | How Claude Design covers it |
 |---|---|
-| **Motion** is the heart of the site (typing, logs, frames being drawn, scroll rhythm) | Artboards are real HTML, so prototypes can run the actual typing and timing instead of jumping between static frames |
-| **Character grid**: monospaced font, ASCII art and `┌─┐` borders must line up | Rendered by the browser, exactly as on the final site |
+| **Motion** is the heart of the site (typing, windows opening, elements being created, scroll rhythm) | Artboards are real HTML, so prototypes can run the actual typing and timing instead of jumping between static frames |
+| **Real type and layout**: two font families, and build overlays that must match the page exactly | Rendered by the browser with real fonts and CSS, exactly as on the final site |
 | **Design system with themes** | Tokens for colors and typography, with live component previews |
 | **Handoff to Claude Code** | The approved design is packaged for implementation |
 | **Low cost and effort** for a personal project | Included in paid Claude plans; no extra tool to buy |
@@ -58,9 +58,9 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 
 | Deliverable | Content |
 |---|---|
-| **Design System** | Theme tokens (Midnight, Classic, Phosphor), typography, TUI character kit, components with previews (IDE chrome, console, cards, frames). ✅ First version published: [site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) |
-| **Screens** | Desktop, tablet and mobile: hero, projects, a project detail tab, stack (`npm ls` style), contact, Command Palette, 404 |
-| **Animated prototype** | Hero boot + scroll to Projects, with the timings from [04](04-animations.md#timings-1-speed) and the skip and speed controls, to approve the rhythm |
+| **Design System** | Theme tokens (Midnight, Daylight), typography (sans + mono), page components and build-layer components (dock, windows, selection boxes, skeletons, agent cursors), with previews. The first version, for the v1 IDE concept, is superseded: [site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) |
+| **Screens** | Desktop, tablet and mobile: the final page (hero, about, projects, stack, contact), a project page, the Command Palette and the 404, plus key build states (boot, hero window, projects window) |
+| **Animated prototype** | Boot (terminal → dock → hero window → final hero) + scroll to Projects, with the timings from [04](04-animations.md#timings-1-speed) and the skip and speed controls, to approve the rhythm and decide D8. ✅ A first version, hand-coded to approve the concept, is published: [site-pro Build Windows](https://claude.ai/artifact/QnmBawnJozkSAp37DKp73F) |
 | **Review** | Comments directly on the canvas |
 | **Handoff** | Tokens become `tokens.css`, components become React/Astro components, and the prototype becomes the reference for visual tests |
 
@@ -68,10 +68,8 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 
 | Tool | Use |
 |---|---|
-| [TAAG](https://patorjk.com/software/taag/) | Try figlet fonts for the name banner |
-| `figlet` (npm) | Generate the banner at build time |
-| [ASCIIFlow](https://asciiflow.com/) | Sketch ASCII wireframes in the browser |
-| REXPaint (Windows) | Hand-edit ASCII art, if something beyond the generated output is needed |
+| [ASCIIFlow](https://asciiflow.com/) | Sketch ASCII wireframes for these documents in the browser |
+| Image → ASCII build script | Generates the ASCII version of the hero photo for its build effect (D12) |
 
 ---
 
@@ -80,7 +78,7 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 | Area | Tool | Status | Notes |
 |---|---|---|---|
 | Version control | **Git + GitHub** | ✅ | — |
-| Repository visibility | **Public** | ✅ D13 | The code is part of the showcase; `File › View Source` points to it |
+| Repository visibility | **Public** | ✅ D13 | The code is part of the showcase; the footer and the "How this site was built" page point to it |
 | Framework | **Astro + React + TypeScript** (strict) | ✅ D2 | See [06](06-architecture.md#stack) |
 | Package manager | **pnpm** | ✅ | — |
 | Linting | **ESLint** | ✅ | Flat config with `typescript-eslint`, `eslint-plugin-astro`, the React and React Hooks plugins and `eslint-plugin-jsx-a11y` |
@@ -93,8 +91,8 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 | Commit messages | **Conventional Commits** | Proposed | A readable history in a public repository |
 | Hosting | **Cloudflare Pages** | ✅ D9 | Preview deployment for every pull request |
 | CI | **GitHub Actions** | Proposed | Lint → typecheck → tests → build → Lighthouse → deploy |
-| Font | **JetBrains Mono via Fontsource** | Proposed | Self-hosted, so the same font renders everywhere |
-| Icons | **`@vscode/codicons`** | Proposed | See [03 · Iconography](03-design-system.md#iconography) |
+| Fonts | **JetBrains Mono** and the sans family (D18) | Proposed | Self-hosted (via Fontsource or the font's own package), so the same fonts render everywhere |
+| Icons | **Lucide** for the UI, **Simple Icons** for GitHub and LinkedIn | Proposed | See [03 · Iconography](03-design-system.md#iconography) |
 | License | **MIT** for the code | ✅ D16 | Personal content (text, photo, images) stays all rights reserved |
 | Task management | **GitHub Issues** | ⏸ D14 | A suggestion; adopt when needed |
 | Editor | Whatever the owner prefers + **Claude Code** | — | — |

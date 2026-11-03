@@ -11,9 +11,9 @@ A **static, presentation-only** website: no login, no accounts, no backend, no A
 | Requirement | Target |
 |---|---|
 | Rendering | Static site generation (SSG): all content in the HTML produced at build time |
-| Progressive enhancement | Without JS, the site renders complete and static. Animation is an extra layer |
+| Progressive enhancement | Without JS, the site renders complete and static. The build animation is an extra layer |
 | Performance | Lighthouse ≥ 95 · LCP ≤ 2.5 s · CLS ≈ 0 · INP ≤ 200 ms |
-| Critical JavaScript | ≤ 20 KB gzip before the hero animation starts (inline head script + runtime) |
+| Critical JavaScript | ≤ 20 KB gzip before the hero build starts (inline head script + runtime) |
 | Total JavaScript | ≤ 90 KB gzip after idle, including React and the hydrated islands |
 | Accessibility | WCAG 2.2 AA |
 | Content | Editable as Markdown/JSON in the repository, validated at build time |
@@ -25,16 +25,17 @@ A **static, presentation-only** website: no login, no accounts, no backend, no A
 | Layer | Choice | Why |
 |---|---|---|
 | Framework | **Astro** (latest stable version when implementation starts) | Static HTML with zero JS by default, *islands* for the interactive parts and *Content Collections* for content. It fits "content in the HTML, animation on top" perfectly. |
-| UI components | **React** via `@astrojs/react` | Components for the IDE chrome and the interactive pieces, rendered to static HTML at build time and hydrated only where interactivity is needed |
+| UI components | **React** via `@astrojs/react` | Components for the page and the interactive pieces, rendered to static HTML at build time and hydrated only where interactivity is needed |
 | Language | **TypeScript** (strict mode) | — |
 | Styles | **Plain CSS** with custom properties (theme tokens) and component-scoped styles | Themes switch at runtime at no cost; no heavy CSS framework |
-| Animation | **Own runtime** in TypeScript, using `requestAnimationFrame`, the Web Animations API and `IntersectionObserver` | The core effect (typing, logs, frames) is simple and very specific. It is imperative by nature, so it lives outside React's render cycle |
+| Animation | **Own runtime** in TypeScript, using `requestAnimationFrame`, the Web Animations API, `IntersectionObserver` and `ResizeObserver` | The build effect (typing, windows, element creation) is very specific and imperative by nature, so it lives outside React's render cycle |
 | Shared state | **nanostores** (+ `@nanostores/react`) | The approach Astro recommends for sharing state between islands. The runtime writes; islands read |
 | Content | Astro Content Collections, with schemas validating the fields from [05](05-content.md) | A content mistake breaks the build, not the site |
 | Syntax highlighting | Shiki (built into Astro) for static snippets; a minimal tokenizer of our own for typed commands | — |
 | Images | Astro image optimization (AVIF/WebP, responsive sizes) | — |
-| ASCII art | Build scripts: **figlet** for the banner and an image → ASCII converter (resizes and maps each pixel's brightness to `@%#*+=-:. `) | Generated once at build time, at no cost in the browser |
-| Share image (OG) | Generated at build time (e.g. Satori), in the terminal look | — |
+| Page transitions | Astro view transitions | The card grows into the project page header |
+| ASCII art | A build script that turns the hero photo into ASCII (resizes it and maps each pixel's brightness to `@%#*+=-:. `) for its build effect (D12) | Generated once at build time, at no cost in the browser |
+| Share image (OG) | Generated at build time (e.g. Satori), in the site's look | — |
 
 ### Why Astro + React
 
@@ -46,18 +47,18 @@ Compared with a React-only framework such as Next.js, for this site:
 |---|---|---|
 | Model | Static HTML by default; JS only where requested | React components everywhere. Server Components reduce JS, but the React and Next runtimes always ship to the browser |
 | Complete HTML without JS | Yes, effortlessly | Yes, with SSG and Server Components, but it takes care |
-| Terminal animation | The imperative runtime works directly on the DOM | Typing character by character through state causes one render per letter; in practice you end up using `ref` and manipulating the DOM "outside" React |
-| Shared chrome state | nanostores between islands | Context or a store |
-| Navigating without reloading the IDE | View Transitions with `transition:persist` | Persistent layouts |
+| Build animation | The imperative runtime works directly on the DOM | Typing character by character through state causes one render per letter; in practice you end up using `ref` and manipulating the DOM "outside" React |
+| Shared state between interactive parts | nanostores between islands | Context or a store |
+| Card → project page morph | Built-in view transitions | Possible, with more custom work |
 | Typed Markdown content | Native Content Collections | Needs an extra library |
 | Login, API, app features | Not the focus | The natural path, but **out of scope** for this site |
 
 ### How React is used
 
-- **Static by default.** React components such as `Explorer`, `StatusBar` and `ProjectCard` are rendered to HTML at build time without a client directive, so they ship no JS.
-- **Hydrated islands only where needed.** Command Palette (`client:idle`), theme and speed menus, the mobile Explorer drawer and, in v1.1, the interactive terminal (`client:visible`).
-- **The runtime stays outside React.** It manipulates the DOM directly and publishes its state (current block, progress, status) to nanostores. Hydrated islands subscribe to that state; static parts of the chrome react through `data-*` attributes and CSS.
-- **React stays off the critical path.** The hero animation never waits for React to load.
+- **Static by default.** React components such as `NavBar`, `ProjectCard` and `StackGroup` are rendered to HTML at build time without a client directive, so they ship no JS.
+- **Hydrated islands only where needed.** Command Palette (`client:idle`), the theme toggle, the mobile menu and, in v1.1, the interactive dock (`client:visible`).
+- **The runtime stays outside React.** It manipulates the DOM directly, draws the build layer and publishes its state (current section, progress, status) to nanostores. Hydrated islands subscribe to that state; static parts of the page react through `data-*` attributes and CSS.
+- **React stays off the critical path.** The hero build never waits for React to load.
 
 ## Overview
 
@@ -65,8 +66,8 @@ Compared with a React-only framework such as Next.js, for this site:
  BUILD (locally or in CI)
  ────────────────────────
  content/*.md, *.json ──► validation (schemas) ──┐
- images ──► optimization + ASCII version ────────┼──► Astro (SSG) ──► complete HTML, already in its final state
- name ──► figlet (ASCII banner) ─────────────────┘                    + each block's script (data-* attributes)
+ images ──► optimization + ASCII version ────────┴──► Astro (SSG) ──► complete HTML, already in its final state
+                                                                      + each section's build script (data-* attributes)
                                                                       + theme CSS, fonts, images
 
  BROWSER
@@ -75,12 +76,12 @@ Compared with a React-only framework such as Next.js, for this site:
       no JS                  → nothing runs; the site is already complete
       reduced motion         → instant mode
       speed set to ∞         → instant mode
-      otherwise              → marks blocks as "pending" (hidden)
- 2. The runtime (a small deferred module) wires the triggers and runs blocks as the visitor scrolls.
- 3. React islands (Command Palette, menus, interactive terminal) hydrate later, off the critical path.
+      otherwise              → marks sections as "pending" (invisible, space reserved)
+ 2. The runtime (a small deferred module) wires the triggers, draws the dock and the windows, and builds sections as the visitor scrolls.
+ 3. React islands (Command Palette, theme toggle, mobile menu) hydrate later, off the critical path.
 ```
 
-The key idea: **the server delivers the final result, and the browser "rewinds" it to perform it.** SEO, accessibility and the no-JS experience come for free, and the inline `<head>` script prevents a flash of content before the animation.
+The key idea: **the server delivers the final result, and the browser "rewinds" it to build it in front of the visitor.** SEO, accessibility and the no-JS experience come for free, and the inline `<head>` script prevents a flash of content before the build.
 
 ## Folder structure (proposal)
 
@@ -88,53 +89,53 @@ The key idea: **the server delivers the final result, and the browser "rewinds" 
 site-pro/
 ├─ docs/                      ← this documentation
 ├─ public/                    ← fonts, favicons, robots.txt
-├─ scripts/                   ← build: figlet, image → ASCII, OG images
+├─ scripts/                   ← build: photo → ASCII, OG images
 ├─ tests/                     ← Playwright E2E, visual and accessibility tests
 └─ src/
    ├─ content/                ← profile, projects/, stack.json
    ├─ components/
-   │  ├─ ide/                 ← React: TitleBar, ActivityBar, Explorer, TabBar, StatusBar, CommandPalette
-   │  ├─ console/             ← PromptLine, LogLine, Cursor, Block, BuildSummary
-   │  └─ tui/                 ← TuiFrame, AsciiBanner, AsciiImage, ProjectCard, TreeView…
-   ├─ sections/               ← Astro: Hero, About, Projects, Stack, Contact
-   ├─ runtime/                ← scheduler, effects, triggers, controls (framework-agnostic TS)
+   │  ├─ page/                ← React: NavBar, Button, Tag, ProjectCard, StackGroup, Footer, CommandPalette…
+   │  └─ build/               ← BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor
+   ├─ sections/               ← Astro: Hero, About, Projects, Stack, Contact (each with its build script)
+   ├─ runtime/                ← scheduler, effects, triggers, overlays, controls (framework-agnostic TS)
    ├─ stores/                 ← nanostores shared by the runtime and the islands
    ├─ styles/                 ← tokens.css, themes/, base.css
    ├─ strings.ts              ← interface copy, centralized
-   └─ pages/                  ← index, projects/[slug], 404
+   └─ pages/                  ← index, projects/[slug], how-it-was-built, 404
 ```
 
 ## The runtime (design)
 
 | Piece | Responsibility |
 |---|---|
-| **Program** | Ordered list of blocks, read from the HTML's `data-*` attributes |
-| **Block** | A section's steps (`type`, `log`, `render`, `done`) and its lifecycle state |
-| **Scheduler** | A single queue, one block at a time, with a speed multiplier (1×, 2×, ∞, turbo) |
+| **Program** | Ordered list of section builds, read from the HTML's `data-*` attributes |
+| **Section build** | A section's dock steps (`type`, `log`), window steps (`call` + `target` + `effect`) and its lifecycle state |
+| **Scheduler** | One section at a time, with a speed multiplier (1×, 2×, ∞, turbo). Inside a section, steps run on a timeline and may overlap |
 | **Effects** | Registry of the effects in [04](04-animations.md#effects-catalog). Each effect knows how to run and how to finish instantly (for skip) |
-| **Triggers** | `IntersectionObserver` on the waiting prompts |
-| **Controls** | Skip, run all, speed, replay, deep link |
-| **Persistence** | `localStorage` for the visitor's speed and theme. Nothing else is remembered: every visit plays the full animation (D6) |
-| **State** | Publishes `currentBlock`, `progress` and `status` to nanostores, and mirrors them as `data-*` attributes for the static chrome |
+| **Overlays** | Draw the boot terminal, the dock and each build window; place windows from the section's box and keep them aligned with `ResizeObserver` |
+| **Triggers** | `IntersectionObserver` on each section's top edge; a `focusin` listener for the keyboard focus rule |
+| **Controls** | Skip, run all, speed, replay, play build, deep link |
+| **Persistence** | `localStorage` for the visitor's speed and theme. Nothing else is remembered: every visit plays the full build (D6) |
+| **State** | Publishes `currentSection`, `progress` and `status` to nanostores, and mirrors them as `data-*` attributes for the static page |
+| **Clock** | Real time by default; a deterministic clock in tests |
 
-## Responsive TUI frames
+## The build layer
 
-Character borders need to adapt to any width. Proposal:
-
-- Frames are **drawn with CSS**: pseudo-elements with long runs of `─` and `│` clipped by `overflow`, plus positioned `┌┐└┘` corners. They fit any width without JS.
-- Border characters are **decorative** (`aria-hidden`). The content inside is regular semantic HTML.
-- The inner width is rounded to a whole number of `ch`, so everything lands on the character grid.
-- Fallback, if CSS does not align well in some browser: compute the columns with JS and generate the border. This will be validated in the design prototype.
+- The dock, the windows, selection boxes, skeletons and agent cursors live in **one overlay layer** above the page, created by the runtime. None of it exists in the static HTML.
+- The whole layer is **decorative** (`aria-hidden`). Its controls (Skip, speed, Replay, Play build) are real buttons with labels, reachable by keyboard.
+- Window bodies let clicks through (`pointer-events: none`), so elements are usable as soon as they exist. Only the title bar and the command bar catch clicks, to skip.
+- Pending content is hidden with `opacity` and `clip-path`, never with `display` or `visibility`, so it stays in the accessibility tree and keeps its layout.
 
 ## Accessibility
 
-- Semantic HTML: `<header>`, `<nav>` (Explorer), `<main>` (console), `<footer>` (status bar); one `<h1>` (the name) and one `<h2>` per section.
-- ASCII banner, ASCII images, frames, spinners and decorative logs use `aria-hidden="true"`, always with a real text equivalent.
-- Typing is **not** announced letter by letter. Screen readers get the final content.
+- Semantic HTML: `<header>` with the `<nav>`, `<main>` with one `<section>` per section, `<footer>`; one `<h1>` (the hero headline, which includes the name) and one `<h2>` per section.
+- The build layer is `aria-hidden`; the ASCII photo and skeletons too. Screen readers get the final content.
+- Typing is **not** announced letter by letter.
+- When keyboard focus enters a section that has not been built, the section is finished instantly.
 - A "Skip to content" link and a logical focus order.
-- Visible focus everywhere (the same look as card hover).
+- Visible focus everywhere: a 2 px `--accent` ring with a 2 px offset.
 - `prefers-reduced-motion` is respected, and the speed control is always available.
-- AA contrast in every theme (see [03 · Color tokens](03-design-system.md#color-tokens)).
+- AA contrast in both themes (see [03 · Color tokens](03-design-system.md#color-tokens)).
 - The Command Palette follows the accessible *combobox* pattern.
 
 ## SEO and sharing
@@ -142,7 +143,7 @@ Character borders need to adapt to any width. Proposal:
 - Complete HTML at build time, with all content indexable without JS.
 - Per-page `title` and `description`, canonical URL and `<html lang="en">`.
 - JSON-LD structured data: `Person` on the home page and `CreativeWork`/`SoftwareSourceCode` for projects.
-- A per-page OG image, generated at build time in the terminal look.
+- A per-page OG image, generated at build time in the site's look.
 - `sitemap.xml` and `robots.txt`.
 
 ## Performance
@@ -152,18 +153,19 @@ Character borders need to adapt to any width. Proposal:
 | Critical JS | ≤ 20 KB gzip (inline head script + runtime) |
 | Total JS | ≤ 90 KB gzip after idle (React + islands), loaded off the critical path |
 | CSS | ≤ 25 KB gzip |
-| Fonts | JetBrains Mono as WOFF2, Latin subset, 2–3 files, regular weight preloaded |
+| Fonts | The sans family (D18) as one variable WOFF2 and JetBrains Mono in 1–2 files, Latin subsets, self-hosted; both preloaded, since the boot types in mono and the headline is in sans |
 | Images | Responsive AVIF/WebP; lazy-loaded except the hero photo |
-| LCP | The hero photo and name have priority. The hero boot is designed for ≤ 1.8 s ([04](04-animations.md#boot-timeline-hero)) |
-| CLS | ≈ 0, thanks to each section's reserved space |
+| LCP | The hero headline is typed by ~1.7 s and the photo is complete by ~2.4 s ([04](04-animations.md#boot-timeline-hero)); the photo loads with priority |
+| CLS | ≈ 0, thanks to reserved space and an overlay-only build layer |
+| Blur | Only on build-layer surfaces, the scrolled nav and the palette, and only while they are visible |
 
 ## Quality and testing
 
 | Type | Tool | What it covers |
 |---|---|---|
-| Unit | Vitest | Scheduler, speeds, turbo queue, block states, React components |
-| End-to-end | Playwright | Boot, scroll trigger, skip, deep links, reduced motion, no JS, mobile |
-| Visual | Playwright screenshots | TUI frame alignment across browsers |
+| Unit | Vitest | Scheduler, overlapping steps, speeds, turbo queue, section states, React components |
+| End-to-end | Playwright | Boot, scroll trigger, skip, run all, deep links, keyboard focus rule, reduced motion, no JS, mobile |
+| Visual | Playwright screenshots | The final page in both themes, plus build states captured at fixed moments with the deterministic clock |
 | Accessibility | axe via Playwright | Every page and theme |
 | Performance | Lighthouse CI | The targets in the requirements table |
 

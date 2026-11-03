@@ -1,14 +1,18 @@
 # site-pro
 
-A personal website for the developer community, presented as **a program running inside an IDE**. Commands are typed into a terminal, and each section of the site is rendered as that program's output in a text-UI (TUI) style. Everything stays a regular, clickable website.
+A personal website for the developer community that **builds itself in front of the visitor**. A typed command opens an application window, the window types its own commands, and each command creates one element of the section, live. When a section is done, its window steps aside and leaves a modern, readable page behind.
 
 ```
-❯ startSite();
-[21:04:31] info   Initializing application...
-[21:04:32] info   Rendering Hero Section...
-✔ Hero Section created. (1.21s)
-
-❯ █
+❯ renderProjects();                           ← typed in the command dock
+┌─ ● ● ●  projects.tsx ────────────── 2/6 ─┐  ← a build window opens
+│ ❯ projects.card("ai-track-record")█      │  ← the window types its own commands
+├──────────────────────────────────────────┤
+│ Selected work                            │
+│ ┌──────────┐ ┏━ card ━━━┓ ┌┄┄┄┄┄┄┄┄┄┄┐   │
+│ │ relay    │ ┃░░░░░░░░░░┃ ┆          ┆   │  ← each command creates one element
+│ └──────────┘ ┗━━━━━━━━━━┛ └┄┄┄┄┄┄┄┄┄┄┘   │
+└──────────────────────────────────────────┘
+✔ Projects Section created. (2.31s)           ← the window fades; the section stays
 ```
 
 > **Status:** planning. There is no code yet: documentation and design come first.

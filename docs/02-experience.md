@@ -1,84 +1,125 @@
 # 02 · Experience
 
-## Screen anatomy (desktop)
+## Screen anatomy (desktop, after the hero is built)
 
 ```
-┌────────────────────────────────────────────────────────────────────────────┐
-│ ● ● ●  File  Edit  View  Run  Help        your-name — portfolio        ⌘K  │
-├────┬────────────────────┬──────────────────────────────────────────────────┤
-│ ▣  │ EXPLORER           │ ▶ terminal  × │ README.md │                      │
-│ ◎  │ ▾ PORTFOLIO        ├──────────────────────────────────────────────────┤
-│ ◇  │   ✓ main.ts        │ portfolio › src › projects › renderProjects()    │
-│ ▷  │   ✓ about.md       │                                                  │
-│    │   ⠹ projects/      │ ❯ renderProjects({ featured: true });            │
-│    │   ○ stack.json     │ [21:05:02] info  Fetching projects... 6 found    │
-│    │   ○ contact.sh     │ [21:05:02] info  Creating Projects Section... ⠹  │
-│    │                    │ ┌─ projects/ ─────────────────────────────────┐  │
-│    │                    │ │ ░░░░░░░░░░░░ ░░░░░░░░░░░░ ░░░░░░░░░░░░      │  │
-│    │                    │ │ ░░░░░░░░░░░░ ░░░░░░░░░░░░ ░░░░░░░░░░░░      │  │
-│ ◐  │   README.md        │ │ (drawing cards...)                          │  │
-├────┴────────────────────┴──────────────────────────────────────────────────┤
-│ git:main  ● Running renderProjects()  3/5    Ln 128  1×  UTF-8  ◐ Midnight │
-└────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ fabiombarreto           About   Projects   Stack   Contact     ⌘K  ◐  GitHub │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│    Hi, I'm Fabio.                                   ┌──────────────────┐     │
+│                                                     │                  │     │
+│    Senior Software Engineer                         │                  │     │
+│                                                     │                  │     │
+│    12+ years shipping full-stack apps with          │      photo       │     │
+│    React, Python and Java. Now building             │                  │     │
+│    AI-assisted dev workflows.                       │                  │     │
+│                                                     │                  │     │
+│    [ See my work ↓ ]   GitHub ↗   LinkedIn ↗        └──────────────────┘     │
+│                                                                              │
+│                ╭────────────────────────────────────────────╮                │
+│                │ ✓ 1/5 sections   ❯ █         scroll ↓   1× │                │
+│                ╰────────────────────────────────────────────╯                │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 | # | Area | Role | Behavior |
 |---|---|---|---|
-| 1 | **Title bar** | Identity and menus | Window dots (decorative, with easter eggs), working `File · Edit · View · Run · Help` menus, a centered `your-name — portfolio` title and a `⌘K` shortcut for the Command Palette. |
-| 2 | **Activity bar** | Global shortcuts | Explorer (opens/closes the side menu), Search (opens the Command Palette), GitHub, Replay and, at the bottom, Theme. |
-| 3 | **Explorer** (side menu) | Main navigation | A file tree where **each file is a section**. It shows each section's execution state (see below). |
-| 4 | **Tabs** | Context | `terminal` is the main tab (the page). Project details and `README.md` open as new tabs. |
-| 5 | **Breadcrumbs** | Where am I | The path of the visible section, such as `portfolio › src › projects › renderProjects()`. |
-| 6 | **Console** (body) | The program | Where commands are typed and sections are rendered. |
-| 7 | **Status bar** | Execution HUD and preferences | Program state, progress, position, speed and theme. |
+| 1 | **Nav bar** | Identity and navigation | Name on the left, section links in the middle, `⌘K`, theme toggle and GitHub on the right. Transparent at the top of the page, translucent with blur after scrolling. The link of the visible section is highlighted (*scroll-spy*). |
+| 2 | **Sections** (the page) | The content | A modern, readable page: hero, about, projects, stack and contact. This is what stays on screen. |
+| 3 | **Command dock** | Build HUD and controls | A pill at the bottom center. It types each section command, shows progress and holds Skip, speed and Replay. It collapses into a small button once the whole site is built. |
+| 4 | **Build windows** | The show (animation only) | Appear only while a section is being built, over the section's place. See [Build window](#build-window). |
+| 5 | **Footer** | Closing | Build summary with Replay, a link to the source and the copyright line. |
 
-> In the wireframes, personal content (name, projects, subtitle) is placeholder text.
+> Wireframes use the content draft from [09](09-content-draft.md) as illustrative text. They define structure and behavior, not the visual design, which is done in Claude Design.
 
-### Title bar menus
+### Page overview (final layout)
 
-| Menu | Items |
+```
+┌────────────────────────────────────────────────────────────┐
+│ fabiombarreto            About Projects Stack Contact ⌘K ◐ │  nav (sticky)
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│  Hi, I'm Fabio.                           ┌────────────┐   │  hero
+│  Senior Software Engineer                 │   photo    │   │
+│  Intro in two or three lines.             │            │   │
+│  [ See my work ↓ ]  GitHub  LinkedIn      └────────────┘   │
+│                                                            │
+│  01 / about                                                │  about
+│  About me                             ┌─ at a glance ───┐  │
+│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     │ 12+   2020      │  │
+│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░         │ 322+  Now       │  │
+│  ░░░░░░░░░░░░░░░░░░░░                 └─────────────────┘  │
+│                                                            │
+│  02 / projects                                             │  projects
+│  Selected work                                             │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐     │
+│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│     │
+│  │ project       │ │ project       │ │ project       │     │
+│  └───────────────┘ └───────────────┘ └───────────────┘     │
+│  2 rows · 6 cards                                          │
+│                                                            │
+│  03 / stack                                                │  stack
+│  What I work with                                          │
+│  ┌─ languages ───┐ ┌─ frontend ────┐ ┌─ backend ─────┐     │
+│  │ java ●●●      │ │ react ●●●     │ │ django ●●●    │     │
+│  └───────────────┘ └───────────────┘ └───────────────┘     │
+│                                                            │
+│  04 / contact                                              │  contact
+│  Let's talk.                                               │
+│  ╭──────────────────────────────────╮                      │
+│  │ you@your-domain.dev     [ Copy ] │   GitHub  LinkedIn   │
+│  ╰──────────────────────────────────╯                      │
+│                                                            │
+├────────────────────────────────────────────────────────────┤
+│ Built live in 9.6s · ↻ Replay             Source ↗  © 2026 │  footer
+└────────────────────────────────────────────────────────────┘
+                                                      ╭─────╮
+                                                      │ ❯_  │   dock, collapsed
+                                                      ╰─────╯
+```
+
+The page background is a faint **dot grid**, the "desktop" the windows open on. It fades out behind the content of each section.
+
+### Nav bar
+
+| Item | Behavior |
 |---|---|
-| File | Open Project… (filtered palette) · View Source ↗ · Download CV (if any) |
-| Edit | Copy Email · Copy Link to Section |
-| View | Command Palette · Toggle Explorer · Zen Mode · Theme ▸ |
-| Run | Skip Current Block (`Esc`) · Run All · Replay · Speed ▸ |
-| Help | Keyboard Shortcuts (`?`) · About This Site (`README.md`) |
+| `fabiombarreto` | Goes to the top of the page |
+| About · Projects · Stack · Contact | Smooth scroll to the section; a section that has not been built yet is built first, in turbo mode |
+| `⌘K` | Opens the Command Palette (shows `Ctrl K` on Windows and Linux) |
+| `◐` | Switches between the Midnight (dark) and Daylight (light) themes |
+| GitHub | Opens the owner's GitHub profile |
 
-### Explorer: files are sections
+On mobile, the links move into a `☰` menu.
 
-```
-PORTFOLIO
-▾ src
-    ✓ main.ts           → Hero
-    ✓ about.md          → About
-    ⠹ projects/         → Projects (expands to one file per project)
-    ○ stack.json        → Stack
-    ○ contact.sh        → Contact
-  README.md             → About this site (how it was built)
-```
+### Command dock
 
-| State | Look | Meaning |
-|---|---|---|
-| Pending | `○` and dimmed text | The section has not run yet |
-| Running | `⠹` spinner | The section is being rendered right now |
-| Done | green `✓` | The section has been rendered |
-| Active | selection background and an accent bar on the left | The section is on screen (*scroll-spy*) |
+| State | What it shows |
+|---|---|
+| **Boot** | A small terminal in the middle of the first screen: `❯ █`, then `startSite();` and its logs. It folds into the dock when the hero window opens |
+| **Typing** | The section command being typed, then one log line. The dock grows to 2 lines while this happens |
+| **Building** | `● Building projects…`, `» Skip` and the speed (`1×`) |
+| **Idle** | `✓ 2/5 sections   ❯ █   scroll ↓`: waiting for the visitor to scroll |
+| **Done** | `✔ Build complete: 5 sections in 9.6s   ↻ Replay`, for about 4 s |
+| **Collapsed** | A small round `❯_` button at the bottom right. It opens the Command Palette (and, in v1.1, the interactive dock) |
+| **Reduced motion** | `✔ Ready · motion reduced   ▶ Play build` |
 
-Clicking a pending file runs every section up to it in turbo mode and scrolls there.
+Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. Toasts (`✔ Email copied`) appear just above the dock.
 
-### Status bar
+### Build window
 
-| Side | Item | Role |
-|---|---|---|
-| Left | `git:main` | Link to the site's GitHub repository |
-| Left | `○ Idle` · `● Running renderProjects()` · `✓ Ready` | Program state (the reel's "HUD") |
-| Left | `3/5` | Sections executed |
-| Right | `Ln 128` | Scroll position shown as a "line" (a playful detail) |
-| Right | `1×` | Animation speed. Clicking cycles through `1×`, `2×` and `∞` (instant) |
-| Right | `UTF-8` | Decorative, as in IDEs |
-| Right | `◐ Midnight` | Theme. Clicking opens the theme list |
+A build window is an **overlay** around the place a section occupies on the page. It has three parts:
 
-Notifications appear as IDE-style toasts in the bottom-right corner (e.g. `✔ Email copied`).
+| Part | Content |
+|---|---|
+| **Title bar** | Three neutral dots, the section's file name (`projects.tsx`) and the progress (`● building 4/6`) |
+| **Command bar** | The window's own commands, typed one after the other: `projects.card("relay")`. This is where the window "executes" the section |
+| **Body** | The section itself, at its final size and position. Elements appear here as the commands run |
+
+The title bar and the command bar sit in the section's top padding, so the content never moves. When a section is taller than the screen, the title bar and command bar stick under the nav while the visitor scrolls through it. When the section is done, the chrome fades and only the section stays.
 
 ---
 
@@ -86,197 +127,261 @@ Notifications appear as IDE-style toasts in the bottom-right corner (e.g. `✔ E
 
 ### Scene 0: loading
 
-- The IDE chrome appears immediately. In the Explorer, every file is `○ pending`, and the status bar shows `○ Idle`.
-- The console is empty, with the cursor blinking on the first line: `❯ █`
-
-### Scene 1: boot and hero
+The first screen is empty, except for the dot grid and a small **boot terminal** in the middle, with the cursor blinking. Then the command starts being typed:
 
 ```
-❯ startSite();
-[21:04:31] info   Initializing application...
-[21:04:31] info   Loading modules [██████████████████] 5/5
-[21:04:32] info   Rendering Hero Section... ⠹
+┌──────────────────────────────────────────────────────────────┐
+│                                                              │
+│                                                              │
+│         ┌─ ● ● ●  terminal ────────────────────────┐         │
+│         │ ❯ startSi█                               │         │
+│         │                                          │         │
+│         │                                          │         │
+│         └──────────────────────────────────────────┘         │
+│                                                              │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-The hero frame is drawn and the content appears inside it: an ASCII banner with the name, the photo (first as ASCII, then the real photo), the title, the subtitle and the links. Details in [03 · Wireframes](03-design-system.md#wireframes).
+### Scene 1: boot
 
 ```
-✔ Hero Section created. (1.21s)
-
-❯ █
-  // scroll to continue ↓
+┌──────────────────────────────────────────────────────────────┐
+│ fabiombarreto                About  Projects  Stack  Contact │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│      ┌─ ● ● ●  terminal ──────────────────────────────┐      │
+│      │ ❯ startSite();                                 │      │
+│      │ info  Initializing application...              │      │
+│      │ info  Opening hero.tsx... ⠹                    │      │
+│      └────────────────────────────────────────────────┘      │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-### Scene 2: the visitor scrolls → Projects
+`startSite();` is typed, two log lines appear and the nav bar slides in from the top.
+
+### Scene 2: the hero window
+
+The terminal folds into the **command dock** at the bottom, and the `hero.tsx` window opens out of it, framing the place where the hero will live. Its command bar types one command per element, and each element is created where it will stay:
+
+| Command | What appears |
+|---|---|
+| `hero.title("Hi, I'm Fabio.")` | The headline, typed letter by letter in large display type |
+| `hero.role("Senior Software Engineer")` | The role, decoded from scrambled characters |
+| `hero.photo("fabio.jpg")` | A skeleton with its dimensions, then the photo, emerging from an ASCII version of itself (D12) |
+| `hero.intro("12+ years shipping…")` | Skeleton lines that resolve into the intro text |
+| `hero.links(["GitHub", "LinkedIn"])` | The buttons, popping in one after the other |
 
 ```
-❯ renderProjects({ featured: true });
-[21:05:02] info   Fetching projects... 6 found
-[21:05:02] info   Creating Projects Section... ⠹
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ fabiombarreto           About   Projects   Stack   Contact     ⌘K  ◐  GitHub │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ ┌─ ● ● ●  hero.tsx ─────────────────────────────────────── ● building 2/5 ─┐ │
+│ │ ❯ hero.role("Senior Software Engineer")█                                 │ │
+│ ├──────────────────────────────────────────────────────────────────────────┤ │
+│ │  Hi, I'm Fabio.                                   ┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐   │ │
+│ │ ┏━ role ━━━━━━━━━━━━━━━━━┓                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
+│ │ ┃Senior Softw@r# E%g!n<er┃                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
+│ │ ┗━━━━━━━━━━━━━━━━━━━━━━━━┛                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
+│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░          ┆░░░░ 800×800 ░░░░░┆   │ │
+│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             ┆░░░░░░░░░░░░░░░░░░┆   │ │
+│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░                       ┆░░░░░░░░░░░░░░░░░░┆   │ │
+│ │                                                   ┆░░░░░░░░░░░░░░░░░░┆   │ │
+│ │                                                   └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘   │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                ╭────────────────────────────────────────────╮                │
+│                │ ● Building hero…               » Skip   1× │                │
+│                ╰────────────────────────────────────────────╯                │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-The card grid is drawn: frame → `░` placeholders with their dimensions → image, title, description and tags, one card at a time.
+### Scene 3: the hero is done
+
+The dock confirms `✔ Hero Section created. (2.9s)`. The window's title bar, command bar, border and shadow fade away, and the hero stays exactly as it was built (see [Screen anatomy](#screen-anatomy-desktop-after-the-hero-is-built)). The dock goes idle: `✓ 1/5 sections   ❯ █   scroll ↓`.
+
+### Scene 4: the visitor scrolls → About
+
+The dock types `renderAbout();` and logs `info  Reading about.md...`. The `about.md` window builds the heading, the story paragraphs (skeleton lines → text) and the "at a glance" facts.
+
+### Scene 5: the visitor scrolls → Projects
+
+The dock types `renderProjects();` and logs `info  Fetching projects... 6 found`. The `projects.tsx` window builds the heading and then the cards, one command per card. Each card goes through the same steps: selection box → skeleton → cover image → title → summary → tags.
 
 ```
-✔ Projects Section created. (0.92s)
-
-❯ █
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ fabiombarreto           About   Projects   Stack   Contact     ⌘K  ◐  GitHub │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ ┌─ ● ● ●  projects.tsx ─────────────────────────────────── ● building 4/6 ─┐ │
+│ │ ❯ projects.card("ai-track-record")█                                      │ │
+│ ├──────────────────────────────────────────────────────────────────────────┤ │
+│ │                                                                          │ │
+│ │  Selected work                                                           │ │
+│ │  Things I built and what I learned.                                      │ │
+│ │                                                                          │ │
+│ │  ┌────────────────────┐  ┏━ card ━━━━━━━━━━━━━┓  ┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐  │ │
+│ │  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  ┃░░░░ 640×360 ░░░░░░░┃  ┆                    ┆  │ │
+│ │  │ relay              │  ┃ AI Track Rec█      ┃  ┆                    ┆  │ │
+│ │  │ PRD to pull request│  ┃ ░░░░░░░░░░░░░░░░   ┃  ┆                    ┆  │ │
+│ │  │ claude-code · node │  ┃ ░░░░░░░░           ┃  ┆                    ┆  │ │
+│ │  └────────────────────┘  ┗━━━━━━━━━━━━━━━━━━━━┛  └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘  │ │
+│ │                                         ↖ agent-2             ↖ agent-3  │ │
+│ │  3 more cards below ↓                                                    │ │
+│ │              ╭────────────────────────────────────────────╮              │ │
+│ │              │ ● Building projects…           » Skip   1× │              │ │
+│ │              ╰────────────────────────────────────────────╯              │ │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Design note:** in the original brief, *"Creating Projects Section..."* was the typed command. Here, what gets **typed** is always a function call (`renderProjects();`), and *"Creating Projects Section..."* is the **log output**. This way every section follows the same pattern as `startSite();` → *"Initializing application..."*.
+With **D8** (multi-cursor), 2 or 3 labeled agent cursors build cards at the same time, as in the wireframe. Without it, cards are built one after the other with a short overlap.
 
-### Scenes 3 to 5: the remaining sections
+### Scenes 6 and 7: Stack and Contact
 
-They follow the same grammar (below), each with its own output format (see the section map).
+They follow the same grammar: `renderStack();` builds the grouped technologies, and `renderContact();` builds the call to action, the email and the links.
 
-### Final scene: the program ends
+### Final scene: the build is complete
 
 ```
-❯ renderContact();
-[21:07:05] info   Opening channels...
-  (...)
-✔ Contact Section created. (0.64s)
-
-✔ Build complete — 5 sections rendered in 6.84s
-  [ ↻ Replay ]   [ ⌘K Command Palette ]   [ ↑ Back to top ]
-
-❯ █
+✔ Contact Section created. (1.84s)
+✔ Build complete: 5 sections in 9.6s   ↻ Replay
 ```
 
-In v1.1, this last prompt accepts real commands (see [Interactive terminal](#interactive-terminal-v11)).
+After about 4 s, the dock collapses into the `❯_` button. The footer keeps the summary: `Built live in 9.6s · ↻ Replay`.
 
 ---
 
-## Anatomy of an execution block
+## Anatomy of a section build
 
-Every section follows the same structure. This repetition is what makes the site feel like a program:
+Every section follows the same structure. This repetition is what makes the site feel like it is being built by commands:
 
 ```
-❯ <function call>                          ← 1. typed character by character, with syntax highlighting
-[hh:mm:ss] info   <preparation log>        ← 2. zero to two log lines
-[hh:mm:ss] info   Rendering <Section>... ⠹ ← 3. log with a spinner while the content is drawn
-<TUI content>                              ← 4. real HTML, revealed with effects
-✔ <Section> Section created. (0.84s)       ← 5. confirmation with the execution time
-
-❯ █                                        ← 6. new prompt, waiting for the next scroll
+dock     ❯ renderProjects();                    ← 1. the section command, typed in the dock
+dock     info  Fetching projects... 6 found     ← 2. one log line
+window   ● ● ●  projects.tsx                    ← 3. a build window opens over the section's place
+window   ❯ projects.heading("Selected work")    ← 4. element commands, each creating one element
+window   ❯ projects.card("relay")
+dock     ✔ Projects Section created. (2.31s)    ← 5. confirmation with the build time
+page     (the window fades; the section stays)  ← 6. the final, readable section
+dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the next scroll
 ```
 
 ## Section and command map
 
-| # | Section | Explorer file | Typed command | Logs | Output format |
-|---|---|---|---|---|---|
-| 1 | Hero | `main.ts` | `startSite();` | Initializing application… · Loading modules… · Rendering Hero Section… | ASCII name banner, photo (ASCII → photo), title, subtitle, links |
-| 2 | About | `about.md` | `renderAbout();` | Reading about.md… | Rendered Markdown (headings with `#`, lists with `-`) |
-| 3 | Projects | `projects/` | `renderProjects({ featured: true });` | Fetching projects… N found · Creating Projects Section… | Grid of clickable TUI cards |
-| 4 | Stack | `stack.json` | `renderStack();` | Resolving dependencies… | `npm ls`-style tree |
-| 5 | Contact | `contact.sh` | `renderContact();` | Opening channels… | Clickable commands (`$ open github`) and a copyable email |
+| # | Section | Dock command | Log | Window | Window commands | Final layout |
+|---|---|---|---|---|---|---|
+| 1 | Hero | `startSite();` | Initializing application… · Opening hero.tsx… | `hero.tsx` | `title`, `role`, `photo`, `intro`, `links` | Headline, role, intro and buttons on the left; photo on the right |
+| 2 | About | `renderAbout();` | Reading about.md… | `about.md` | `heading`, `text`, `facts` | Story on the left, "at a glance" facts on the right |
+| 3 | Projects | `renderProjects();` | Fetching projects… 6 found | `projects.tsx` | `heading`, `card` × 6 | 3-column grid of cards with cover images |
+| 4 | Stack | `renderStack();` | Resolving dependencies… | `stack.json` | `heading`, `legend`, `group` × 6 | Group cards with technology chips and a frequency meter |
+| 5 | Contact | `renderContact();` | Opening channels… | `contact.tsx` | `heading`, `email`, `links` | A call to action, the email with a copy button, links |
 
-**Post-v1** (decision D4): **Experience** (`experience.log`, `renderExperience();`, a `git log --graph`-style graph) and **Articles and talks** (`writing/`, `renderWriting({ limit: 5 });`, an `ls -la`-style listing). Their specs stay in these docs for later. See [05 · Content](05-content.md).
+**Post-v1** (decision D4): **Experience** (`experience.log`, `renderExperience();`, a vertical timeline) and **Articles and talks** (`writing.md`, `renderWriting();`, a list with type badges). See [05 · Content](05-content.md).
 
 ## Behavior rules
 
 | Rule | Description |
 |---|---|
-| **Trigger** | The next block starts when the waiting prompt (`❯ █`) crosses ~70% of the viewport height. Without scrolling, the program stays idle at the prompt, exactly like a terminal waiting for input. |
-| **Scroll hint** | If the visitor stays still for ~4 s after the hero, a dimmed comment appears: `// scroll to continue ↓`. It disappears on the first scroll. |
-| **Order** | Blocks always run in order, one at a time. The program is single-threaded. |
-| **Reserved space** | Each section takes its final height from the start. This makes the page scrollable, avoids layout shifts and keeps the content in the HTML for SEO. Before a block runs, its area is just empty terminal background. |
-| **Fast scrolling (turbo)** | If the visitor scrolls past blocks that have not run yet, they are queued and run accelerated (5–10×) until they catch up with what is on screen. |
-| **Never hijack scrolling** | The runtime never moves the page on its own, except when the visitor asks: a click in the Explorer or the palette, a deep link, or Replay. |
-| **Skip** | `Esc`, the `» Skip` button (next to the active prompt) or a tap on the running block finishes the current block immediately. |
-| **Run all** | `Run › Run All` (or the palette) renders every section at once. |
-| **Deep links** | Arriving via `/#projects` or clicking in the Explorer runs everything before the target in turbo mode and scrolls to it. |
-| **Scrolling up** | Sections that already ran stay as they are. Nothing animates again. |
-| **Immediate interaction** | Content is clickable as soon as it is drawn, even while the block is still finishing. |
-| **Revisits** | Every visit plays the full animation again, reloads included (decision **D6**). The only exception is a visitor who set the speed to `∞`: that choice is saved in the browser and kept. |
-| **Reduced motion** | With `prefers-reduced-motion`, everything appears ready, with no typing and a steady cursor. |
-| **No JavaScript** | The whole site appears statically in its final state, with the logs as plain text. |
-| **Background tab** | Execution pauses while the tab is hidden and resumes when the visitor returns. |
+| **Trigger** | The next section build starts when the top of that section crosses ~75% of the viewport height. Without scrolling, the dock waits at `❯ █`, like a terminal waiting for input. |
+| **Scroll hint** | If the visitor stays still for ~4 s after the hero, the `scroll ↓` hint in the dock pulses gently. |
+| **Order** | Sections are always built in order, one at a time. Inside a section, element steps may overlap. |
+| **Reserved space** | Each section takes its final height from the start, so the page scrolls normally and nothing shifts. Before its build, a section's content is laid out but invisible, and a faint dashed outline with the window name (`projects.tsx`) marks the area. |
+| **The final layout never moves** | Windows, cursors and selection boxes are overlays. Elements animate in place, using only transform, opacity and clip-path. |
+| **Fast scrolling (turbo)** | If the visitor scrolls past sections that have not been built, they are queued and built accelerated (5–10×) until they catch up with what is on screen. |
+| **Never hijack scrolling** | The runtime never moves the page on its own, except when the visitor asks: a click in the nav or the palette, a deep link, or Replay. |
+| **Skip** | `Esc`, the `» Skip` button in the dock, or a click on the window's title bar or command bar finishes the current section immediately. |
+| **Run all** | `Shift + Esc` or `Run all` in the palette builds every remaining section at once. |
+| **Deep links** | Arriving via `/#projects` builds everything before the target in turbo mode and scrolls to it. |
+| **Keyboard focus** | When keyboard focus enters a section that has not been built, that section is finished instantly. |
+| **Scrolling up** | Sections that are already built stay as they are. Nothing animates again. |
+| **Immediate interaction** | Elements are clickable as soon as they exist, even while their window is still open. Clicks on the window body go through to the page. |
+| **Resize during a build** | The current section finishes instantly (the overlay would no longer match), and the next ones build normally. |
+| **Revisits** | Every visit plays the full build again, reloads included (decision **D6**). The only exception is a visitor who set the speed to `∞`: that choice is saved in the browser and kept. |
+| **Reduced motion** | With `prefers-reduced-motion`, there are no windows and no typing. Everything appears ready, and the dock offers `▶ Play build` for those who want to watch it anyway. |
+| **No JavaScript** | The whole site appears statically in its final state. There is no dock and no window. |
+| **Background tab** | The build pauses while the tab is hidden and resumes when the visitor returns. |
 
 ---
 
-## IDE interactions
+## Interactions
 
-### Command Palette (`Ctrl/⌘ + K` or `Ctrl/⌘ + Shift + P`)
+### Command Palette (`Ctrl/⌘ + K`)
 
-```
-╭──────────────────────────────────────────────╮
-│ > proj█                                      │
-├──────────────────────────────────────────────┤
-│ ▸ Go to: Projects                    Ctrl+3  │
-│   Open project: project-name                 │
-│   Open project: another-project              │
-│   Run: Replay                                │
-╰──────────────────────────────────────────────╯
-```
+Opened from the shortcut, the `⌘K` button in the nav or the collapsed dock. Wireframe in [03](03-design-system.md#command-palette).
 
-Planned commands: `Go to: <section>`, `Open project: <name>`, `Run: Skip`, `Run: Run all`, `Run: Replay`, `Speed: 1× / 2× / instant`, `Theme: <theme>`, `Copy email`, `Open: GitHub / LinkedIn / …`. Search is fuzzy.
+Planned commands: `Go to <section>`, `Open project: <name>`, `Run all`, `Replay the build`, `Speed: 1× / 2× / instant`, `Theme: Midnight / Daylight`, `Copy email`, `Open GitHub / LinkedIn`. Search is fuzzy.
 
 ### Keyboard shortcuts
 
 | Shortcut | Action |
 |---|---|
-| `Esc` | Skip the current block |
+| `Esc` | Skip the current section build |
+| `Shift + Esc` | Run all: build every remaining section |
 | `Ctrl/⌘ + K` | Open the Command Palette |
-| `Ctrl/⌘ + B` | Show/hide the Explorer |
-| `Ctrl/⌘ + 1…5` | Go to section 1…5 |
 | `?` | Show the shortcut list |
 
-### Projects open as tabs
+Section shortcuts such as `Ctrl + 1…5` were dropped: browsers use them to switch tabs.
 
-Clicking a project card **opens a file**: a `project-name.md` tab appears, showing the project detail page rendered as a Markdown file inside the IDE (line numbers in the gutter, headings with `#`, links to the repository and the demo). The page has its own URL (`/projects/project-name`), which helps SEO and sharing. Closing the tab returns to the terminal at the same position.
+### Project pages
 
-Decided (**D5**): internal pages. Cards still carry direct shortcuts to the repository and the demo.
+Decided (**D5**): internal pages. Clicking a card opens `/projects/<slug>`. The dock types a quick `open("relay");` and the card grows into the page header (a view transition). The page itself is a modern article: cover, summary, metadata, the story and links (wireframe in [03](03-design-system.md#project-page)). The back button returns to the grid at the same position. Cards also carry a direct `repo ↗` shortcut.
 
 ### Micro-interactions
 
-- **Card hover and focus:** the frame switches from a single line (`─`) to a double line (`═`) in the accent color, and the title turns to inverse video, like focus in a TUI. Keyboard focus looks the same.
-- **Links:** `[ GitHub ↗ ]`, underlined on hover. External links always carry `↗`.
-- **Copy email:** one click copies it and shows a `✔ Email copied to clipboard` toast.
-- **Text selection:** uses the IDE selection color (translucent blue).
-- **Window dots (easter eggs):** the red one "exits" the program (a `Process exited with code 0` screen + `[ Restart ]`), the yellow one collapses the Explorer and the green one turns on Zen mode (hides the chrome).
+- **Card hover and focus:** the card lifts slightly, its border takes the accent color and the cover zooms in a little. Keyboard focus looks the same, plus the focus ring.
+- **Buttons:** the primary button is filled with the accent; secondary buttons are outlined.
+- **Links:** underlined on hover. External links always carry `↗`.
+- **Copy email:** one click copies it and shows a `✔ Email copied` toast.
+- **Text selection:** uses an accent-tinted selection color.
+- **Window dots (easter egg):** clicking the first dot of a build window "closes" it. The dock logs `warn  Window closed. Building anyway...` and the section finishes instantly.
 
-### Interactive terminal (v1.1)
+### Interactive dock (v1.1)
 
 Decided (**D7**): not in v1; it comes after launch.
 
-The last prompt accepts real commands: `help`, `ls`, `cd projects`, `open <project>`, `theme <name>`, `clear`, `replay`, `contact`. There are also easter eggs such as `sudo hire-me` or `rm -rf /`, with tongue-in-cheek answers. `Tab` autocompletes and `↑` walks the history.
+The collapsed `❯_` button opens a real prompt in the dock: `help`, `ls`, `open <project>`, `theme <name>`, `replay`, `contact`, plus easter eggs such as `sudo hire-me` or `rm -rf /`, with tongue-in-cheek answers. `Tab` autocompletes and `↑` walks the history.
 
 ---
 
 ## Responsive
 
-| Width | Chrome | Body |
+| Width | Page | Build layer |
 |---|---|---|
-| ≥ 1280 px | Full: activity bar + open Explorer (+ optional minimap) | 3-column project grid |
-| 1024–1279 px | Activity bar + collapsible Explorer (open by default) | 2 columns |
-| 768–1023 px | Activity bar; the Explorer becomes an overlay drawer | 2 columns |
-| < 768 px | Compact title bar (☰ · title · ⌘K), no activity bar, Explorer as a drawer, reduced status bar | 1 column, compact ASCII banner, 13–14 px font, no timestamps in the logs, tap on a block = skip |
+| ≥ 1024 px | Hero in two columns, 3-column project grid, stack in 3 columns | Full window chrome; agent cursors if D8 is approved |
+| 768–1023 px | Hero in two columns with a smaller photo, 2-column grids | Full window chrome, no agent cursors |
+| < 768 px | Nav with `☰` menu; hero stacked (photo first); 1 column | Windows with a single compact title bar that shows the current command; the dock spans the width (minus 16 px each side) and shows only the status and `» Skip`; a tap on the window's title bar skips |
 
 ```
-┌──────────────────────────────────────┐
-│ ☰   your-name — portfolio         ⌘K │
-├──────────────────────────────────────┤
-│ ❯ startSite();                       │
-│ info  Initializing application...    │
-│ info  Rendering Hero Section... ⠹    │
-│ ╭─ hero ───────────────────────────╮ │
-│ │ ┌────────┐                       │ │
-│ │ │ ▓▓▓▓▓▓ │  YOUR NAME            │ │
-│ │ │ ▓▓▓▓▓▓ │  Software Engineer    │ │
-│ │ └────────┘                       │ │
-│ │ // subtitle in one or            │ │
-│ │ // two lines                     │ │
-│ │ [ projects ↓ ] [ GitHub ↗ ]      │ │
-│ ╰──────────────────────────────────╯ │
-│ ✔ Hero Section created. (1.2s)       │
-│ ❯ █                                  │
-├──────────────────────────────────────┤
-│ ✓ Ready  1/5                UTF-8  ◐ │
-└──────────────────────────────────────┘
+┌────────────────────────────────────┐    ┌────────────────────────────────────┐
+│ fabiombarreto                ⌘K  ☰ │    │ fabiombarreto                ⌘K  ☰ │
+├────────────────────────────────────┤    ├────────────────────────────────────┤
+│┌─ ❯ hero.role("Senior…") ─── 2/5 ─┐│    │                                    │
+││                                  ││    │                                    │
+││ ┌┄┄┄┄┄┄┄┄┐                       ││    │  ┌────────┐                        │
+││ ┆░░░░░░░░┆                       ││    │  │ photo  │                        │
+││ ┆░░░░░░░░┆                       ││    │  │        │                        │
+││ └┄┄┄┄┄┄┄┄┘                       ││    │  └────────┘                        │
+││                                  ││    │                                    │
+││ Hi, I'm Fabio.                   ││    │  Hi, I'm Fabio.                    │
+││┏━ role ━━━━━━━━━━━━━━━━━┓        ││    │                                    │
+││┃Senior Softw@r# E%g!n<er┃        ││    │  Senior Software Engineer          │
+││┗━━━━━━━━━━━━━━━━━━━━━━━━┛        ││    │                                    │
+││ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    ││    │  12+ years shipping full-stack     │
+││ ░░░░░░░░░░░░░░░░░░░░░░░░░░░      ││    │  apps with React, Python and       │
+││ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   ││    │  Java. Now building AI-assisted    │
+││ ░░░░░░░░░░░░░░                   ││    │  dev workflows.                    │
+││                                  ││    │                                    │
+││                                  ││    │  [ See my work ↓ ]                 │
+│└──────────────────────────────────┘│    │                                    │
+│                                    │    │                                    │
+│ ╭────────────────────────────────╮ │    │ ╭────────────────────────────────╮ │
+│ │ ● Building hero…        » Skip │ │    │ │ ✓ 1/5   ❯ █         scroll ↓   │ │
+│ ╰────────────────────────────────╯ │    │ ╰────────────────────────────────╯ │
+└────────────────────────────────────┘    └────────────────────────────────────┘
+               building                                   built
 ```
 
 ## Other pages
 
-- **404:** `Error: ENOENT: no such file or directory, open '/typed-path'`, followed by a suggestion (`Did you mean: /projects ?`) and `[ cd ~ ]` to go back home.
-- **Project detail:** see [Projects open as tabs](#projects-open-as-tabs).
+- **404:** the dock types `open("/typed-path");` and a small window opens with `Error: ENOENT: no such file or directory, open '/typed-path'`, a suggestion (`Did you mean /projects?`) and a `Go home` button. On this page, the window is the final state.
+- **Project detail:** see [Project pages](#project-pages).
+- **How this site was built:** an article page linked from the footer and the palette, with the stack, the build runtime, credits and a link to the source.

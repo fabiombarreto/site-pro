@@ -1,135 +1,177 @@
 # 03 · Design System
 
-> The living design system is published in Claude Design: [site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) (private; share it from its page). It implements this document: tokens for the three themes, typography, spacing, radii, shadows, layout sizes and timings, plus 24 components and a full Workbench composition. When the two disagree, update this document first.
+> The first Design System published in Claude Design ([site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K), private) implements the **v1 IDE concept** and is now superseded by this document. Version 2 will be rebuilt there once this document is approved. When the two disagree, update this document first.
 
 ## Visual direction
 
-**Modern dark IDE + retro TUI.** The look is as restrained as a real IDE: neutral grays and high-contrast text. Color comes from *syntax highlighting* and log levels, not from a neon or cyberpunk look. The "wow" comes from motion and character drawing, not from heavy visual effects.
+**A modern product site, with a developer's build layer on top.** There are two registers, and they never mix:
+
+| Register | Where | Look |
+|---|---|---|
+| **The page** | Nav, sections, project pages, footer | Modern and readable: large display type, generous spacing, cards with images, soft depth from the accent color. Monospace appears only in small labels and tags. |
+| **The build layer** | Command dock, build windows, selection boxes, skeletons, agent cursors | Technical: monospaced type, syntax-highlighted commands, `info` logs, translucent windows. It exists only while sections are being built. |
+
+The page is restrained: neutral surfaces, high-contrast text and one accent color. The "wow" comes from watching it being built, not from heavy visual effects.
 
 ## Themes
 
-Themes are sets of tokens (CSS custom properties). Visitors switch themes from the status bar or the Command Palette, and the choice is saved in the browser.
+Themes are sets of tokens (CSS custom properties). Visitors switch themes from the nav or the Command Palette, and the choice is saved in the browser.
 
-| Theme | Inspiration | Use |
-|---|---|---|
-| **Midnight** (default) | VS Code Dark Modern + IntelliJ New UI | The main theme and the site's identity |
-| **Classic** (light) | Classic Eclipse / NetBeans | Alternative, for those who prefer a light background |
-| **Phosphor** | Green phosphor CRT monitors | Easter egg (palette or `theme phosphor`): green monochrome, with scanlines and a slight glow |
+| Theme | Use |
+|---|---|
+| **Midnight** (default, dark) | The main theme and the site's identity (decision **D3**) |
+| **Daylight** (light) | Alternative, for those who prefer a light background |
+
+The v1 **Phosphor** theme (green CRT) is retired. It may come back as an easter egg after launch.
 
 ### Color tokens
 
-Every text/background pair used for content meets **WCAG AA (≥ 4.5:1)**. `--fg-subtle` is only for decorative elements (line numbers, `░` placeholders).
+Every text/background pair used for content meets **WCAG AA (≥ 4.5:1)**. `--fg-subtle` is only for decorative elements.
 
 **Surfaces**
 
-| Token | Midnight | Classic | Use |
+| Token | Midnight | Daylight | Use |
 |---|---|---|---|
-| `--bg-chrome` | `#141519` | `#e4e5e9` | Title bar, activity bar |
-| `--bg-sidebar` | `#18191e` | `#eeeff2` | Explorer |
-| `--bg-editor` | `#1d1e24` | `#ffffff` | Console (body) |
-| `--bg-surface` | `#23242b` | `#f6f7f9` | Cards, palette, menus, toasts |
-| `--bg-line` | `#262830` | `#eef3fb` | Active line, list hover |
-| `--bg-selection` | `#2f4a73` | `#cfe0fc` | Text selection, active Explorer item |
-| `--border` | `#2c2e36` | `#d4d6dc` | Chrome dividers, frames at rest |
+| `--bg` | `#141519` | `#f6f7f9` | Page background |
+| `--bg-raised` | `#1d1e24` | `#ffffff` | Cards, the facts box, group cards |
+| `--bg-overlay` | `rgb(35 36 43 / 0.78)` | `rgb(255 255 255 / 0.82)` | Build windows, dock, palette, menus, toasts (with backdrop blur) |
+| `--bg-hover` | `#23242b` | `#eef0f3` | Hover on list items and chips |
+| `--bg-selection` | `#2f4a73` | `#cfe0fc` | Text selection |
+| `--border` | `#2c2e36` | `#d4d6dc` | Card and window borders, dividers |
+| `--border-strong` | `#3a3d47` | `#b9bdc6` | Dock border, hovered borders |
+| `--grid-dot` | `#23252c` | `#e2e4e9` | The dot grid in the page background |
 
 **Text**
 
-| Token | Midnight | Classic | Use |
+| Token | Midnight | Daylight | Use |
 |---|---|---|---|
 | `--fg` | `#d6d8de` | `#1f2328` | Main text |
-| `--fg-muted` | `#8b8f9c` | `#59606b` | Secondary text, timestamps |
+| `--fg-muted` | `#8b8f9c` | `#59606b` | Secondary text, metadata |
 | `--fg-subtle` | `#5c606c` | `#9aa0aa` | Decorative only |
 
 **Accent** (the site's signature color: blue, decision **D3**)
 
-| Token | Midnight | Classic | Use |
+| Token | Midnight | Daylight | Use |
 |---|---|---|---|
-| `--accent` | `#2563eb` | `#2563eb` | Status bar background, focus ring, active tab |
+| `--accent` | `#2563eb` | `#2563eb` | Primary buttons, focus ring, selection boxes, active nav link |
+| `--accent-hover` | `#1d4ed8` | `#1d4ed8` | Primary button hover |
 | `--accent-fg` | `#6ea8ff` | `#1d4ed8` | Links and highlighted text |
 | `--on-accent` | `#ffffff` | `#ffffff` | Text on `--accent` |
+| `--accent-glow` | `rgb(37 99 235 / 0.28)` | `rgb(37 99 235 / 0.14)` | The hero glow and the card hover glow |
 
-**Syntax** (typed commands, code snippets, project details)
+**Syntax** (commands in the dock and in build windows, code snippets on project pages)
 
-| Token | Midnight | Classic | Example |
+| Token | Midnight | Daylight | Example |
 |---|---|---|---|
 | `--syn-keyword` | `#c792ea` | `#7f0055` | `const`, `await`, `return` |
-| `--syn-function` | `#e5c07b` | `#795e26` | `renderProjects` |
-| `--syn-string` | `#98c379` | `#2a00ff` | `"Software Engineer"` |
-| `--syn-number` | `#f78c6c` | `#098658` | `2026`, `true` |
-| `--syn-type` | `#4fd1c5` | `#267f99` | `Project`, `Promise` |
-| `--syn-comment` | `#868b96` | `#3f7f5f` | `// scroll to continue` |
+| `--syn-function` | `#e5c07b` | `#795e26` | `renderProjects`, `card` |
+| `--syn-string` | `#98c379` | `#2a00ff` | `"Senior Software Engineer"` |
+| `--syn-number` | `#f78c6c` | `#098658` | `6`, `true` |
+| `--syn-type` | `#4fd1c5` | `#267f99` | `hero`, `projects` |
+| `--syn-comment` | `#868b96` | `#3f7f5f` | `// comments` |
 | `--syn-punct` | `#d6d8de` | `#1f2328` | `( ) { } ;` |
 
-Classic's keyword, string and comment colors are a direct tribute to classic Eclipse.
+Daylight keeps the classic Eclipse syntax colors from the v1 concept. Syntax and log colors are used only on `--bg-overlay` (dock, windows) and `--bg-raised` (code blocks), where every pair passes AA; three Daylight syntax colors fall just below 4.5:1 on the page background, so they never sit directly on it.
 
 **Log levels**
 
-| Token | Midnight | Classic | Use |
+| Token | Midnight | Daylight | Use |
 |---|---|---|---|
 | `--log-info` | `#60a5fa` | `#1d4ed8` | `info` |
 | `--log-success` | `#4ade80` | `#15803d` | `✔ ... created.` |
 | `--log-warn` | `#fbbf24` | `#a16207` | `warn` (used sparingly, for humor) |
 | `--log-error` | `#f87171` | `#b91c1c` | `error` (404 page) |
 
+**Build layer**
+
+| Token | Midnight | Daylight | Use |
+|---|---|---|---|
+| `--build-select` | `#2563eb` | `#2563eb` | Selection box border and label |
+| `--build-skeleton` | `#23242b` | `#e9ebef` | Skeleton blocks |
+| `--build-shine` | `#2c2e36` | `#f3f4f6` | The skeleton shimmer |
+| `--agent-1` … `--agent-4` | `#c792ea` `#e5c07b` `#98c379` `#4fd1c5` | `#9333ea` `#b45309` `#15803d` `#0f766e` | Agent cursors and their labels (D8) |
+
 ## Typography
 
-**A single monospaced family across the whole site**, chrome included, to keep the terminal feel.
+Two families with clear jobs: a **sans-serif** for everything people read, and a **monospace** for the build layer and small technical labels.
 
 | Item | Choice | Why |
 |---|---|---|
-| Main family | **JetBrains Mono** (OFL license, variable) | IntelliJ's font, with ligatures, great legibility and full coverage of box-drawing and block characters (`┌─┐ █▓▒░`), which is essential for the drawings to line up. |
-| Fallback | `"JetBrains Mono", "Cascadia Code", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace` | Common terminal fonts on each system |
-| Weights | 400 (text), 500 (active chrome), 700 (headings) and italic 400 (comments) | Few files, fast loading |
-| ASCII banner | Generated with **figlet**: `ANSI Shadow` font on desktop, `Small` on mobile | The name drawn with `█╗╔═╝` is the most striking element of the hero |
+| Text and headings | A modern sans-serif, decision **D18** (recommendation: **Geist**; alternatives: Inter, Space Grotesk) | Very legible at small sizes, variable weights, and a technical feel without being a code font |
+| Build layer and labels | **JetBrains Mono** (OFL license, variable), kept from v1 | Commands, logs, window titles, section eyebrows (`02 / projects`), tags and dimension labels |
+| Fallbacks | Sans: `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` · Mono: `"Cascadia Code", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace` | The chosen fonts are self-hosted, so fallbacks only show if loading fails |
+| Weights | Sans 400, 500, 600 and 700 (one variable file) · Mono 400 and 500 | Few files, fast loading |
 
 ### Scale
 
-| Token | Desktop / mobile | Line height | Use |
-|---|---|---|---|
-| `--text-xs` | 12 / 12 px | 1.4 | Status bar, labels, timestamps |
-| `--text-sm` | 13 / 13 px | 1.5 | Explorer, tabs, breadcrumbs, menus |
-| `--text-md` | 15 / 14 px | 1.6 | Console, body text, cards |
-| `--text-lg` | 18 / 16 px | 1.5 | Card titles, hero subtitle |
-| `--text-xl` | 22 / 18 px | 1.4 | Section titles |
-| `--text-2xl` | 32 / 24 px | 1.2 | Role/title in the hero |
-| `--text-ascii` | 8–14 px (fitted to the width) | 1.0 | ASCII banner and images |
+| Token | Desktop / mobile | Line height | Tracking | Use |
+|---|---|---|---|---|
+| `--text-display` | `clamp(44px, 7vw, 88px)` | 1.02 | -0.03em | Hero headline |
+| `--text-3xl` | `clamp(32px, 4.5vw, 48px)` | 1.1 | -0.02em | Section titles (`<h2>`), project page title |
+| `--text-2xl` | 28 / 22 px | 1.2 | -0.01em | Hero role |
+| `--text-xl` | 22 / 20 px | 1.3 | — | Card titles, fact values |
+| `--text-lg` | 19 / 18 px | 1.6 | — | Hero intro, lead paragraphs |
+| `--text-md` | 16 / 16 px | 1.65 | — | Body text |
+| `--text-sm` | 14 / 14 px | 1.5 | — | Nav, metadata, card summaries |
+| `--mono-sm` | 13 / 12 px | 1.5 | — | Commands, logs, window titles, eyebrows, tags |
+| `--mono-xs` | 12 / 11 px | 1.4 | — | Selection labels, agent labels, dimension labels |
 
-- Body text is at most **72ch** wide.
-- Ligatures are on in code snippets and off in body text.
+- Body text is at most **68ch** wide.
+- Ligatures on in commands and code; tabular numerals in facts and build times.
 
-## Grid and spacing
+## Layout and spacing
 
-- **Character grid:** inside the console, horizontal spacing uses `ch` and vertical spacing uses lines (`lh`), so everything lands on a terminal grid.
-- **Chrome:** a 4 px scale (`4 · 8 · 12 · 16 · 24 · 32 · 48 · 64`).
+- **Container:** at most 1200 px wide, 12-column grid, 24 px gutters (16 px on mobile), 32 px side padding (16 px on mobile).
+- **Spacing scale (4 px base):** `4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128`.
+- **Section padding:** 128 px top and bottom on desktop, 80 px on mobile. The top padding holds the build window's title bar and command bar, so the content never moves.
 
 | Element | Size |
 |---|---|
-| Title bar | 36 px tall |
-| Activity bar | 48 px wide |
-| Explorer | 240 px wide (resizable in v1.1) |
-| Tabs | 36 px tall |
-| Breadcrumbs | 24 px tall |
-| Status bar | 24 px tall |
-| Console | `2ch` padding, content at most ~120ch wide |
+| Nav bar | 64 px tall, sticky |
+| Boot terminal | 560 px wide (full width minus 32 px on mobile), centered in the first screen |
+| Command dock | 44 px tall (2 lines while typing), up to 560 px wide, centered, 24 px from the bottom |
+| Collapsed dock | 44 px round button, bottom right |
+| Window title bar | 36 px (28 px on mobile, where it also shows the command) |
+| Window command bar | 36 px (merged into the title bar on mobile) |
+| Window outset | Windows extend 24 px past the content on each side (12 px on mobile) |
+| Hero photo | Square, 360–400 px on desktop, 96 px on mobile |
+| Project cover | 16:9 |
 
-## TUI character kit
+### Radii, shadows and effects
 
-| Role | Characters |
+| Token | Value | Use |
+|---|---|---|
+| `--radius-sm` | 6 px | Tags, chips, selection labels |
+| `--radius-md` | 10 px | Buttons, the email field |
+| `--radius-lg` | 16 px | Cards, windows, the photo, the palette |
+| `--radius-full` | 9999 px | The dock, pills |
+| `--shadow-card` | `0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25)` (lighter in Daylight) | Cards at rest |
+| `--shadow-window` | `0 24px 64px rgb(0 0 0 / .5)` (lighter in Daylight) | Build windows, palette |
+| `--shadow-dock` | `0 12px 32px rgb(0 0 0 / .4)` (lighter in Daylight) | Dock |
+
+- **Glass:** `backdrop-filter: blur(16px) saturate(140%)` only on build-layer surfaces, the scrolled nav and the palette. With `prefers-reduced-transparency`, or where blur is not supported, these surfaces use `--bg-raised`.
+- **Hero glow:** a soft radial gradient of `--accent-glow` behind the photo.
+- **Dot grid:** 1 px dots every 24 px in `--grid-dot`, faded out behind each section's content with a mask.
+
+## Build layer glyphs
+
+Used only in the dock and in build windows:
+
+| Role | Glyphs |
 |---|---|
-| Single frame (default) | `┌ ─ ┐ │ └ ┘ ├ ┤ ┬ ┴ ┼` |
-| Rounded frame (cards, palette) | `╭ ╮ ╰ ╯` |
-| Double frame (hover/focus) | `╔ ═ ╗ ║ ╚ ╝` |
-| Fill and dithering | `█ ▓ ▒ ░` |
-| Progress bar | `[██████████░░░░░░] 62%` |
+| Prompt and cursor | `❯ █` |
+| Status | `✔ ✓ ● ○ ⚠` |
+| Controls | `» ↻ ▶ 1× 2× ∞` |
 | Spinner | `⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏` (fallback `\| / - \`) |
-| Trees | `├── └── │ ├─┬` |
-| Markers | `❯ ✔ ✖ ⚠ ● ○ ▸ ▾ ↗ ↓` |
+| Window dots | three neutral circles, drawn in CSS |
+
+Box-drawing characters (`┌─┐`) no longer appear on the site. They are only used in these documents' wireframes.
 
 ## Iconography
 
-- **IDE chrome:** [Codicons](https://github.com/microsoft/vscode-codicons), the VS Code icon set (CC BY 4.0, credited in the site's `README.md`). They feel authentic without using any brand.
-- **Explorer:** file-type "badges" made of text and color (`TS`, `MD`, `{}`, `$_`) instead of third-party icons.
-- **No logos** from VS Code, JetBrains, Eclipse, NetBeans or Google.
+- **UI icons:** [Lucide](https://lucide.dev/) (ISC license): arrows, copy, theme, menu, external link.
+- **Brand icons:** [Simple Icons](https://simpleicons.org/) (CC0) for GitHub and LinkedIn links only.
+- **No operating system or app chrome:** window dots are neutral gray, not traffic-light colors, and no OS or IDE logo appears anywhere.
 
 ---
 
@@ -137,167 +179,211 @@ Classic's keyword, string and comment colors are a direct tribute to classic Ecl
 
 React components are rendered to static HTML at build time, and only hydrated where they need interactivity (see [06 · How React is used](06-architecture.md#how-react-is-used)).
 
-### IDE chrome
+### Page
 
 | Component | Description | States and variants |
 |---|---|---|
-| `TitleBar` | Dots, menus, title, palette shortcut | Compact version on mobile |
-| `Menu` | Title bar dropdown | open, item hover/focus, disabled |
-| `ActivityBar` | Icon column | active item (accent bar on the left), hover, tooltip |
-| `Explorer` / `FileItem` | Section tree | pending, running, done, active; folder open/closed |
-| `TabBar` / `Tab` | Open tabs | active (accent underline), inactive, with close button |
-| `Breadcrumbs` | Path of the visible section | — |
-| `StatusBar` / `StatusItem` | Execution HUD and preferences | `Idle`, `Running`, `Ready`; clickable items with hover |
-| `CommandPalette` | Command search | empty, filtering, no results |
-| `Toast` | Bottom-right notification | info, success |
+| `NavBar` | Name, section links, `⌘K`, theme toggle, GitHub | transparent (top), translucent (scrolled), active link; mobile `☰` menu |
+| `MobileMenu` | The `☰` menu on small screens (island) | open, closed |
+| `ThemeToggle` | Midnight / Daylight | — |
+| `SectionHeading` | Mono eyebrow (`02 / projects`), `<h2>` and an optional lead | — |
+| `Button` | Primary (filled), secondary (outlined), ghost; optional icon | rest, hover, focus, active, disabled |
+| `TextLink` / `IconLink` | Inline and icon links; external links carry `↗` | rest, hover, focus |
+| `Tag` | Mono chip (`node`) | — |
+| `Photo` | The hero photo | built; building (skeleton, ASCII) |
+| `FactList` | Value + label pairs (`12+  years shipping code`) | — |
+| `ProjectCard` | Cover, title, year, summary, tags, status badge, `repo ↗` | rest, hover/focus (lift + accent border); building stages |
+| `StatusBadge` | `active`, `in development`, `planning`, `case study` | — |
+| `StackGroup` / `StackChip` | A group card with technology chips | — |
+| `FrequencyMeter` | `●●●` daily, `●●○` often, `●○○` sometimes, with a text alternative | — |
+| `EmailCopy` | The email address and a copy button | rest, copied |
+| `Footer` | Build summary, Replay, source link, copyright | — |
+| `Toast` | Notification just above the dock | info, success |
+| `CommandPalette` | Command search (island) | empty, filtering, no results |
+| `ProjectHeader` / `Prose` | The project page header and its Markdown body | — |
 
-### Console
+### Build layer
 
 | Component | Description | States and variants |
 |---|---|---|
-| `PromptLine` | `❯` + command with syntax highlighting | waiting, typing, executed |
+| `BootTerminal` | The terminal in the middle of the first screen | typing, logging, folding into the dock |
+| `CommandDock` | The pill HUD at the bottom | typing, building, idle, done, collapsed, reduced |
+| `CommandLine` | `❯` + a highlighted command + cursor | waiting, typing, entered |
 | `Cursor` | Blinking `█` block | blinking, solid (while typing), hidden |
-| `LogLine` | `[hh:mm:ss] level message` | info, success, warn, error; with spinner or progress bar |
-| `CompletionLine` | `✔ X Section created. (0.84s)` | — |
-| `SkipButton` | `» Skip` next to the active block | visible only while running |
-| `BuildSummary` | Final summary + Replay | — |
-
-### TUI (content)
-
-| Component | Description | States and variants |
-|---|---|---|
-| `TuiFrame` | Frame with a title in its top border (`┌─ projects/ ──┐`) | single, rounded, double; rest, hover, focus |
-| `TuiButton` / `TuiLink` | `[ View projects ↓ ]` | rest, hover (inverse video), focus, external (`↗`) |
-| `Tag` | `#typescript` | — |
-| `AsciiBanner` | Name in figlet | desktop, mobile |
-| `AsciiImage` | Image that starts as ASCII and becomes the photo | ASCII, transition, photo |
-| `ProjectCard` | Image, title, year, description, tags, links | rest, hover/focus (double frame) |
-| `TreeView` | `npm ls`-style tree | — |
-| `GitGraph` | `git log --graph`-style timeline (post-v1) | — |
-| `ListTable` | `ls -la`-style listing (post-v1) | — |
-| `ProgressBar` / `Spinner` | Log indicators | — |
+| `LogLine` | `info  message` | info, success, warn, error; with spinner |
+| `BuildWindow` | The overlay around a section: title bar, command bar, body frame | opening, building, closing |
+| `SelectionBox` | Border, corner handles and a label (`h1`, `card`, `img 800×800`) | drawing, active, fading |
+| `Skeleton` | A block with an optional dimension label and a shimmer | — |
+| `AgentCursor` | Pointer with a name label (D8) | moving, idle |
+| `SkipButton`, `SpeedToggle`, `ReplayButton`, `PlayBuildButton` | Dock controls | visible only in the states that need them |
 
 ---
 
 ## Wireframes
 
-Personal content (name, subtitle, projects, experience) is placeholder text.
+Wireframes use the [content draft](09-content-draft.md) as illustrative text. The full-page and mobile wireframes are in [02 · Experience](02-experience.md#screen-anatomy-desktop-after-the-hero-is-built).
 
-### Hero (desktop)
+**Legend**
 
-```
-❯ startSite();
-[21:04:31] info   Initializing application...
-[21:04:31] info   Loading modules [██████████████████] 5/5
-[21:04:32] info   Rendering Hero Section... ⠹
-╭─ main.ts ─────────────────────────────────────────────────────────────╮
-│                                                                       │
-│  ┌──────────────────┐   ███  YOUR NAME AS ASCII ART    ███            │
-│  │░░▒▒▓▓████▓▓▒▒░░░░│   ███  (figlet "ANSI Shadow")    ███            │
-│  │░▒▓██████████▓▒░░░│                                                 │
-│  │▒▓███▓▒░░▒▓███▓▒░░│   Software Engineer · Open Source               │
-│  │▒▓██▓▒░░░░▒▓██▓▒░░│                                                 │
-│  │░▒▓███▓▓▓▓███▓▒░░░│   // Subtitle: what you build, for whom,        │
-│  │░░▒▓████████▓▒░░░░│   // and why it matters.                        │
-│  └──────────────────┘                                                 │
-│   photo: ASCII → real                                                 │
-│                                                                       │
-│  [ view projects ↓ ]  [ GitHub ↗ ]  [ LinkedIn ↗ ]  [ email ]         │
-│                                                                       │
-╰───────────────────────────────────────────────────────────────────────╯
-✔ Hero Section created. (1.21s)
+| Drawing | Meaning |
+|---|---|
+| `┌─┐` single line | A finished element (card, window, box) |
+| `╭─╮` rounded | The dock, pills and the email field |
+| `┏━┓` heavy line | A selection box, while an element is being created |
+| `┌┄┐ ┆` dashed | A pending area or placeholder |
+| `░` | Skeleton |
+| `▓ ▒` | Image (`▒` while it resolves) |
 
-❯ █
-  // scroll to continue ↓
-```
-
-- The name also exists as a real `<h1>` (the banner is decorative for screen readers).
-- The title uses `--text-2xl`; the subtitle appears as a code comment (`--syn-comment`).
-
-### Project card
-
-At rest the frame is rounded (`╭─╮`). On hover and focus it becomes double (`╔═╗`) in the accent color.
+### Build window
 
 ```
-╭────────────────────────────╮
-│ ░░░░░░░░░░░░░░░░░░░░░░░░░░ │
-│ ░░░░░░░░ 640×360 ░░░░░░░░░ │   ← placeholder with its dimensions,
-│ ░░░░░░░░░░░░░░░░░░░░░░░░░░ │     then the real image
-├────────────────────────────┤
-│ project-name          2026 │
-│ Short project description  │
-│ in up to two lines.        │
-│                            │
-│ #typescript #react   ★ 128 │
-│ [ repo ↗ ]  [ demo ↗ ]     │
-╰────────────────────────────╯
+┌─ ● ● ●  projects.tsx ───────────── ● building 4/6 ─┐  ← title bar: file name + progress
+│ ❯ projects.card("ai-track-record")█                │  ← command bar: the window types
+├────────────────────────────────────────────────────┤    its own commands here
+│  Selected work                                     │  ← body: the section itself, at its
+│  ┏━ card ━━━━━━━━━━━━━┓   ┌────────────────────┐   │    final size and position
+│  ┃░░░░░░░░░░░░░░░░░░░░┃   │ relay              │   │
+│  ┃░░░░░ 640×360 ░░░░░░┃   │ PRD to pull request│   │  ← an element being created
+│  ┃░░░░░░░░░░░░░░░░░░░░┃   │ claude-code · node │   │
+│  ┗━━━━━━━━━━━━━━━━━━━━┛   └────────────────────┘   │
+└────────────────────────────────────────────────────┘
 ```
 
-### Stack (`npm ls` style)
-
-Each item's "version" shows how often it is used, instead of percentage bars (which the developer community tends to distrust).
+### Command dock
 
 ```
-❯ renderStack();
-[21:06:10] info   Resolving dependencies...
-your-name@2026.11.0 /portfolio
-├─┬ languages
-│ ├── typescript@daily
-│ ├── go@often
-│ └── python@sometimes
-├─┬ frontend
-│ ├── react@daily
-│ └── astro@often
-├─┬ backend
-│ ├── node@daily
-│ └── postgres@often
-└─┬ tools
-  ├── docker@daily
-  └── neovim@daily
-✔ Stack Section created. (0.41s)
+           ┌─ ● ● ●  terminal ──────────────────────────────┐
+boot       │ ❯ startSite();█                                │
+           │                                                │
+           └────────────────────────────────────────────────┘
+           ╭────────────────────────────────────────────────╮
+typing     │ ❯ renderProjects();█                           │
+           ╰────────────────────────────────────────────────╯
+           ╭────────────────────────────────────────────────╮
+building   │ ● Building projects…               » Skip   1× │
+           ╰────────────────────────────────────────────────╯
+           ╭────────────────────────────────────────────────╮
+idle       │ ✓ 2/5 sections   ❯ █             scroll ↓   1× │
+           ╰────────────────────────────────────────────────╯
+           ╭────────────────────────────────────────────────╮
+done       │ ✔ Build complete: 5 sections in 9.6s  ↻ Replay │
+           ╰────────────────────────────────────────────────╯
+           ╭────────────────────────────────────────────────╮
+reduced    │ ✔ Ready · motion reduced          ▶ Play build │
+           ╰────────────────────────────────────────────────╯
 ```
 
-### Experience (`git log --graph` style, post-v1)
+### Project card: how it is built
 
 ```
-❯ renderExperience();
-[21:06:30] info   Reading git history...
-* a1f3c9e (HEAD -> main)  2024–now    Senior Engineer @ Company C
-|                                     Led migration X; created library Y.
-* 7be21d4                 2021–2024   Software Engineer @ Company B
-|\
-| * 3c9d0aa               2022        Talk "Title" @ Event
-|/
-* 0f8e112                 2019–2021   Developer @ Company A
-* 9d2b7f0                 2018        git init — first line of code
-✔ Experience Section created. (0.57s)
+┏━ card ━━━━━━━━━━━━━━━┓  ┌──────────────────────┐  ┌──────────────────────┐
+┃░░░░░░░░░░░░░░░░░░░░░░┃  │▓▓▓▓▓▓▓▓▓▒▒▒▒▒░░░░░░░░│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│
+┃░░░░░░ 640×360 ░░░░░░░┃  │▓▓▓▓▓▓▒▒▒▒▒░░░░░░░░░░░│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│
+┃░░░░░░░░░░░░░░░░░░░░░░┃  │▓▓▓▒▒▒▒░░░░░░░░░░░░░░░│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│
+┃                      ┃  │                      │  │                      │
+┃ ░░░░░░░░             ┃  │ relay█               │  │ relay           2026 │
+┃ ░░░░░░░░░░░░░░░░░░░░ ┃  │ ░░░░░░░░░░░░░░░░░░░░ │  │ A Claude Code plugin │
+┃ ░░░░░░░░░░░░░░       ┃  │ ░░░░░░░░░░░░░░       │  │ from PRD to PR.      │
+┃ ░░░░░░░  ░░░░        ┃  │                      │  │ claude-code · node   │
+┗━━━━━━━━━━━━━━━━━━━━━━┛  └──────────────────────┘  └──────────────────────┘
+1  select + skeleton      2  content                3  built
 ```
 
-### Articles and talks (`ls -la` style, post-v1)
+On hover and focus, the finished card lifts, its border takes the accent color and the cover zooms in slightly.
+
+### About
 
 ```
-❯ renderWriting({ limit: 5 });
-[21:06:52] info   Fetching posts... 3 found
-total 3
--rw-r--r--  article en  2026-09-14  Latest article title              ↗
--rw-r--r--  talk    en  2026-06-02  Talk title @ Event                ↗
--rw-r--r--  article pt  2026-03-21  Another article                   ↗
-drwxr-xr-x  all                 →   dev.to/your-user                  ↗
-✔ Writing Section created. (0.38s)
+01 / about
+About me
+
+I've been writing software for 12+ years.       ┌─ at a glance ──────────────┐
+I started as the first QA hire at a company     │                            │
+building a retail ERP, then moved into          │ 12+   years shipping code  │
+full-stack work, system architecture and        │ 2020  remote contractor    │
+leading a small team.                           │ 322+  schools served       │
+                                                │ Now   AI-assisted dev      │
+Since 2020 I've worked as a remote (…)          │                            │
+                                                └────────────────────────────┘
+```
+
+### Stack
+
+Each technology shows how often it is used, instead of percentage bars (which the developer community tends to distrust). The meter always has a text alternative ("daily").
+
+```
+03 / stack
+What I work with                          ●●● daily  ●●○ often  ●○○ sometimes
+
+┌─ languages ───────────┐ ┌─ frontend ────────────┐ ┌─ backend ─────────────┐
+│ java ●●●  python ●●●  │ │ react ●●●             │ │ spring-boot ●●●       │
+│ typescript ●●●        │ │ angular ●○○           │ │ django ●●●            │
+│ sql ●●○               │ │                       │ │ graphql ●●●  node ●●○ │
+│                       │ │                       │ │ fastapi ●○○           │
+└───────────────────────┘ └───────────────────────┘ └───────────────────────┘
+┌─ data ────────────────┐ ┌─ cloud ───────────────┐ ┌─ ai ──────────────────┐
+│ postgresql ●●○        │ │ aws ●●○               │ │ claude-code ●●●       │
+│ redis ●○○             │ │ ci-cd ●●○             │ │                       │
+│ rabbitmq ●○○          │ │                       │ │                       │
+└───────────────────────┘ └───────────────────────┘ └───────────────────────┘
 ```
 
 ### Contact
 
 ```
-❯ renderContact();
-[21:07:05] info   Opening channels...
-╭─ contact.sh ───────────────────────────────────────────╮
-│ $ echo $EMAIL    you@your-domain.dev        [ copy ]   │
-│ $ open github    github.com/your-user       [ open ↗ ] │
-│ $ open linkedin  linkedin.com/in/your-user  [ open ↗ ] │
-│ $ open x         x.com/your-user            [ open ↗ ] │
-╰────────────────────────────────────────────────────────╯
-✔ Contact Section created. (0.64s)
+04 / contact
+Let's talk.
+Questions, ideas or a project in mind? My inbox is open.
+
+╭────────────────────────────────────────────────╮
+│ you@your-domain.dev                   [ Copy ] │
+╰────────────────────────────────────────────────╯
+
+  GitHub ↗     LinkedIn ↗
 ```
 
-The full IDE and mobile wireframes are in [02 · Experience](02-experience.md#screen-anatomy-desktop).
+### Command Palette
+
+```
+╭──────────────────────────────────────────────────╮
+│ > proj█                                          │
+├──────────────────────────────────────────────────┤
+│ ▸ Go to Projects                                 │
+│   Open project: relay                            │
+│   Open project: Praesto Sum                      │
+│   Copy email                                     │
+│   Replay the build                               │
+╰──────────────────────────────────────────────────╯
+```
+
+### Project page
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│ fabiombarreto                    About  Projects  Stack  Contact  ⌘K │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   ← All projects                                                     │
+│                                                                      │
+│   relay                                                              │
+│   A Claude Code plugin that takes a feature from PRD to PR.          │
+│   2026 · active · claude-code · node                    [ Repo ↗ ]   │
+│                                                                      │
+│   ┌──────────────────────────────────────────────────────────────┐   │
+│   │                                                              │   │
+│   │                          cover 16:9                          │   │
+│   │                                                              │   │
+│   └──────────────────────────────────────────────────────────────┘   │
+│                                                                      │
+│   The problem           ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░               │
+│   The solution          ░░░░░░░░░░░░░░░░░░░░░░░░░░                   │
+│   Technical decisions   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░           │
+│   Lessons learned       ░░░░░░░░░░░░░░░░░░░░░░                       │
+│   ← Previous project                                Next project →   │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### Post-v1 sections
+
+- **Experience:** a vertical timeline. Each entry shows the role, the organization, the dates and 1 to 3 highlights. Window commands: `experience.entry("Grupo Azul")`.
+- **Articles and talks:** a list. Each row shows a type badge (`article`, `talk`), the title, the venue, the date, the language and `↗`. Window commands: `writing.item("…")`.

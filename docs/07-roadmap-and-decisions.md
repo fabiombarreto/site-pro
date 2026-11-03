@@ -5,17 +5,17 @@
 | Stage | Deliverable | Done when |
 |---|---|---|
 | **0 · Foundations** ✅ | Documentation, stack and working tools; root `README.md`; Git repository initialized | Docs approved and Stage 0 decisions answered |
-| **1 · Design project** (now) | Content, color and features defined; Design System; desktop/tablet/mobile screens; animated prototype of the boot and the scroll, all in Claude Design (see [08](08-tools.md#design-tool)) | The look **and the rhythm** are approved and Stage 1 decisions are answered |
+| **1 · Design project** (now) | Content, color and features defined; the v2 concept (build windows, D17); Design System v2; desktop/tablet/mobile screens of the final page and of the build states; animated prototype of the boot (terminal → dock → hero window → final hero) and the scroll to Projects, all in Claude Design (see [08](08-tools.md#design-tool)) | The look **and the rhythm** are approved and Stage 1 decisions are answered |
 | **Milestone · `CLAUDE.md`** | Generated with the relay plugin's `context-builder` command | Documentation and planning are complete, before Stage 2 |
-| **2 · Foundation** | Astro + React + TypeScript project, tokens and themes, responsive IDE chrome, static sections with placeholder content, CI and preview deployments | A navigable static site, without animation, meeting the accessibility targets |
-| **3 · Runtime** | Scheduler, typing, logs, triggers, skip, speed, replay, turbo, deep links, reduced motion, persistence | Every scenario in [02 · Behavior rules](02-experience.md#behavior-rules) covered by an E2E test |
-| **4 · Sections and effects** | Hero (banner, ASCII → photo), About, Projects (with detail pages), Stack and Contact, with the real content | Every section with the effects from [04](04-animations.md), within the 2.5 s budget |
-| **5 · IDE extras** | Command Palette, Explorer scroll-spy, theme switching, project tabs, 404, easter eggs | Shortcuts and palette fully usable by keyboard |
-| **6 · Polish and launch** | Accessibility audit, performance, SEO, OG images, analytics, cross-browser testing, domain | Targets from [01](01-concept.md#how-we-will-know-it-worked) met, site live and a "how I built this site" post |
-| **v1.1** | Interactive terminal, minimap, resizable Explorer, multi-cursor (if approved) | — |
+| **2 · Foundation** | Astro + React + TypeScript project, tokens and themes, nav and the five sections as a static modern page with placeholder content, CI and preview deployments | A navigable static site, without animation, meeting the accessibility targets |
+| **3 · Runtime** | Scheduler with overlapping steps, boot terminal, dock, build windows, element effects, triggers, skip, run all, speed, replay, turbo, deep links, focus rule, reduced motion, persistence | Every scenario in [02 · Behavior rules](02-experience.md#behavior-rules) covered by an E2E test |
+| **4 · Sections and effects** | Hero (photo ASCII → photo), About, Projects (with project pages), Stack and Contact, with the real content and their build scripts | Every section with the effects from [04](04-animations.md), within its budget |
+| **5 · Extras** | Command Palette, nav scroll-spy, theme switching, card → project page transitions, 404, easter eggs | Shortcuts and palette fully usable by keyboard |
+| **6 · Polish and launch** | Accessibility audit, performance, SEO, OG images, analytics, cross-browser testing, a readability test with people who don't code, domain | Targets from [01](01-concept.md#how-we-will-know-it-worked) met, site live and a "how I built this site" post |
+| **v1.1** | Interactive dock, multi-cursor agents (if approved after launch), a Phosphor theme easter egg | — |
 | **Post-v1** | Experience and Articles and talks sections (D4) | When there is content for them |
 
-**Launch (v1)** = Stages 2 to 4 + controls (skip/speed) + mobile + the Command Palette and project tabs from Stage 5 + Stage 6. The rest of Stage 5 can move to v1.1 if we want to launch sooner.
+**Launch (v1)** = Stages 2 to 4 + controls (skip/speed) + mobile + the Command Palette and project pages from Stage 5 + Stage 6. The rest of Stage 5 can move to v1.1 if we want to launch sooner.
 
 > Production code starts only in Stage 2, once documentation and design are approved. Stage 1 prototypes live in the design tool and are disposable.
 
@@ -23,14 +23,14 @@
 
 | Risk | Mitigation |
 |---|---|
-| The animation gets tiresome or delays access to content | A ≤ 2.5 s budget per section, skip always available, a speed control remembered per browser, and measuring "Skip" usage to recalibrate |
-| SEO hurt by "hidden" content | SSG with complete HTML; the animation only hides things visually, and only after JS confirms it will run |
-| Screen readers reading noise (ASCII, logs) | `aria-hidden` on every decorative element, with a real text equivalent |
-| ASCII art breaking on narrow screens | Per-breakpoint variants (compact banner), CSS frames that adapt to the width, visual tests |
-| High LCP because the hero waits for the animation | Hero boot designed for ≤ 1.8 s; hero photo loaded with priority |
+| The build feels long (dock + window + elements) | Budgets (hero ≤ 3.2 s, other sections ≤ 2.5 s), overlapping steps, skip and speed always visible, and measuring "Skip" usage to recalibrate |
+| SEO hurt by "hidden" content | SSG with complete HTML; the build only hides things visually, and only after JS confirms it will run |
+| Screen readers reading noise (commands, logs, skeletons) | The whole build layer is `aria-hidden`; pending content stays in the accessibility tree |
+| High LCP because the hero waits for the build | Headline typed by ~1.7 s, photo complete by ~2.4 s, photo loaded with priority, LCP measured in Lighthouse CI |
+| Overlays out of place (resize, late fonts) | Windows placed from each section's box with `ResizeObserver`; fonts preloaded before the boot; a resize during a build finishes that section |
+| Blur and shadows slowing down low-end phones | Blur only on a few surfaces and only while visible; a solid fallback with `prefers-reduced-transparency` or without support |
 | React adding weight to the first load | React components render to static HTML; only a few islands hydrate, after idle, off the critical path |
-| Misaligned border characters in some font or system | Self-hosted JetBrains Mono (the same font everywhere) and test screenshots on Windows, macOS, iOS and Android |
-| Looking like a VS Code copy | Our own theme, icons and identity; no third-party brands |
+| Looking like a copy of an operating system or of the reel | Our own window chrome (neutral dots, our type), our own grammar and pacing; no OS or app branding |
 | Scope creep, "just one more effect" | v1 scope closed above; new ideas go to v1.1 |
 | Claude Design changing or leaving *research preview* | The design system and decisions are documented in `docs/`; Figma (with its MCP) is the fallback |
 
@@ -56,17 +56,20 @@ Each decision comes with a recommendation. Agreeing or disagreeing is enough.
 
 | # | Decision | Options | Recommendation | Status |
 |---|---|---|---|---|
-| **D3** | Default theme and accent color | Blue · amber · violet · terminal green · a personal color | — | ✅ **Midnight + blue `#2563eb`**, always dark by default, with Classic available in the status bar |
+| **D17** | Layout concept | v1: the site inside an IDE, with TUI sections · v2: build windows | — | ✅ **v2: build windows** (2026-11-02). A typed command opens an application window that builds the section live, and the final page is a modern, readable site. The v1 IDE layout read as too niche for people outside development |
+| **D3** | Default theme and accent color | Blue · amber · violet · terminal green · a personal color | — | ✅ **Midnight + blue `#2563eb`**, dark by default, with the light Daylight theme in the nav |
 | **D4** | v1 sections | Essentials · + Experience · + Articles and talks | — | ✅ **Essentials only**: Hero, About, Projects, Stack, Contact. Experience and Articles and talks are post-v1 |
-| **D5** | Project card click | Internal page (new `.md` tab) · direct external link | — | ✅ **Internal page**, with direct repo and demo shortcuts on the card |
-| **D6** | Revisits | Full animation always · at 2× · instant | — | ✅ **Full animation on every visit**, reloads included; a visitor's own `∞` speed choice is kept |
-| **D7** | Interactive terminal at the end | v1 · v1.1 | — | ✅ **v1.1**, after launch |
-| **D8** | Multi-cursor ("agents"), a tribute to the reel | Include · test in the prototype · drop | **Test in the prototype**, in the hero only, and decide after seeing it | Open |
-| **D12** | Hero photo | ASCII → real photo · permanent ASCII (photo on hover) · no photo | — | ✅ **ASCII → real photo** |
+| **D5** | Project card click | Internal page · direct external link | — | ✅ **Internal page**, opened with a card → page transition, with a direct repo shortcut on the card |
+| **D6** | Revisits | Full animation always · at 2× · instant | — | ✅ **Full build on every visit**, reloads included; a visitor's own `∞` speed choice is kept |
+| **D7** | Interactive terminal | v1 · v1.1 | — | ✅ **v1.1**, after launch: the collapsed dock opens a real prompt |
+| **D8** | Multi-cursor agents, a tribute to the reel | Include · test in the prototype · drop | **Test in the prototype**, in the hero and in Projects, desktop only, and decide after seeing it | Open |
+| **D12** | Hero photo | ASCII → real photo · permanent ASCII (photo on hover) · no photo | — | ✅ **ASCII → real photo**, now as the photo's build effect |
+| **D18** | Sans-serif family for the page | Geist · Inter · Space Grotesk · other | **Geist**: very legible, technical without being a code font, open license (OFL) and variable | Open |
+| **D19** | Where the terminal goes after the boot | A dock at the bottom center that stays as the build HUD · a small terminal window in a corner · nothing (controls move into each window) | **The dock at the bottom center**: it echoes the reel's HUD, keeps skip and speed in one predictable place and never covers the content's reading area | Open |
 
 ### Stage 6 · Launch
 
 | # | Decision | Options | Recommendation |
 |---|---|---|---|
-| **D10** | Analytics | Cloudflare Web Analytics · Plausible · Umami · none | **Cloudflare Web Analytics** (free and cookieless), mainly to tune the animation pace |
+| **D10** | Analytics | Cloudflare Web Analytics · Plausible · Umami · none | **Cloudflare Web Analytics** (free and cookieless), mainly to tune the build pace |
 | **D15** | Domain | — | To be defined |
