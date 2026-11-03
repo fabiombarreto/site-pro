@@ -58,7 +58,7 @@ Each decision comes with a recommendation. Agreeing or disagreeing is enough.
 |---|---|---|---|---|
 | **D17** | Layout concept | v1: the site inside an IDE, with TUI sections · v2: build windows | — | ✅ **v2: build windows** (2026-11-02). A typed command opens an application window that builds the section live, and the final page is a modern, readable site. The v1 IDE layout read as too niche for people outside development |
 | **D3** | Default theme and accent color | Blue · amber · violet · terminal green · a personal color | — | ✅ **Midnight + blue `#2563eb`**, dark by default, with the light Daylight theme in the nav |
-| **D4** | v1 sections | Essentials · + Experience · + Articles and talks | — | ✅ **Essentials only**: Hero, About, Projects, Stack, Contact. Experience and Articles and talks are post-v1 |
+| **D4** | v1 sections | Essentials · + Experience · + Articles and talks | — | ✅ **Essentials only**: Hero, About, Projects, Stack, Contact. Experience and Articles and talks are post-v1. Confirmed on 2026-11-03, with no separate "How this site was built" page: the site-pro project page tells that story |
 | **D5** | Project card click | Internal page · direct external link | — | ✅ **Internal page**, opened with a card → page transition, with a direct repo shortcut on the card |
 | **D6** | Revisits | Full animation always · at 2× · instant | — | ✅ **Full build on every visit**, reloads included; a visitor's own `∞` speed choice is kept |
 | **D7** | Interactive terminal | v1 · v1.1 | — | ✅ **v1.1**, after launch: the collapsed dock opens a real prompt |

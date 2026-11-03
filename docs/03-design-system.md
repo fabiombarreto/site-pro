@@ -33,7 +33,7 @@ Every text/background pair used for content meets **WCAG AA (≥ 4.5:1)**. `--fg
 | Token | Midnight | Daylight | Use |
 |---|---|---|---|
 | `--bg` | `#141519` | `#f6f7f9` | Page background |
-| `--bg-raised` | `#1d1e24` | `#ffffff` | Cards, the facts box, group cards |
+| `--bg-raised` | `#1d1e24` | `#ffffff` | Cards, stack group cards, code blocks |
 | `--bg-overlay` | `rgb(35 36 43 / 0.78)` | `rgb(255 255 255 / 0.82)` | Build windows, dock, palette, menus, toasts (with backdrop blur) |
 | `--bg-hover` | `#23242b` | `#eef0f3` | Hover on list items and chips |
 | `--bg-selection` | `#2f4a73` | `#cfe0fc` | Text selection |
@@ -117,7 +117,7 @@ Two families with clear jobs: a **sans-serif** for everything people read, and a
 | `--mono-xs` | 12 / 11 px | 1.4 | — | 500 | Selection labels, agent labels, dimension labels |
 
 - Body text is at most **68ch** wide.
-- Ligatures on in commands and code; tabular numerals in facts and build times.
+- Ligatures on in commands and code; tabular numerals in build times and progress counters.
 
 ## Layout and spacing
 
@@ -142,7 +142,7 @@ Two families with clear jobs: a **sans-serif** for everything people read, and a
 | Token | Value | Use |
 |---|---|---|
 | `--radius-sm` | 6 px | Tags, chips, selection labels |
-| `--radius-md` | 10 px | Buttons, the email field |
+| `--radius-md` | 10 px | Buttons |
 | `--radius-lg` | 16 px | Cards, windows, the photo, the palette |
 | `--radius-full` | 9999 px | The dock, pills |
 | `--shadow-card` | `0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25)` (lighter in Daylight) | Cards at rest |
@@ -191,12 +191,9 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | `TextLink` / `IconLink` | Inline and icon links; external links carry `↗` | rest, hover, focus |
 | `Tag` | Mono chip (`node`) | — |
 | `Photo` | The hero photo | built; building (skeleton, ASCII) |
-| `FactList` | Value + label pairs (`12+  years shipping code`) | — |
 | `ProjectCard` | Cover, title, year, summary, tags, status badge, `repo ↗` | rest, hover/focus (lift + accent border); building stages |
-| `StatusBadge` | `active`, `in development`, `planning`, `case study` | — |
+| `StatusBadge` | `active`, `in development`, `planning`, `maintained`, `archived` | — |
 | `StackGroup` / `StackChip` | A group card with technology chips | — |
-| `FrequencyMeter` | `●●●` daily, `●●○` often, `●○○` sometimes, with a text alternative | — |
-| `EmailCopy` | The email address and a copy button | rest, copied |
 | `Footer` | Build summary, Replay, source link, copyright | — |
 | `Toast` | Notification just above the dock | info, success |
 | `CommandPalette` | Command search (island) | empty, filtering, no results |
@@ -228,7 +225,7 @@ Wireframes use the [content draft](09-content-draft.md) as illustrative text. Th
 | Drawing | Meaning |
 |---|---|
 | `┌─┐` single line | A finished element (card, window, box) |
-| `╭─╮` rounded | The dock, pills and the email field |
+| `╭─╮` rounded | The dock and pills |
 | `┏━┓` heavy line | A selection box, while an element is being created |
 | `┌┄┐ ┆` dashed | A pending area or placeholder |
 | `░` | Skeleton |
@@ -237,7 +234,7 @@ Wireframes use the [content draft](09-content-draft.md) as illustrative text. Th
 ### Build window
 
 ```
-┌─ ● ● ●  projects.tsx ───────────── ● building 4/6 ─┐  ← title bar: file name + progress
+┌─ ● ● ●  projects.tsx ───────────── ● building 3/5 ─┐  ← title bar: file name + progress
 │ ❯ projects.card("ai-track-record")█                │  ← command bar: the window types
 ├────────────────────────────────────────────────────┤    its own commands here
 │  Selected work                                     │  ← body: the section itself, at its
@@ -297,34 +294,37 @@ On hover and focus, the finished card lifts, its border takes the accent color a
 01 / about
 About me
 
-I've been writing software for 12+ years.       ┌─ at a glance ──────────────┐
-I started as the first QA hire at a company     │                            │
-building a retail ERP, then moved into          │ 12+   years shipping code  │
-full-stack work, system architecture and        │ 2020  remote contractor    │
-leading a small team.                           │ 322+  schools served       │
-                                                │ Now   AI-assisted dev      │
-Since 2020 I've worked as a remote (…)          │                            │
-                                                └────────────────────────────┘
+I'm a full-stack software engineer, and I've been
+studying programming and software development
+since 2008.
+
+Right now I'm building my own projects and
+exploring what AI can do in real applications,
+while I work on a postgraduate program in
+Software Engineering with AI.
+
+Take a look at my projects below, or find me on
+GitHub and LinkedIn.
+
+[ GitHub ↗ ]   [ LinkedIn ↗ ]
 ```
 
 ### Stack
 
-Each technology shows how often it is used, instead of percentage bars (which the developer community tends to distrust). The meter always has a text alternative ("daily").
+Technologies are grouped in cards of chips, without usage levels or percentage bars.
 
 ```
 03 / stack
-What I work with                          ●●● daily  ●●○ often  ●○○ sometimes
+What I work with
 
 ┌─ languages ───────────┐ ┌─ frontend ────────────┐ ┌─ backend ─────────────┐
-│ java ●●●  python ●●●  │ │ react ●●●             │ │ spring-boot ●●●       │
-│ typescript ●●●        │ │ angular ●○○           │ │ django ●●●            │
-│ sql ●●○               │ │                       │ │ graphql ●●●  node ●●○ │
-│                       │ │                       │ │ fastapi ●○○           │
+│ java · python         │ │ react · angular       │ │ spring-boot · django  │
+│ typescript · sql      │ │                       │ │ graphql · node        │
+│                       │ │                       │ │ fastapi               │
 └───────────────────────┘ └───────────────────────┘ └───────────────────────┘
 ┌─ data ────────────────┐ ┌─ cloud ───────────────┐ ┌─ ai ──────────────────┐
-│ postgresql ●●○        │ │ aws ●●○               │ │ claude-code ●●●       │
-│ redis ●○○             │ │ ci-cd ●●○             │ │                       │
-│ rabbitmq ●○○          │ │                       │ │                       │
+│ postgresql · redis    │ │ aws · ci-cd           │ │ claude-code           │
+│ rabbitmq              │ │                       │ │                       │
 └───────────────────────┘ └───────────────────────┘ └───────────────────────┘
 ```
 
@@ -333,13 +333,11 @@ What I work with                          ●●● daily  ●●○ often  ●�
 ```
 04 / contact
 Let's talk.
-Questions, ideas or a project in mind? My inbox is open.
+Questions, ideas or a project in mind? Find me here.
 
-╭────────────────────────────────────────────────╮
-│ you@your-domain.dev                   [ Copy ] │
-╰────────────────────────────────────────────────╯
+[ GitHub ↗ ]   [ LinkedIn ↗ ]
 
-  GitHub ↗     LinkedIn ↗
+Brazil (UTC-3)
 ```
 
 ### Command Palette
@@ -351,7 +349,7 @@ Questions, ideas or a project in mind? My inbox is open.
 │ ▸ Go to Projects                                 │
 │   Open project: relay                            │
 │   Open project: Praesto Sum                      │
-│   Copy email                                     │
+│   Open LinkedIn                                  │
 │   Replay the build                               │
 ╰──────────────────────────────────────────────────╯
 ```

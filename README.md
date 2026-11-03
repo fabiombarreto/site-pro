@@ -4,13 +4,13 @@ A personal website for the developer community that **builds itself in front of 
 
 ```
 ❯ renderProjects();                           ← typed in the command dock
-┌─ ● ● ●  projects.tsx ────────────── 2/6 ─┐  ← a build window opens
+┌─ ● ● ●  projects.tsx ────────────── 3/5 ─┐  ← a build window opens
 │ ❯ projects.card("ai-track-record")█      │  ← the window types its own commands
 ├──────────────────────────────────────────┤
 │ Selected work                            │
-│ ┌──────────┐ ┏━ card ━━━┓ ┌┄┄┄┄┄┄┄┄┄┄┐   │
-│ │ relay    │ ┃░░░░░░░░░░┃ ┆          ┆   │  ← each command creates one element
-│ └──────────┘ ┗━━━━━━━━━━┛ └┄┄┄┄┄┄┄┄┄┄┘   │
+│ ┌─────────────────┐ ┏━ card ━━━━━━━━━━┓  │
+│ │ relay           │ ┃░░░░░░░░░░░░░░░░░┃  │  ← each command creates one element
+│ └─────────────────┘ ┗━━━━━━━━━━━━━━━━━┛  │
 └──────────────────────────────────────────┘
 ✔ Projects Section created. (2.31s)           ← the window fades; the section stays
 ```

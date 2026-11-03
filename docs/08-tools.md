@@ -78,7 +78,7 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 | Area | Tool | Status | Notes |
 |---|---|---|---|
 | Version control | **Git + GitHub** | ✅ | — |
-| Repository visibility | **Public** | ✅ D13 | The code is part of the showcase; the footer and the "How this site was built" page point to it |
+| Repository visibility | **Public** | ✅ D13 | The code is part of the showcase: [github.com/fabiombarreto/site-pro](https://github.com/fabiombarreto/site-pro). The footer and the site-pro project page point to it |
 | Framework | **Astro + React + TypeScript** (strict) | ✅ D2 | See [06](06-architecture.md#stack) |
 | Package manager | **pnpm** | ✅ | — |
 | Linting | **ESLint** | ✅ | Flat config with `typescript-eslint`, `eslint-plugin-astro`, the React and React Hooks plugins and `eslint-plugin-jsx-a11y` |

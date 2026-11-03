@@ -9,7 +9,7 @@
 │                                                                              │
 │                                                                              │
 │                                                                              │
-│    Hi, I'm Fabio.                                   ┌──────────────────┐     │
+│    Fabio Barreto.                                   ┌──────────────────┐     │
 │                                                     │                  │     │
 │    Senior Software Engineer                         │                  │     │
 │                                                     │                  │     │
@@ -42,36 +42,36 @@
 │ fabiombarreto            About Projects Stack Contact ⌘K ◐ │  nav (sticky)
 ├────────────────────────────────────────────────────────────┤
 │                                                            │
-│  Hi, I'm Fabio.                           ┌────────────┐   │  hero
+│  Fabio Barreto.                           ┌────────────┐   │  hero
 │  Senior Software Engineer                 │   photo    │   │
 │  Intro in two or three lines.             │            │   │
 │  [ See my work ↓ ]  GitHub  LinkedIn      └────────────┘   │
 │                                                            │
 │  01 / about                                                │  about
-│  About me                             ┌─ at a glance ───┐  │
-│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     │ 12+   2020      │  │
-│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░         │ 322+  Now       │  │
-│  ░░░░░░░░░░░░░░░░░░░░                 └─────────────────┘  │
+│  About me                                                  │
+│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░              │
+│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                      │
+│  [ GitHub ↗ ]  [ LinkedIn ↗ ]                              │
 │                                                            │
 │  02 / projects                                             │  projects
 │  Selected work                                             │
-│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐     │
-│  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│ │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│     │
-│  │ project       │ │ project       │ │ project       │     │
-│  └───────────────┘ └───────────────┘ └───────────────┘     │
-│  2 rows · 6 cards                                          │
+│  ┌─────────────────────────┐ ┌─────────────────────────┐   │
+│  │▓▓▓▓ project             │ │▓▓▓▓ project             │   │
+│  └─────────────────────────┘ └─────────────────────────┘   │
+│  ┌─────────────────────────┐ ┌─────────────────────────┐   │
+│  │▓▓▓▓ project             │ │▓▓▓▓ project             │   │
+│  └─────────────────────────┘ └─────────────────────────┘   │
+│  2 × 2 grid · 4 personal projects                          │
 │                                                            │
 │  03 / stack                                                │  stack
 │  What I work with                                          │
-│  ┌─ languages ───┐ ┌─ frontend ────┐ ┌─ backend ─────┐     │
-│  │ java ●●●      │ │ react ●●●     │ │ django ●●●    │     │
-│  └───────────────┘ └───────────────┘ └───────────────┘     │
+│  ┌─ languages ────┐ ┌─ frontend ─────┐ ┌─ backend ──────┐  │
+│  │ java · python  │ │ react · angular│ │ django · node  │  │
+│  └────────────────┘ └────────────────┘ └────────────────┘  │
 │                                                            │
 │  04 / contact                                              │  contact
 │  Let's talk.                                               │
-│  ╭──────────────────────────────────╮                      │
-│  │ you@your-domain.dev     [ Copy ] │   GitHub  LinkedIn   │
-│  ╰──────────────────────────────────╯                      │
+│  [ GitHub ↗ ]  [ LinkedIn ↗ ]    Brazil (UTC-3)            │
 │                                                            │
 ├────────────────────────────────────────────────────────────┤
 │ Built live in 9.6s · ↻ Replay             Source ↗  © 2026 │  footer
@@ -107,7 +107,7 @@ On mobile, the links move into a `☰` menu.
 | **Collapsed** | A small round `❯_` button at the bottom right. It opens the Command Palette (and, in v1.1, the interactive dock) |
 | **Reduced motion** | `✔ Ready · motion reduced   ▶ Play build` |
 
-Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. Toasts (`✔ Email copied`) appear just above the dock.
+Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. Toasts (such as `warn  Window closed. Building anyway...`) appear just above the dock.
 
 ### Build window
 
@@ -115,7 +115,7 @@ A build window is an **overlay** around the place a section occupies on the page
 
 | Part | Content |
 |---|---|
-| **Title bar** | Three neutral dots, the section's file name (`projects.tsx`) and the progress (`● building 4/6`) |
+| **Title bar** | Three neutral dots, the section's file name (`projects.tsx`) and the progress (`● building 3/5`) |
 | **Command bar** | The window's own commands, typed one after the other: `projects.card("relay")`. This is where the window "executes" the section |
 | **Body** | The section itself, at its final size and position. Elements appear here as the commands run |
 
@@ -167,7 +167,7 @@ The terminal folds into the **command dock** at the bottom, and the `hero.tsx` w
 
 | Command | What appears |
 |---|---|
-| `hero.title("Hi, I'm Fabio.")` | The headline, typed letter by letter in large display type |
+| `hero.title("Fabio Barreto.")` | The headline, typed letter by letter in large display type |
 | `hero.role("Senior Software Engineer")` | The role, decoded from scrambled characters |
 | `hero.photo("fabio.jpg")` | A skeleton with its dimensions, then the photo, emerging from an ASCII version of itself (D12) |
 | `hero.intro("12+ years shipping…")` | Skeleton lines that resolve into the intro text |
@@ -180,7 +180,7 @@ The terminal folds into the **command dock** at the bottom, and the `hero.tsx` w
 │ ┌─ ● ● ●  hero.tsx ─────────────────────────────────────── ● building 2/5 ─┐ │
 │ │ ❯ hero.role("Senior Software Engineer")█                                 │ │
 │ ├──────────────────────────────────────────────────────────────────────────┤ │
-│ │  Hi, I'm Fabio.                                   ┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐   │ │
+│ │  Fabio Barreto.                                   ┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐   │ │
 │ │ ┏━ role ━━━━━━━━━━━━━━━━━┓                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
 │ │ ┃Senior Softw@r# E%g!n<er┃                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
 │ │ ┗━━━━━━━━━━━━━━━━━━━━━━━━┛                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
@@ -202,31 +202,31 @@ The dock confirms `✔ Hero Section created. (2.9s)`. The window's title bar, co
 
 ### Scene 4: the visitor scrolls → About
 
-The dock types `renderAbout();` and logs `info  Reading about.md...`. The `about.md` window builds the heading, the story paragraphs (skeleton lines → text) and the "at a glance" facts.
+The dock types `renderAbout();` and logs `info  Reading about.md...`. The `about.md` window builds the heading, three short paragraphs (skeleton lines → text) and the GitHub and LinkedIn buttons.
 
 ### Scene 5: the visitor scrolls → Projects
 
-The dock types `renderProjects();` and logs `info  Fetching projects... 6 found`. The `projects.tsx` window builds the heading and then the cards, one command per card. Each card goes through the same steps: selection box → skeleton → cover image → title → summary → tags.
+The dock types `renderProjects();` and logs `info  Fetching projects... 4 found`. The `projects.tsx` window builds the heading and then the four cards of the 2 × 2 grid, one command per card. Each card goes through the same steps: selection box → skeleton → cover image → title → summary → tags.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ fabiombarreto           About   Projects   Stack   Contact     ⌘K  ◐  GitHub │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ┌─ ● ● ●  projects.tsx ─────────────────────────────────── ● building 4/6 ─┐ │
+│ ┌─ ● ● ●  projects.tsx ─────────────────────────────────── ● building 3/5 ─┐ │
 │ │ ❯ projects.card("ai-track-record")█                                      │ │
 │ ├──────────────────────────────────────────────────────────────────────────┤ │
 │ │                                                                          │ │
 │ │  Selected work                                                           │ │
 │ │  Things I built and what I learned.                                      │ │
 │ │                                                                          │ │
-│ │  ┌────────────────────┐  ┏━ card ━━━━━━━━━━━━━┓  ┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐  │ │
-│ │  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  ┃░░░░ 640×360 ░░░░░░░┃  ┆                    ┆  │ │
-│ │  │ relay              │  ┃ AI Track Rec█      ┃  ┆                    ┆  │ │
-│ │  │ PRD to pull request│  ┃ ░░░░░░░░░░░░░░░░   ┃  ┆                    ┆  │ │
-│ │  │ claude-code · node │  ┃ ░░░░░░░░           ┃  ┆                    ┆  │ │
-│ │  └────────────────────┘  ┗━━━━━━━━━━━━━━━━━━━━┛  └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘  │ │
+│ │  ┌────────────────────────────────┐  ┏━ card ━━━━━━━━━━━━━━━━━━━━━━━━━┓  │ │
+│ │  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  ┃░░░░░░░░░░░ 640×360 ░░░░░░░░░░░░┃  │ │
+│ │  │ relay                          │  ┃ AI Track Rec█                  ┃  │ │
+│ │  │ PRD to pull request            │  ┃ ░░░░░░░░░░░░░░░░░░░░░░░░░░     ┃  │ │
+│ │  │ claude-code · ai-agents · node │  ┃ ░░░░░░░░░░░░░░                 ┃  │ │
+│ │  └────────────────────────────────┘  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  │ │
 │ │                                                                          │ │
-│ │  3 more cards below ↓                                                    │ │
+│ │  2 more cards below ↓                                                    │ │
 │ │              ╭────────────────────────────────────────────╮              │ │
 │ │              │ ● Building projects…           » Skip   1× │              │ │
 │ │              ╰────────────────────────────────────────────╯              │ │
@@ -237,7 +237,7 @@ In v1, cards are built one after the other with a short overlap. In v1.1 (**D8**
 
 ### Scenes 6 and 7: Stack and Contact
 
-They follow the same grammar: `renderStack();` builds the grouped technologies, and `renderContact();` builds the call to action, the email and the links.
+They follow the same grammar: `renderStack();` builds the grouped technologies, and `renderContact();` builds the call to action, the GitHub and LinkedIn links and the location line.
 
 ### Final scene: the build is complete
 
@@ -256,7 +256,7 @@ Every section follows the same structure. This repetition is what makes the site
 
 ```
 dock     ❯ renderProjects();                    ← 1. the section command, typed in the dock
-dock     info  Fetching projects... 6 found     ← 2. one log line
+dock     info  Fetching projects... 4 found     ← 2. one log line
 window   ● ● ●  projects.tsx                    ← 3. a build window opens over the section's place
 window   ❯ projects.heading("Selected work")    ← 4. element commands, each creating one element
 window   ❯ projects.card("relay")
@@ -270,10 +270,10 @@ dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the nex
 | # | Section | Dock command | Log | Window | Window commands | Final layout |
 |---|---|---|---|---|---|---|
 | 1 | Hero | `startSite();` | Initializing application… · Opening hero.tsx… | `hero.tsx` | `title`, `role`, `photo`, `intro`, `links` | Headline, role, intro and buttons on the left; photo on the right |
-| 2 | About | `renderAbout();` | Reading about.md… | `about.md` | `heading`, `text`, `facts` | Story on the left, "at a glance" facts on the right |
-| 3 | Projects | `renderProjects();` | Fetching projects… 6 found | `projects.tsx` | `heading`, `card` × 6 | 3-column grid of cards with cover images |
-| 4 | Stack | `renderStack();` | Resolving dependencies… | `stack.json` | `heading`, `legend`, `group` × 6 | Group cards with technology chips and a frequency meter |
-| 5 | Contact | `renderContact();` | Opening channels… | `contact.tsx` | `heading`, `email`, `links` | A call to action, the email with a copy button, links |
+| 2 | About | `renderAbout();` | Reading about.md… | `about.md` | `heading`, `text`, `links` | A short introduction (under 100 words) and GitHub and LinkedIn buttons |
+| 3 | Projects | `renderProjects();` | Fetching projects… 4 found | `projects.tsx` | `heading`, `card` × 4 | 2 × 2 grid of personal project cards with cover images |
+| 4 | Stack | `renderStack();` | Resolving dependencies… | `stack.json` | `heading`, `group` × 6 | Group cards with technology chips |
+| 5 | Contact | `renderContact();` | Opening channels… | `contact.tsx` | `heading`, `links`, `location` | A call to action, GitHub and LinkedIn buttons, and `Brazil (UTC-3)` |
 
 **Post-v1** (decision D4): **Experience** (`experience.log`, `renderExperience();`, a vertical timeline) and **Articles and talks** (`writing.md`, `renderWriting();`, a list with type badges). See [05 · Content](05-content.md).
 
@@ -308,7 +308,7 @@ dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the nex
 
 Opened from the shortcut, the `⌘K` button in the nav or the collapsed dock. Wireframe in [03](03-design-system.md#command-palette).
 
-Planned commands: `Go to <section>`, `Open project: <name>`, `Run all`, `Replay the build`, `Speed: 1× / 2× / instant`, `Theme: Midnight / Daylight`, `Copy email`, `Open GitHub / LinkedIn`. Search is fuzzy.
+Planned commands: `Go to <section>`, `Open project: <name>`, `Run all`, `Replay the build`, `Speed: 1× / 2× / instant`, `Theme: Midnight / Daylight`, `Open GitHub / LinkedIn`. Search is fuzzy.
 
 ### Keyboard shortcuts
 
@@ -330,7 +330,6 @@ Decided (**D5**): internal pages. Clicking a card opens `/projects/<slug>`. The 
 - **Card hover and focus:** the card lifts slightly, its border takes the accent color and the cover zooms in a little. Keyboard focus looks the same, plus the focus ring.
 - **Buttons:** the primary button is filled with the accent; secondary buttons are outlined.
 - **Links:** underlined on hover. External links always carry `↗`.
-- **Copy email:** one click copies it and shows a `✔ Email copied` toast.
 - **Text selection:** uses an accent-tinted selection color.
 - **Window dots (easter egg):** clicking the first dot of a build window "closes" it. The dock logs `warn  Window closed. Building anyway...` and the section finishes instantly.
 
@@ -346,7 +345,7 @@ The collapsed `❯_` button opens a real prompt in the dock: `help`, `ls`, `open
 
 | Width | Page | Build layer |
 |---|---|---|
-| ≥ 1024 px | Hero in two columns, 3-column project grid, stack in 3 columns | Full window chrome; agent cursors in v1.1 (D8) |
+| ≥ 1024 px | Hero in two columns, 2 × 2 project grid, stack in 3 columns | Full window chrome; agent cursors in v1.1 (D8) |
 | 768–1023 px | Hero in two columns with a smaller photo, 2-column grids | Full window chrome, no agent cursors |
 | < 768 px | Nav with `☰` menu; hero stacked (photo first); 1 column | Windows with a single compact title bar that shows the current command; the dock spans the width (minus 16 px each side) and shows only the status and `» Skip`; a tap on the window's title bar skips |
 
@@ -361,7 +360,7 @@ The collapsed `❯_` button opens a real prompt in the dock: `help`, `ls`, `open
 ││ ┆░░░░░░░░┆                       ││    │  │        │                        │
 ││ └┄┄┄┄┄┄┄┄┘                       ││    │  └────────┘                        │
 ││                                  ││    │                                    │
-││ Hi, I'm Fabio.                   ││    │  Hi, I'm Fabio.                    │
+││ Fabio Barreto.                   ││    │  Fabio Barreto.                    │
 ││┏━ role ━━━━━━━━━━━━━━━━━┓        ││    │                                    │
 ││┃Senior Softw@r# E%g!n<er┃        ││    │  Senior Software Engineer          │
 ││┗━━━━━━━━━━━━━━━━━━━━━━━━┛        ││    │                                    │
@@ -384,4 +383,4 @@ The collapsed `❯_` button opens a real prompt in the dock: `help`, `ls`, `open
 
 - **404:** the dock types `open("/typed-path");` and a small window opens with `Error: ENOENT: no such file or directory, open '/typed-path'`, a suggestion (`Did you mean /projects?`) and a `Go home` button. On this page, the window is the final state.
 - **Project detail:** see [Project pages](#project-pages).
-- **How this site was built:** an article page linked from the footer and the palette, with the stack, the build runtime, credits and a link to the source.
+- **How this site was built:** not a separate page in v1. The site-pro project page tells the story (the build runtime, the design system, the stack and credits), and the footer's `Source ↗` links to the repository.

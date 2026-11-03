@@ -11,13 +11,13 @@ A personal website for the **developer community** that **builds itself in front
 
 ```
 ❯ renderProjects();                           ← typed in the command dock
-┌─ ● ● ●  projects.tsx ────────────── 2/6 ─┐  ← a build window opens
+┌─ ● ● ●  projects.tsx ────────────── 3/5 ─┐  ← a build window opens
 │ ❯ projects.card("ai-track-record")█      │  ← the window types its own commands
 ├──────────────────────────────────────────┤
 │ Selected work                            │
-│ ┌──────────┐ ┏━ card ━━━┓ ┌┄┄┄┄┄┄┄┄┄┄┐   │
-│ │ relay    │ ┃░░░░░░░░░░┃ ┆          ┆   │  ← each command creates one element
-│ └──────────┘ ┗━━━━━━━━━━┛ └┄┄┄┄┄┄┄┄┄┄┘   │
+│ ┌─────────────────┐ ┏━ card ━━━━━━━━━━┓  │
+│ │ relay           │ ┃░░░░░░░░░░░░░░░░░┃  │  ← each command creates one element
+│ └─────────────────┘ ┗━━━━━━━━━━━━━━━━━┛  │
 └──────────────────────────────────────────┘
 ✔ Projects Section created. (2.31s)           ← the window fades; the section stays
 ```
@@ -74,3 +74,4 @@ A personal website for the **developer community** that **builds itself in front
 | v2.1 | 2026-11-03 | Concept v2 approved after a first [animated prototype](https://claude.ai/artifact/QnmBawnJozkSAp37DKp73F) (boot, build windows, every section, desktop and mobile). |
 | v2.2 | 2026-11-03 | Stage 1 decisions closed: **Geist** for the page (D18), the **dock at the bottom center** (D19), and multi-cursor agents moved to **v1.1** (D8). |
 | v2.3 | 2026-11-03 | Design System v2 foundations published in Claude Design: [site-pro v2](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o) (colors in Midnight and Daylight, Geist and JetBrains Mono, spacing, radius, shadows, layout sizes). Font weights per text style added to [03](03-design-system.md#scale). Daylight syntax colors switched from Eclipse to the Midnight hues, so every syntax color passes AA on every surface. |
+| v2.4 | 2026-11-03 | Sections and content defined; [09](09-content-draft.md) approved. The site is a short invitation, not a résumé: headline "Fabio Barreto.", a 54-word About without the facts box, only personal projects (4, in a 2 × 2 grid), Stack without usage frequencies, and Contact through GitHub and LinkedIn with "Brazil (UTC-3)" and no public email. No "How this site was built" page in v1. The photo is pending. Wireframes and the Design System updated to match. |

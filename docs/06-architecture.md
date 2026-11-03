@@ -4,7 +4,7 @@
 
 ## Scope
 
-A **static, presentation-only** website: no login, no accounts, no backend, no API, no forms that post to a server. Contact happens through links and a copyable email. The only external call is optional and happens at **build time** (fetching GitHub star counts).
+A **static, presentation-only** website: no login, no accounts, no backend, no API, no forms that post to a server. Contact happens through links (GitHub and LinkedIn); there is no public email. The only external call is optional and happens at **build time** (fetching GitHub star counts).
 
 ## Non-functional requirements
 
@@ -101,7 +101,7 @@ site-pro/
    ├─ stores/                 ← nanostores shared by the runtime and the islands
    ├─ styles/                 ← tokens.css, themes/, base.css
    ├─ strings.ts              ← interface copy, centralized
-   └─ pages/                  ← index, projects/[slug], how-it-was-built, 404
+   └─ pages/                  ← index, projects/[slug], 404
 ```
 
 ## The runtime (design)

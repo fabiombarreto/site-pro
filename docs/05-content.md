@@ -7,14 +7,14 @@
 | # | Section | Purpose | Required? |
 |---|---|---|---|
 | 1 | **Hero** | Who you are in 3 seconds: name, photo, role, intro and main links | Yes |
-| 2 | **About** | A short story, plus a few facts at a glance | Yes |
-| 3 | **Projects** | The heart of the site: featured projects, all clickable | Yes |
-| 4 | **Stack** | Technologies you use and how often | Yes |
-| 5 | **Contact** | How to reach you and where to follow you | Yes |
+| 2 | **About** | A short introduction (under 100 words) and links to GitHub and LinkedIn | Yes |
+| 3 | **Projects** | The heart of the site: personal projects, all clickable | Yes |
+| 4 | **Stack** | Technologies you use, by group | Yes |
+| 5 | **Contact** | Where to find you: GitHub, LinkedIn and your time zone | Yes |
 | — | **Project page** | One page per project (`/projects/<slug>`) | Yes (D5) |
 | — | **Experience** | Career path (jobs, milestones, talks) | Post-v1 (D4) |
 | — | **Articles and talks** | Content you produce for the community | Post-v1 (D4) |
-| — | **How this site was built** | Stack, the build runtime, credits and a link to the source | Recommended (great for the dev community) |
+| — | **How this site was built** | Stack, the build runtime, credits and a link to the source | No: the site-pro project page tells this story |
 | — | **404** | A tongue-in-cheek `ENOENT` error, shown in a build window | Yes |
 
 ## Data model
@@ -26,19 +26,20 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 | Field | Type | Example / rule |
 |---|---|---|
 | `name` | text | Full name, used in the page title and structured data |
-| `headline` | text | The hero headline, typed during the build (e.g. "Hi, I'm Fabio."). It is the page's `<h1>` |
+| `headline` | text | The hero headline, typed during the build (e.g. "Fabio Barreto."). It is the page's `<h1>` |
 | `role` | text | "Software Engineer" |
 | `subtitle` | text | The hero intro: one or two sentences on what you build |
 | `photo` | image | Square, ≥ 800 px, plain background (the ASCII version used during the build looks better with good contrast) |
-| `location` | text | Optional |
-| `bio` | Markdown | The About section text (~120–250 words) |
-| `facts` | list | 3 or 4 `{ value, label }` pairs for the About "at a glance" box (e.g. `12+` · "years shipping code") |
+| `location` | text | Optional: country and time zone only, such as "Brazil (UTC-3)" |
+| `bio` | Markdown | The About section text, **under 100 words**: an introduction, not a résumé |
 | `links` | list | `{ label, url, icon }`: GitHub, LinkedIn, X/Bluesky, dev.to, YouTube… |
-| `email` | text | For the copy button |
-| `availability` | text | Optional: "Open to open source collaborations" |
 | `cv` | file | Optional |
 
+There is no public email, availability line or "at a glance" facts box: contact happens through the links, and work history lives in the CV and on LinkedIn.
+
 ### `projects`: one Markdown file per project
+
+Only personal projects appear on the site; client work stays in the CV and on LinkedIn.
 
 | Field | Type | Rule |
 |---|---|---|
@@ -51,7 +52,7 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 | `year` | text | `2026` or a range such as `2020–2022` |
 | `featured` | yes/no | Shown on the home page |
 | `order` | number | Grid order |
-| `status` | text | `active`, `in development`, `planning`, `maintained`, `archived` or `case study` |
+| `status` | text | `active`, `in development`, `planning`, `maintained` or `archived` |
 | `githubRepo` | text | Optional: `user/repo`, to fetch the star count at build time |
 | body | Markdown | Project page text: problem, solution, technical decisions, lessons learned |
 
@@ -60,7 +61,7 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 | Field | Type | Rule |
 |---|---|---|
 | `groups[]` | list | `languages`, `frontend`, `backend`, `data`, `cloud`, `ai`… |
-| `groups[].items[]` | list | `{ name, frequency }`, where `frequency` is `daily`, `often` or `sometimes` |
+| `groups[].items[]` | list | Technology names, in display order. There is no usage frequency |
 
 ### `experience`: one file per item (post-v1)
 
@@ -96,10 +97,10 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 | Section | Dock command | Dock log | Window | Window commands | Completion |
 |---|---|---|---|---|---|
 | Hero | `startSite();` | `Initializing application...` · `Opening hero.tsx...` | `hero.tsx` | `hero.title("…")` · `hero.role("…")` · `hero.photo("…")` · `hero.intro("…")` · `hero.links([…])` | `✔ Hero Section created.` |
-| About | `renderAbout();` | `Reading about.md...` | `about.md` | `about.heading("…")` · `about.text(4)` · `about.facts(4)` | `✔ About Section created.` |
-| Projects | `renderProjects();` | `Fetching projects... 6 found` | `projects.tsx` | `projects.heading("…")` · `projects.card("slug")` | `✔ Projects Section created.` |
-| Stack | `renderStack();` | `Resolving dependencies...` | `stack.json` | `stack.heading("…")` · `stack.legend()` · `stack.group("languages")` | `✔ Stack Section created.` |
-| Contact | `renderContact();` | `Opening channels...` | `contact.tsx` | `contact.heading("…")` · `contact.email()` · `contact.links([…])` | `✔ Contact Section created.` |
+| About | `renderAbout();` | `Reading about.md...` | `about.md` | `about.heading("…")` · `about.text(3)` · `about.links([…])` | `✔ About Section created.` |
+| Projects | `renderProjects();` | `Fetching projects... 4 found` | `projects.tsx` | `projects.heading("…")` · `projects.card("slug")` | `✔ Projects Section created.` |
+| Stack | `renderStack();` | `Resolving dependencies...` | `stack.json` | `stack.heading("…")` · `stack.group("languages")` | `✔ Stack Section created.` |
+| Contact | `renderContact();` | `Opening channels...` | `contact.tsx` | `contact.heading("…")` · `contact.links([…])` · `contact.location("…")` | `✔ Contact Section created.` |
 | Experience (post-v1) | `renderExperience();` | `Reading git history...` | `experience.log` | `experience.entry("…")` | `✔ Experience Section created.` |
 | Articles and talks (post-v1) | `renderWriting();` | `Fetching posts... 3 found` | `writing.md` | `writing.item("…")` | `✔ Writing Section created.` |
 | Project page | `open("slug");` | — | — | — | — |
@@ -119,16 +120,17 @@ All in English.
 
 **Needed for Stage 1 (design project)**
 
-- [ ] Full name and the hero headline
-- [ ] Role and intro
+- [x] Full name and the hero headline
+- [x] Role and intro
 - [ ] Photo (square, good resolution, plain background)
-- [ ] 3 to 6 projects: title, short summary, cover image, tags and links
-- [ ] Main links (GitHub, LinkedIn, etc.) and public email
-- [ ] Answers to the Stage 1 [open decisions](07-roadmap-and-decisions.md#open-decisions)
+- [x] Personal projects: title, short summary, tags and links (4, see [09](09-content-draft.md#projects))
+- [ ] A cover image for each project
+- [x] Main links (GitHub, LinkedIn)
+- [x] Answers to the Stage 1 [open decisions](07-roadmap-and-decisions.md#open-decisions)
 
 **Needed before launch**
 
-- [ ] About section bio and facts
-- [ ] Stack list with usage frequency
+- [x] About section bio
+- [x] Stack list
 - [ ] Project page text for each project (D5)
 - [ ] Domain

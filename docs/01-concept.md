@@ -18,7 +18,7 @@ A **presentation-only** website, like an institutional site or a landing page: n
 
 | Who | What they look for | What the site gives them |
 |---|---|---|
-| Developers (peers) | Inspiration, interesting projects, code | A distinctive experience, links to repositories, a "how this site was built" page |
+| Developers (peers) | Inspiration, interesting projects, code | A distinctive experience, links to repositories, and the site-pro project page telling how this site was built |
 | Open source community | Contributions, technical profile | Projects, stack, history |
 | Event organizers, podcasts and blogs | Someone to speak or write | Talks, articles, direct contact |
 | Technical recruiters (secondary) | Experience, stack, seniority | Experience, stack, contact |
