@@ -58,7 +58,7 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 
 | Deliverable | Content |
 |---|---|
-| **Design System** | Theme tokens (Midnight, Daylight), typography (sans + mono), page components and build-layer components (dock, windows, selection boxes, skeletons, and agent cursors for v1.1), with previews. The first version, for the v1 IDE concept, is superseded: [site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) |
+| **Design System** | Theme tokens (Midnight, Daylight), typography (sans + mono), page components and build-layer components (dock, windows, selection boxes, skeletons, and agent cursors for v1.1), with previews. ✅ The v2 foundations are published: [site-pro v2](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o); the components come next. The first version, for the v1 IDE concept, is superseded: [site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K) |
 | **Screens** | Desktop, tablet and mobile: the final page (hero, about, projects, stack, contact), a project page, the Command Palette and the 404, plus key build states (boot, hero window, projects window) |
 | **Animated prototype** | Boot (terminal → dock → hero window → final hero) + scroll to Projects, with the timings from [04](04-animations.md#timings-1-speed) and the skip and speed controls, to approve the rhythm and decide D8. ✅ A first version, hand-coded to approve the concept, is published: [site-pro Build Windows](https://claude.ai/artifact/QnmBawnJozkSAp37DKp73F) |
 | **Review** | Comments directly on the canvas |

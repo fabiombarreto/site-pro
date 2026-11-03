@@ -1,6 +1,6 @@
 # 03 · Design System
 
-> The first Design System published in Claude Design ([site-pro Design System](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K), private) implements the **v1 IDE concept** and is now superseded by this document. Version 2 will be rebuilt there once this document is approved. When the two disagree, update this document first.
+> **Design System v2** is published in Claude Design: [site-pro v2](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o) (private). It holds the foundations (colors in both themes, type, spacing, radius, shadows and layout sizes); components come next. The first version ([site-pro](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K)) implemented the v1 IDE concept and is superseded. This document stays the source of truth: when the two disagree, update this document first, then the design system.
 
 ## Visual direction
 
@@ -63,15 +63,15 @@ Every text/background pair used for content meets **WCAG AA (≥ 4.5:1)**. `--fg
 
 | Token | Midnight | Daylight | Example |
 |---|---|---|---|
-| `--syn-keyword` | `#c792ea` | `#7f0055` | `const`, `await`, `return` |
+| `--syn-keyword` | `#c792ea` | `#7c3aed` | `const`, `await`, `return` |
 | `--syn-function` | `#e5c07b` | `#795e26` | `renderProjects`, `card` |
-| `--syn-string` | `#98c379` | `#2a00ff` | `"Senior Software Engineer"` |
-| `--syn-number` | `#f78c6c` | `#098658` | `6`, `true` |
-| `--syn-type` | `#4fd1c5` | `#267f99` | `hero`, `projects` |
-| `--syn-comment` | `#868b96` | `#3f7f5f` | `// comments` |
+| `--syn-string` | `#98c379` | `#4d7c0f` | `"Senior Software Engineer"` |
+| `--syn-number` | `#f78c6c` | `#c2410c` | `6`, `true` |
+| `--syn-type` | `#4fd1c5` | `#0f766e` | `hero`, `projects` |
+| `--syn-comment` | `#868b96` | `#646b76` | `// comments` |
 | `--syn-punct` | `#d6d8de` | `#1f2328` | `( ) { } ;` |
 
-Daylight keeps the classic Eclipse syntax colors from the v1 concept. Syntax and log colors are used only on `--bg-overlay` (dock, windows) and `--bg-raised` (code blocks), where every pair passes AA; three Daylight syntax colors fall just below 4.5:1 on the page background, so they never sit directly on it.
+Both themes share the same syntax hues (violet keywords, amber functions, green strings, orange numbers, teal types, gray comments): light tints in Midnight, in a One Dark style, and deep shades of the same hues in Daylight. They replace the Eclipse colors that Daylight inherited from the v1 concept. Syntax and log colors are used only on `--bg-overlay` (dock, windows) and `--bg-raised` (code blocks); every pair passes AA there, and on the page background too.
 
 **Log levels**
 
@@ -100,21 +100,21 @@ Two families with clear jobs: a **sans-serif** for everything people read, and a
 | Text and headings | **Geist** (OFL license, variable), decision **D18** | Very legible at small sizes, variable weights, and a technical feel without being a code font |
 | Build layer and labels | **JetBrains Mono** (OFL license, variable), kept from v1 | Commands, logs, window titles, section eyebrows (`02 / projects`), tags and dimension labels |
 | Fallbacks | Sans: `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` · Mono: `"Cascadia Code", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace` | The chosen fonts are self-hosted, so fallbacks only show if loading fails |
-| Weights | Sans 400, 500, 600 and 700 (one variable file) · Mono 400 and 500 | Few files, fast loading |
+| Weights | Sans 400 to 700 from one variable file (400 body, 500 role and UI, 600 card titles, 650 headings) · Mono 400 and 500 | Few files, fast loading |
 
 ### Scale
 
-| Token | Desktop / mobile | Line height | Tracking | Use |
-|---|---|---|---|---|
-| `--text-display` | `clamp(44px, 7vw, 88px)` | 1.02 | -0.03em | Hero headline |
-| `--text-3xl` | `clamp(32px, 4.5vw, 48px)` | 1.1 | -0.02em | Section titles (`<h2>`), project page title |
-| `--text-2xl` | 28 / 22 px | 1.2 | -0.01em | Hero role |
-| `--text-xl` | 22 / 20 px | 1.3 | — | Card titles, fact values |
-| `--text-lg` | 19 / 18 px | 1.6 | — | Hero intro, lead paragraphs |
-| `--text-md` | 16 / 16 px | 1.65 | — | Body text |
-| `--text-sm` | 14 / 14 px | 1.5 | — | Nav, metadata, card summaries |
-| `--mono-sm` | 13 / 12 px | 1.5 | — | Commands, logs, window titles, eyebrows, tags |
-| `--mono-xs` | 12 / 11 px | 1.4 | — | Selection labels, agent labels, dimension labels |
+| Token | Desktop / mobile | Line height | Tracking | Weight | Use |
+|---|---|---|---|---|---|
+| `--text-display` | `clamp(44px, 7vw, 88px)` | 1.02 | -0.03em | 650 | Hero headline |
+| `--text-3xl` | `clamp(32px, 4.5vw, 48px)` | 1.1 | -0.02em | 650 | Section titles (`<h2>`), project page title |
+| `--text-2xl` | 28 / 22 px | 1.2 | -0.01em | 500 | Hero role |
+| `--text-xl` | 22 / 20 px | 1.3 | -0.01em | 600 | Card titles, fact values |
+| `--text-lg` | 19 / 18 px | 1.6 | — | 400 | Hero intro, lead paragraphs |
+| `--text-md` | 16 / 16 px | 1.65 | — | 400 | Body text |
+| `--text-sm` | 14 / 14 px | 1.5 | — | 500 (400 for summaries) | Nav, buttons, metadata, card summaries |
+| `--mono-sm` | 13 / 12 px | 1.5 | — | 400 | Commands, logs, window titles, eyebrows, tags |
+| `--mono-xs` | 12 / 11 px | 1.4 | — | 500 | Selection labels, agent labels, dimension labels |
 
 - Body text is at most **68ch** wide.
 - Ligatures on in commands and code; tabular numerals in facts and build times.
