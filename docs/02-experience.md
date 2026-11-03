@@ -225,7 +225,7 @@ The dock types `renderProjects();` and logs `info  Fetching projects... 6 found`
 │ │  │ PRD to pull request│  ┃ ░░░░░░░░░░░░░░░░   ┃  ┆                    ┆  │ │
 │ │  │ claude-code · node │  ┃ ░░░░░░░░           ┃  ┆                    ┆  │ │
 │ │  └────────────────────┘  ┗━━━━━━━━━━━━━━━━━━━━┛  └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘  │ │
-│ │                                         ↖ agent-2             ↖ agent-3  │ │
+│ │                                                                          │ │
 │ │  3 more cards below ↓                                                    │ │
 │ │              ╭────────────────────────────────────────────╮              │ │
 │ │              │ ● Building projects…           » Skip   1× │              │ │
@@ -233,7 +233,7 @@ The dock types `renderProjects();` and logs `info  Fetching projects... 6 found`
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-With **D8** (multi-cursor), 2 or 3 labeled agent cursors build cards at the same time, as in the wireframe. Without it, cards are built one after the other with a short overlap.
+In v1, cards are built one after the other with a short overlap. In v1.1 (**D8**), 2 or 3 labeled agent cursors will build cards at the same time, on desktop only.
 
 ### Scenes 6 and 7: Stack and Contact
 
@@ -346,7 +346,7 @@ The collapsed `❯_` button opens a real prompt in the dock: `help`, `ls`, `open
 
 | Width | Page | Build layer |
 |---|---|---|
-| ≥ 1024 px | Hero in two columns, 3-column project grid, stack in 3 columns | Full window chrome; agent cursors if D8 is approved |
+| ≥ 1024 px | Hero in two columns, 3-column project grid, stack in 3 columns | Full window chrome; agent cursors in v1.1 (D8) |
 | 768–1023 px | Hero in two columns with a smaller photo, 2-column grids | Full window chrome, no agent cursors |
 | < 768 px | Nav with `☰` menu; hero stacked (photo first); 1 column | Windows with a single compact title bar that shows the current command; the dock spans the width (minus 16 px each side) and shows only the status and `» Skip`; a tap on the window's title bar skips |
 

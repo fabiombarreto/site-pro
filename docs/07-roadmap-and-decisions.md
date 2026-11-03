@@ -12,7 +12,7 @@
 | **4 · Sections and effects** | Hero (photo ASCII → photo), About, Projects (with project pages), Stack and Contact, with the real content and their build scripts | Every section with the effects from [04](04-animations.md), within its budget |
 | **5 · Extras** | Command Palette, nav scroll-spy, theme switching, card → project page transitions, 404, easter eggs | Shortcuts and palette fully usable by keyboard |
 | **6 · Polish and launch** | Accessibility audit, performance, SEO, OG images, analytics, cross-browser testing, a readability test with people who don't code, domain | Targets from [01](01-concept.md#how-we-will-know-it-worked) met, site live and a "how I built this site" post |
-| **v1.1** | Interactive dock, multi-cursor agents (if approved after launch), a Phosphor theme easter egg | — |
+| **v1.1** | Interactive dock (D7), multi-cursor agents (D8), a Phosphor theme easter egg | — |
 | **Post-v1** | Experience and Articles and talks sections (D4) | When there is content for them |
 
 **Launch (v1)** = Stages 2 to 4 + controls (skip/speed) + mobile + the Command Palette and project pages from Stage 5 + Stage 6. The rest of Stage 5 can move to v1.1 if we want to launch sooner.
@@ -62,10 +62,10 @@ Each decision comes with a recommendation. Agreeing or disagreeing is enough.
 | **D5** | Project card click | Internal page · direct external link | — | ✅ **Internal page**, opened with a card → page transition, with a direct repo shortcut on the card |
 | **D6** | Revisits | Full animation always · at 2× · instant | — | ✅ **Full build on every visit**, reloads included; a visitor's own `∞` speed choice is kept |
 | **D7** | Interactive terminal | v1 · v1.1 | — | ✅ **v1.1**, after launch: the collapsed dock opens a real prompt |
-| **D8** | Multi-cursor agents, a tribute to the reel | Include · test in the prototype · drop | **Test in the prototype**, in the hero and in Projects, desktop only, and decide after seeing it | Open |
+| **D8** | Multi-cursor agents, a tribute to the reel | Include in v1 · v1.1 · drop | — | ✅ **v1.1**, after launch (2026-11-03), decided after testing them in the prototype. v1 builds one element at a time in each window, which reads more clearly; the agents are retried with the real content |
 | **D12** | Hero photo | ASCII → real photo · permanent ASCII (photo on hover) · no photo | — | ✅ **ASCII → real photo**, now as the photo's build effect |
-| **D18** | Sans-serif family for the page | Geist · Inter · Space Grotesk · other | **Geist**: very legible, technical without being a code font, open license (OFL) and variable | Open |
-| **D19** | Where the terminal goes after the boot | A dock at the bottom center that stays as the build HUD · a small terminal window in a corner · nothing (controls move into each window) | **The dock at the bottom center**: it echoes the reel's HUD, keeps skip and speed in one predictable place and never covers the content's reading area | Open |
+| **D18** | Sans-serif family for the page | Geist · Inter · Space Grotesk · other | — | ✅ **Geist** (2026-11-03): very legible, technical without being a code font, open license (OFL) and variable |
+| **D19** | Where the terminal goes after the boot | A dock at the bottom center that stays as the build HUD · a small terminal window in a corner · nothing (controls move into each window) | — | ✅ **The dock at the bottom center** (2026-11-03): it echoes the reel's HUD, keeps skip and speed in one predictable place and never covers the content's reading area |
 
 ### Stage 6 · Launch
 

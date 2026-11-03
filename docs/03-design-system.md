@@ -89,7 +89,7 @@ Daylight keeps the classic Eclipse syntax colors from the v1 concept. Syntax and
 | `--build-select` | `#2563eb` | `#2563eb` | Selection box border and label |
 | `--build-skeleton` | `#23242b` | `#e9ebef` | Skeleton blocks |
 | `--build-shine` | `#2c2e36` | `#f3f4f6` | The skeleton shimmer |
-| `--agent-1` … `--agent-4` | `#c792ea` `#e5c07b` `#98c379` `#4fd1c5` | `#9333ea` `#b45309` `#15803d` `#0f766e` | Agent cursors and their labels (D8) |
+| `--agent-1` … `--agent-4` | `#c792ea` `#e5c07b` `#98c379` `#4fd1c5` | `#9333ea` `#b45309` `#15803d` `#0f766e` | Agent cursors and their labels (D8, v1.1) |
 
 ## Typography
 
@@ -97,7 +97,7 @@ Two families with clear jobs: a **sans-serif** for everything people read, and a
 
 | Item | Choice | Why |
 |---|---|---|
-| Text and headings | A modern sans-serif, decision **D18** (recommendation: **Geist**; alternatives: Inter, Space Grotesk) | Very legible at small sizes, variable weights, and a technical feel without being a code font |
+| Text and headings | **Geist** (OFL license, variable), decision **D18** | Very legible at small sizes, variable weights, and a technical feel without being a code font |
 | Build layer and labels | **JetBrains Mono** (OFL license, variable), kept from v1 | Commands, logs, window titles, section eyebrows (`02 / projects`), tags and dimension labels |
 | Fallbacks | Sans: `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif` · Mono: `"Cascadia Code", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace` | The chosen fonts are self-hosted, so fallbacks only show if loading fails |
 | Weights | Sans 400, 500, 600 and 700 (one variable file) · Mono 400 and 500 | Few files, fast loading |
@@ -214,7 +214,7 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | `BuildWindow` | The overlay around a section: title bar, command bar, body frame | opening, building, closing |
 | `SelectionBox` | Border, corner handles and a label (`h1`, `card`, `img 800×800`) | drawing, active, fading |
 | `Skeleton` | A block with an optional dimension label and a shimmer | — |
-| `AgentCursor` | Pointer with a name label (D8) | moving, idle |
+| `AgentCursor` | Pointer with a name label (D8, v1.1) | moving, idle |
 | `SkipButton`, `SpeedToggle`, `ReplayButton`, `PlayBuildButton` | Dock controls | visible only in the states that need them |
 
 ---

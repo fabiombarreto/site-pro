@@ -24,7 +24,7 @@ Sample script (illustrative format, not final code):
         target: cards
         effect: build-card
         overlap: 120ms                       # the next call starts before this one ends
-        agents: 3                            # optional, decision D8
+        agents: 3                            # v1.1, decision D8
   done: "Projects Section created."
 ```
 
@@ -134,7 +134,7 @@ To be evaluated in the design prototype:
 
 | Effect | Description |
 |---|---|
-| **Multi-cursor agents** (decision **D8**) | 2 to 4 labeled pointers (`agent-1`, `agent-2`…) build different elements at the same time, in the hero and in Projects. The window's command bar shows one line per active agent, and the dock shows `3 agents`. It is the most direct tribute to the reel's swarm. Desktop only. |
+| **Multi-cursor agents** (decision **D8**: v1.1) | 2 to 4 labeled pointers (`agent-1`, `agent-2`…) build different elements at the same time, in the hero and in Projects. The window's command bar shows one line per active agent, and the dock shows `3 agents`. It is the most direct tribute to the reel's swarm. Desktop only. Tested in the prototype and moved to v1.1. |
 | **Unstyled → styled** | An element first appears as raw browser-default HTML (serif text, a blue underlined link), and then its CSS lands. Used in one spot only, such as the hero buttons, as a joke for developers. |
 | **Element counter** | The dock shows `23/48 elements` while building, like the reel's layer count. |
 | **Keyboard sound** | Very subtle key clicks while typing. **Off by default**. A v2 candidate. |

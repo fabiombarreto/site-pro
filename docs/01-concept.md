@@ -60,7 +60,7 @@ The reference video (~56 s) shows a portfolio site being **rebuilt live by a swa
 | In the reel | On our site |
 |---|---|
 | Building the site **is** the show | Each section is built in front of the visitor, by commands they can read |
-| A swarm of cursors (agents) | A terminal cursor types the section command, and the window types the element commands. Optionally, a few labeled **agent cursors** build elements in parallel (decision **D8**) |
+| A swarm of cursors (agents) | A terminal cursor types the section command, and the window types the element commands. In v1.1, a few labeled **agent cursors** will build elements in parallel (decision **D8**) |
 | Selection boxes and placeholders before the content | Selection boxes with a label (`h1`, `card`, `img 800×800`) and skeletons with their dimensions, before each final element |
 | The pill-shaped HUD | The **command dock**, a pill at the bottom of the screen |
 | A section-by-section build, triggered by scrolling | One **section build** per section, triggered by scrolling |
@@ -70,7 +70,7 @@ The reference video (~56 s) shows a portfolio site being **rebuilt live by a swa
 ### What we leave behind
 
 - The video's pacing. There, the author controls everything; here, the visitor sets the pace by scrolling.
-- Nineteen cursors at once. On a page people read, that is noise. At most a few agents, and only if the prototype proves them (D8).
+- Nineteen cursors at once. On a page people read, that is noise. At most a few agents, and only after launch, in v1.1 (D8).
 - The design-tool look in the final page. Selection boxes and skeletons exist only while a section is being built.
 
 ## From the IDE concept to build windows

@@ -95,7 +95,7 @@ site-pro/
    ├─ content/                ← profile, projects/, stack.json
    ├─ components/
    │  ├─ page/                ← React: NavBar, Button, Tag, ProjectCard, StackGroup, Footer, CommandPalette…
-   │  └─ build/               ← BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor
+   │  └─ build/               ← BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor (v1.1)
    ├─ sections/               ← Astro: Hero, About, Projects, Stack, Contact (each with its build script)
    ├─ runtime/                ← scheduler, effects, triggers, overlays, controls (framework-agnostic TS)
    ├─ stores/                 ← nanostores shared by the runtime and the islands
@@ -153,7 +153,7 @@ site-pro/
 | Critical JS | ≤ 20 KB gzip (inline head script + runtime) |
 | Total JS | ≤ 90 KB gzip after idle (React + islands), loaded off the critical path |
 | CSS | ≤ 25 KB gzip |
-| Fonts | The sans family (D18) as one variable WOFF2 and JetBrains Mono in 1–2 files, Latin subsets, self-hosted; both preloaded, since the boot types in mono and the headline is in sans |
+| Fonts | Geist (D18) as one variable WOFF2 and JetBrains Mono in 1–2 files, Latin subsets, self-hosted; both preloaded, since the boot types in mono and the headline is in sans |
 | Images | Responsive AVIF/WebP; lazy-loaded except the hero photo |
 | LCP | The hero headline is typed by ~1.7 s and the photo is complete by ~2.4 s ([04](04-animations.md#boot-timeline-hero)); the photo loads with priority |
 | CLS | ≈ 0, thanks to reserved space and an overlay-only build layer |
