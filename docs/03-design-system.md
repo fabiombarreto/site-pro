@@ -1,6 +1,6 @@
 # 03 · Design System
 
-> **Design System v2** is published in Claude Design: [site-pro v2](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o) (private). It holds the foundations (colors in both themes, type, spacing, radius, shadows and layout sizes); components come next. The first version ([site-pro](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K)) implemented the v1 IDE concept and is superseded. This document stays the source of truth: when the two disagree, update this document first, then the design system.
+> **Design System v2** is published in Claude Design: [site-pro v2](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o) (private). It holds the foundations (colors in both themes, type, spacing, radius, shadows and layout sizes) and every component listed below, as one React bundle with a live preview and usage notes per component. The screens built from it are in [site-pro v2 screens](https://claude.ai/artifact/HL5MJH8mEdhb7JbSd8kDzS) (private). The first version ([site-pro](https://claude.ai/artifact/VtbNMjiH7N1q9buK1pFQ5K)) implemented the v1 IDE concept and is superseded. This document stays the source of truth: when the two disagree, update this document first, then the design system.
 
 ## Visual direction
 
@@ -169,8 +169,8 @@ Box-drawing characters (`┌─┐`) no longer appear on the site. They are only
 
 ## Iconography
 
-- **UI icons:** [Lucide](https://lucide.dev/) (ISC license): arrows, copy, theme, menu, external link.
-- **Brand icons:** [Simple Icons](https://simpleicons.org/) (CC0) for GitHub and LinkedIn links only.
+- **UI icons:** [Lucide](https://lucide.dev/) 1.33.0 (ISC license): arrows, theme, menu, close, search, replay, play and the `↗` of external links.
+- **Brand icons:** [Simple Icons](https://simpleicons.org/) 13.21.0 (CC0) for GitHub and LinkedIn links only, in `currentColor`.
 - **No operating system or app chrome:** window dots are neutral gray, not traffic-light colors, and no OS or IDE logo appears anywhere.
 
 ---
@@ -192,10 +192,10 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | `Tag` | Mono chip (`node`) | — |
 | `Photo` | The hero photo | built; building (skeleton, ASCII) |
 | `ProjectCard` | Cover, title, year, summary, tags, status badge, `repo ↗` | rest, hover/focus (lift + accent border); building stages |
-| `StatusBadge` | `active`, `in development`, `planning`, `maintained`, `archived` | — |
+| `StatusBadge` | `active`, `in development`, `planning`, `maintained`, `archived`: the word plus a dot whose shape repeats it, in `accent-fg` or `fg-muted` (no status hues) | — |
 | `StackGroup` / `StackChip` | A group card with technology chips | — |
 | `Footer` | Build summary, Replay, source link, copyright | — |
-| `Toast` | Notification just above the dock | info, success |
+| `Toast` | Notification just above the dock, in the log style | info, success, warn (the easter egg only) |
 | `CommandPalette` | Command search (island) | empty, filtering, no results |
 | `ProjectHeader` / `Prose` | The project page header and its Markdown body | — |
 
@@ -204,7 +204,7 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | Component | Description | States and variants |
 |---|---|---|
 | `BootTerminal` | The terminal in the middle of the first screen | typing, logging, folding into the dock |
-| `CommandDock` | The pill HUD at the bottom | typing, building, idle, done, collapsed, reduced |
+| `CommandDock` | The pill HUD at the bottom | typing, building, idle, done, collapsed, reduced; `compact` on mobile (status and `» Skip` only) |
 | `CommandLine` | `❯` + a highlighted command + cursor | waiting, typing, entered |
 | `Cursor` | Blinking `█` block | blinking, solid (while typing), hidden |
 | `LogLine` | `info  message` | info, success, warn, error; with spinner |
