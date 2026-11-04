@@ -6,24 +6,25 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ fabiombarreto           About   Projects   Stack   Contact     ⌘K  ◐  GitHub │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│                                                                              │
-│                                                                              │
-│    Fabio Barreto.                                   ┌──────────────────┐     │
-│                                                     │                  │     │
-│    Senior Software Engineer                         │                  │     │
-│                                                     │                  │     │
-│    12+ years shipping full-stack apps with          │      photo       │     │
-│    React, Python and Java. Now building             │                  │     │
-│    AI-assisted dev workflows.                       │                  │     │
-│                                                     │                  │     │
-│    [ See my work ↓ ]   GitHub ↗   LinkedIn ↗        └──────────────────┘     │
-│                                                                              │
-│                ╭────────────────────────────────────────────╮                │
-│                │ ✓ 1/5 sections   ❯ █         scroll ↓   1× │                │
-│                ╰────────────────────────────────────────────╯                │
-└──────────────────────────────────────────────────────────────────────────────┘
+│  ▒▒▓▓▒▒                                                                      │
+│                                                         ┌───────┐            │
+│  ██ Fabio ██████████████████████                         │   ◯   │            │  ← the name in giant
+│  ██ Barreto. ████████████████████████████████████████████│  /█\  │            │    type, on two lines
+│                                                         │ / █ \ │            │
+│  Senior Software Engineer                               │   █   │     ▒▒▓▓▒▒ │
+│  12+ years shipping full-stack apps with                │  / \  │            │
+│  React, Python and Java. Now building                   │  │ │  │            │
+│  AI-assisted dev workflows.                             │  │ │  │            │
+│                                                         │  │ │  │            │
+│  [ See my work ↓ ]   GitHub ↗   LinkedIn ↗              │  │ │  │            │
+│                ╭────────────────────────────────────╮   │  │ │  │            │
+│                │ ✓ 1/5 sections   ❯ █   scroll ↓  1× │   │  │ │  │            │
+│                ╰────────────────────────────────────╯   │  │ │  │            │
+└─────────────────────────────────────────────────────────┼──┼─┼──┼────────────┘
+                                                          └─ the photo's legs continue into About
 ```
+
+The hero is a **banner**: the name in giant type on two lines, with a full-body, cut-out photo standing in front of the letters (over the end of `Barreto.` on desktop). The role, the intro and the buttons sit at the bottom left. The photo is taller than the first screen, so its legs continue into About, and the page reads as one piece instead of a stack of boxes (decision **D20**).
 
 | # | Area | Role | Behavior |
 |---|---|---|---|
@@ -41,37 +42,35 @@
 ┌────────────────────────────────────────────────────────────┐
 │ fabiombarreto            About Projects Stack Contact ⌘K ◐ │  nav (sticky)
 ├────────────────────────────────────────────────────────────┤
+│ ▒▒▓▒▒                                    ┌─────┐           │
+│ ██ Fabio Barreto. ███████████████████████│  ◯  │████████   │  hero: a banner
+│ Senior Software Engineer                 │ /█\ │           │
+│ Intro in two or three lines.             │  █  │    ▒▒▓▓▒▒ │
+│ [ See my work ↓ ]  GitHub  LinkedIn      │ / \ │           │
+│                                          │ │ │ │           │  ← no hard border:
+│ 01 / about                               │ │ │ │           │    the photo and the
+│ About me                                 └─────┘           │    glows cross it
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                  │  about
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                    ▒▒▓▓▒▒ │
+│ [ GitHub ↗ ]  [ LinkedIn ↗ ]                               │
 │                                                            │
-│  Fabio Barreto.                           ┌────────────┐   │  hero
-│  Senior Software Engineer                 │   photo    │   │
-│  Intro in two or three lines.             │            │   │
-│  [ See my work ↓ ]  GitHub  LinkedIn      └────────────┘   │
-│                                                            │
-│  01 / about                                                │  about
-│  About me                                                  │
-│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░              │
-│  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                      │
-│  [ GitHub ↗ ]  [ LinkedIn ↗ ]                              │
-│                                                            │
-│  02 / projects                                             │  projects
-│  Selected work                                             │
-│  ┌─────────────────────────┐ ┌─────────────────────────┐   │
-│  │▓▓▓▓ project             │ │▓▓▓▓ project             │   │
-│  └─────────────────────────┘ └─────────────────────────┘   │
-│  ┌─────────────────────────┐ ┌─────────────────────────┐   │
-│  │▓▓▓▓ project             │ │▓▓▓▓ project             │   │
-│  └─────────────────────────┘ └─────────────────────────┘   │
-│  2 × 2 grid · 4 personal projects                          │
-│                                                            │
-│  03 / stack                                                │  stack
-│  What I work with                                          │
-│  ┌─ languages ────┐ ┌─ frontend ─────┐ ┌─ backend ──────┐  │
-│  │ java · python  │ │ react · angular│ │ django · node  │  │
-│  └────────────────┘ └────────────────┘ └────────────────┘  │
-│                                                            │
-│  04 / contact                                              │  contact
-│  Let's talk.                                               │
-│  [ GitHub ↗ ]  [ LinkedIn ↗ ]    Brazil (UTC-3)            │
+│ 02 / projects                                              │  projects
+│ Selected work                                              │
+│ ┌─────────────────────────┐                                │
+│ │▓▓▓▓ project             │ ┌─────────────────────────┐    │
+│ └─────────────────────────┘ │▓▓▓▓ project             │    │  staggered: the right
+│ ┌─────────────────────────┐ └─────────────────────────┘    │  column sits lower
+│ │▓▓▓▓ project             │ ┌─────────────────────────┐    │
+│ └─────────────────────────┘ │▓▓▓▓ project             │    │
+│ 03 / stack                  └─────────────────────────┘    │  stack: the last cover
+│ What I work with                                           │  overlaps its top
+│ ┌─ languages ────┐ ┌─ frontend ─────┐ ┌─ backend ──────┐   │
+│ │ java · python  │ │ react · angular│ │ django · node  │   │
+│ └────────────────┘ └────────────────┘ └────────────────┘   │
+│ ▒▒▓▓▒▒                                                     │
+│ 04 / contact                                               │  contact: the giant
+│ ██ Let's talk. ██████████████                              │  type comes back
+│ [ GitHub ↗ ]  [ LinkedIn ↗ ]    Brazil (UTC-3)             │
 │                                                            │
 ├────────────────────────────────────────────────────────────┤
 │ Built live in 9.6s · ↻ Replay             Source ↗  © 2026 │  footer
@@ -81,7 +80,17 @@
                                                       ╰─────╯
 ```
 
-The page background is a faint **dot grid**, the "desktop" the windows open on. It fades out behind the content of each section.
+### One continuous page
+
+The sections are built one at a time, but the finished page reads as a single piece (decision **D20**):
+
+- **Background:** one continuous field behind the whole page: the theme background, a few large, soft glows in the accent blues and a fine film grain. Each glow sits across the boundary between two sections, so no section starts on a blank band.
+- **The photo crosses into About.** The full-body hero photo is taller than the first screen, and its legs continue next to the About text.
+- **Images take over from Projects on.** The project grid is staggered (the right column sits lower), and the last cover overlaps the top of Stack.
+- **The giant type comes back in Contact**, closing the page the way the hero opened it.
+- Sections keep their eyebrows (`02 / projects`) and their spacing, but they have no borders, bands or background of their own.
+
+The **dot grid** now belongs to the build layer: it shows inside build windows, as the canvas each window draws on, and disappears with them.
 
 ### Nav bar
 
@@ -167,9 +176,9 @@ The terminal folds into the **command dock** at the bottom, and the `hero.tsx` w
 
 | Command | What appears |
 |---|---|
-| `hero.title("Fabio Barreto.")` | The headline, typed letter by letter in large display type |
+| `hero.title("Fabio Barreto.")` | The headline, typed letter by letter in giant banner type, on two lines |
 | `hero.role("Senior Software Engineer")` | The role, decoded from scrambled characters |
-| `hero.photo("fabio.jpg")` | A skeleton with its dimensions, then the photo, emerging from an ASCII version of itself (D12) |
+| `hero.photo("fabio.png")` | A skeleton with its dimensions, then the full-body cut-out photo, emerging from an ASCII version of itself (D12), in front of the name. Its selection box runs past the bottom of the window, into About's place |
 | `hero.intro("12+ years shipping…")` | Skeleton lines that resolve into the intro text |
 | `hero.links(["GitHub", "LinkedIn"])` | The buttons, popping in one after the other |
 
@@ -180,16 +189,16 @@ The terminal folds into the **command dock** at the bottom, and the `hero.tsx` w
 │ ┌─ ● ● ●  hero.tsx ─────────────────────────────────────── ● building 2/5 ─┐ │
 │ │ ❯ hero.role("Senior Software Engineer")█                                 │ │
 │ ├──────────────────────────────────────────────────────────────────────────┤ │
-│ │  Fabio Barreto.                                   ┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐   │ │
-│ │ ┏━ role ━━━━━━━━━━━━━━━━━┓                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
-│ │ ┃Senior Softw@r# E%g!n<er┃                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
-│ │ ┗━━━━━━━━━━━━━━━━━━━━━━━━┛                        ┆░░░░░░░░░░░░░░░░░░┆   │ │
-│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░          ┆░░░░ 800×800 ░░░░░┆   │ │
-│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░             ┆░░░░░░░░░░░░░░░░░░┆   │ │
-│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░                       ┆░░░░░░░░░░░░░░░░░░┆   │ │
-│ │                                                   ┆░░░░░░░░░░░░░░░░░░┆   │ │
-│ │                                                   └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘   │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
+│ │ ██ Fabio Barreto. ██████████████████████████████┌┄┄┄┄┄┄┄┄┐█████████████  │ │
+│ │ ████████████████████████████████████████████████┆░░░░░░░░┆█████████████  │ │
+│ │ ┏━ role ━━━━━━━━━━━━━━━━━┓                      ┆░░░░░░░░┆               │ │
+│ │ ┃Senior Softw@r# E%g!n<er┃                      ┆░░░░░░░░┆               │ │
+│ │ ┗━━━━━━━━━━━━━━━━━━━━━━━━┛                      ┆░░░░░░░░┆               │ │
+│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░           ┆ 900×   ┆               │ │
+│ │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                 ┆  1600  ┆               │ │
+│ │  ░░░░░░░░░░░░░░░░░░░░                           ┆░░░░░░░░┆               │ │
+│ └─────────────────────────────────────────────────┆░░░░░░░░┆───────────────┘ │
+│                                                   └┄┄┄┄┄┄┄┄┘  ← runs past the window
 │                ╭────────────────────────────────────────────╮                │
 │                │ ● Building hero…               » Skip   1× │                │
 │                ╰────────────────────────────────────────────╯                │
@@ -269,7 +278,7 @@ dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the nex
 
 | # | Section | Dock command | Log | Window | Window commands | Final layout |
 |---|---|---|---|---|---|---|
-| 1 | Hero | `startSite();` | Initializing application… · Opening hero.tsx… | `hero.tsx` | `title`, `role`, `photo`, `intro`, `links` | Headline, role, intro and buttons on the left; photo on the right |
+| 1 | Hero | `startSite();` | Initializing application… · Opening hero.tsx… | `hero.tsx` | `title`, `role`, `photo`, `intro`, `links` | A banner: the giant name on two lines, the full-body photo in front of it and running into About, and role, intro and buttons at the bottom left |
 | 2 | About | `renderAbout();` | Reading about.md… | `about.md` | `heading`, `text`, `links` | A short introduction (under 100 words) and GitHub and LinkedIn buttons |
 | 3 | Projects | `renderProjects();` | Fetching projects… 4 found | `projects.tsx` | `heading`, `card` × 4 | 2 × 2 grid of personal project cards with cover images |
 | 4 | Stack | `renderStack();` | Resolving dependencies… | `stack.json` | `heading`, `group` × 6 | Group cards with technology chips |
@@ -345,33 +354,25 @@ The collapsed `❯_` button opens a real prompt in the dock: `help`, `ls`, `open
 
 | Width | Page | Build layer |
 |---|---|---|
-| ≥ 1024 px | Hero in two columns, 2 × 2 project grid, stack in 3 columns | Full window chrome; agent cursors in v1.1 (D8) |
-| 768–1023 px | Hero in two columns with a smaller photo, 2-column grids | Full window chrome, no agent cursors |
-| < 768 px | Nav with `☰` menu; hero stacked (photo first); 1 column | Windows with a single compact title bar that shows the current command; the dock spans the width (minus 16 px each side) and shows only the status and `» Skip`; a tap on the window's title bar skips |
+| ≥ 1024 px | Hero banner with the name on two lines and a 960 px photo; staggered 2 × 2 project grid; stack in 3 columns | Full window chrome; agent cursors in v1.1 (D8) |
+| 768–1023 px | The same banner with a 760 px photo; staggered 2-column grid; stack in 2 columns | Full window chrome, no agent cursors |
+| < 768 px | Nav with `☰` menu; the name on two lines, the photo (480 px) below it on the right, next to the role, and the intro and buttons below; 1 column | Windows with a single compact title bar that shows the current command; the dock spans the width (minus 16 px each side) and shows only the status and `» Skip`; a tap on the window's title bar skips |
 
 ```
 ┌────────────────────────────────────┐    ┌────────────────────────────────────┐
-│ fabiombarreto                ⌘K  ☰ │    │ fabiombarreto                ⌘K  ☰ │
+│ fabiombarreto                 ◐  ☰ │    │ fabiombarreto                 ◐  ☰ │
 ├────────────────────────────────────┤    ├────────────────────────────────────┤
-│┌─ ❯ hero.role("Senior…") ─── 2/5 ─┐│    │                                    │
-││                                  ││    │                                    │
-││ ┌┄┄┄┄┄┄┄┄┐                       ││    │  ┌────────┐                        │
-││ ┆░░░░░░░░┆                       ││    │  │ photo  │                        │
-││ ┆░░░░░░░░┆                       ││    │  │        │                        │
-││ └┄┄┄┄┄┄┄┄┘                       ││    │  └────────┘                        │
-││                                  ││    │                                    │
-││ Fabio Barreto.                   ││    │  Fabio Barreto.                    │
-││┏━ role ━━━━━━━━━━━━━━━━━┓        ││    │                                    │
-││┃Senior Softw@r# E%g!n<er┃        ││    │  Senior Software Engineer          │
-││┗━━━━━━━━━━━━━━━━━━━━━━━━┛        ││    │                                    │
-││ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    ││    │  12+ years shipping full-stack     │
-││ ░░░░░░░░░░░░░░░░░░░░░░░░░░░      ││    │  apps with React, Python and       │
-││ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   ││    │  Java. Now building AI-assisted    │
-││ ░░░░░░░░░░░░░░                   ││    │  dev workflows.                    │
-││                                  ││    │                                    │
-││                                  ││    │  [ See my work ↓ ]                 │
-│└──────────────────────────────────┘│    │                                    │
-│                                    │    │                                    │
+│┌─ ❯ hero.role("Senior…") ─── 2/5 ─┐│    │ ▒▒▓▒▒                              │
+││ █ Fabio ████      ┌┄┄┄┄┄┄┄┐      ││    │ █ Fabio ████                       │
+││ █ Barreto. ███████┆░░░░░░░┆██    ││    │ █ Barreto. █████████               │
+││                   ┆░░░░░░░┆      ││    │                    ┌──────┐        │
+││┏━ role ━━━━━━━━┓  ┆░░░░░░░┆      ││    │ Senior Software    │  ◯   │        │
+││┃Senior Softw@r#┃  ┆ 900×  ┆      ││    │ Engineer           │ /█\  │        │
+││┗━━━━━━━━━━━━━━━┛  ┆  1600 ┆      ││    │                    │ / \  │        │
+││ ░░░░░░░░░░░░░░    ┆░░░░░░░┆      ││    │                    │ │ │  │        │
+││ ░░░░░░░░░░░░      ┆░░░░░░░┆      ││    │                    └──────┘        │
+│└──────────────────┆░░░░░░░┆──────┘│    │ 12+ years shipping full-stack…     │
+│                   └┄┄┄┄┄┄┄┘       │    │ [ See my work ↓ ]  GitHub ↗        │
 │ ╭────────────────────────────────╮ │    │ ╭────────────────────────────────╮ │
 │ │ ● Building hero…        » Skip │ │    │ │ ✓ 1/5   ❯ █         scroll ↓   │ │
 │ ╰────────────────────────────────╯ │    │ ╰────────────────────────────────╯ │

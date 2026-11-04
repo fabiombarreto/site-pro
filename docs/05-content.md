@@ -29,7 +29,7 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 | `headline` | text | The hero headline, typed during the build (e.g. "Fabio Barreto."). It is the page's `<h1>` |
 | `role` | text | "Software Engineer" |
 | `subtitle` | text | The hero intro: one or two sentences on what you build |
-| `photo` | image | Square, ≥ 800 px, plain background (the ASCII version used during the build looks better with good contrast) |
+| `photo` | image | Full body, standing, 9:16, at least 1200 × 2133 px. Cut out (a PNG with a transparent background) or on a plain background so it can be cut out. Good contrast helps the ASCII version used during the build (D12, D20) |
 | `location` | text | Optional: country and time zone only, such as "Brazil (UTC-3)" |
 | `bio` | Markdown | The About section text, **under 100 words**: an introduction, not a résumé |
 | `links` | list | `{ label, url, icon }`: GitHub, LinkedIn, X/Bluesky, dev.to, YouTube… |
@@ -124,13 +124,13 @@ All in English.
 - [x] Role and intro
 - [x] A stand-in for the photo: the placeholder in [09](09-content-draft.md#profile)
 - [x] Personal projects: title, short summary, tags and links (4, see [09](09-content-draft.md#projects))
-- [ ] A cover image for each project
+- [ ] A cover image for each project (from Projects on, the covers carry the page's visual continuity, D20)
 - [x] Main links (GitHub, LinkedIn)
 - [x] Answers to the Stage 1 [open decisions](07-roadmap-and-decisions.md#open-decisions)
 
 **Needed before launch**
 
-- [ ] Photo (square, at least 800 px, plain background), replacing the placeholder
+- [ ] Photo (full body, 9:16, at least 1200 × 2133 px, cut out or on a plain background), replacing the placeholder
 - [x] About section bio
 - [x] Stack list
 - [ ] Project page text for each project (D5)

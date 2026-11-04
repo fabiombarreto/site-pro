@@ -41,7 +41,7 @@ Hero, About, Projects, Stack and Contact, plus one page per project and the 404 
 | `subtitle` | 12+ years shipping full-stack apps with React, Python and Java. Now building AI-assisted dev workflows. | The hero intro |
 | `location` | Brazil (UTC-3) | Shown in Contact. Country and time zone only |
 | `links` | GitHub `github.com/fabiombarreto` · LinkedIn `linkedin.com/in/fabio-martins-barreto` | In the hero, About and Contact |
-| `photo` | **Placeholder for now** | `photo-placeholder.svg` in the [Design System](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o) (Placeholders): a neutral head-and-shoulders silhouette on a plain dark background, 800 × 800. It has the real photo's framing and strong contrast, so the screens, the prototype and the ASCII effect are built and tuned with it. The owner will send the real photo before launch: square, at least 800 px, plain background and good contrast (it makes the ASCII version read well). Swapping it changes no layout |
+| `photo` | **Placeholder for now** | `photo-placeholder-body.svg` in the [Design System](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o) (Placeholders): a neutral full-body silhouette, cut out on a transparent background, 900 × 1600. It has the real photo's framing, so the screens, the prototype and the ASCII effect are built and tuned with it. The owner will send the real photo before launch: full body, standing, 9:16, at least 1200 × 2133 px, cut out or on a plain background, with good contrast (D20). Swapping it changes no layout. The earlier square placeholder (`photo-placeholder.svg`) stays in the Design System for square uses |
 | `email` | none | Contact happens through GitHub and LinkedIn |
 | `availability` | none | — |
 
@@ -98,4 +98,5 @@ A grouped list of technologies, without a frequency meter.
 
 ## Pending
 
-1. **Photo:** the owner will send one before launch. The placeholder is used until then.
+1. **Photo:** the owner will send a full-body photo before launch. The full-body placeholder is used until then.
+2. **Project covers:** one per project. They carry the page's continuity from Projects on (D20); the dot-grid placeholders are used until then.

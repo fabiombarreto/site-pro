@@ -8,7 +8,7 @@
 
 | Register | Where | Look |
 |---|---|---|
-| **The page** | Nav, sections, project pages, footer | Modern and readable: large display type, generous spacing, cards with images, soft depth from the accent color. Monospace appears only in small labels and tags. |
+| **The page** | Nav, sections, project pages, footer | Modern and readable: a banner hero with giant type and a full-body photo, generous spacing, cards with images, all on one continuous background of soft accent glows and grain (D20). Monospace appears only in small labels and tags. |
 | **The build layer** | Command dock, build windows, selection boxes, skeletons, agent cursors | Technical: monospaced type, syntax-highlighted commands, `info` logs, translucent windows. It exists only while sections are being built. |
 
 The page is restrained: neutral surfaces, high-contrast text and one accent color. The "wow" comes from watching it being built, not from heavy visual effects.
@@ -39,7 +39,7 @@ Every text/background pair used for content meets **WCAG AA (≥ 4.5:1)**. `--fg
 | `--bg-selection` | `#2f4a73` | `#cfe0fc` | Text selection |
 | `--border` | `#2c2e36` | `#d4d6dc` | Card and window borders, dividers |
 | `--border-strong` | `#3a3d47` | `#b9bdc6` | Dock border, hovered borders |
-| `--grid-dot` | `#23252c` | `#e2e4e9` | The dot grid in the page background |
+| `--grid-dot` | `#23252c` | `#e2e4e9` | The dot grid inside build windows |
 
 **Text**
 
@@ -57,7 +57,17 @@ Every text/background pair used for content meets **WCAG AA (≥ 4.5:1)**. `--fg
 | `--accent-hover` | `#1d4ed8` | `#1d4ed8` | Primary button hover |
 | `--accent-fg` | `#6ea8ff` | `#1d4ed8` | Links and highlighted text |
 | `--on-accent` | `#ffffff` | `#ffffff` | Text on `--accent` |
-| `--accent-glow` | `rgb(37 99 235 / 0.28)` | `rgb(37 99 235 / 0.14)` | The hero glow and the card hover glow |
+| `--accent-glow` | `rgb(37 99 235 / 0.28)` | `rgb(37 99 235 / 0.14)` | The card hover glow and the cover placeholders |
+
+**Background** (the continuous page field, decision **D20**)
+
+| Token | Midnight | Daylight | Use |
+|---|---|---|---|
+| `--glow-1` | `rgb(37 99 235 / 0.18)` | `rgb(37 99 235 / 0.12)` | The large accent-blue glows behind the page |
+| `--glow-2` | `rgb(14 165 233 / 0.12)` | `rgb(14 165 233 / 0.10)` | A lighter sky-blue glow that alternates with `--glow-1` |
+| `--grain-opacity` | `0.05` | `0.05` | The film grain over the whole background |
+
+The glows stay faint enough that `--fg-muted` still passes AA at the brightest point of a glow (4.8:1 in Midnight). They never overlap each other.
 
 **Syntax** (commands in the dock and in build windows, code snippets on project pages)
 
@@ -106,7 +116,8 @@ Two families with clear jobs: a **sans-serif** for everything people read, and a
 
 | Token | Desktop / mobile | Line height | Tracking | Weight | Use |
 |---|---|---|---|---|---|
-| `--text-display` | `clamp(44px, 7vw, 88px)` | 1.02 | -0.03em | 650 | Hero headline |
+| `--text-banner` | `clamp(64px, 15vw, 216px)` / `19vw` below 768 px, always on two lines (`Fabio` / `Barreto.`) | 0.92 | -0.045em | 650 | The hero name, in the banner |
+| `--text-display` | `clamp(44px, 7vw, 88px)` | 1.02 | -0.03em | 650 | The Contact title, where the giant type comes back |
 | `--text-3xl` | `clamp(32px, 4.5vw, 48px)` | 1.1 | -0.02em | 650 | Section titles (`<h2>`), project page title |
 | `--text-2xl` | 28 / 22 px | 1.2 | -0.01em | 500 | Hero role |
 | `--text-xl` | 22 / 20 px | 1.3 | -0.01em | 600 | Card titles, fact values |
@@ -134,7 +145,8 @@ Two families with clear jobs: a **sans-serif** for everything people read, and a
 | Window title bar | 36 px (28 px on mobile, where it also shows the command) |
 | Window command bar | 36 px (merged into the title bar on mobile) |
 | Window outset | Windows extend 24 px past the content on each side (12 px on mobile) |
-| Hero photo | Square, 360–400 px on desktop, 96 px on mobile |
+| Hero photo | Full-body cut-out, 9:16: 960 px tall on desktop, 760 px on tablet, 480 px on mobile. On desktop it stands in front of the end of `Barreto.` (the word stays readable) and on tablet right after it; on both it runs past the hero into About (D20). On mobile it sits below the name, next to the role, so the name is never covered |
+| Project grid | 2 columns, the right one 96 px lower; the last cover overlaps the top of Stack |
 | Project cover | 16:9 |
 
 ### Radii, shadows and effects
@@ -150,8 +162,8 @@ Two families with clear jobs: a **sans-serif** for everything people read, and a
 | `--shadow-dock` | `0 12px 32px rgb(0 0 0 / .4)` (lighter in Daylight) | Dock |
 
 - **Glass:** `backdrop-filter: blur(16px) saturate(140%)` only on build-layer surfaces, the scrolled nav and the palette. With `prefers-reduced-transparency`, or where blur is not supported, these surfaces use `--bg-raised`.
-- **Hero glow:** a soft radial gradient of `--accent-glow` behind the photo.
-- **Dot grid:** 1 px dots every 24 px in `--grid-dot`, faded out behind each section's content with a mask.
+- **Page background** (`Backdrop`): `--bg`, a few large radial glows in `--glow-1` and `--glow-2`, each one across the boundary between two sections, and a film grain at `--grain-opacity`. It is static: nothing in it moves or reacts to the scroll.
+- **Dot grid:** 1 px dots every 24 px in `--grid-dot`, only inside build windows, as the canvas the window draws on. It leaves with the window.
 
 ## Build layer glyphs
 
@@ -190,7 +202,8 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | `Button` | Primary (filled), secondary (outlined), ghost; optional icon | rest, hover, focus, active, disabled |
 | `TextLink` / `IconLink` | Inline and icon links; external links carry `↗` | rest, hover, focus |
 | `Tag` | Mono chip (`node`) | — |
-| `Photo` | The hero photo | built; building (skeleton, ASCII) |
+| `Photo` | The hero photo: a full-body cut-out (`cutout`) or a square | built; building (skeleton, ASCII) |
+| `Backdrop` | The continuous page background: glows across section boundaries and a film grain | — |
 | `ProjectCard` | Cover, title, year, summary, tags, status badge, `repo ↗` | rest, hover/focus (lift + accent border); building stages |
 | `StatusBadge` | `active`, `in development`, `planning`, `maintained`, `archived`: the word plus a dot whose shape repeats it, in `accent-fg` or `fg-muted` (no status hues) | — |
 | `StackGroup` / `StackChip` | A group card with technology chips | — |
