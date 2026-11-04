@@ -1,6 +1,6 @@
 # 09 · Content draft
 
-> **Status:** ✅ approved · 2026-11-03 · only the photo is pending
+> **Status:** ✅ approved · 2026-11-03 · a placeholder stands in for the photo until it arrives (2026-11-04)
 > **Source:** the owner's career-ops profile (`cv.md`, `config/profile.yml`, `modes/_profile.md`, `voice-dna.md`), the owner's answers in review, and the public GitHub repositories of `fabiombarreto`.
 > Structure follows [05 · Content](05-content.md).
 
@@ -41,7 +41,7 @@ Hero, About, Projects, Stack and Contact, plus one page per project and the 404 
 | `subtitle` | 12+ years shipping full-stack apps with React, Python and Java. Now building AI-assisted dev workflows. | The hero intro |
 | `location` | Brazil (UTC-3) | Shown in Contact. Country and time zone only |
 | `links` | GitHub `github.com/fabiombarreto` · LinkedIn `linkedin.com/in/fabio-martins-barreto` | In the hero, About and Contact |
-| `photo` | **Pending** | The owner will send one: square, at least 800 px, plain background and good contrast (it makes the ASCII version read well). A placeholder until then |
+| `photo` | **Placeholder for now** | `photo-placeholder.svg` in the [Design System](https://claude.ai/artifact/CvbHWjN6GHJoYxCTCmk91o) (Placeholders): a neutral head-and-shoulders silhouette on a plain dark background, 800 × 800. It has the real photo's framing and strong contrast, so the screens, the prototype and the ASCII effect are built and tuned with it. The owner will send the real photo before launch: square, at least 800 px, plain background and good contrast (it makes the ASCII version read well). Swapping it changes no layout |
 | `email` | none | Contact happens through GitHub and LinkedIn |
 | `availability` | none | — |
 
@@ -98,4 +98,4 @@ A grouped list of technologies, without a frequency meter.
 
 ## Pending
 
-1. **Photo:** the owner will send one.
+1. **Photo:** the owner will send one before launch. The placeholder is used until then.

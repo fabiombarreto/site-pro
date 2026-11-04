@@ -122,7 +122,7 @@ All in English.
 
 - [x] Full name and the hero headline
 - [x] Role and intro
-- [ ] Photo (square, good resolution, plain background)
+- [x] A stand-in for the photo: the placeholder in [09](09-content-draft.md#profile)
 - [x] Personal projects: title, short summary, tags and links (4, see [09](09-content-draft.md#projects))
 - [ ] A cover image for each project
 - [x] Main links (GitHub, LinkedIn)
@@ -130,6 +130,7 @@ All in English.
 
 **Needed before launch**
 
+- [ ] Photo (square, at least 800 px, plain background), replacing the placeholder
 - [x] About section bio
 - [x] Stack list
 - [ ] Project page text for each project (D5)
