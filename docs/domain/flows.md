@@ -50,4 +50,4 @@ The dock types `open("/typed-path");` and a small `error.log` window shows `Erro
 
 ## 10. Owner updates content
 
-The owner edits Markdown/JSON in `src/content/` (profile, projects, stack), opens a pull request, checks the preview deployment and merges; Cloudflare Pages publishes. There is no CMS [INFERRED - VALIDATE: exact flow depends on the Stage 2 CI setup].
+The owner edits Markdown/JSON in `src/content/` (profile, projects, stack), opens a pull request, checks the preview deployment and merges; Cloudflare Workers Builds publishes. There is no CMS [INFERRED - VALIDATE: exact flow depends on the Stage 2 CI setup].

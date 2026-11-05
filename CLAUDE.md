@@ -8,7 +8,7 @@ site-pro is a personal, static, presentation-only portfolio for the developer co
 - TypeScript strict; plain TypeScript animation runtime outside React; nanostores
 - Plain CSS with token custom properties; Geist + JetBrains Mono, self-hosted
 - pnpm, ESLint, Prettier, Vitest, Playwright + axe, Lighthouse CI
-- Cloudflare Pages (preview per PR), GitHub Actions; design in Claude Design
+- Cloudflare Workers Static Assets via Workers Builds (preview per PR), GitHub Actions; design in Claude Design
 
 ## Essential commands
 

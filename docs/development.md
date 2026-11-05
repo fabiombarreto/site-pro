@@ -25,7 +25,7 @@ State on 2026-11-04: Stages 0 and 1 are done; there is no `package.json` yet. Th
 
 1. **Docs first.** If the change touches a decision, update the relevant doc in `docs/` (and docs/decisions.md) before the code.
 2. Run the Decision Gate (docs/decision-gate.md) before planning or coding non-exempt changes.
-3. Branch from `main`, implement with tests, open a pull request; Cloudflare Pages builds a preview.
+3. Branch from `main`, implement with tests, open a pull request; Cloudflare Workers Builds builds a preview.
 4. Review on the preview (desktop and mobile, both themes, reduced motion), then merge.
 5. Commit messages follow Conventional Commits; commit and push only when the owner asks.
 

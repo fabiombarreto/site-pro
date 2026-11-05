@@ -56,7 +56,7 @@ Compared with a React-only framework such as Next.js, for this site:
 ### How React is used
 
 - **Static by default.** React components such as `NavBar`, `ProjectCard` and `StackGroup` are rendered to HTML at build time without a client directive, so they ship no JS.
-- **Hydrated islands only where needed.** Command Palette (`client:idle`), the theme toggle, the mobile menu and, in v1.1, the interactive dock (`client:visible`).
+- **Hydrated islands only where needed.** Command Palette (`client:idle`), the theme toggle and, in v1.1, the interactive dock (`client:visible`). The mobile menu is a static HTML `popover`: it opens and closes without JavaScript and needs no hydration (Stage 2 PRD).
 - **The runtime stays outside React.** It manipulates the DOM directly, draws the build layer and publishes its state (current section, progress, status) to nanostores. Hydrated islands subscribe to that state; static parts of the page react through `data-*` attributes and CSS.
 - **React stays off the critical path.** The hero build never waits for React to load.
 
@@ -78,7 +78,7 @@ Compared with a React-only framework such as Next.js, for this site:
       speed set to ∞         → instant mode
       otherwise              → marks sections as "pending" (invisible, space reserved)
  2. The runtime (a small deferred module) wires the triggers, draws the dock and the windows, and builds sections as the visitor scrolls.
- 3. React islands (Command Palette, theme toggle, mobile menu) hydrate later, off the critical path.
+ 3. React islands (Command Palette, theme toggle) hydrate later, off the critical path.
 ```
 
 The key idea: **the server delivers the final result, and the browser "rewinds" it to build it in front of the visitor.** SEO, accessibility and the no-JS experience come for free, and the inline `<head>` script prevents a flash of content before the build.
@@ -171,6 +171,6 @@ site-pro/
 
 ## Deployment and operations
 
-- Static hosting: **Cloudflare Pages** (decision **D9**).
-- CI on GitHub Actions: lint → typecheck → tests → build → Lighthouse → deploy. Every pull request gets a preview link.
+- Static hosting: **Cloudflare Workers Static Assets** (decision **D9**, amended on 2026-11-05), configured in `wrangler.jsonc` (`assets.directory: "./dist"`, `not_found_handling: "404-page"`).
+- CI on GitHub Actions: lint → typecheck → tests → build → Lighthouse. Workers Builds deploys every push: a preview link for every pull request and production from `main`. Branch protection on `main` requires the CI checks before a merge.
 - Cookieless analytics (open decision **D10**): Cloudflare Web Analytics, Plausible or Umami. Suggested events: Skip usage, Replay, project clicks, palette usage and deepest section reached.

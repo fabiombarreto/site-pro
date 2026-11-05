@@ -38,9 +38,9 @@ Index of detailed documentation for site-pro. One line per file; open the file f
 
 → docs/context/architecture.md — stack, SSG + progressive enhancement pattern, planned folders, design artifacts
 → docs/context/conventions.md — English everywhere, copy voice, build microcopy, naming, tokens, Git
-→ docs/context/integrations.md — GitHub, LinkedIn, Cloudflare Pages, CI, analytics (open), fonts, Claude Design
+→ docs/context/integrations.md — GitHub, LinkedIn, Cloudflare Workers, CI, analytics (open), fonts, Claude Design
 → docs/context/constraints.md — scope, privacy, versions, performance budgets, accessibility, behavior rules
-→ docs/context/methodology.md — methodology declaration: TDD not declared, docs sync on, Figma track off
+→ docs/context/methodology.md — methodology declaration: test-after (TDD off), Vitest and Playwright declared, docs sync on, Figma track off
 → docs/context/testing.md — mandatory test guardrail; no suites yet, Vitest and Playwright planned
 
 ## Domain

@@ -9,7 +9,7 @@ A workflow-focused companion to docs/06-architecture.md (the approved design) an
 | 1 | Build time (Astro) | Content Collections are validated; sections render to complete static HTML; the photo → ASCII and OG image scripts run |
 | 2 | Inline `<head>` script | Before first paint: no JS, reduced motion or a saved `∞` speed keep the page as is; otherwise sections are marked pending (invisible, space reserved) and fonts are preloaded |
 | 3 | Deferred runtime module | Reads the per-section build scripts, mounts the build layer overlay (boot terminal, dock, windows) and runs the program on one `requestAnimationFrame` loop |
-| 4 | After idle | React islands hydrate (Command Palette, theme toggle, mobile menu) and subscribe to runtime state through nanostores |
+| 4 | After idle | React islands hydrate (Command Palette, theme toggle) and subscribe to runtime state through nanostores; the mobile menu is a static `popover` and needs no hydration |
 
 ## Moving parts
 

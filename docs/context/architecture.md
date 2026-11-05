@@ -15,8 +15,8 @@ State on 2026-11-04: **no application code exists yet**. Stage 1 (design) is app
 | Content | Astro Content Collections with schemas (Markdown/JSON in the repository) | docs/05-content.md |
 | Package manager | pnpm | docs/08-tools.md |
 | Quality | ESLint (flat config), Prettier, Vitest, Playwright (E2E, visual, axe), Lighthouse CI, `astro check` | docs/08-tools.md |
-| Hosting | Cloudflare Pages, a preview per pull request | D9 |
-| CI | GitHub Actions: lint → typecheck → tests → build → Lighthouse → deploy *(planned)* | docs/06-architecture.md |
+| Hosting | Cloudflare Workers Static Assets, deployed by Workers Builds with a preview per pull request (amended 2026-11-05) | D9 |
+| CI | GitHub Actions: lint → typecheck → tests → build → Lighthouse; deploy by Workers Builds *(planned)* | docs/06-architecture.md |
 | Fonts | Geist (page) and JetBrains Mono (build layer), self-hosted | D18 |
 
 ## Architectural pattern
@@ -26,7 +26,7 @@ Static site generation with progressive enhancement:
 1. Astro renders the **final page** to complete HTML at build time (SEO, no-JS and accessibility come for free).
 2. An inline `<head>` script picks the mode before the first paint: no JS, reduced motion or `∞` speed render the page as is; otherwise sections are marked pending (invisible, space reserved).
 3. The **runtime** (a small deferred module, outside React) "rewinds" the page and builds it section by section as the visitor scrolls: a program of section builds, a scheduler, an effects registry, overlays (boot terminal, dock, build windows), triggers, controls, persistence and a clock (real or deterministic in tests).
-4. React islands (Command Palette, theme toggle, mobile menu) hydrate later, off the critical path, and read the runtime's state from nanostores.
+4. React islands (Command Palette, theme toggle) hydrate later, off the critical path, and read the runtime's state from nanostores. The mobile menu is a static `popover` that works without JavaScript.
 
 Two visual registers never mix: **the page** (modern, readable) and **the build layer** (dock, windows, selection boxes, skeletons; overlay only, `aria-hidden`, exists only while building).
 
@@ -66,4 +66,4 @@ Two visual registers never mix: **the page** (modern, readable) and **the build 
 
 ## External services
 
-GitHub (links; optional build-time star counts), LinkedIn (links), Cloudflare Pages (hosting), analytics still open (D10). Details: docs/context/integrations.md.
+GitHub (links; optional build-time star counts), LinkedIn (links), Cloudflare Workers Static Assets (hosting), analytics still open (D10). Details: docs/context/integrations.md.

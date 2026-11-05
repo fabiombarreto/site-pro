@@ -89,8 +89,8 @@ Caveat: Claude Design is still a *research preview*. Mitigation: the design syst
 | Type checking | **`astro check`** | Proposed | Covers `.astro` and TypeScript files |
 | Performance | **Lighthouse CI** | Proposed | — |
 | Commit messages | **Conventional Commits** | Proposed | A readable history in a public repository |
-| Hosting | **Cloudflare Pages** | ✅ D9 | Preview deployment for every pull request |
-| CI | **GitHub Actions** | Proposed | Lint → typecheck → tests → build → Lighthouse → deploy |
+| Hosting | **Cloudflare Workers Static Assets** | ✅ D9 (amended 2026-11-05) | Workers Builds deploys a preview for every pull request and production from `main` |
+| CI | **GitHub Actions** | Proposed | Lint → typecheck → tests → build → Lighthouse; the deploy is Workers Builds |
 | Fonts | **Geist** and **JetBrains Mono** | ✅ D18 | Self-hosted (via Fontsource or the font's own package), so the same fonts render everywhere |
 | Icons | **Lucide** for the UI, **Simple Icons** for GitHub and LinkedIn | Proposed | See [03 · Iconography](03-design-system.md#iconography) |
 | License | **MIT** for the code | ✅ D16 | Personal content (text, photo, images) stays all rights reserved |

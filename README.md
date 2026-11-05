@@ -30,7 +30,7 @@ Everything about the project lives in [`docs/`](docs/README.md): concept, experi
 
 ## Hosting
 
-[Cloudflare Pages](https://pages.cloudflare.com/), with a preview deployment for every pull request.
+[Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/) (static assets), deployed by Workers Builds with a preview deployment for every pull request.
 
 ## License
 

@@ -33,11 +33,11 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 
 ---
 
-## [2026-11-02] D9 · Cloudflare Pages
+## [2026-11-02] D9 · Cloudflare hosting (amended 2026-11-05)
 
 **Context:** Static hosting with previews.
-**Decision:** Cloudflare Pages, with a preview deployment per pull request.
-**Reason:** Chosen by the owner in Stage 0.
+**Decision:** Cloudflare Workers Static Assets, deployed by Workers Builds (Git integration): a preview deployment per pull request and production from `main`. No Cloudflare secret is stored in GitHub; branch protection on `main` makes the CI checks gate merges. Amended on 2026-11-05; the Stage 0 choice was Cloudflare Pages.
+**Reason:** Chosen by the owner in Stage 0. Amended by the owner in the Stage 2 PRD (PRPs/prds/stage-2-foundation.prd.md): Cloudflare recommends Workers for new projects and puts new investment there, while Pages only gets maintenance, and the owner already runs a project on Workers.
 **Areas affected:** all
 
 ---
@@ -174,6 +174,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 **Decision:** The look (screens + D20) and the rhythm (prototype v2, docs/04-animations.md timings) are approved; they are the reference for Stages 2–4.
 **Reason:** Approved by the owner on 2026-11-04.
 **Areas affected:** build, visual-design
+
+---
+
+## [2026-11-05] Stage 2 PRD approved: scope boundaries and methodology
+
+**Context:** Stage 2 · Foundation needed its boundaries with Stages 3–5 settled (PRPs/prds/stage-2-foundation.prd.md).
+**Decision:** Stage 2 ships a working theme toggle (Midnight by default, saved in `localStorage`, applied by an inline head script before first paint), a static HTML `popover` mobile menu that works without JavaScript, header-only project pages at `/projects/<slug>` (with a body only where the entry has one, such as relay's fork note) and a plain page-register 404. The nav's `⌘K` button, the footer's build summary and Replay, the `ENOENT` 404 window and the palette's theme command wait for their stages. The photo placeholder is a neutral 900 × 1600 silhouette drawn for the repository. Methodology: test-after (`tdd: false`) with Vitest and Playwright declared in docs/context/methodology.md.
+**Reason:** Approved by the owner on 2026-11-05: a navigable site has no broken links or dead controls, both themes must be testable, and the scaffold phase cannot be test-first.
+**Areas affected:** navigation, visual-design, content, build
 
 ---
 

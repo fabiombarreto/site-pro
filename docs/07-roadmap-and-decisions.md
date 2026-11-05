@@ -7,10 +7,10 @@
 | **0 · Foundations** ✅ | Documentation, stack and working tools; root `README.md`; Git repository initialized | Docs approved and Stage 0 decisions answered |
 | **1 · Design project** ✅ | Content, color and features defined; the v2 concept (build windows, D17); Design System v2; desktop/tablet/mobile screens of the final page and of the build states; animated prototype of the boot (terminal → dock → hero window → final hero) and the scroll to Projects, all in Claude Design (see [08](08-tools.md#design-tool)) | The look **and the rhythm** are approved and Stage 1 decisions are answered. ✅ Approved on 2026-11-04: the look with the screens and D20, the rhythm with [prototype v2](https://claude.ai/artifact/ABxEwc9LHKR7cwy3rjQvDj) |
 | **Milestone · `CLAUDE.md`** ✅ | Generated with the relay plugin's `context-builder` command: `CLAUDE.md`, `docs/KNOWLEDGE_BASE.md`, `docs/context/`, `docs/domain/`, the Decision Gate, decisions and anti-patterns | Documentation and planning are complete, before Stage 2. ✅ Generated on 2026-11-04 |
-| **2 · Foundation** | Astro + React + TypeScript project, tokens and themes, nav and the five sections as a static modern page with placeholder content, CI and preview deployments | A navigable static site, without animation, meeting the accessibility targets |
+| **2 · Foundation** | Astro + React + TypeScript project, tokens and themes (with a working theme toggle), nav and the five sections as a static modern page with the approved copy and the photo and cover placeholders, header-only project pages and a plain 404, CI and preview deployments ([PRD](../PRPs/prds/stage-2-foundation.prd.md)) | A navigable static site, without animation, meeting the accessibility targets |
 | **3 · Runtime** | Scheduler with overlapping steps, boot terminal, dock, build windows, element effects, triggers, skip, run all, speed, replay, turbo, deep links, focus rule, reduced motion, persistence | Every scenario in [02 · Behavior rules](02-experience.md#behavior-rules) covered by an E2E test |
 | **4 · Sections and effects** | Hero (photo ASCII → photo), About, Projects (with project pages), Stack and Contact, with the real content and their build scripts | Every section with the effects from [04](04-animations.md), within its budget |
-| **5 · Extras** | Command Palette, nav scroll-spy, theme switching, card → project page transitions, 404, easter eggs | Shortcuts and palette fully usable by keyboard |
+| **5 · Extras** | Command Palette (with its theme command), nav scroll-spy, card → project page transitions, the `ENOENT` 404 window, easter eggs | Shortcuts and palette fully usable by keyboard |
 | **6 · Polish and launch** | Accessibility audit, performance, SEO, OG images, analytics, cross-browser testing, a readability test with people who don't code, domain | Targets from [01](01-concept.md#how-we-will-know-it-worked) met, site live and a "how I built this site" post |
 | **v1.1** | Interactive dock (D7), multi-cursor agents (D8), a Phosphor theme easter egg | — |
 | **Post-v1** | Experience and Articles and talks sections (D4) | When there is content for them |
@@ -46,7 +46,7 @@ Each decision comes with a recommendation. Agreeing or disagreeing is enough.
 |---|---|---|---|---|
 | **D1** | Language | PT-BR · EN · bilingual | — | ✅ **English only**, for the site and every project artifact (docs, code, commits) |
 | **D2** | Stack | Astro · Next.js · SvelteKit · other | — | ✅ **Astro + React + TypeScript** |
-| **D9** | Hosting | Cloudflare Pages · Vercel · Netlify · GitHub Pages | — | ✅ **Cloudflare Pages** |
+| **D9** | Hosting | Cloudflare Pages · Vercel · Netlify · GitHub Pages | — | ✅ **Cloudflare Workers Static Assets**, deployed by Workers Builds with a preview per pull request (amended on 2026-11-05 in the [Stage 2 PRD](../PRPs/prds/stage-2-foundation.prd.md); first decided as Cloudflare Pages, which now only gets maintenance) |
 | **D11** | Design tool | Claude Design · Figma · Penpot | — | ✅ **Claude Design** (Figma as a fallback) |
 | **D13** | Repository visibility | Public · private | — | ✅ **Public** |
 | **D14** | Task management | GitHub Issues + Projects · other · none | **GitHub Issues** when the work calls for it | ⏸ Suggestion, decide when needed |

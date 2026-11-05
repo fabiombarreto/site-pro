@@ -196,7 +196,7 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | Component | Description | States and variants |
 |---|---|---|
 | `NavBar` | Name, section links, `⌘K`, theme toggle, GitHub | transparent (top), translucent (scrolled), active link; mobile `☰` menu |
-| `MobileMenu` | The `☰` menu on small screens (island) | open, closed |
+| `MobileMenu` | The `☰` menu on small screens (a static HTML `popover`, works without JavaScript) | open, closed |
 | `ThemeToggle` | Midnight / Daylight | — |
 | `SectionHeading` | Mono eyebrow (`02 / projects`), `<h2>` and an optional lead | — |
 | `Button` | Primary (filled), secondary (outlined), ghost; optional icon | rest, hover, focus, active, disabled |
