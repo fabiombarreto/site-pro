@@ -124,13 +124,14 @@ All in English.
 - [x] Role and intro
 - [x] A stand-in for the photo: the placeholder in [09](09-content-draft.md#profile)
 - [x] Personal projects: title, short summary, tags and links (4, see [09](09-content-draft.md#projects))
-- [ ] A cover image for each project (from Projects on, the covers carry the page's visual continuity, D20)
+- [x] Stand-ins for the project covers: the dot-grid placeholders with each project's slug
 - [x] Main links (GitHub, LinkedIn)
 - [x] Answers to the Stage 1 [open decisions](07-roadmap-and-decisions.md#open-decisions)
 
 **Needed before launch**
 
 - [ ] Photo (full body, 9:16, at least 1200 × 2133 px, cut out or on a plain background), replacing the placeholder
+- [ ] A cover image for each project (16:9, at least 1280 px), replacing the placeholders: from Projects on, the covers carry the page's visual continuity (D20)
 - [x] About section bio
 - [x] Stack list
 - [ ] Project page text for each project (D5)

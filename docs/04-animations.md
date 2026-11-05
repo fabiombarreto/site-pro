@@ -120,7 +120,7 @@ idle                                    █   dock: ❯ █
 |---|---|---|---|
 | `select` | Every element | A selection box with corner handles and a label (`h1`, `card`, `img 800×800`) is dragged to the element's size. | 150 ms |
 | `skeleton` | Every element | A gray block with a soft shimmer; images show their dimensions, a nod to the reel's placeholders. | ≥ 150 ms |
-| `type-text` | Headlines and titles | Characters typed with a caret. | 28 ms/char |
+| `type-text` | Headlines and titles | Characters typed with a thin caret in `--accent-fg`. The block cursor (`█`) stays in the build layer: at banner size it would cover the photo. | 28 ms/char |
 | `decode` | Short labels (role, badges) | Letters scramble through random characters (`!<>-_\/[]{}=+*^?#`) and settle from left to right. | 350 ms |
 | `resolve-lines` | Paragraphs | Skeleton bars give way to text, one line at a time. | 40 ms/line |
 | `image-resolve` | Hero photo, project covers | The hero photo starts as ASCII art (generated at build time from the photo itself) and dissolves, with dithering, into the real photo (D12). Covers resolve from a blurred version. | 700 ms |

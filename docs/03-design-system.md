@@ -217,7 +217,7 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | Component | Description | States and variants |
 |---|---|---|
 | `BootTerminal` | The terminal in the middle of the first screen | typing, logging, folding into the dock |
-| `CommandDock` | The pill HUD at the bottom | typing, building, idle, done, collapsed, reduced; `compact` on mobile (status and `» Skip` only) |
+| `CommandDock` | The pill HUD at the bottom | typing, building, created (`✔ Projects Section created. (2.31s)`), idle, done, collapsed, reduced; `compact` on mobile (status and `» Skip` only) |
 | `CommandLine` | `❯` + a highlighted command + cursor | waiting, typing, entered |
 | `Cursor` | Blinking `█` block | blinking, solid (while typing), hidden |
 | `LogLine` | `info  message` | info, success, warn, error; with spinner |
