@@ -4,3 +4,16 @@
 # Claude — ignore session/cache/local artifacts, but commit project-wide settings
 .claude/*
 !.claude/settings.json
+
+# Node / Astro / Cloudflare
+node_modules/
+dist/
+.astro/
+.wrangler/
+
+# Test and Lighthouse reports
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.lighthouseci/

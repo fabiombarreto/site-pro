@@ -1,0 +1,42 @@
+.sp-backdrop {
+  --glow-scale: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sp-glow {
+  position: absolute;
+  width: calc(var(--glow-size) * var(--glow-scale) * 1px);
+  height: calc(var(--glow-size) * var(--glow-scale) * 1px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--glow-1), transparent);
+}
+
+.sp-glow.is-2 {
+  background: radial-gradient(closest-side, var(--glow-2), transparent);
+}
+
+.sp-backdrop.has-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: var(--grain-opacity);
+  background-size: 180px 180px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 1023px) {
+  .sp-backdrop {
+    --glow-scale: 0.78;
+  }
+}
+
+@media (max-width: 767px) {
+  .sp-backdrop {
+    --glow-scale: 0.6;
+  }
+}

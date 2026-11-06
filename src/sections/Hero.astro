@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Button } from '../components/page/Button';
+import { Photo } from '../components/page/Photo';
+import { resolveAssetUrl } from '../components/page/resolve-asset';
+import { strings } from '../strings';
+import { profileLinks } from './profile-links';
+
+interface Props {
+  profile: CollectionEntry<'profile'>['data'];
+}
+
+const { profile } = Astro.props;
+const links = profileLinks(profile);
+const photoUrl = resolveAssetUrl(profile.photo);
+if (!photoUrl) throw new Error('profile.photo does not resolve to an asset');
+const [first = '', ...rest] = profile.headline.split(' ');
+const remainder = rest.join(' ');
+---
+
+<section id="top" aria-label={strings.hero.ariaLabel} class="sp-hero">
+  <div class="sp-hero-inner">
+    <h1 class="banner sp-hero-name">
+      {first} <br />
+      {remainder}
+    </h1>
+    <div class="sp-hero-photo">
+      <Photo src={photoUrl} alt={profile.name} />
+    </div>
+    <p class="sp-hero-role text-2xl">{profile.role}</p>
+    <div class="sp-hero-copy">
+      <p class="text-lg">{profile.subtitle}</p>
+      <div class="sp-hero-actions">
+        <Button variant="primary" href="#projects" iconEnd="arrowDown">
+          {strings.hero.seeMyWork}
+        </Button>
+        <Button variant="ghost" icon="github" href={links.github} external>
+          {strings.buttons.github}
+        </Button>
+        <Button variant="ghost" icon="linkedin" href={links.linkedin} external>
+          {strings.buttons.linkedin}
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>

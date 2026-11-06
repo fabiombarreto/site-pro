@@ -1,0 +1,140 @@
+/* Design System v2 tokens. The only file in src/ allowed to hold color and shadow literals. */
+:root,
+[data-theme='midnight'] {
+  --bg: #141519;
+  --bg-raised: #1d1e24;
+  --bg-overlay: #23242bc7;
+  --bg-hover: #23242b;
+  --bg-selection: #2f4a73;
+  --border: #2c2e36;
+  --border-strong: #3a3d47;
+  --grid-dot: #23252c;
+  --fg: #d6d8de;
+  --fg-muted: #8b8f9c;
+  --fg-subtle: #5c606c;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-fg: #6ea8ff;
+  --on-accent: #ffffff;
+  --accent-glow: #2563eb47;
+  --glow-1: #2563eb2e;
+  --glow-2: #0ea5e91f;
+  --syn-keyword: #c792ea;
+  --syn-function: #e5c07b;
+  --syn-string: #98c379;
+  --syn-number: #f78c6c;
+  --syn-type: #4fd1c5;
+  --syn-comment: #868b96;
+  --syn-punct: var(--fg);
+  --log-info: #60a5fa;
+  --log-success: #4ade80;
+  --log-warn: #fbbf24;
+  --log-error: #f87171;
+  --build-select: var(--accent);
+  --build-skeleton: #23242b;
+  --build-shine: #2c2e36;
+  --agent-1: #c792ea;
+  --agent-2: #e5c07b;
+  --agent-3: #98c379;
+  --agent-4: #4fd1c5;
+  --shadow-card: 0 1px 2px #0000004d, 0 8px 24px #00000040;
+  --shadow-window: 0 24px 64px #00000080;
+  --shadow-dock: 0 12px 32px #00000066;
+  color-scheme: dark;
+}
+
+[data-theme='daylight'] {
+  --bg: #f6f7f9;
+  --bg-raised: #ffffff;
+  --bg-overlay: #ffffffd1;
+  --bg-hover: #eef0f3;
+  --bg-selection: #cfe0fc;
+  --border: #d4d6dc;
+  --border-strong: #b9bdc6;
+  --grid-dot: #e2e4e9;
+  --fg: #1f2328;
+  --fg-muted: #59606b;
+  --fg-subtle: #9aa0aa;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-fg: #1d4ed8;
+  --on-accent: #ffffff;
+  --accent-glow: #2563eb24;
+  --glow-1: #2563eb1f;
+  --glow-2: #0ea5e91a;
+  --syn-keyword: #7c3aed;
+  --syn-function: #795e26;
+  --syn-string: #4d7c0f;
+  --syn-number: #c2410c;
+  --syn-type: #0f766e;
+  --syn-comment: #646b76;
+  --syn-punct: var(--fg);
+  --log-info: #1d4ed8;
+  --log-success: #15803d;
+  --log-warn: #a16207;
+  --log-error: #b91c1c;
+  --build-select: var(--accent);
+  --build-skeleton: #e9ebef;
+  --build-shine: #f3f4f6;
+  --agent-1: #9333ea;
+  --agent-2: #b45309;
+  --agent-3: #15803d;
+  --agent-4: #0f766e;
+  --shadow-card: 0 1px 2px #1018280f, 0 8px 24px #10182814;
+  --shadow-window: 0 24px 64px #1018282e;
+  --shadow-dock: 0 12px 32px #10182824;
+  color-scheme: light;
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --container: 1200px;
+  --measure: 68ch;
+  --nav-height: 64px;
+  --dock-height: 44px;
+  --dock-width: 560px;
+  --window-bar: 36px;
+  --grain-opacity: 0.05;
+  --font-sans:
+    'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'Cascadia Code', 'Fira Code', ui-monospace,
+    SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+:root {
+  --text-banner: clamp(64px, 15vw, 216px);
+  --text-display: clamp(44px, 7vw, 88px);
+  --text-3xl: clamp(32px, 4.5vw, 48px);
+  --text-2xl: 28px;
+  --text-xl: 22px;
+  --text-lg: 19px;
+  --text-md: 16px;
+  --text-sm: 14px;
+  --mono-sm: 13px;
+  --mono-xs: 12px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --text-banner: 19vw;
+    --text-2xl: 22px;
+    --text-xl: 20px;
+    --text-lg: 18px;
+    --mono-sm: 12px;
+    --mono-xs: 11px;
+  }
+}

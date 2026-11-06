@@ -1,0 +1,46 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { Backdrop, DEFAULT_GLOWS } from '../components/page/Backdrop';
+import { Footer } from '../components/page/Footer';
+import { NavBar } from '../components/page/NavBar';
+import About from '../sections/About.astro';
+import Contact from '../sections/Contact.astro';
+import Hero from '../sections/Hero.astro';
+import Projects from '../sections/Projects.astro';
+import Stack from '../sections/Stack.astro';
+import { profileLinks } from '../sections/profile-links';
+import '../styles/home.css';
+
+const profileEntry = await getEntry('profile', 'profile');
+const stackEntry = await getEntry('stack', 'stack');
+if (!profileEntry) throw new Error('The profile entry is missing');
+if (!stackEntry) throw new Error('The stack entry is missing');
+const profile = profileEntry.data;
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const links = profileLinks(profile);
+const sourceHref = projects.find((p) => p.id === 'site-pro')?.data.links.repo;
+if (!sourceHref) throw new Error('The site-pro project has no repo link');
+
+const title = `${profile.headline.replace(/\.$/, '')} - ${profile.role}`;
+const description = profile.subtitle;
+---
+
+<Base title={title} description={description}>
+  <div class="sp-page">
+    <Backdrop glows={DEFAULT_GLOWS} />
+    <div class="sp-page-content">
+      <NavBar githubHref={links.github} linkedinHref={links.linkedin} />
+      <main id="main" tabindex="-1">
+        <Hero profile={profile} />
+        <About profile={profile} />
+        <Projects projects={projects} />
+        <Stack stack={stackEntry.data} />
+        <Contact profile={profile} />
+      </main>
+      <Footer sourceHref={sourceHref} owner={profile.name} />
+    </div>
+  </div>
+</Base>

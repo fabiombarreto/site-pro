@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Button } from '../components/page/Button';
+import { SectionHeading } from '../components/page/SectionHeading';
+import { strings } from '../strings';
+import { profileLinks } from './profile-links';
+
+interface Props {
+  profile: CollectionEntry<'profile'>['data'];
+}
+
+const { profile } = Astro.props;
+const links = profileLinks(profile);
+const paragraphs = profile.bio.split('\n\n');
+---
+
+<section id="about" aria-labelledby="about-title" class="sp-section">
+  <div class="sp-section-inner">
+    <SectionHeading
+      id="about-title"
+      eyebrow={strings.sections.about.eyebrow}
+      title={strings.sections.about.title}
+    />
+    <div class="sp-about-body">
+      {paragraphs.map((p) => (
+        <p class="text-lg">{p}</p>
+      ))}
+      <div class="sp-actions">
+        <Button variant="secondary" icon="github" href={links.github} external>
+          {strings.buttons.github}
+        </Button>
+        <Button
+          variant="secondary"
+          icon="linkedin"
+          href={links.linkedin}
+          external
+        >
+          {strings.buttons.linkedin}
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>

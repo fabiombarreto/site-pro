@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import { Backdrop, DEFAULT_GLOWS } from '../components/page/Backdrop';
+import { Button } from '../components/page/Button';
+import { Footer } from '../components/page/Footer';
+import { NavBar } from '../components/page/NavBar';
+import { loadSiteChrome, pageTitle } from '../sections/site-chrome';
+import { strings } from '../strings';
+import '../styles/subpages.css';
+
+const { profile, links, sourceHref } = await loadSiteChrome();
+---
+
+<Base
+  title={pageTitle(strings.notFound.title, profile)}
+  description={profile.subtitle}
+>
+  <div class="sp-page">
+    <Backdrop glows={DEFAULT_GLOWS} />
+    <div class="sp-page-content">
+      <NavBar
+        githubHref={links.github}
+        linkedinHref={links.linkedin}
+        homeHref="/"
+      />
+      <main id="main" tabindex="-1" class="sp-subpage sp-notfound">
+        <h1 class="text-3xl sp-notfound-title">{strings.notFound.title}</h1>
+        <Button variant="primary" href="/">
+          {strings.notFound.homeLink}
+        </Button>
+      </main>
+      <Footer sourceHref={sourceHref} owner={profile.name} />
+    </div>
+  </div>
+</Base>

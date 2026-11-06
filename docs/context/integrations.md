@@ -9,7 +9,7 @@ The site is static and presentation-only: no backend, no runtime API calls, no f
 | Cloudflare Workers (Static Assets) | Static hosting; a preview deployment per pull request and production from `main` (D9, amended 2026-11-05) | Deploy | Workers Builds Git integration; no Cloudflare secret stored in GitHub | Not connected yet: the owner connects the repository before the Stage 2 pull request |
 | GitHub Actions | CI: lint → typecheck → tests → build → Lighthouse (the deploy is Workers Builds) | CI | None needed for deploy | Planned |
 | Analytics | Tune the build pace (Skip usage, Replay, project clicks, palette use, deepest section) | Runtime, cookieless | Site tag, no user auth | Open decision D10 (recommended: Cloudflare Web Analytics) |
-| Fonts (Geist, JetBrains Mono) | Page and build-layer type | Build | None | Self-hosted (Fontsource or the fonts' packages), not loaded from Google at runtime |
+| Fonts (Geist, JetBrains Mono) | Page and build-layer type | Build | None | Self-hosted (Fontsource or the fonts' packages), not loaded from Google at runtime. Implemented in Stage 2 Phase 2: the Latin variable woff2 files are copied from `@fontsource-variable/geist` and `@fontsource-variable/jetbrains-mono` (dev dependencies) into `public/fonts/` with their OFL license texts, declared in `src/styles/fonts.css` and preloaded in `src/layouts/Base.astro` |
 | Claude Design | Design System, screens and prototype (D11) | Design only | The owner's claude.ai account | Artifacts are private; links in docs/context/architecture.md |
 | Figma | Design fallback only | — | — | Not in use (figma_track: false) |
 

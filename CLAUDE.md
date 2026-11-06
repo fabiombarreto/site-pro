@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-site-pro is a personal, static, presentation-only portfolio for the developer community that builds itself live: a typed command opens a build window that creates each section, then steps aside and leaves a modern, readable page. Stages 0 (docs) and 1 (design) are approved; no application code exists yet, and Stage 2 scaffolds the project.
+site-pro is a personal, static, presentation-only portfolio for the developer community that builds itself live: a typed command opens a build window that creates each section, then steps aside and leaves a modern, readable page. Stages 0 (docs) and 1 (design) are approved; Stage 2 scaffolded the project (Astro, tokens, runtime, CI with nine jobs).
 
 ## Tech stack
 
@@ -12,7 +12,7 @@ site-pro is a personal, static, presentation-only portfolio for the developer co
 
 ## Essential commands
 
-Planned for Stage 2 (no `package.json` yet): `pnpm install`, `pnpm dev`, `pnpm build`, `pnpm astro check`, `pnpm lint`, `pnpm test`, `pnpm test:e2e`. Details: docs/development.md.
+Scaffolded in Stage 2 Phase 1: `pnpm install`, `pnpm dev`, `pnpm build`, `pnpm check` (astro check), `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm test:e2e`, `pnpm check:tokens`, `pnpm check:privacy`, `pnpm check:budgets`, `pnpm lighthouse`. Details: docs/development.md.
 
 ## Key patterns
 

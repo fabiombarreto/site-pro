@@ -1,0 +1,15 @@
+dist
+.astro
+.worktrees
+node_modules
+pnpm-lock.yaml
+coverage
+playwright-report
+test-results
+.lighthouseci
+docs
+PRPs
+.claude
+CLAUDE.md
+README.md
+LICENSE
