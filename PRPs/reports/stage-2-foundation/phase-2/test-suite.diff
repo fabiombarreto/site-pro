@@ -1,0 +1,51 @@
+# TDD initial suite — phase 2
+# Source PRD: PRPs/prds/stage-2-foundation.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-2-foundation-phase-2-tokens-themes-and-fonts.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Mode: test-after (tdd: false; vitest, playwright)
+# Generated: 2026-11-05
+
+## AC outcomes
+
+Test paths are relative to code_root (`.worktrees/stage-2-foundation/`).
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-4 (plan AC-A1, AC-A2) | NEW_TEST_REQUIRED | tests/e2e/theme.spec.ts (theme describe blocks); tests/unit/theme-helpers.test.ts |
+| AC-9 (plan AC-A3) | NEW_TEST_REQUIRED | tests/unit/design-tokens.test.ts ("tokens only outside tokens.css") |
+| AC-5 contrast risk mitigation (plan AC-A6) | NEW_TEST_REQUIRED | tests/unit/design-tokens.test.ts (per-theme contrast, --fg-muted over glow peaks) |
+| AC-3 focus ring (plan AC-A4) | NEW_TEST_REQUIRED | tests/e2e/theme.spec.ts ("focus and motion"); tests/unit/design-tokens.test.ts ("base styles") |
+| AC-12 reduced motion (plan AC-A5) | NEW_TEST_REQUIRED | tests/e2e/theme.spec.ts (reduced-motion transition); tests/unit/design-tokens.test.ts |
+| AC-10 fonts and CSS budget (plan AC-A7) | NEW_TEST_REQUIRED | tests/unit/design-tokens.test.ts ("self-hosted fonts"); tests/e2e/theme.spec.ts ("fonts", "built dist/ styles") |
+| AC-13 Backdrop (plan AC-A8) | NEW_TEST_REQUIRED | tests/e2e/theme.spec.ts ("Backdrop"); tests/unit/theme-helpers.test.ts ("Backdrop") |
+| AC-1 (static HTML, h1, main, title) | EXISTING_TEST_COVERS | tests/e2e/placeholder-page.spec.ts:13 (still valid on the new layout) |
+| AC-5 axe smoke | EXISTING_TEST_COVERS | tests/e2e/placeholder-page.spec.ts:40 |
+| AC-8 privacy | EXISTING_TEST_COVERS | tests/e2e/placeholder-page.spec.ts:57 |
+| AC-1 SiteMark render | EXISTING_TEST_COVERS | tests/unit/site-mark.test.ts:7 |
+| Scaffold config | EXISTING_TEST_COVERS | tests/unit/scaffold-config.test.ts (unchanged by this phase) |
+| AC-2, AC-6, AC-7, AC-11, AC-14 | OUT_OF_PHASE_SCOPE | (later phases) |
+
+## Test files written this session
+
+- tests/unit/theme-helpers.test.ts
+- tests/unit/design-tokens.test.ts
+- tests/e2e/theme.spec.ts
+
+## Lifecycle ledger
+
+Phase 1 assertions were reviewed against the changed index page; none became obsolete or redundant (h1, single main, title, description, JS-off heading, axe and privacy checks all still hold).
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| (none — no update/delete this session) | — | — | — |
+
+## Formatting Outcome
+
+- Outcome: formatted (exit 0; all three files already Prettier-clean, reported unchanged).
+- Command: `pnpm exec prettier --write tests/unit/theme-helpers.test.ts tests/unit/design-tokens.test.ts tests/e2e/theme.spec.ts`, run in code_root, scoped to the touched-file set only.
+- Discovery source: the project's `package.json` `scripts.format` in code_root (`<target_root>/package.json` does not exist; `methodology.md` declares no `formatter_cmd`); the scoped `prettier --write <files>` form was used instead of the script's whole-repo `.`.
+
+## Status
+
+*Approved: 2026-11-05*
+*Status: APPROVED*

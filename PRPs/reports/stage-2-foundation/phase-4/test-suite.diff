@@ -1,0 +1,55 @@
+# TDD initial suite — phase 4
+# Source PRD: PRPs/prds/stage-2-foundation.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-2-foundation-phase-4-page-components.plan.md
+# Mode: test-after (tdd: false; vitest + playwright)
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-05
+
+Note: phase 3's APPROVED manifest stays archived at
+PRPs/reports/stage-2-foundation/phase-3/test-suite.diff; this manifest is phase 4's.
+Plan ACs are AC-A1..AC-A10, mapped to PRD ACs as the plan states. Test files live
+in the feature worktree (code_root C:/repos/site-pro/.worktrees/stage-2-foundation/).
+
+## AC outcomes
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-A1 (PRD AC-9) color and box-shadow literals | EXISTING_TEST_COVERS | tests/unit/design-tokens.test.ts:130 and :137 (scan every src css/ts/tsx file, new page files included); tests/unit/content-copy.test.ts:274 (strings.ts) |
+| AC-A1 (PRD AC-9) every var(--x) is a defined token | NEW_TEST_REQUIRED | tests/unit/page-styles.test.ts (describe.each over the nine phase 4 stylesheets, "reads only tokens that exist...") |
+| AC-A2 (PRD AC-1, AC-14) semantic HTML of each component | NEW_TEST_REQUIRED | tests/unit/page-primitives.test.ts (Icon, Button, TextLink, IconLink, Tag, StatusBadge, StackGroup, SectionHeading, Prose, cx); tests/unit/page-navigation.test.ts (NavBar, MobileMenu); tests/unit/page-content-components.test.ts (Photo, ProjectCard, ProjectHeader, Footer); no client directive / no any: tests/unit/page-styles.test.ts "component modules" |
+| AC-A3 (PRD AC-6) static popover menu, button, four links, breakpoint | NEW_TEST_REQUIRED | tests/unit/page-navigation.test.ts (MobileMenu and NavBar describes); tests/unit/page-styles.test.ts "layout contracts" (767/768 px rules, popover placement) |
+| AC-A4 (PRD AC-3) real links/buttons, focus ring not overridden | NEW_TEST_REQUIRED | tests/unit/page-styles.test.ts ("never removes the global focus ring"); tests/unit/page-navigation.test.ts and page-primitives.test.ts (anchors and type="button" buttons). Global ring itself: EXISTING_TEST_COVERS tests/unit/design-tokens.test.ts:151 |
+| AC-A5 (PRD AC-12) micro-interactions 150-300 ms, reduced motion | NEW_TEST_REQUIRED | tests/unit/page-styles.test.ts ("only transitions transform, opacity or colors in 150 to 300 ms", "reduced motion" describe). Global reduced-motion rule: EXISTING_TEST_COVERS tests/unit/design-tokens.test.ts:157 |
+| AC-A6 (PRD AC-13) placeholder SVG, Photo, resolver | NEW_TEST_REQUIRED | tests/unit/page-content-components.test.ts ("placeholder photo asset", "resolveAssetUrl", "Photo"); tests/unit/page-styles.test.ts (9:16 aspect-ratio) |
+| AC-A7 (PRD AC-14) ProjectCard and ProjectHeader contents | NEW_TEST_REQUIRED | tests/unit/page-content-components.test.ts ("ProjectCard", "ProjectHeader") |
+| AC-A8 (PRD AC-8) privacy, footer content, no palette button | NEW_TEST_REQUIRED | tests/unit/page-content-components.test.ts ("Footer", ProjectCard privacy case); tests/unit/page-navigation.test.ts ("has no command palette button..."); tests/unit/page-styles.test.ts ("has no email, phone link, form, handler or palette button"). Content-layer privacy: EXISTING_TEST_COVERS tests/unit/content-copy.test.ts:244 |
+| AC-A9 (PRD AC-10) total CSS <= 25 KB gzip | NEW_TEST_REQUIRED | tests/e2e/css-budget.spec.ts (requires pnpm build) |
+| AC-A10 (PRD AC-4, AC-7) existing suites stay green; ThemeToggle two decorative svgs | EXISTING_TEST_COVERS | tests/unit/theme-helpers.test.ts:57 (two aria-hidden svgs); tests/unit/theme-helpers.test.ts:65 (Backdrop); tests/e2e/theme.spec.ts (theme toggle); tests/unit/content-copy.test.ts:233 (Switch to the only in strings.ts) |
+
+## Test files written this session
+
+- tests/unit/page-primitives.test.ts
+- tests/unit/page-navigation.test.ts
+- tests/unit/page-content-components.test.ts
+- tests/unit/page-styles.test.ts
+- tests/e2e/css-budget.spec.ts
+
+(all under C:/repos/site-pro/.worktrees/stage-2-foundation/)
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| (none — no update/delete this session) | — | — | — |
+
+## Formatting Outcome
+
+- Outcome: formatted (exit 0) by the command layer (/relay-write-test Phase A.4). `tests/unit/page-primitives.test.ts` and `tests/unit/page-content-components.test.ts` were reformatted; the other three were already clean.
+- Command: `pnpm exec prettier --write tests/unit/page-primitives.test.ts tests/unit/page-navigation.test.ts tests/unit/page-content-components.test.ts tests/unit/page-styles.test.ts tests/e2e/css-budget.spec.ts`, run in code_root, scoped to the touched-file set only.
+- Discovery source: the project's `package.json` `scripts.format` in code_root (`<target_root>/package.json` does not exist; `methodology.md` declares no `formatter_cmd`); scoped `prettier --write <files>` instead of the script's whole-repo `.`.
+- The writer had no shell, so GREEN is left to the reviewer's dynamic check.
+
+## Status
+
+*Approved: 2026-11-05*
+*Status: APPROVED*

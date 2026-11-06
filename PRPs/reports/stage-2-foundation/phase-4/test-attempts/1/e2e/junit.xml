@@ -1,0 +1,54 @@
+<testsuites id="" name="" tests="23" failures="0" skipped="0" errors="0" time="5.673299">
+<testsuite name="css-budget.spec.ts" timestamp="2026-11-05T19:35:44.181Z" hostname="chromium" tests="1" failures="0" skipped="0" time="0.01" errors="0">
+<testcase name="built dist/ CSS budget (AC-A9) › all CSS together is at most 25 KB gzipped" classname="css-budget.spec.ts" time="0.01">
+</testcase>
+</testsuite>
+<testsuite name="placeholder-page.spec.ts" timestamp="2026-11-05T19:35:44.181Z" hostname="chromium" tests="4" failures="0" skipped="0" time="1.855" errors="0">
+<testcase name="static HTML of / › is a complete document with one main and one h1, before any script runs" classname="placeholder-page.spec.ts" time="0.059">
+</testcase>
+<testcase name="static HTML of / › shows the heading with JavaScript disabled" classname="placeholder-page.spec.ts" time="0.44">
+</testcase>
+<testcase name="static HTML of / › has no axe violations" classname="placeholder-page.spec.ts" time="1.335">
+</testcase>
+<testcase name="built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form" classname="placeholder-page.spec.ts" time="0.021">
+</testcase>
+</testsuite>
+<testsuite name="theme.spec.ts" timestamp="2026-11-05T19:35:44.181Z" hostname="chromium" tests="18" failures="0" skipped="0" time="4.915" errors="0">
+<testcase name="theme without a flash › serves Midnight in the HTML with the theme script before any stylesheet" classname="theme.spec.ts" time="0.048">
+</testcase>
+<testcase name="theme without a flash › starts in Midnight with a Daylight-offering toggle" classname="theme.spec.ts" time="0.612">
+</testcase>
+<testcase name="theme without a flash › switches theme, renames the toggle and keeps Daylight after reload" classname="theme.spec.ts" time="0.961">
+</testcase>
+<testcase name="theme without a flash › applies a stored Daylight preference before first paint" classname="theme.spec.ts" time="0.559">
+</testcase>
+<testcase name="theme without a flash › ignores an unknown stored value" classname="theme.spec.ts" time="0.517">
+</testcase>
+<testcase name="theme without a flash › exposes no theme control with JavaScript disabled" classname="theme.spec.ts" time="0.249">
+</testcase>
+<testcase name="focus and motion › rings the focused toggle with a 2px solid accent outline offset 2px" classname="theme.spec.ts" time="0.302">
+</testcase>
+<testcase name="focus and motion › runs the 150 ms hover transition only without reduced motion" classname="theme.spec.ts" time="0.318">
+</testcase>
+<testcase name="fonts › serves both self-hosted font files" classname="theme.spec.ts" time="0.023">
+</testcase>
+<testcase name="fonts › loads Geist for the page text" classname="theme.spec.ts" time="0.238">
+</testcase>
+<testcase name="fonts › preloads both fonts in the served head" classname="theme.spec.ts" time="0.018">
+</testcase>
+<testcase name="Backdrop › is decorative, absolutely positioned and adds no horizontal scroll" classname="theme.spec.ts" time="0.342">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 900px at 1440px wide" classname="theme.spec.ts" time="0.269">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 702px at 800px wide" classname="theme.spec.ts" time="0.226">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 540px at 375px wide" classname="theme.spec.ts" time="0.217">
+</testcase>
+<testcase name="built dist/ styles › keeps the emitted CSS within 25 KB gzip" classname="theme.spec.ts" time="0.006">
+</testcase>
+<testcase name="built dist/ styles › references no remote font host" classname="theme.spec.ts" time="0.005">
+</testcase>
+<testcase name="built dist/ styles › inlines the generated grain and the JS-reveal rule in the CSS" classname="theme.spec.ts" time="0.005">
+</testcase>
+</testsuite>
+</testsuites>

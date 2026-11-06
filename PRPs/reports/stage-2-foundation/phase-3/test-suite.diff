@@ -1,0 +1,48 @@
+# TDD initial suite — phase 3
+# Source PRD: PRPs/prds/stage-2-foundation.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-2-foundation-phase-3-content-collections-and-strings.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Mode: test-after (tdd: false; vitest, playwright)
+# Generated: 2026-11-05
+
+## AC outcomes
+
+Test paths are relative to code_root (`.worktrees/stage-2-foundation/`).
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-7 (plan AC-A1) | NEW_TEST_REQUIRED | tests/unit/content-schemas.test.ts ("project schema limits", "profile schema limits", "stack schema"); invalid fixtures inline under tests/ |
+| AC-7 (plan AC-A2) | NEW_TEST_REQUIRED | tests/unit/content-schemas.test.ts ("approved content validates", incl. no fixtures in src/content/) |
+| AC-1 (plan AC-A3) | NEW_TEST_REQUIRED | tests/unit/content-copy.test.ts ("approved profile copy", "approved stack copy", "approved project copy") |
+| AC-14 (plan AC-A4) | NEW_TEST_REQUIRED | tests/unit/content-copy.test.ts ("gives relay the fork note as its body", "leaves the %s body empty", repo links) |
+| AC-1, AC-4, AC-6, AC-14 (plan AC-A5) | NEW_TEST_REQUIRED | tests/unit/content-copy.test.ts ("interface strings") |
+| AC-4 (plan AC-A6) | NEW_TEST_REQUIRED | tests/unit/content-copy.test.ts ("is the only place the theme toggle names are written"); rendered names EXISTING_TEST_COVERS tests/unit/theme-helpers.test.ts:44-55 and tests/e2e/theme.spec.ts |
+| AC-8 (plan AC-A7) | NEW_TEST_REQUIRED | tests/unit/content-copy.test.ts ("privacy and voice of the content layer"); rendered-page privacy EXISTING_TEST_COVERS tests/e2e/placeholder-page.spec.ts:57 |
+| AC-9 (plan AC-A8) | NEW_TEST_REQUIRED | tests/unit/content-copy.test.ts ("uses no color or box-shadow literal in the new .ts files") |
+| AC-1 (plan AC-A9) | EXISTING_TEST_COVERS | the unchanged tests/unit/*.test.ts and tests/e2e/*.spec.ts suites run against the real content (pnpm test, pnpm test:e2e) |
+| AC-2, AC-3, AC-5, AC-10, AC-11, AC-12, AC-13 | OUT_OF_PHASE_SCOPE | (earlier phases already covered, or later phases) |
+
+## Test files written this session
+
+- tests/unit/content-schemas.test.ts
+- tests/unit/content-copy.test.ts
+
+## Lifecycle ledger
+
+Existing Phase 1-2 assertions were reviewed against the Phase 3 change. The theme toggle names moved into src/strings.ts with identical text, so the assertions in tests/unit/theme-helpers.test.ts and tests/e2e/theme.spec.ts still hold; none became obsolete or redundant.
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| (none — no update/delete this session) | — | — | — |
+
+## Formatting Outcome
+
+- Outcome: formatted (exit 0) by the command layer (/relay-write-test Phase A.4). `tests/unit/content-schemas.test.ts` was reformatted; `tests/unit/content-copy.test.ts` was already clean.
+- Command: `pnpm exec prettier --write tests/unit/content-schemas.test.ts tests/unit/content-copy.test.ts`, run in code_root, scoped to the touched-file set only.
+- Discovery source: the project's `package.json` `scripts.format` in code_root (`<target_root>/package.json` does not exist; `methodology.md` declares no `formatter_cmd`); the scoped `prettier --write <files>` form was used instead of the script's whole-repo `.`.
+- The writer had no shell, so the suite's GREEN state is left to the reviewer's dynamic check.
+
+## Status
+
+*Approved: 2026-11-05*
+*Status: APPROVED*

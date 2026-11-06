@@ -1,0 +1,59 @@
+# TDD initial suite — phase 7
+# Source PRD: PRPs/prds/stage-2-foundation.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-2-foundation-phase-7-quality-gates-and-preview-deploy.plan.md
+# Mode: test-after (tdd: false; vitest + playwright)
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-05
+
+Note: phase 6's APPROVED manifest stays archived at
+PRPs/reports/stage-2-foundation/phase-6/test-suite.diff; this manifest is phase 7's.
+Plan ACs are AC-A1..AC-A7, mapped to PRD ACs as the plan states. Test files live
+in the feature worktree (code_root C:/repos/site-pro/.worktrees/stage-2-foundation/).
+Gate scripts are tested as black boxes (spawned with --src/--dist on OS-temp fixtures,
+removed after each test). Lighthouse itself is not run.
+
+## AC outcomes
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-A1 (PRD AC-5) axe matrix in e2e job, empty suite fails | EXISTING_TEST_COVERS | tests/e2e/home-axe.spec.ts, tests/e2e/subpages-axe.spec.ts; `test:e2e` = `playwright test` asserted in tests/unit/quality-gates.test.ts ("fails the e2e command when no spec runs") |
+| AC-A2 (PRD AC-8) privacy gate: fixtures fail per rule, `tel:!0` JS fragment passes, real dist passes | NEW_TEST_REQUIRED | tests/unit/quality-gates.test.ts ("privacy gate on fixtures"); tests/e2e/quality-gates.spec.ts ("privacy gate passes on the real build") |
+| AC-A3 (PRD AC-9) token gate: hex/rgba/hsl/box-shadow fail outside tokens.css and assets/, vacuous scan fails, real src passes | NEW_TEST_REQUIRED | tests/unit/quality-gates.test.ts ("token gate on fixtures"); rule parity also EXISTING_TEST_COVERS tests/unit/design-tokens.test.ts |
+| AC-A4 (PRD AC-10) budget gate: critical/total JS and CSS over budget fail, orphan reported not gated, missing asset fails, real dist passes | NEW_TEST_REQUIRED | tests/unit/quality-gates.test.ts ("size-budget gate on fixtures"); tests/e2e/quality-gates.spec.ts ("size-budget gate passes on the real build") |
+| AC-A5 (PRD AC-10) lighthouserc.json values | NEW_TEST_REQUIRED | tests/unit/quality-gates.test.ts ("Lighthouse CI configuration") |
+| AC-A6 (PRD AC-11) nine jobs, triggers, frozen install, per-job commands, no deploy/secret/Cloudflare CLI | EXISTING_TEST_UPDATED + NEW_TEST_REQUIRED | tests/unit/scaffold-config.test.ts ("CI workflow (AC-A2)": nine ids, per-job commands incl. new jobs); tests/unit/quality-gates.test.ts ("CI shape for the quality gates": no needs/secrets, CHROME_PATH, artifact, package scripts) |
+| AC-A7 (PRD AC-11) docs record suites, jobs, owner steps | OUT_OF_PHASE_SCOPE | documentation text only; not asserted by tests (no observable runtime contract) |
+| PRD AC-1..AC-4, AC-6, AC-7, AC-12..AC-14 | OUT_OF_PHASE_SCOPE | delivered and covered in earlier phases |
+
+## Test files written this session
+
+- tests/unit/quality-gates.test.ts
+- tests/e2e/quality-gates.spec.ts
+
+Updated: tests/unit/scaffold-config.test.ts
+
+(all under C:/repos/site-pro/.worktrees/stage-2-foundation/)
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/scaffold-config.test.ts:"defines exactly the nine separately reported jobs" (was "five") | AC-11 (AC-A6): the job id list changed from lint/check/unit/build/e2e to those plus tokens/privacy/budgets/lighthouse; the assertion changes to the nine ids in order, nothing weakened |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/scaffold-config.test.ts:"job %s installs from the frozen lockfile and runs its checks" | AC-11: it.each rows added for the four new jobs; the five original rows and assertions are untouched (strengthening only) |
+
+All other assertions in scaffold-config.test.ts (triggers, no wrangler/CLOUDFLARE_, toolchain pins) are unchanged.
+
+## Run outcome
+
+The test-writer had no shell in this session; files were not executed or Prettier-/ESLint-verified by it. The command layer's formatting step and the test run (`pnpm test`, `pnpm build && pnpm test:e2e`) are the verification. Expected GREEN against the implemented code.
+
+## Formatting Outcome
+
+- Outcome: formatted (exit 0) by the command layer (/relay-write-test Phase A.4). `tests/unit/quality-gates.test.ts` was reformatted; `tests/e2e/quality-gates.spec.ts` and the updated `tests/unit/scaffold-config.test.ts` were already clean. ESLint over the three files reports no problems.
+- Command: `pnpm exec prettier --write tests/unit/quality-gates.test.ts tests/e2e/quality-gates.spec.ts tests/unit/scaffold-config.test.ts`, run in code_root, scoped to the touched-file set only.
+- Discovery source: the project's `package.json` `scripts.format` in code_root (`<target_root>/package.json` does not exist; `methodology.md` declares no `formatter_cmd`); scoped `prettier --write <files>` instead of the script's whole-repo `.`.
+
+## Status
+
+*Approved: 2026-11-05*
+*Status: APPROVED*

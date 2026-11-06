@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="250" failures="0" errors="0" time="2.2548726">
+    <testsuite name="tests/unit/content-copy.test.ts" timestamp="2026-11-05T21:06:57.084Z" hostname="Desktop-Fabio" tests="21" failures="0" errors="0" skipped="0" time="0.0468631">
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved profile copy &gt; carries the approved identity, role, intro and location" time="0.0032978">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved profile copy &gt; carries the approved About text in three paragraphs" time="0.0014685">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved profile copy &gt; links only GitHub and LinkedIn" time="0.0008365">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved stack copy &gt; lists the six groups and their items in display order" time="0.0008479">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; relay carries its approved frontmatter" time="0.0023044">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; ai-track-record carries its approved frontmatter" time="0.0011283">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; praesto-sum carries its approved frontmatter" time="0.0008701">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; site-pro carries its approved frontmatter" time="0.0008726">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; gives relay the fork note as its body" time="0.0006167">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; leaves the ai-track-record body empty" time="0.0005855">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; leaves the praesto-sum body empty" time="0.0003677">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="approved project copy &gt; leaves the site-pro body empty" time="0.0003357">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="interface strings &gt; carries the approved section headings and leads" time="0.0003167">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="interface strings &gt; carries the nav, skip link and button labels" time="0.0004068">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="interface strings &gt; carries the 404 copy, the back link and the footer source label" time="0.0002207">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="interface strings &gt; carries the two theme toggle names" time="0.0001471">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="interface strings &gt; is the only place the theme toggle names are written" time="0.0208703">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="privacy and voice of the content layer &gt; contains no email address, mailto or tel link, or form" time="0.003548">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="privacy and voice of the content layer &gt; uses no em dash in content or strings" time="0.0017219">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="privacy and voice of the content layer &gt; links only to the approved profiles and project repositories" time="0.0018576">
+        </testcase>
+        <testcase classname="tests/unit/content-copy.test.ts" name="privacy and voice of the content layer &gt; uses no color or box-shadow literal in the new .ts files" time="0.000979">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/content-schemas.test.ts" timestamp="2026-11-05T21:06:57.091Z" hostname="Desktop-Fabio" tests="25" failures="0" errors="0" skipped="0" time="0.0214329">
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; accepts a project at every limit boundary" time="0.0051247">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; rejects a summary one character over the limit and names summary" time="0.0010756">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; rejects fewer tags than the minimum and names tags" time="0.000578">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; rejects more tags than the maximum and names tags" time="0.0003907">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; accepts every documented status" time="0.00079">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; lists exactly the five documented statuses" time="0.0003108">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; rejects a status outside the enum and names status" time="0.0004946">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; rejects a numeric year because year is a string" time="0.0004849">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; rejects a link that is not https" time="0.0008727">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="project schema limits &gt; rejects an unknown field instead of silently dropping it" time="0.0005985">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="profile schema limits &gt; accepts a bio one word under the limit" time="0.0022184">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="profile schema limits &gt; rejects a bio at the word limit and names bio" time="0.0004453">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="profile schema limits &gt; counts words across paragraph breaks" time="0.000349">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="profile schema limits &gt; rejects a mailto link and names links" time="0.0004123">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="profile schema limits &gt; rejects an empty links list and names links" time="0.0003282">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="stack schema &gt; rejects a group without items and names groups" time="0.0008029">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="stack schema &gt; rejects an empty group list and names groups" time="0.0002365">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; validates the profile entry" time="0.0006629">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; validates the stack entry" time="0.0004692">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; holds exactly the four approved projects, one Markdown file each" time="0.0003819">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; validates the relay project" time="0.000958">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; validates the ai-track-record project" time="0.0004626">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; validates the praesto-sum project" time="0.0003024">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; validates the site-pro project" time="0.0002802">
+        </testcase>
+        <testcase classname="tests/unit/content-schemas.test.ts" name="approved content validates &gt; keeps invalid fixtures out of src/content/" time="0.000262">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/design-tokens.test.ts" timestamp="2026-11-05T21:06:57.094Z" hostname="Desktop-Fabio" tests="29" failures="0" errors="0" skipped="0" time="0.1071733">
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg over --bg at 4.5:1 or better" time="0.0037405">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg over --bg-raised at 4.5:1 or better" time="0.0005302">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted over --bg at 4.5:1 or better" time="0.0003297">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted over --bg-raised at 4.5:1 or better" time="0.0003557">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --accent-fg over --bg at 4.5:1 or better" time="0.0004044">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --on-accent over --accent at 4.5:1 or better" time="0.0002757">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-1 at its peak" time="0.0004651">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-2 at its peak" time="0.0003239">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg over --bg at 4.5:1 or better" time="0.0004122">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg over --bg-raised at 4.5:1 or better" time="0.0004658">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted over --bg at 4.5:1 or better" time="0.0002495">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted over --bg-raised at 4.5:1 or better" time="0.0002036">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --accent-fg over --bg at 4.5:1 or better" time="0.0001788">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --on-accent over --accent at 4.5:1 or better" time="0.0001866">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-1 at its peak" time="0.0002589">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-2 at its peak" time="0.0001874">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="token set &gt; defines the same token names in both themes" time="0.0011673">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="token set &gt; declares the dark and light native color schemes" time="0.0003646">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="token set &gt; uses the approved accent in both themes" time="0.0002699">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="tokens only outside tokens.css (AC-9) &gt; scans a non-trivial set of source files" time="0.0244532">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="tokens only outside tokens.css (AC-9) &gt; has no color literal in any other source file" time="0.0348067">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="tokens only outside tokens.css (AC-9) &gt; has no box-shadow literal in any other source file" time="0.0299632">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="base styles &gt; draws a 2px solid accent focus ring offset by 2px on :focus-visible" time="0.0002749">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="base styles &gt; disables transitions and animations under reduced motion" time="0.000321">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="base styles &gt; clips the page wrapper horizontally without breaking sticky children" time="0.0002132">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; serves Geist from the site own /fonts/ path" time="0.000643">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; serves JetBrains Mono from the site own /fonts/ path" time="0.0003816">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; swaps in both faces and references no remote font host" time="0.0012995">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; ships the license text next to each font file" time="0.0006504">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/home-href.test.ts" timestamp="2026-11-05T21:06:57.100Z" hostname="Desktop-Fabio" tests="7" failures="0" errors="0" skipped="0" time="0.0419249">
+        <testcase classname="tests/unit/home-href.test.ts" name="NavBar homeHref &gt; prefixes the brand and the four section links with &quot;/&quot; when set" time="0.01781">
+            <system-err>
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/unit/home-href.test.ts" name="NavBar homeHref &gt; forwards the prefix to the mobile menu links it contains" time="0.0033426">
+        </testcase>
+        <testcase classname="tests/unit/home-href.test.ts" name="NavBar homeHref &gt; keeps bare same-page hashes by default" time="0.0035298">
+        </testcase>
+        <testcase classname="tests/unit/home-href.test.ts" name="NavBar homeHref &gt; renders identical markup for the default and an explicit empty prefix" time="0.0062082">
+        </testcase>
+        <testcase classname="tests/unit/home-href.test.ts" name="NavBar homeHref &gt; keeps the external profile links untouched by the prefix" time="0.0044445">
+        </testcase>
+        <testcase classname="tests/unit/home-href.test.ts" name="MobileMenu homeHref &gt; prefixes the four numbered links with &quot;/&quot; when set" time="0.0021373">
+        </testcase>
+        <testcase classname="tests/unit/home-href.test.ts" name="MobileMenu homeHref &gt; keeps bare same-page hashes by default" time="0.002055">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/page-content-components.test.ts" timestamp="2026-11-05T21:06:57.101Z" hostname="Desktop-Fabio" tests="22" failures="0" errors="0" skipped="0" time="0.0209361">
+        <testcase classname="tests/unit/page-content-components.test.ts" name="placeholder photo asset &gt; is a 900 x 1600 canvas, which is 9:16" time="0.0018119">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="placeholder photo asset &gt; is transparent: no rect paints the whole canvas" time="0.0003636">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="placeholder photo asset &gt; paints the silhouette with a gradient rather than a flat color" time="0.0002437">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="resolveAssetUrl &gt; resolves the profile photo path as stored, without a leading slash" time="0.0002274">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="resolveAssetUrl &gt; resolves the same asset with or without the leading slash" time="0.0001592">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="resolveAssetUrl &gt; returns undefined for a missing path or no path" time="0.0001972">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="Photo &gt; renders the cutout built state with explicit 900 x 1600 attributes" time="0.0008649">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="Photo &gt; passes the requested height only as the --photo-h custom property" time="0.000559">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="Photo &gt; adds the glow class and a described alt text when asked" time="0.0003585">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectCard &gt; links the title to the project page and shows the card facts" time="0.0021887">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectCard &gt; adds an external repo link next to the status" time="0.0015416">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectCard &gt; leaves out the repo link when there is no repo" time="0.0008307">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectCard &gt; shows a decorative CSS cover labelled with the slug when no cover is set" time="0.0009259">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectCard &gt; shows the given cover as a decorative image instead" time="0.000765">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectCard &gt; contains one link to the project and no email, form or handler" time="0.0011694">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectHeader &gt; links back to the projects section by default" time="0.0011448">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectHeader &gt; honors a custom back link" time="0.000805">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectHeader &gt; renders the title as the single h1, then summary, year, status and tags" time="0.0009984">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectHeader &gt; adds an external secondary Repo button only when there is a repo" time="0.0019304">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="ProjectHeader &gt; shows the slug-labelled CSS cover, or the given cover image" time="0.0014601">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="Footer &gt; shows only the external Source link and the copyright line" time="0.0003826">
+        </testcase>
+        <testcase classname="tests/unit/page-content-components.test.ts" name="Footer &gt; has no build summary, Replay control or button" time="0.0001992">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/page-navigation.test.ts" timestamp="2026-11-05T21:06:57.104Z" hostname="Desktop-Fabio" tests="11" failures="0" errors="0" skipped="0" time="0.055964">
+        <testcase classname="tests/unit/page-navigation.test.ts" name="MobileMenu &gt; is a static auto popover with the id the toggle points at" time="0.0150826">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="MobileMenu &gt; wraps the four numbered section links in a named nav list" time="0.0035208">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="MobileMenu &gt; offers GitHub and LinkedIn as external secondary buttons" time="0.0033814">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="MobileMenu &gt; marks only the active section with aria-current" time="0.0037775">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="NavBar &gt; is a header with the brand linking to the top of the page" time="0.0057013">
+            <system-err>
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="NavBar &gt; names the inline section nav Main and links the four sections" time="0.0049768">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="NavBar &gt; marks the active link with is-active and aria-current" time="0.0031439">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="NavBar &gt; opens the menu with a real button wired by lowercase popovertarget" time="0.0032811">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="NavBar &gt; carries the theme toggle and a named GitHub icon link" time="0.0037062">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="NavBar &gt; has no command palette button, handlers, replay or contact form" time="0.004068">
+        </testcase>
+        <testcase classname="tests/unit/page-navigation.test.ts" name="NavBar &gt; keeps every decorative icon out of the accessibility tree" time="0.0032469">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/page-primitives.test.ts" timestamp="2026-11-05T21:06:57.106Z" hostname="Desktop-Fabio" tests="31" failures="0" errors="0" skipped="0" time="0.0245852">
+        <testcase classname="tests/unit/page-primitives.test.ts" name="cx &gt; joins truthy names with a space and drops falsy ones" time="0.0022887">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders sun as a decorative 24-unit svg" time="0.0069557">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders moon as a decorative 24-unit svg" time="0.0005504">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders arrowUpRight as a decorative 24-unit svg" time="0.0004619">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders arrowLeft as a decorative 24-unit svg" time="0.0004288">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders menu as a decorative 24-unit svg" time="0.0004725">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders x as a decorative 24-unit svg" time="0.0004304">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders github as a decorative 24-unit svg" time="0.0003962">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; renders linkedin as a decorative 24-unit svg" time="0.0003994">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; draws line glyphs as strokes and brand glyphs as fills" time="0.0009888">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Icon &gt; honors size and an extra class" time="0.0003379">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Button &gt; renders an anchor with the variant and text classes when given an href" time="0.0006911">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Button &gt; defaults to the primary variant" time="0.0002967">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Button &gt; opens external links safely in a new tab with a trailing arrow" time="0.0012323">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Button &gt; renders a real button of type button without an href" time="0.0004259">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Button &gt; falls back to a disabled button when disabled, even with an href" time="0.0002789">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Button &gt; places an explicit end icon without needing external" time="0.000424">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="TextLink &gt; renders a plain anchor with no icon for internal links" time="0.0002991">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="TextLink &gt; marks external links with a new tab, safe rel and an arrow" time="0.0003768">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="IconLink &gt; is a link named by its label with a decorative icon" time="0.0006208">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Tag, StatusBadge and StackGroup &gt; renders a Tag as a mono span" time="0.0003381">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Tag, StatusBadge and StackGroup &gt; shows the status word &quot;active&quot; with a decorative dot" time="0.000314">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Tag, StatusBadge and StackGroup &gt; shows the status word &quot;in development&quot; with a decorative dot" time="0.0002289">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Tag, StatusBadge and StackGroup &gt; shows the status word &quot;planning&quot; with a decorative dot" time="0.0001762">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Tag, StatusBadge and StackGroup &gt; shows the status word &quot;maintained&quot; with a decorative dot" time="0.0001732">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Tag, StatusBadge and StackGroup &gt; shows the status word &quot;archived&quot; with a decorative dot" time="0.0002069">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Tag, StatusBadge and StackGroup &gt; renders a stack group as a heading and a list of chips in order" time="0.000678">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="SectionHeading &gt; renders eyebrow, h2 title with id, and lead" time="0.000494">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="SectionHeading &gt; omits the eyebrow and lead when not given" time="0.0003031">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="SectionHeading &gt; renders the heading level chosen by as" time="0.0004872">
+        </testcase>
+        <testcase classname="tests/unit/page-primitives.test.ts" name="Prose &gt; wraps its children in the prose container" time="0.0003351">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/page-styles.test.ts" timestamp="2026-11-05T21:06:57.110Z" hostname="Desktop-Fabio" tests="36" failures="0" errors="0" skipped="0" time="0.0361885">
+        <testcase classname="tests/unit/page-styles.test.ts" name="Actions.css &gt; reads only tokens that exist in the token, base or font files" time="0.003349">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Actions.css &gt; never removes the global focus ring" time="0.0005577">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Actions.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.002051">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Footer.css &gt; reads only tokens that exist in the token, base or font files" time="0.0004956">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Footer.css &gt; never removes the global focus ring" time="0.000282">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Footer.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.0001587">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Labels.css &gt; reads only tokens that exist in the token, base or font files" time="0.0006229">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Labels.css &gt; never removes the global focus ring" time="0.0002279">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Labels.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.0002301">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="NavBar.css &gt; reads only tokens that exist in the token, base or font files" time="0.0009488">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="NavBar.css &gt; never removes the global focus ring" time="0.0002254">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="NavBar.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.0005926">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Photo.css &gt; reads only tokens that exist in the token, base or font files" time="0.0001405">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Photo.css &gt; never removes the global focus ring" time="0.0001393">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Photo.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.0001213">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="ProjectCard.css &gt; reads only tokens that exist in the token, base or font files" time="0.0004959">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="ProjectCard.css &gt; never removes the global focus ring" time="0.0001836">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="ProjectCard.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.0005745">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="ProjectHeader.css &gt; reads only tokens that exist in the token, base or font files" time="0.00029">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="ProjectHeader.css &gt; never removes the global focus ring" time="0.0001263">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="ProjectHeader.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.000069">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Prose.css &gt; reads only tokens that exist in the token, base or font files" time="0.0006192">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Prose.css &gt; never removes the global focus ring" time="0.000199">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="Prose.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.000088">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="SectionHeading.css &gt; reads only tokens that exist in the token, base or font files" time="0.0002304">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="SectionHeading.css &gt; never removes the global focus ring" time="0.0001255">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="SectionHeading.css &gt; only transitions transform, opacity or colors in 150 to 300 ms" time="0.0000806">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="reduced motion &gt; stops the button transition" time="0.001527">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="reduced motion &gt; stops the card lift and the cover zoom" time="0.0016069">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="reduced motion &gt; lifts the card by 3px and zooms the cover by 1.03 outside reduced motion" time="0.0006529">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="layout contracts &gt; shows the section links from 768px and the menu button below it" time="0.000815">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="layout contracts &gt; places the menu popover under the nav bar" time="0.000524">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="layout contracts &gt; keeps the photo box 9:16 and the cover box 16:9 from aspect-ratio" time="0.0007101">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="component modules &gt; lists the phase 4 component files" time="0.0013267">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="component modules &gt; has no email, phone link, form, handler or palette button" time="0.0069131">
+        </testcase>
+        <testcase classname="tests/unit/page-styles.test.ts" name="component modules &gt; uses no client directive and no any type" time="0.0051422">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/quality-gates.test.ts" timestamp="2026-11-05T21:06:57.117Z" hostname="Desktop-Fabio" tests="37" failures="0" errors="0" skipped="0" time="1.8635433">
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; passes when literals only live in tokens.css and assets/" time="0.1561795">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; fails on a hex literal in a source file" time="0.094224">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; fails on an rgba literal in a source file" time="0.0809328">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; fails on an hsl literal in a source file" time="0.0768113">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; fails on a box-shadow without a token in a source file" time="0.0792159">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; accepts a box-shadow that uses a token" time="0.0784894">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; fails a scan that finds too few files instead of passing vacuously" time="0.0659173">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="token gate on fixtures (AC-9) &gt; passes on the real src/ tree" time="0.0937288">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; passes a clean page and a JS bundle containing the key tel:!0" time="0.064828">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails on a mailto link in HTML" time="0.0647265">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails on a tel link in HTML" time="0.0645954">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails on a bare email in HTML" time="0.0615621">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails on a phone number in text in HTML" time="0.0645701">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails on a form in HTML" time="0.0605181">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails on a foreign external link in HTML" time="0.0617633">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails on a tel link written into a JS file" time="0.0618509">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails when index.html lacks the location text" time="0.0605658">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="privacy gate on fixtures (AC-8) &gt; fails when there is no HTML at all (a missing build cannot pass)" time="0.060648">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="size-budget gate on fixtures (AC-10) &gt; passes within budget and prints every metric" time="0.0693865">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="size-budget gate on fixtures (AC-10) &gt; fails when the inline head script exceeds the critical JS budget" time="0.0670746">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="size-budget gate on fixtures (AC-10) &gt; fails when the loaded JS exceeds the total budget" time="0.0752478">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="size-budget gate on fixtures (AC-10) &gt; fails when the loaded CSS exceeds the budget" time="0.0756286">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="size-budget gate on fixtures (AC-10) &gt; reports an oversize orphan file without failing the gate" time="0.0799215">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="size-budget gate on fixtures (AC-10) &gt; fails when a page references an asset that does not exist" time="0.0676344">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="size-budget gate on fixtures (AC-10) &gt; fails when there is no HTML to measure" time="0.065438">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="Lighthouse CI configuration (AC-10) &gt; audits the built dist for / and /projects/relay/ with three runs" time="0.0012203">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="Lighthouse CI configuration (AC-10) &gt; requires a median performance score of at least 0.95 as an error" time="0.0007157">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="Lighthouse CI configuration (AC-10) &gt; requires a median accessibility score of at least 0.95 as an error" time="0.0007416">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="Lighthouse CI configuration (AC-10) &gt; requires a median best-practices score of at least 0.95 as an error" time="0.0005737">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="Lighthouse CI configuration (AC-10) &gt; requires a median seo score of at least 0.95 as an error" time="0.0005698">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="Lighthouse CI configuration (AC-10) &gt; requires a median CLS of at most 0.01 as an error" time="0.0006206">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="Lighthouse CI configuration (AC-10) &gt; keeps results on the filesystem, never uploaded" time="0.0005769">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="CI shape for the quality gates (AC-11) &gt; holds no job dependencies, secrets or Cloudflare CLI" time="0.000779">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="CI shape for the quality gates (AC-11) &gt; gives the lighthouse job a Chrome path and a failure artifact" time="0.0005984">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="CI shape for the quality gates (AC-11) &gt; exposes the gate commands CI calls as package scripts" time="0.0008157">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="CI shape for the quality gates (AC-11) &gt; fails the e2e command when no spec runs" time="0.0007073">
+        </testcase>
+        <testcase classname="tests/unit/quality-gates.test.ts" name="CI shape for the quality gates (AC-11) &gt; ships the three gate scripts" time="0.0011003">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/scaffold-config.test.ts" timestamp="2026-11-05T21:06:57.123Z" hostname="Desktop-Fabio" tests="21" failures="0" errors="0" skipped="0" time="0.0169004">
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; pins pnpm through the packageManager field" time="0.0026952">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; pins Node 24 for CI and Workers Builds" time="0.0005113">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; commits a lockfile so a frozen install is possible" time="0.000454">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; exposes the scripts the success signal and CI rely on" time="0.0007399">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; runs a frozen-lockfile install from the bash worktree bootstrap" time="0.0012119">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; runs a frozen-lockfile install from the PowerShell worktree bootstrap" time="0.0011646">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; names the Worker site-pro" time="0.0005909">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; serves ./dist and falls back to the 404 page" time="0.0009815">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; declares no entry script, so it stays a pure static deployment" time="0.0005268">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; defines exactly the nine separately reported jobs" time="0.0006667">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; triggers on pull requests and on pushes to main" time="0.0004721">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job lint installs from the frozen lockfile and runs its checks" time="0.0006046">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job check installs from the frozen lockfile and runs its checks" time="0.0002207">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job unit installs from the frozen lockfile and runs its checks" time="0.0002139">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job build installs from the frozen lockfile and runs its checks" time="0.0002353">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job e2e installs from the frozen lockfile and runs its checks" time="0.0003717">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job tokens installs from the frozen lockfile and runs its checks" time="0.0002019">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job privacy installs from the frozen lockfile and runs its checks" time="0.0002294">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job budgets installs from the frozen lockfile and runs its checks" time="0.0002482">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job lighthouse installs from the frozen lockfile and runs its checks" time="0.0014848">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; contains no Cloudflare deploy step or secret" time="0.0003222">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/theme-helpers.test.ts" timestamp="2026-11-05T21:06:57.127Z" hostname="Desktop-Fabio" tests="10" failures="0" errors="0" skipped="0" time="0.0193609">
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; stores the choice under sp-theme and defaults to midnight" time="0.0021021">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; accepts only the exact stored value &quot;daylight&quot; as Daylight" time="0.0004194">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; flips between the two themes" time="0.0002254">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; maps each theme to its native color scheme" time="0.0001858">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme toggle accessible name &gt; offers Daylight while in Midnight and Midnight while in Daylight" time="0.0001917">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme toggle accessible name &gt; renders statically as a button named for the Midnight default" time="0.0085498">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme toggle accessible name &gt; keeps decorative icons out of the accessibility tree" time="0.0022625">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="Backdrop &gt; is aria-hidden and renders one glow per entry" time="0.0015968">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="Backdrop &gt; renders no glow without a list and honors grain=false" time="0.0005414">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="Backdrop &gt; uses both glow tones and sizes that scale from CSS only" time="0.0008383">
+        </testcase>
+    </testsuite>
+</testsuites>

@@ -1,0 +1,359 @@
+diff --git a/src/components/page/ThemeToggle.tsx b/src/components/page/ThemeToggle.tsx
+index a972cfe..279cd5a 100644
+--- a/src/components/page/ThemeToggle.tsx
++++ b/src/components/page/ThemeToggle.tsx
+@@ -1,12 +1,13 @@
+ import './ThemeToggle.css';
+ import { Icon } from './Icon';
++import { strings } from '../../strings';
+ 
+ interface ThemeToggleProps {
+   className?: string;
+ }
+ 
+-// The Midnight default label; src/scripts/theme.ts themeToggleLabel('midnight') returns the same text.
+-const DEFAULT_LABEL = 'Switch to the Daylight theme';
++// The Midnight-state name from src/strings.ts; themeToggleLabel('midnight') returns the same text.
++const DEFAULT_LABEL = strings.theme.switchToDaylight;
+ 
+ export function ThemeToggle({
+   className,
+diff --git a/src/content-schemas.ts b/src/content-schemas.ts
+new file mode 100644
+index 0000000..81dddb0
+--- /dev/null
++++ b/src/content-schemas.ts
+@@ -0,0 +1,89 @@
++import { z } from 'astro/zod';
++
++export const SUMMARY_MAX_LENGTH = 140;
++export const TAGS_MIN = 2;
++export const TAGS_MAX = 4;
++export const BIO_WORD_LIMIT = 100;
++
++export const PROJECT_STATUSES = [
++  'active',
++  'in development',
++  'planning',
++  'maintained',
++  'archived',
++] as const;
++
++const httpsUrl = z.url().refine((value) => value.startsWith('https://'), {
++  error: 'URL must start with https://',
++});
++
++const nonEmpty = z.string().min(1);
++
++export const profileSchema = z.strictObject({
++  name: nonEmpty,
++  headline: nonEmpty,
++  role: z.string(),
++  subtitle: z.string(),
++  photo: nonEmpty,
++  location: z.string().optional(),
++  bio: z
++    .string()
++    .refine(
++      (value) => value.split(/\s+/).filter(Boolean).length < BIO_WORD_LIMIT,
++      {
++        error: `Bio must have fewer than ${BIO_WORD_LIMIT} words`,
++      },
++    ),
++  links: z
++    .array(
++      z.strictObject({
++        label: z.string(),
++        url: httpsUrl,
++        icon: z.enum([
++          'github',
++          'linkedin',
++          'x',
++          'bluesky',
++          'devto',
++          'youtube',
++        ]),
++      }),
++    )
++    .min(1),
++  cv: z.string().optional(),
++});
++
++export const projectSchema = z.strictObject({
++  title: z.string(),
++  summary: z.string().max(SUMMARY_MAX_LENGTH),
++  cover: nonEmpty.optional(),
++  tags: z.array(nonEmpty).min(TAGS_MIN).max(TAGS_MAX),
++  links: z.strictObject({
++    repo: httpsUrl.optional(),
++    demo: httpsUrl.optional(),
++    article: httpsUrl.optional(),
++  }),
++  year: z.string().regex(/^\d{4}(?:[\u2013-]\d{4})?$/),
++  featured: z.boolean(),
++  order: z.number().int(),
++  status: z.enum(PROJECT_STATUSES),
++  githubRepo: z
++    .string()
++    .regex(/^[\w.-]+\/[\w.-]+$/)
++    .optional(),
++});
++
++export const stackSchema = z.strictObject({
++  groups: z
++    .array(
++      z.strictObject({
++        name: nonEmpty,
++        items: z.array(nonEmpty).min(1),
++      }),
++    )
++    .min(1),
++});
++
++export type Profile = z.infer<typeof profileSchema>;
++export type Project = z.infer<typeof projectSchema>;
++export type Stack = z.infer<typeof stackSchema>;
+diff --git a/src/content.config.ts b/src/content.config.ts
+new file mode 100644
+index 0000000..8b3384a
+--- /dev/null
++++ b/src/content.config.ts
+@@ -0,0 +1,20 @@
++import { defineCollection } from 'astro:content';
++import { file, glob } from 'astro/loaders';
++import { profileSchema, projectSchema, stackSchema } from './content-schemas';
++
++const profile = defineCollection({
++  loader: file('src/content/profile.json'),
++  schema: profileSchema,
++});
++
++const projects = defineCollection({
++  loader: glob({ base: './src/content/projects', pattern: '*.md' }),
++  schema: projectSchema,
++});
++
++const stack = defineCollection({
++  loader: file('src/content/stack.json'),
++  schema: stackSchema,
++});
++
++export const collections = { profile, projects, stack };
+diff --git a/src/content/profile.json b/src/content/profile.json
+new file mode 100644
+index 0000000..63401b6
+--- /dev/null
++++ b/src/content/profile.json
+@@ -0,0 +1,23 @@
++{
++  "profile": {
++    "name": "Fabio Martins Barreto",
++    "headline": "Fabio Barreto.",
++    "role": "Senior Software Engineer",
++    "subtitle": "12+ years shipping full-stack apps with React, Python and Java. Now building AI-assisted dev workflows.",
++    "photo": "src/assets/photo-placeholder-body.svg",
++    "location": "Brazil (UTC-3)",
++    "bio": "I'm a full-stack software engineer, and I've been studying programming and software development since 2008.\n\nRight now I'm building my own projects and exploring what AI can do in real applications, while I work on a postgraduate program in Software Engineering with AI.\n\nTake a look at my projects below, or find me on GitHub and LinkedIn.",
++    "links": [
++      {
++        "label": "GitHub",
++        "url": "https://github.com/fabiombarreto",
++        "icon": "github"
++      },
++      {
++        "label": "LinkedIn",
++        "url": "https://www.linkedin.com/in/fabio-martins-barreto",
++        "icon": "linkedin"
++      }
++    ]
++  }
++}
+diff --git a/src/content/projects/ai-track-record.md b/src/content/projects/ai-track-record.md
+new file mode 100644
+index 0000000..966fdc2
+--- /dev/null
++++ b/src/content/projects/ai-track-record.md
+@@ -0,0 +1,14 @@
++---
++title: AI Track Record
++summary: 'A local-first benchmark for AI coding agents: same task, different models and prompts, graded by tests the agent never sees.'
++tags:
++  - python
++  - ai-agents
++  - benchmarks
++links:
++  repo: https://github.com/fabiombarreto/ai-track-record
++year: '2026'
++featured: true
++order: 2
++status: planning
++---
+diff --git a/src/content/projects/praesto-sum.md b/src/content/projects/praesto-sum.md
+new file mode 100644
+index 0000000..69df3b5
+--- /dev/null
++++ b/src/content/projects/praesto-sum.md
+@@ -0,0 +1,14 @@
++---
++title: Praesto Sum
++summary: 'A personal assistant for one user: tasks and Google Calendar in one installable app, on Cloudflare Workers and React 19.'
++tags:
++  - typescript
++  - react
++  - cloudflare-workers
++links:
++  repo: https://github.com/fabiombarreto/praesto-sum
++year: '2026'
++featured: true
++order: 3
++status: in development
++---
+diff --git a/src/content/projects/relay.md b/src/content/projects/relay.md
+new file mode 100644
+index 0000000..027e871
+--- /dev/null
++++ b/src/content/projects/relay.md
+@@ -0,0 +1,16 @@
++---
++title: relay
++summary: 'A Claude Code plugin that takes a feature from PRD to pull request, with a writer and a reviewer agent at every stage.'
++tags:
++  - claude-code
++  - ai-agents
++  - node
++links:
++  repo: https://github.com/fabiombarreto/PRPs-agentic-eng
++year: '2026'
++featured: true
++order: 1
++status: active
++---
++
++The repository is a fork of Wirasm/prp. relay is the plugin I built inside it.
+diff --git a/src/content/projects/site-pro.md b/src/content/projects/site-pro.md
+new file mode 100644
+index 0000000..27dd457
+--- /dev/null
++++ b/src/content/projects/site-pro.md
+@@ -0,0 +1,14 @@
++---
++title: site-pro
++summary: 'This site: a portfolio that builds itself live, one typed command at a time.'
++tags:
++  - astro
++  - react
++  - typescript
++links:
++  repo: https://github.com/fabiombarreto/site-pro
++year: '2026'
++featured: true
++order: 4
++status: in development
++---
+diff --git a/src/content/stack.json b/src/content/stack.json
+new file mode 100644
+index 0000000..9e6b7e9
+--- /dev/null
++++ b/src/content/stack.json
+@@ -0,0 +1,15 @@
++{
++  "stack": {
++    "groups": [
++      { "name": "languages", "items": ["java", "python", "typescript", "sql"] },
++      { "name": "frontend", "items": ["react", "angular"] },
++      {
++        "name": "backend",
++        "items": ["spring-boot", "django", "graphql", "node", "fastapi"]
++      },
++      { "name": "data", "items": ["postgresql", "redis", "rabbitmq"] },
++      { "name": "cloud", "items": ["aws", "ci-cd"] },
++      { "name": "ai", "items": ["claude-code"] }
++    ]
++  }
++}
+diff --git a/src/scripts/theme.ts b/src/scripts/theme.ts
+index 133b07c..756e44e 100644
+--- a/src/scripts/theme.ts
++++ b/src/scripts/theme.ts
+@@ -1,3 +1,5 @@
++import { strings } from '../strings';
++
+ export type Theme = 'midnight' | 'daylight';
+ 
+ export const THEME_STORAGE_KEY = 'sp-theme';
+@@ -14,8 +16,8 @@ export function otherTheme(theme: Theme): Theme {
+ 
+ export function themeToggleLabel(current: Theme): string {
+   return current === 'midnight'
+-    ? 'Switch to the Daylight theme'
+-    : 'Switch to the Midnight theme';
++    ? strings.theme.switchToDaylight
++    : strings.theme.switchToMidnight;
+ }
+ 
+ export function colorSchemeFor(theme: Theme): 'dark' | 'light' {
+diff --git a/src/strings.ts b/src/strings.ts
+new file mode 100644
+index 0000000..424bfef
+--- /dev/null
++++ b/src/strings.ts
+@@ -0,0 +1,59 @@
++export const strings = {
++  skipLink: 'Skip to content',
++  hero: {
++    ariaLabel: 'Introduction',
++    seeMyWork: 'See my work',
++  },
++  nav: {
++    ariaLabel: 'Main',
++    brand: 'fabiombarreto',
++    links: [
++      { id: 'about', index: '01', label: 'About' },
++      { id: 'projects', index: '02', label: 'Projects' },
++      { id: 'stack', index: '03', label: 'Stack' },
++      { id: 'contact', index: '04', label: 'Contact' },
++    ],
++    openMenu: 'Open the menu',
++    closeMenu: 'Close the menu',
++  },
++  theme: {
++    switchToDaylight: 'Switch to the Daylight theme',
++    switchToMidnight: 'Switch to the Midnight theme',
++  },
++  sections: {
++    about: {
++      eyebrow: { index: '01', name: 'about' },
++      title: 'About me',
++    },
++    projects: {
++      eyebrow: { index: '02', name: 'projects' },
++      title: 'Selected work',
++      lead: 'Things I built and what I learned.',
++    },
++    stack: {
++      eyebrow: { index: '03', name: 'stack' },
++      title: 'What I work with',
++    },
++    contact: {
++      eyebrow: { index: '04', name: 'contact' },
++      title: "Let's talk.",
++      lead: 'Questions, ideas or a project in mind? Find me here.',
++    },
++  },
++  buttons: {
++    github: 'GitHub',
++    linkedin: 'LinkedIn',
++  },
++  projects: {
++    backToProjects: 'All projects',
++    repo: 'Repo',
++    repoShortcut: 'repo',
++  },
++  notFound: {
++    title: 'Page not found.',
++    homeLink: 'Go home',
++  },
++  footer: {
++    source: 'Source',
++  },
++} as const;

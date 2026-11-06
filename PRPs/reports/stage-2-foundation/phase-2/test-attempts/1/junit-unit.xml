@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="57" failures="0" errors="0" time="0.0668263">
+    <testsuite name="tests/unit/design-tokens.test.ts" timestamp="2026-11-05T18:48:54.491Z" hostname="Desktop-Fabio" tests="29" failures="0" errors="0" skipped="0" time="0.03062">
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg over --bg at 4.5:1 or better" time="0.0019297">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg over --bg-raised at 4.5:1 or better" time="0.0002776">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted over --bg at 4.5:1 or better" time="0.0001668">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted over --bg-raised at 4.5:1 or better" time="0.0001785">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --accent-fg over --bg at 4.5:1 or better" time="0.000204">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --on-accent over --accent at 4.5:1 or better" time="0.0003093">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-1 at its peak" time="0.0002943">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="midnight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-2 at its peak" time="0.0001647">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg over --bg at 4.5:1 or better" time="0.0002146">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg over --bg-raised at 4.5:1 or better" time="0.000222">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted over --bg at 4.5:1 or better" time="0.000129">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted over --bg-raised at 4.5:1 or better" time="0.0001099">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --accent-fg over --bg at 4.5:1 or better" time="0.0000926">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --on-accent over --accent at 4.5:1 or better" time="0.0000985">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-1 at its peak" time="0.0001721">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="daylight theme &gt; keeps --fg-muted at 4.5:1 over the page background under --glow-2 at its peak" time="0.0001217">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="token set &gt; defines the same token names in both themes" time="0.000767">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="token set &gt; declares the dark and light native color schemes" time="0.0001901">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="token set &gt; uses the approved accent in both themes" time="0.0001889">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="tokens only outside tokens.css (AC-9) &gt; scans a non-trivial set of source files" time="0.0053062">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="tokens only outside tokens.css (AC-9) &gt; has no color literal in any other source file" time="0.0070962">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="tokens only outside tokens.css (AC-9) &gt; has no box-shadow literal in any other source file" time="0.0071452">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="base styles &gt; draws a 2px solid accent focus ring offset by 2px on :focus-visible" time="0.0002696">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="base styles &gt; disables transitions and animations under reduced motion" time="0.00035">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="base styles &gt; clips the page wrapper horizontally without breaking sticky children" time="0.0001958">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; serves Geist from the site own /fonts/ path" time="0.0004581">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; serves JetBrains Mono from the site own /fonts/ path" time="0.0002603">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; swaps in both faces and references no remote font host" time="0.0010007">
+        </testcase>
+        <testcase classname="tests/unit/design-tokens.test.ts" name="self-hosted fonts (AC-10) &gt; ships the license text next to each font file" time="0.0005008">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/scaffold-config.test.ts" timestamp="2026-11-05T18:48:54.509Z" hostname="Desktop-Fabio" tests="17" failures="0" errors="0" skipped="0" time="0.0119362">
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; pins pnpm through the packageManager field" time="0.0025681">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; pins Node 24 for CI and Workers Builds" time="0.0004386">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; commits a lockfile so a frozen install is possible" time="0.0003983">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; exposes the scripts the success signal and CI rely on" time="0.0005681">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; runs a frozen-lockfile install from the bash worktree bootstrap" time="0.0009736">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; runs a frozen-lockfile install from the PowerShell worktree bootstrap" time="0.0011081">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; names the Worker site-pro" time="0.0004092">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; serves ./dist and falls back to the 404 page" time="0.000709">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; declares no entry script, so it stays a pure static deployment" time="0.0004134">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; defines exactly the five separately reported jobs" time="0.0003929">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; triggers on pull requests and on pushes to main" time="0.0003221">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job lint installs from the frozen lockfile and runs its checks" time="0.0003576">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job check installs from the frozen lockfile and runs its checks" time="0.0001322">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job unit installs from the frozen lockfile and runs its checks" time="0.0001283">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job build installs from the frozen lockfile and runs its checks" time="0.000221">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job e2e installs from the frozen lockfile and runs its checks" time="0.0003149">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; contains no Cloudflare deploy step or secret" time="0.000244">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/site-mark.test.ts" timestamp="2026-11-05T18:48:54.513Z" hostname="Desktop-Fabio" tests="1" failures="0" errors="0" skipped="0" time="0.0084702">
+        <testcase classname="tests/unit/site-mark.test.ts" name="SiteMark placeholder &gt; renders a single h1 reading &quot;Fabio Barreto.&quot;" time="0.0071136">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/theme-helpers.test.ts" timestamp="2026-11-05T18:48:54.513Z" hostname="Desktop-Fabio" tests="10" failures="0" errors="0" skipped="0" time="0.0157999">
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; stores the choice under sp-theme and defaults to midnight" time="0.0020036">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; accepts only the exact stored value &quot;daylight&quot; as Daylight" time="0.0004484">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; flips between the two themes" time="0.0002311">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme preference &gt; maps each theme to its native color scheme" time="0.0002774">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme toggle accessible name &gt; offers Daylight while in Midnight and Midnight while in Daylight" time="0.0001803">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme toggle accessible name &gt; renders statically as a button named for the Midnight default" time="0.0074022">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="theme toggle accessible name &gt; keeps decorative icons out of the accessibility tree" time="0.0014383">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="Backdrop &gt; is aria-hidden and renders one glow per entry" time="0.0011102">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="Backdrop &gt; renders no glow without a list and honors grain=false" time="0.0003777">
+        </testcase>
+        <testcase classname="tests/unit/theme-helpers.test.ts" name="Backdrop &gt; uses both glow tones and sizes that scale from CSS only" time="0.0006">
+        </testcase>
+    </testsuite>
+</testsuites>

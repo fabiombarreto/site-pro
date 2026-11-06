@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="18" failures="0" errors="0" time="0.0215388">
+    <testsuite name="tests/unit/scaffold-config.test.ts" timestamp="2026-11-05T18:25:10.863Z" hostname="Desktop-Fabio" tests="17" failures="0" errors="0" skipped="0" time="0.009794">
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; pins pnpm through the packageManager field" time="0.0019151">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; pins Node 24 for CI and Workers Builds" time="0.000383">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; commits a lockfile so a frozen install is possible" time="0.0003682">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; exposes the scripts the success signal and CI rely on" time="0.0005119">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; runs a frozen-lockfile install from the bash worktree bootstrap" time="0.000941">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="toolchain pins (AC-A4) &gt; runs a frozen-lockfile install from the PowerShell worktree bootstrap" time="0.000806">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; names the Worker site-pro" time="0.0003362">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; serves ./dist and falls back to the 404 page" time="0.0006108">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="Workers Static Assets config (AC-A3) &gt; declares no entry script, so it stays a pure static deployment" time="0.000345">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; defines exactly the five separately reported jobs" time="0.0003699">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; triggers on pull requests and on pushes to main" time="0.0002785">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job lint installs from the frozen lockfile and runs its checks" time="0.0003525">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job check installs from the frozen lockfile and runs its checks" time="0.0001313">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job unit installs from the frozen lockfile and runs its checks" time="0.0001135">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job build installs from the frozen lockfile and runs its checks" time="0.0001648">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; job e2e installs from the frozen lockfile and runs its checks" time="0.0002287">
+        </testcase>
+        <testcase classname="tests/unit/scaffold-config.test.ts" name="CI workflow (AC-A2) &gt; contains no Cloudflare deploy step or secret" time="0.0001689">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/site-mark.test.ts" timestamp="2026-11-05T18:25:10.872Z" hostname="Desktop-Fabio" tests="1" failures="0" errors="0" skipped="0" time="0.0117448">
+        <testcase classname="tests/unit/site-mark.test.ts" name="SiteMark placeholder &gt; renders a single h1 reading &quot;Fabio Barreto.&quot;" time="0.009846">
+        </testcase>
+    </testsuite>
+</testsuites>

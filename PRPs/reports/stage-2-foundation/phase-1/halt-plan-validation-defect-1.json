@@ -1,0 +1,16 @@
+{
+  "outcome": "PLAN_VALIDATION_DEFECT",
+  "plan_validation_defect": {
+    "level": 3,
+    "command": "if grep -rEq 'mailto:|tel:|<form' dist; then echo \"FAIL: forbidden contact markup in dist\"; exit 1; fi",
+    "observed": "grep -rEl matches only dist/_astro/client.C1IbzcEF.js; the matched text is `range:!0,search:!0,tel:!0,text:!0` (react-dom client bundle input-type map). `grep -Eq 'mailto:|tel:|<form' dist/index.html` finds nothing.",
+    "prd_refs": ["PRD AC-1", "plan AC-A6 (PRD AC-8)"],
+    "reason": "The command greps all of dist recursively, so it matches vendor JS and not contact markup. The built page contains no mailto:, tel: or <form."
+  },
+  "claim_check": "accepted: command verbatim at plan line 262 (## Validation Commands, Level 3); observed is this attempt's real output; PRD AC-1 and AC-8 resolve; Levels 1 and 2 PASS",
+  "attempt": 2,
+  "attempt_history": [
+    {"attempt": 1, "verdict": "IMPLEMENTATION_COMPLETE", "code_review": "CHANGES_REQUESTED (R-L3 only)", "diff": "attempts/1/diff.patch"},
+    {"attempt": 2, "verdict": "IMPLEMENTATION_COMPLETE + plan_validation_defect", "code_review": "not dispatched (PLAN_VALIDATION_DEFECT)", "diff": "attempts/2/diff.patch"}
+  ]
+}

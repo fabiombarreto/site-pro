@@ -1,0 +1,58 @@
+{
+  "run_id": "44c1e8d9-64f0-403c-97e3-948e5d814384",
+  "attempt": 1,
+  "tier": "all",
+  "framework": "vitest+playwright",
+  "outcome": "PASSED",
+  "duration_ms": 7136,
+  "counts": {
+    "passed": 226,
+    "failed": 0,
+    "skipped": 0,
+    "total": 226
+  },
+  "failures": [],
+  "tiers": {
+    "unit": {
+      "run_id": "44c1e8d9-64f0-403c-97e3-948e5d814384",
+      "attempt": 1,
+      "tier": "unit",
+      "framework": "vitest",
+      "outcome": "PASSED",
+      "duration_ms": 356,
+      "counts": {
+        "passed": 203,
+        "failed": 0,
+        "skipped": 0,
+        "total": 203
+      },
+      "failures": [],
+      "coverage": null,
+      "artifacts": {
+        "junit_xml": "C:\\repos\\site-pro\\PRPs\\reports\\stage-2-foundation\\attempts\\1\\unit\\junit.xml"
+      },
+      "generated_at": "2026-11-05T19:35:51.944Z"
+    },
+    "e2e": {
+      "run_id": "44c1e8d9-64f0-403c-97e3-948e5d814384",
+      "attempt": 1,
+      "tier": "e2e",
+      "framework": "playwright",
+      "outcome": "PASSED",
+      "duration_ms": 6780,
+      "counts": {
+        "passed": 23,
+        "failed": 0,
+        "skipped": 0,
+        "total": 23
+      },
+      "failures": [],
+      "coverage": null,
+      "artifacts": {
+        "junit_xml": "C:\\repos\\site-pro\\PRPs\\reports\\stage-2-foundation\\attempts\\1\\e2e\\junit.xml"
+      },
+      "generated_at": "2026-11-05T19:35:52.041Z"
+    }
+  },
+  "generated_at": "2026-11-05T19:36:00.198Z"
+}

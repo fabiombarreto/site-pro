@@ -174,13 +174,13 @@ Precondition decided by the owner on 2026-11-05: before `/relay-execute` starts,
 
 | # | Phase | Description | Status | Repo | Parallel | Depends | PRP Plan |
 |---|-------|-------------|--------|------|----------|---------|----------|
-| 1 | Scaffold and CI skeleton | Astro 6 + React + TS strict project with pnpm, lint/format/check/test tooling, folder layout, bootstrap scripts, `wrangler.jsonc` and a first CI workflow | pending | - | - | - | - |
-| 2 | Tokens, themes and fonts | `tokens.css` (Midnight/Daylight), base styles and type classes, self-hosted fonts, base layout with the no-flash theme script, ThemeToggle, Backdrop | pending | - | - | 1 | - |
-| 3 | Content collections and strings | `profile`, `projects` and `stack` collections with schemas and the approved copy, `src/strings.ts` | pending | - | - | 1 | - |
-| 4 | Page components | The Design System page components ported to typed React, rendered statically, with their styles and the photo placeholder | pending | - | - | 2, 3 | - |
-| 5 | Home page | Skip link, nav and popover mobile menu, the five sections per the screens, the D20 backdrop, the footer, responsive layout | pending | - | - | 4 | - |
-| 6 | Project pages and 404 | `/projects/<slug>` header-only pages (with a body only where the entry has one) and the plain 404 served with status 404 | pending | - | - | 5 | - |
-| 7 | Quality gates and preview deploy | The full CI: E2E, the axe matrix, the privacy and token checks, Lighthouse CI, the size budgets, screenshot baselines, and the Workers Builds preview verified on the pull request | pending | - | - | 6 | - |
+| 1 | Scaffold and CI skeleton | Astro 6 + React + TS strict project with pnpm, lint/format/check/test tooling, folder layout, bootstrap scripts, `wrangler.jsonc` and a first CI workflow | complete | - | - | - | PRPs/plans/stage-2-foundation-phase-1-scaffold-and-ci-skeleton.plan.md |
+| 2 | Tokens, themes and fonts | `tokens.css` (Midnight/Daylight), base styles and type classes, self-hosted fonts, base layout with the no-flash theme script, ThemeToggle, Backdrop | complete | - | - | 1 | PRPs/plans/stage-2-foundation-phase-2-tokens-themes-and-fonts.plan.md |
+| 3 | Content collections and strings | `profile`, `projects` and `stack` collections with schemas and the approved copy, `src/strings.ts` | complete | - | - | 1 | PRPs/plans/stage-2-foundation-phase-3-content-collections-and-strings.plan.md |
+| 4 | Page components | The Design System page components ported to typed React, rendered statically, with their styles and the photo placeholder | complete | - | - | 2, 3 | PRPs/plans/stage-2-foundation-phase-4-page-components.plan.md |
+| 5 | Home page | Skip link, nav and popover mobile menu, the five sections per the screens, the D20 backdrop, the footer, responsive layout | complete | - | - | 4 | PRPs/plans/stage-2-foundation-phase-5-home-page.plan.md |
+| 6 | Project pages and 404 | `/projects/<slug>` header-only pages (with a body only where the entry has one) and the plain 404 served with status 404 | complete | - | - | 5 | PRPs/plans/stage-2-foundation-phase-6-project-pages-and-404.plan.md |
+| 7 | Quality gates and preview deploy | The full CI: E2E, the axe matrix, the privacy and token checks, Lighthouse CI, the size budgets, screenshot baselines, and the Workers Builds preview verified on the pull request | complete | - | - | 6 | PRPs/plans/stage-2-foundation-phase-7-quality-gates-and-preview-deploy.plan.md |
 
 ### Phase Details
 

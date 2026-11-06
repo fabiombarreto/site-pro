@@ -1,0 +1,29 @@
+$ playwright test --pass-with-no-tests --reporter=list,junit
+
+Running 23 tests using 6 workers
+
+  ok  1 [chromium] › tests\e2e\css-budget.spec.ts:18:3 › built dist/ CSS budget (AC-A9) › all CSS together is at most 25 KB gzipped (10ms)
+  ok  2 [chromium] › tests\e2e\theme.spec.ts:21:3 › theme without a flash › serves Midnight in the HTML with the theme script before any stylesheet (48ms)
+  ok  4 [chromium] › tests\e2e\placeholder-page.spec.ts:13:3 › static HTML of / › is a complete document with one main and one h1, before any script runs (59ms)
+  ok  7 [chromium] › tests\e2e\placeholder-page.spec.ts:57:3 › built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form (21ms)
+  ok  6 [chromium] › tests\e2e\placeholder-page.spec.ts:30:3 › static HTML of / › shows the heading with JavaScript disabled (440ms)
+  ok  5 [chromium] › tests\e2e\theme.spec.ts:35:3 › theme without a flash › starts in Midnight with a Daylight-offering toggle (612ms)
+  ok 10 [chromium] › tests\e2e\theme.spec.ts:98:3 › theme without a flash › ignores an unknown stored value (517ms)
+  ok  9 [chromium] › tests\e2e\theme.spec.ts:86:3 › theme without a flash › applies a stored Daylight preference before first paint (559ms)
+  ok 11 [chromium] › tests\e2e\theme.spec.ts:109:3 › theme without a flash › exposes no theme control with JavaScript disabled (249ms)
+  ok 14 [chromium] › tests\e2e\theme.spec.ts:156:3 › fonts › serves both self-hosted font files (23ms)
+  ok 16 [chromium] › tests\e2e\theme.spec.ts:176:3 › fonts › preloads both fonts in the served head (18ms)
+  ok 12 [chromium] › tests\e2e\theme.spec.ts:126:3 › focus and motion › rings the focused toggle with a 2px solid accent outline offset 2px (302ms)
+  ok  8 [chromium] › tests\e2e\theme.spec.ts:50:3 › theme without a flash › switches theme, renames the toggle and keeps Daylight after reload (961ms)
+  ok 15 [chromium] › tests\e2e\theme.spec.ts:167:3 › fonts › loads Geist for the page text (238ms)
+  ok 13 [chromium] › tests\e2e\theme.spec.ts:141:3 › focus and motion › runs the 150 ms hover transition only without reduced motion (318ms)
+  ok 21 [chromium] › tests\e2e\theme.spec.ts:231:3 › built dist/ styles › keeps the emitted CSS within 25 KB gzip (6ms)
+  ok 22 [chromium] › tests\e2e\theme.spec.ts:240:3 › built dist/ styles › references no remote font host (5ms)
+  ok 23 [chromium] › tests\e2e\theme.spec.ts:248:3 › built dist/ styles › inlines the generated grain and the JS-reveal rule in the CSS (5ms)
+  ok 17 [chromium] › tests\e2e\theme.spec.ts:190:3 › Backdrop › is decorative, absolutely positioned and adds no horizontal scroll (342ms)
+  ok 18 [chromium] › tests\e2e\theme.spec.ts:212:5 › Backdrop › scales the first glow to 900px at 1440px wide (269ms)
+  ok 19 [chromium] › tests\e2e\theme.spec.ts:212:5 › Backdrop › scales the first glow to 702px at 800px wide (226ms)
+  ok 20 [chromium] › tests\e2e\theme.spec.ts:212:5 › Backdrop › scales the first glow to 540px at 375px wide (217ms)
+  ok  3 [chromium] › tests\e2e\placeholder-page.spec.ts:40:3 › static HTML of / › has no axe violations (1.3s)
+
+  23 passed (5.7s)

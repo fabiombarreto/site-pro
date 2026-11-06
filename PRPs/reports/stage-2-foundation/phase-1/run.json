@@ -1,0 +1,30 @@
+{
+  "run_id": "f278085d-73d7-46b2-9492-d819872f41d6",
+  "feature": "stage-2-foundation",
+  "started_at": "2026-11-05T18:24:49.573Z",
+  "ended_at": "2026-11-05T18:25:52.142Z",
+  "elapsed_ms": 62569,
+  "max_test_retries": 3,
+  "max_test_minutes": 30,
+  "attempts": [
+    {
+      "n": 1,
+      "verdict": "GREEN",
+      "record": "test-attempts/1/record.json"
+    }
+  ],
+  "outcome": "GREEN",
+  "phase": 1,
+  "time_breakdown": {
+    "attempt_1_suite_ms": 62569
+  },
+  "tdd_mode": false,
+  "secrets_redacted": {
+    "count": 0,
+    "categories": {
+      "env_names": 0,
+      "url_values": 0,
+      "regex_matches": 0
+    }
+  }
+}

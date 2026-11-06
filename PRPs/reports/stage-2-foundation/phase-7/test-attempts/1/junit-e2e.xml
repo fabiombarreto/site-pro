@@ -1,0 +1,336 @@
+<testsuites id="" name="" tests="153" failures="0" skipped="0" errors="0" time="18.100137">
+<testsuite name="css-budget.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="1" failures="0" skipped="0" time="0.013" errors="0">
+<testcase name="built dist/ CSS budget (AC-A9) › all CSS together is at most 25 KB gzipped" classname="css-budget.spec.ts" time="0.013">
+</testcase>
+</testsuite>
+<testsuite name="home-axe.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="8" failures="0" skipped="0" time="12.724" errors="0">
+<testcase name="midnight theme › has no axe violations on / at 1280x800" classname="home-axe.spec.ts" time="1.73">
+</testcase>
+<testcase name="midnight theme › has no axe violations on / at 800x1024" classname="home-axe.spec.ts" time="1.69">
+</testcase>
+<testcase name="midnight theme › has no axe violations on / at 375x812" classname="home-axe.spec.ts" time="1.682">
+</testcase>
+<testcase name="midnight theme › has no axe violations on / at 375x812 with the mobile menu open" classname="home-axe.spec.ts" time="1.684">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 1280x800" classname="home-axe.spec.ts" time="1.577">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 800x1024" classname="home-axe.spec.ts" time="1.519">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 375x812" classname="home-axe.spec.ts" time="1.325">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 375x812 with the mobile menu open" classname="home-axe.spec.ts" time="1.517">
+</testcase>
+</testsuite>
+<testsuite name="home-content.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="15" failures="0" skipped="0" time="2.491" errors="0">
+<testcase name="static HTML of / (AC-1) › has one main holding the five sections in order" classname="home-content.spec.ts" time="0.004">
+</testcase>
+<testcase name="static HTML of / (AC-1) › has exactly one h1 reading &quot;Fabio Barreto.&quot;" classname="home-content.spec.ts" time="0.003">
+</testcase>
+<testcase name="static HTML of / (AC-1) › has one h2 per later section and labels each section by it" classname="home-content.spec.ts" time="0.017">
+</testcase>
+<testcase name="static HTML of / (AC-1) › has a per-page title and description from the profile" classname="home-content.spec.ts" time="0.003">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the approved hero copy" classname="home-content.spec.ts" time="0.004">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the approved About text and profile buttons" classname="home-content.spec.ts" time="0.004">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows four project cards with title, summary, tags, year and status" classname="home-content.spec.ts" time="0.027">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the six stack groups with their items in display order" classname="home-content.spec.ts" time="0.04">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the Contact lead and the only location text" classname="home-content.spec.ts" time="0.003">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the About nav link sets #about and shows its h2" classname="home-content.spec.ts" time="0.387">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the Projects nav link sets #projects and shows its h2" classname="home-content.spec.ts" time="0.387">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the Stack nav link sets #stack and shows its h2" classname="home-content.spec.ts" time="0.398">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the Contact nav link sets #contact and shows its h2" classname="home-content.spec.ts" time="0.382">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › shows every section text" classname="home-content.spec.ts" time="0.473">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › points each project card title at /projects/&lt;slug&gt;" classname="home-content.spec.ts" time="0.359">
+</testcase>
+</testsuite>
+<testsuite name="home-keyboard.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="4" failures="0" skipped="0" time="1.567" errors="0">
+<testcase name="skip link › is the first Tab stop, is visible, and moves focus to main" classname="home-keyboard.spec.ts" time="0.388">
+</testcase>
+<testcase name="skip link › is out of view until it takes focus" classname="home-keyboard.spec.ts" time="0.328">
+</testcase>
+<testcase name="focus order and ring › every link and button takes focus in DOM order with a 2px accent ring offset 2px" classname="home-keyboard.spec.ts" time="0.52">
+</testcase>
+<testcase name="focus order and ring › rings the first stop after the skip link, the brand, in the accent color" classname="home-keyboard.spec.ts" time="0.331">
+</testcase>
+</testsuite>
+<testsuite name="home-mobile-menu.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="10" failures="0" skipped="0" time="3.616" errors="0">
+<testcase name="phone viewport with JavaScript › hides the section links and shows the menu button" classname="home-mobile-menu.spec.ts" time="0.325">
+</testcase>
+<testcase name="phone viewport with JavaScript › opens a menu with four numbered links and the profile buttons" classname="home-mobile-menu.spec.ts" time="0.456">
+</testcase>
+<testcase name="phone viewport with JavaScript › reaches every menu item by keyboard, in order" classname="home-mobile-menu.spec.ts" time="0.375">
+</testcase>
+<testcase name="phone viewport with JavaScript › closes on Escape and returns focus to the button" classname="home-mobile-menu.spec.ts" time="0.359">
+</testcase>
+<testcase name="phone viewport with JavaScript › closes and navigates when a link is chosen" classname="home-mobile-menu.spec.ts" time="0.403">
+</testcase>
+<testcase name="phone viewport without JavaScript › opens the menu and closes it on Escape" classname="home-mobile-menu.spec.ts" time="0.387">
+</testcase>
+<testcase name="tablet and desktop widths › shows no menu button and inline links at 768px" classname="home-mobile-menu.spec.ts" time="0.33">
+</testcase>
+<testcase name="tablet and desktop widths › shows no menu button and inline links at 1280px" classname="home-mobile-menu.spec.ts" time="0.31">
+</testcase>
+<testcase name="sticky nav › is sticky, 64px tall, transparent at the top and translucent once scrolled" classname="home-mobile-menu.spec.ts" time="0.359">
+</testcase>
+<testcase name="sticky nav › without JavaScript › stays translucent at the top" classname="home-mobile-menu.spec.ts" time="0.312">
+</testcase>
+</testsuite>
+<testsuite name="home-no-build-layer.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="6" failures="0" skipped="0" time="6.177" errors="0">
+<testcase name="after the page has loaded and idled for 2 s › has no boot terminal, dock, window, selection box or skeleton" classname="home-no-build-layer.spec.ts" time="2.272">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › renders the same main text as the no-JS page" classname="home-no-build-layer.spec.ts" time="2.601">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › only transitions for 150 to 300 ms" classname="home-no-build-layer.spec.ts" time="0.757">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › has at least one transition, so the check above is not vacuous" classname="home-no-build-layer.spec.ts" time="0.273">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › runs no transition or animation under reduced motion" classname="home-no-build-layer.spec.ts" time="0.244">
+</testcase>
+<testcase name="the served HTML › carries no build-layer markup or pending state" classname="home-no-build-layer.spec.ts" time="0.03">
+</testcase>
+</testsuite>
+<testsuite name="home-responsive-layout.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="16" failures="0" skipped="0" time="6.752" errors="0">
+<testcase name="desktop 1440 › sizes the hero photo placeholder at 9:16" classname="home-responsive-layout.spec.ts" time="0.265">
+</testcase>
+<testcase name="desktop 1440 › renders the banner name on two lines" classname="home-responsive-layout.spec.ts" time="0.249">
+</testcase>
+<testcase name="desktop 1440 › lays out the project grid and stack grid in the right columns" classname="home-responsive-layout.spec.ts" time="0.246">
+</testcase>
+<testcase name="desktop 1440 › offsets the right project column by 96px" classname="home-responsive-layout.spec.ts" time="0.281">
+</testcase>
+<testcase name="desktop 1440 › never scrolls horizontally and shifts layout by at most 0.01" classname="home-responsive-layout.spec.ts" time="1.21">
+</testcase>
+<testcase name="tablet 800 › sizes the hero photo placeholder at 9:16" classname="home-responsive-layout.spec.ts" time="0.264">
+</testcase>
+<testcase name="tablet 800 › renders the banner name on two lines" classname="home-responsive-layout.spec.ts" time="0.256">
+</testcase>
+<testcase name="tablet 800 › lays out the project grid and stack grid in the right columns" classname="home-responsive-layout.spec.ts" time="0.238">
+</testcase>
+<testcase name="tablet 800 › offsets the right project column by 96px" classname="home-responsive-layout.spec.ts" time="0.259">
+</testcase>
+<testcase name="tablet 800 › never scrolls horizontally and shifts layout by at most 0.01" classname="home-responsive-layout.spec.ts" time="1.189">
+</testcase>
+<testcase name="phone 375 › sizes the hero photo placeholder at 9:16" classname="home-responsive-layout.spec.ts" time="0.212">
+</testcase>
+<testcase name="phone 375 › renders the banner name on two lines" classname="home-responsive-layout.spec.ts" time="0.214">
+</testcase>
+<testcase name="phone 375 › lays out the project grid and stack grid in the right columns" classname="home-responsive-layout.spec.ts" time="0.215">
+</testcase>
+<testcase name="phone 375 › offsets the right project column by 0px" classname="home-responsive-layout.spec.ts" time="0.23">
+</testcase>
+<testcase name="phone 375 › never scrolls horizontally and shifts layout by at most 0.01" classname="home-responsive-layout.spec.ts" time="1.201">
+</testcase>
+<testcase name="hero stacking › puts the photo in front of the name and lets it run into About" classname="home-responsive-layout.spec.ts" time="0.223">
+</testcase>
+</testsuite>
+<testsuite name="not-found.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="7" failures="0" skipped="0" time="0.342" errors="0">
+<testcase name="unknown path /nope › answers with status 404 and the not-found heading" classname="not-found.spec.ts" time="0.01">
+</testcase>
+<testcase name="unknown path /nope › shows a Go home link to / inside main, with the nav and footer around it" classname="not-found.spec.ts" time="0.152">
+</testcase>
+<testcase name="unknown path /projects/does-not-exist › answers with status 404 and the not-found heading" classname="not-found.spec.ts" time="0.021">
+</testcase>
+<testcase name="unknown path /projects/does-not-exist › shows a Go home link to / inside main, with the nav and footer around it" classname="not-found.spec.ts" time="0.153">
+</testcase>
+<testcase name="the 404 document › has a per-page title and the profile subtitle as description" classname="not-found.spec.ts" time="0.001">
+</testcase>
+<testcase name="the 404 document › is a plain page with one skip target, no build layer, form, mailto or tel" classname="not-found.spec.ts" time="0.002">
+</testcase>
+<testcase name="the 404 document › points every nav link at the home sections, not at same-page hashes" classname="not-found.spec.ts" time="0.003">
+</testcase>
+</testsuite>
+<testsuite name="placeholder-page.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="4" failures="0" skipped="0" time="1.581" errors="0">
+<testcase name="static HTML of / › is a complete document with one main and one h1, before any script runs" classname="placeholder-page.spec.ts" time="0.014">
+</testcase>
+<testcase name="static HTML of / › shows the heading with JavaScript disabled" classname="placeholder-page.spec.ts" time="0.254">
+</testcase>
+<testcase name="static HTML of / › has no axe violations" classname="placeholder-page.spec.ts" time="1.305">
+</testcase>
+<testcase name="built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form" classname="placeholder-page.spec.ts" time="0.008">
+</testcase>
+</testsuite>
+<testsuite name="project-pages.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="21" failures="0" skipped="0" time="2.604" errors="0">
+<testcase name="every project card link resolves (AC-2) › the home page links four distinct /projects/&lt;slug&gt; pages that load with 200" classname="project-pages.spec.ts" time="0.037">
+</testcase>
+<testcase name="/projects/relay (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.003">
+</testcase>
+<testcase name="/projects/relay (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.001">
+</testcase>
+<testcase name="/projects/relay (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="0.289">
+</testcase>
+<testcase name="/projects/relay (AC-14) › renders the fork note inside the prose body" classname="project-pages.spec.ts" time="0.224">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.003">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.002">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="0.342">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › renders no body: no prose element and no fork note" classname="project-pages.spec.ts" time="0.306">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.003">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.004">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="0.367">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › renders no body: no prose element and no fork note" classname="project-pages.spec.ts" time="0.255">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.002">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.026">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="0.364">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › renders no body: no prose element and no fork note" classname="project-pages.spec.ts" time="0.308">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/relay has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.016">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/ai-track-record has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.016">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/praesto-sum has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.022">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/site-pro has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.014">
+</testcase>
+</testsuite>
+<testsuite name="quality-gates.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="2" failures="0" skipped="0" time="0.396" errors="0">
+<testcase name="the privacy gate passes on the real build (AC-8)" classname="quality-gates.spec.ts" time="0.231">
+</testcase>
+<testcase name="the size-budget gate passes on the real build (AC-10)" classname="quality-gates.spec.ts" time="0.165">
+</testcase>
+</testsuite>
+<testsuite name="subpages-axe.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="32" failures="0" skipped="0" time="30.805" errors="0">
+<testcase name="midnight theme › has no axe violations on /projects/relay at 1280x800" classname="subpages-axe.spec.ts" time="0.962">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/relay at 800x1024" classname="subpages-axe.spec.ts" time="0.944">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/relay at 375x812" classname="subpages-axe.spec.ts" time="0.945">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/ai-track-record at 1280x800" classname="subpages-axe.spec.ts" time="0.945">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/ai-track-record at 800x1024" classname="subpages-axe.spec.ts" time="1">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/ai-track-record at 375x812" classname="subpages-axe.spec.ts" time="0.981">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/praesto-sum at 1280x800" classname="subpages-axe.spec.ts" time="0.965">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/praesto-sum at 800x1024" classname="subpages-axe.spec.ts" time="1.014">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/praesto-sum at 375x812" classname="subpages-axe.spec.ts" time="0.951">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/site-pro at 1280x800" classname="subpages-axe.spec.ts" time="0.981">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/site-pro at 800x1024" classname="subpages-axe.spec.ts" time="0.959">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/site-pro at 375x812" classname="subpages-axe.spec.ts" time="0.923">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /nope at 1280x800" classname="subpages-axe.spec.ts" time="0.919">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /nope at 800x1024" classname="subpages-axe.spec.ts" time="0.913">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /nope at 375x812" classname="subpages-axe.spec.ts" time="0.911">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/relay at 375x812 with the mobile menu open" classname="subpages-axe.spec.ts" time="1.055">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 1280x800" classname="subpages-axe.spec.ts" time="1.003">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 800x1024" classname="subpages-axe.spec.ts" time="0.999">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 375x812" classname="subpages-axe.spec.ts" time="0.922">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/ai-track-record at 1280x800" classname="subpages-axe.spec.ts" time="0.962">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/ai-track-record at 800x1024" classname="subpages-axe.spec.ts" time="0.975">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/ai-track-record at 375x812" classname="subpages-axe.spec.ts" time="0.95">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/praesto-sum at 1280x800" classname="subpages-axe.spec.ts" time="1.005">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/praesto-sum at 800x1024" classname="subpages-axe.spec.ts" time="0.97">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/praesto-sum at 375x812" classname="subpages-axe.spec.ts" time="0.971">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/site-pro at 1280x800" classname="subpages-axe.spec.ts" time="0.972">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/site-pro at 800x1024" classname="subpages-axe.spec.ts" time="0.965">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/site-pro at 375x812" classname="subpages-axe.spec.ts" time="0.921">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /nope at 1280x800" classname="subpages-axe.spec.ts" time="0.894">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /nope at 800x1024" classname="subpages-axe.spec.ts" time="0.885">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /nope at 375x812" classname="subpages-axe.spec.ts" time="0.922">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 375x812 with the mobile menu open" classname="subpages-axe.spec.ts" time="1.121">
+</testcase>
+</testsuite>
+<testsuite name="subpages-navigation.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="9" failures="0" skipped="0" time="3.089" errors="0">
+<testcase name="skip link on the new pages (AC-3) › /projects/relay: the first Tab focuses the skip link and Enter focuses main" classname="subpages-navigation.spec.ts" time="0.314">
+</testcase>
+<testcase name="skip link on the new pages (AC-3) › /projects/site-pro: the first Tab focuses the skip link and Enter focuses main" classname="subpages-navigation.spec.ts" time="0.303">
+</testcase>
+<testcase name="skip link on the new pages (AC-3) › /nope: the first Tab focuses the skip link and Enter focuses main" classname="subpages-navigation.spec.ts" time="0.308">
+</testcase>
+<testcase name="without JavaScript › the relay fork note is readable in the page text" classname="subpages-navigation.spec.ts" time="0.256">
+</testcase>
+<testcase name="without JavaScript › the back link lands on / with the projects heading in view" classname="subpages-navigation.spec.ts" time="0.379">
+</testcase>
+<testcase name="without JavaScript › the nav link /#about from a project page lands with that h2 in view" classname="subpages-navigation.spec.ts" time="0.388">
+</testcase>
+<testcase name="without JavaScript › the nav link /#contact from a project page lands with that h2 in view" classname="subpages-navigation.spec.ts" time="0.368">
+</testcase>
+<testcase name="without JavaScript › Go home on the 404 reaches the home page" classname="subpages-navigation.spec.ts" time="0.339">
+</testcase>
+<testcase name="mobile menu on a project page › opens with four home-prefixed links and navigates to the home section" classname="subpages-navigation.spec.ts" time="0.434">
+</testcase>
+</testsuite>
+<testsuite name="theme.spec.ts" timestamp="2026-11-05T21:07:07.973Z" hostname="chromium" tests="18" failures="0" skipped="0" time="4.28" errors="0">
+<testcase name="theme without a flash › serves Midnight in the HTML with the theme script before any stylesheet" classname="theme.spec.ts" time="0.015">
+</testcase>
+<testcase name="theme without a flash › starts in Midnight with a Daylight-offering toggle" classname="theme.spec.ts" time="0.355">
+</testcase>
+<testcase name="theme without a flash › switches theme, renames the toggle and keeps Daylight after reload" classname="theme.spec.ts" time="0.494">
+</testcase>
+<testcase name="theme without a flash › applies a stored Daylight preference before first paint" classname="theme.spec.ts" time="0.318">
+</testcase>
+<testcase name="theme without a flash › ignores an unknown stored value" classname="theme.spec.ts" time="0.288">
+</testcase>
+<testcase name="theme without a flash › exposes no theme control with JavaScript disabled" classname="theme.spec.ts" time="0.295">
+</testcase>
+<testcase name="focus and motion › rings the focused toggle with a 2px solid accent outline offset 2px" classname="theme.spec.ts" time="0.402">
+</testcase>
+<testcase name="focus and motion › runs the 150 ms hover transition only without reduced motion" classname="theme.spec.ts" time="0.39">
+</testcase>
+<testcase name="fonts › serves both self-hosted font files" classname="theme.spec.ts" time="0.039">
+</testcase>
+<testcase name="fonts › loads Geist for the page text" classname="theme.spec.ts" time="0.316">
+</testcase>
+<testcase name="fonts › preloads both fonts in the served head" classname="theme.spec.ts" time="0.014">
+</testcase>
+<testcase name="Backdrop › is decorative, absolutely positioned and adds no horizontal scroll" classname="theme.spec.ts" time="0.327">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 900px at 1440px wide" classname="theme.spec.ts" time="0.381">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 702px at 800px wide" classname="theme.spec.ts" time="0.319">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 540px at 375px wide" classname="theme.spec.ts" time="0.302">
+</testcase>
+<testcase name="built dist/ styles › keeps the emitted CSS within 25 KB gzip" classname="theme.spec.ts" time="0.008">
+</testcase>
+<testcase name="built dist/ styles › references no remote font host" classname="theme.spec.ts" time="0.011">
+</testcase>
+<testcase name="built dist/ styles › inlines the generated grain and the JS-reveal rule in the CSS" classname="theme.spec.ts" time="0.006">
+</testcase>
+</testsuite>
+</testsuites>

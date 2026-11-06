@@ -1,0 +1,244 @@
+diff --git a/src/components/page/MobileMenu.tsx b/src/components/page/MobileMenu.tsx
+index 757214f..e716637 100644
+--- a/src/components/page/MobileMenu.tsx
++++ b/src/components/page/MobileMenu.tsx
+@@ -9,6 +9,7 @@ interface MobileMenuProps {
+   githubHref: string;
+   linkedinHref: string;
+   active?: string;
++  homeHref?: string;
+   className?: string;
+ }
+ 
+@@ -16,6 +17,7 @@ export function MobileMenu({
+   githubHref,
+   linkedinHref,
+   active,
++  homeHref = '',
+   className,
+ }: MobileMenuProps): React.JSX.Element {
+   return (
+@@ -33,7 +35,7 @@ export function MobileMenu({
+                   'sp-menu-link',
+                   active === link.id && 'is-active',
+                 )}
+-                href={`#${link.id}`}
++                href={`${homeHref}#${link.id}`}
+                 aria-current={active === link.id ? 'true' : undefined}
+               >
+                 <span className="sp-menu-num mono-xs">{link.index}</span>
+diff --git a/src/components/page/NavBar.tsx b/src/components/page/NavBar.tsx
+index bf3e3f6..6528fa2 100644
+--- a/src/components/page/NavBar.tsx
++++ b/src/components/page/NavBar.tsx
+@@ -13,6 +13,7 @@ interface NavBarProps {
+   githubHref: string;
+   linkedinHref: string;
+   active?: string;
++  homeHref?: string;
+   className?: string;
+ }
+ 
+@@ -20,12 +21,13 @@ export function NavBar({
+   githubHref,
+   linkedinHref,
+   active,
++  homeHref = '',
+   className,
+ }: NavBarProps): React.JSX.Element {
+   return (
+     <header className={cx('sp-nav', className)}>
+       <div className="sp-nav-inner">
+-        <a className="sp-nav-name" href="#top">
++        <a className="sp-nav-name" href={`${homeHref}#top`}>
+           {strings.nav.brand}
+         </a>
+         <nav
+@@ -36,7 +38,7 @@ export function NavBar({
+             <a
+               key={link.id}
+               className={cx('sp-nav-link', active === link.id && 'is-active')}
+-              href={`#${link.id}`}
++              href={`${homeHref}#${link.id}`}
+               aria-current={active === link.id ? 'true' : undefined}
+             >
+               {link.label}
+@@ -64,6 +66,7 @@ export function NavBar({
+         githubHref={githubHref}
+         linkedinHref={linkedinHref}
+         active={active}
++        homeHref={homeHref}
+       />
+     </header>
+   );
+diff --git a/src/pages/404.astro b/src/pages/404.astro
+new file mode 100644
+index 0000000..a0596cd
+--- /dev/null
++++ b/src/pages/404.astro
+@@ -0,0 +1,35 @@
++---
++import Base from '../layouts/Base.astro';
++import { Backdrop, DEFAULT_GLOWS } from '../components/page/Backdrop';
++import { Button } from '../components/page/Button';
++import { Footer } from '../components/page/Footer';
++import { NavBar } from '../components/page/NavBar';
++import { loadSiteChrome, pageTitle } from '../sections/site-chrome';
++import { strings } from '../strings';
++import '../styles/subpages.css';
++
++const { profile, links, sourceHref } = await loadSiteChrome();
++---
++
++<Base
++  title={pageTitle(strings.notFound.title, profile)}
++  description={profile.subtitle}
++>
++  <div class="sp-page">
++    <Backdrop glows={DEFAULT_GLOWS} />
++    <div class="sp-page-content">
++      <NavBar
++        githubHref={links.github}
++        linkedinHref={links.linkedin}
++        homeHref="/"
++      />
++      <main id="main" tabindex="-1" class="sp-subpage sp-notfound">
++        <h1 class="text-3xl sp-notfound-title">{strings.notFound.title}</h1>
++        <Button variant="primary" href="/">
++          {strings.notFound.homeLink}
++        </Button>
++      </main>
++      <Footer sourceHref={sourceHref} owner={profile.name} />
++    </div>
++  </div>
++</Base>
+diff --git a/src/pages/projects/[slug].astro b/src/pages/projects/[slug].astro
+new file mode 100644
+index 0000000..7a00cf6
+--- /dev/null
++++ b/src/pages/projects/[slug].astro
+@@ -0,0 +1,61 @@
++---
++import { getCollection, render } from 'astro:content';
++import type { CollectionEntry } from 'astro:content';
++import Base from '../../layouts/Base.astro';
++import { Backdrop, DEFAULT_GLOWS } from '../../components/page/Backdrop';
++import { Footer } from '../../components/page/Footer';
++import { NavBar } from '../../components/page/NavBar';
++import { ProjectHeader } from '../../components/page/ProjectHeader';
++import { Prose } from '../../components/page/Prose';
++import { resolveAssetUrl } from '../../components/page/resolve-asset';
++import { loadSiteChrome, pageTitle } from '../../sections/site-chrome';
++import '../../styles/subpages.css';
++
++export async function getStaticPaths() {
++  return (await getCollection('projects')).map((entry) => ({
++    params: { slug: entry.id },
++    props: { entry },
++  }));
++}
++
++interface Props {
++  entry: CollectionEntry<'projects'>;
++}
++
++const { entry } = Astro.props;
++const { data } = entry;
++const { profile, links, sourceHref } = await loadSiteChrome();
++const hasBody = Boolean(entry.body?.trim());
++const Content = hasBody ? (await render(entry)).Content : undefined;
++---
++
++<Base title={pageTitle(data.title, profile)} description={data.summary}>
++  <div class="sp-page">
++    <Backdrop glows={DEFAULT_GLOWS} />
++    <div class="sp-page-content">
++      <NavBar
++        githubHref={links.github}
++        linkedinHref={links.linkedin}
++        homeHref="/"
++      />
++      <main id="main" tabindex="-1" class="sp-subpage">
++        <ProjectHeader
++          title={data.title}
++          slug={entry.id}
++          summary={data.summary}
++          year={data.year}
++          status={data.status}
++          tags={data.tags}
++          repo={data.links.repo}
++          cover={resolveAssetUrl(data.cover)}
++        />
++        {Content && (
++          <Prose>
++            <Content />
++          </Prose>
++        )}
++      </main>
++      <Footer sourceHref={sourceHref} owner={profile.name} />
++    </div>
++  </div>
++</Base>
+diff --git a/src/sections/site-chrome.ts b/src/sections/site-chrome.ts
+new file mode 100644
+index 0000000..b536536
+--- /dev/null
++++ b/src/sections/site-chrome.ts
+@@ -0,0 +1,29 @@
++import { getCollection, getEntry } from 'astro:content';
++import type { CollectionEntry } from 'astro:content';
++import { profileLinks } from './profile-links';
++
++type ProfileData = CollectionEntry<'profile'>['data'];
++
++export async function loadSiteChrome(): Promise<{
++  profile: ProfileData;
++  links: { github: string; linkedin: string };
++  sourceHref: string;
++}> {
++  const profileEntry = await getEntry('profile', 'profile');
++  if (!profileEntry) throw new Error('The profile entry is missing');
++  const projects = await getCollection('projects');
++  const sourceHref = projects.find((p) => p.id === 'site-pro')?.data.links.repo;
++  if (!sourceHref) throw new Error('The site-pro project has no repo link');
++  return {
++    profile: profileEntry.data,
++    links: profileLinks(profileEntry.data),
++    sourceHref,
++  };
++}
++
++export function pageTitle(
++  label: string,
++  profile: { headline: string },
++): string {
++  return `${label.replace(/\.$/, '')} - ${profile.headline.replace(/\.$/, '')}`;
++}
+diff --git a/src/styles/subpages.css b/src/styles/subpages.css
+new file mode 100644
+index 0000000..a6e6311
+--- /dev/null
++++ b/src/styles/subpages.css
+@@ -0,0 +1,22 @@
++.sp-subpage {
++  --subpage-gutter: clamp(16px, 4vw, 32px);
++  box-sizing: border-box;
++  max-width: var(--container);
++  margin: 0 auto;
++  padding: var(--space-12) var(--subpage-gutter) clamp(96px, 12vw, 160px);
++  display: flex;
++  flex-direction: column;
++  gap: var(--space-12);
++}
++
++.sp-notfound {
++  min-height: 50vh;
++  justify-content: center;
++  align-items: flex-start;
++  gap: var(--space-6);
++}
++
++.sp-notfound-title {
++  margin: 0;
++  color: var(--fg);
++}

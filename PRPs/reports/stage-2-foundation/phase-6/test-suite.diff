@@ -1,0 +1,62 @@
+# TDD initial suite — phase 6
+# Source PRD: PRPs/prds/stage-2-foundation.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-2-foundation-phase-6-project-pages-and-404.plan.md
+# Mode: test-after (tdd: false; vitest + playwright)
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-05
+
+Note: phase 5's APPROVED manifest stays archived at
+PRPs/reports/stage-2-foundation/phase-5/test-suite.diff; this manifest is phase 6's.
+Plan ACs are AC-A1..AC-A9, mapped to PRD ACs as the plan states. Test files live
+in the feature worktree (code_root C:/repos/site-pro/.worktrees/stage-2-foundation/).
+Shared fixtures (PROJECTS, axe helper, viewports, ACCENT_RGB, textOf) are reused from
+tests/e2e/support/home.ts (unchanged).
+
+## AC outcomes
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-A1 (PRD AC-14) relay page: back link /#projects, h1, summary, year, status, tags, Repo link, cover label "relay", fork note, title and description | NEW_TEST_REQUIRED | tests/e2e/project-pages.spec.ts ("/projects/relay (AC-14)") |
+| AC-A2 (PRD AC-14) other three slugs: same header with own data, no body (no `.sp-prose` element, asserted by DOM and `class="sp-prose` attribute, not a bare substring) | NEW_TEST_REQUIRED | tests/e2e/project-pages.spec.ts (per-slug describe) |
+| AC-A3 (PRD AC-14) /nope and unknown /projects/<slug>: HTTP 404, "Page not found.", "Go home" to /, nav and footer, title/description | NEW_TEST_REQUIRED | tests/e2e/not-found.spec.ts |
+| AC-A4 (PRD AC-5) axe on 4 project pages and 404, both themes, 3 viewports, plus menu open on a project page | NEW_TEST_REQUIRED | tests/e2e/subpages-axe.spec.ts |
+| AC-A5 (PRD AC-2) card links load with 200 | NEW_TEST_REQUIRED | tests/e2e/project-pages.spec.ts ("every project card link resolves (AC-2)"); home-side hrefs also EXISTING_TEST_COVERS tests/e2e/home-content.spec.ts ("navigation without JavaScript (AC-2)") |
+| AC-A6 (PRD AC-3) skip link first Tab, focus to main on project pages and 404 | NEW_TEST_REQUIRED | tests/e2e/subpages-navigation.spec.ts ("skip link on the new pages"); home behavior EXISTING_TEST_COVERS tests/e2e/home-keyboard.spec.ts |
+| AC-A7 (PRD AC-2) nav/menu links home-prefixed; no-JS landing with h2 in view; default output unchanged | NEW_TEST_REQUIRED | tests/unit/home-href.test.ts (static render); tests/e2e/subpages-navigation.spec.ts (browser). Default bare hashes: EXISTING_TEST_COVERS tests/unit/page-navigation.test.ts:37-40, :75, :89-99 and tests/e2e/home-mobile-menu.spec.ts |
+| AC-A8 (PRD AC-8) no form/mailto/tel, allowed external links | EXISTING_TEST_COVERS | tests/e2e/placeholder-page.spec.ts ("built dist/ privacy (AC-A6)": scans every dist HTML file incl. new pages); also asserted per page in project-pages.spec.ts and not-found.spec.ts |
+| AC-A9 (PRD AC-9, AC-10) tokens only, CSS/JS budgets | EXISTING_TEST_COVERS | tests/unit/design-tokens.test.ts:130 and :137 (scan every src css/ts/tsx file); tests/e2e/css-budget.spec.ts; tests/e2e/theme.spec.ts "keeps the emitted CSS within 25 KB gzip" |
+| PRD AC-1, AC-4, AC-6, AC-7, AC-12, AC-13 | OUT_OF_PHASE_SCOPE | delivered and covered in earlier phases |
+| PRD AC-10 (Lighthouse on /projects/relay), AC-11 | OUT_OF_PHASE_SCOPE | phase 7 |
+
+## Test files written this session
+
+- tests/unit/home-href.test.ts
+- tests/e2e/project-pages.spec.ts
+- tests/e2e/not-found.spec.ts
+- tests/e2e/subpages-axe.spec.ts
+- tests/e2e/subpages-navigation.spec.ts
+
+(all under C:/repos/site-pro/.worktrees/stage-2-foundation/)
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| (none — no update/delete this session) | — | — | — |
+
+No existing assertion became obsolete: the default `homeHref=''` keeps every pinned hash href, so all existing tests were left untouched.
+
+## Run outcome
+
+The test-writer had no shell in this session; the new files were not executed by it and are not Prettier-/ESLint-verified by a tool. They were written to match the repository's formatting by hand. The command layer's formatting step and the test run (`pnpm test`, `pnpm build && pnpm test:e2e`) are the verification.
+
+## Formatting Outcome
+
+- Outcome: formatted (exit 0) by the command layer (/relay-write-test Phase A.4). `tests/e2e/project-pages.spec.ts` was reformatted; the other four files were already clean. ESLint over the five files reports no problems.
+- Command: `pnpm exec prettier --write tests/unit/home-href.test.ts tests/e2e/project-pages.spec.ts tests/e2e/not-found.spec.ts tests/e2e/subpages-axe.spec.ts tests/e2e/subpages-navigation.spec.ts`, run in code_root, scoped to the touched-file set only.
+- Discovery source: the project's `package.json` `scripts.format` in code_root (`<target_root>/package.json` does not exist; `methodology.md` declares no `formatter_cmd`); scoped `prettier --write <files>` instead of the script's whole-repo `.`.
+
+## Status
+
+*Approved: 2026-11-05*
+*Status: APPROVED*

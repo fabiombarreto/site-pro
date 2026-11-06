@@ -1,0 +1,80 @@
+$ astro build
+[2m16:07:12[22m [34m[content][39m Syncing content
+[2m16:07:12[22m [34m[content][39m Synced content
+[2m16:07:12[22m [34m[types][39m Generated [2m877ms[22m
+[2m16:07:12[22m [34m[build][39m output: [34m"static"[39m
+[2m16:07:12[22m [34m[build][39m mode: [34m"static"[39m
+[2m16:07:12[22m [34m[build][39m directory: [34mC:\repos\site-pro\.worktrees\stage-2-foundation\dist\[39m
+[2m16:07:12[22m [34m[build][39m Collecting build info...
+[2m16:07:12[22m [34m[build][39m [32m✓ Completed in 955ms.[39m
+[2m16:07:12[22m [34m[build][39m Building static entrypoints...
+[33m[1m16:07:13[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js (74:0): A comment
+
+"/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+ * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+ * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[33m[1m16:07:13[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[2m16:07:14[22m [34m[vite][39m [32m✓ built in 1.56s[39m
+[2m16:07:14[22m [34m[vite][39m [32m✓ built in 596ms[39m
+[2m16:07:14[22m [34m[build][39m Rearranging server assets...
+
+[42m[30m generating static routes [39m[49m
+[2m16:07:14[22m   [34m├─[39m [2m/index.html[22m [2m(+22ms)[22m 
+[2m16:07:14[22m [32m✓ Completed in 147ms.
+[39m
+[2m16:07:14[22m [34m[build][39m [32m✓ Completed in 2.37s.[39m
+[2m16:07:14[22m [34m[build][39m 1 page(s) built in [1m3.33s[22m
+[2m16:07:14[22m [34m[build][39m [1mComplete![22m
+=== VITEST ===
+
+ RUN  v5.1.0 C:/repos/site-pro/.worktrees/stage-2-foundation
+
+ ✓ tests/unit/content-copy.test.ts (21 tests) 31ms
+ ✓ tests/unit/scaffold-config.test.ts (17 tests) 15ms
+ ✓ tests/unit/design-tokens.test.ts (29 tests) 48ms
+ ✓ tests/unit/site-mark.test.ts (1 test) 10ms
+ ✓ tests/unit/theme-helpers.test.ts (10 tests) 18ms
+ ✓ tests/unit/content-schemas.test.ts (25 tests) 17ms
+
+ Test Files  6 passed (6)
+      Tests  103 passed (103)
+   Start at  16:07:15
+   Duration  446ms (import 56%, tests 21%, transform 13%, worker 9%)
+
+JUNIT report written to C:/repos/site-pro/PRPs/reports/stage-2-foundation/attempts/1/junit-unit.xml
+vitest_exit=0
+=== PLAYWRIGHT ===
+
+Running 22 tests using 6 workers
+
+  ok  1 [chromium] › tests\e2e\theme.spec.ts:21:3 › theme without a flash › serves Midnight in the HTML with the theme script before any stylesheet (85ms)
+  ok  3 [chromium] › tests\e2e\placeholder-page.spec.ts:13:3 › static HTML of / › is a complete document with one main and one h1, before any script runs (67ms)
+  ok  4 [chromium] › tests\e2e\placeholder-page.spec.ts:57:3 › built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form (17ms)
+  ok  2 [chromium] › tests\e2e\theme.spec.ts:35:3 › theme without a flash › starts in Midnight with a Daylight-offering toggle (546ms)
+  ok  8 [chromium] › tests\e2e\theme.spec.ts:86:3 › theme without a flash › applies a stored Daylight preference before first paint (596ms)
+  ok  9 [chromium] › tests\e2e\theme.spec.ts:98:3 › theme without a flash › ignores an unknown stored value (523ms)
+  ok 10 [chromium] › tests\e2e\theme.spec.ts:109:3 › theme without a flash › exposes no theme control with JavaScript disabled (285ms)
+  ok  5 [chromium] › tests\e2e\placeholder-page.spec.ts:30:3 › static HTML of / › shows the heading with JavaScript disabled (811ms)
+  ok 13 [chromium] › tests\e2e\theme.spec.ts:156:3 › fonts › serves both self-hosted font files (54ms)
+  ok 15 [chromium] › tests\e2e\theme.spec.ts:176:3 › fonts › preloads both fonts in the served head (23ms)
+  ok 11 [chromium] › tests\e2e\theme.spec.ts:126:3 › focus and motion › rings the focused toggle with a 2px solid accent outline offset 2px (299ms)
+  ok 14 [chromium] › tests\e2e\theme.spec.ts:167:3 › fonts › loads Geist for the page text (231ms)
+  ok 12 [chromium] › tests\e2e\theme.spec.ts:141:3 › focus and motion › runs the 150 ms hover transition only without reduced motion (342ms)
+  ok  7 [chromium] › tests\e2e\theme.spec.ts:50:3 › theme without a flash › switches theme, renames the toggle and keeps Daylight after reload (1.1s)
+  ok 20 [chromium] › tests\e2e\theme.spec.ts:231:3 › built dist/ styles › keeps the emitted CSS within 25 KB gzip (7ms)
+  ok 21 [chromium] › tests\e2e\theme.spec.ts:240:3 › built dist/ styles › references no remote font host (10ms)
+  ok 22 [chromium] › tests\e2e\theme.spec.ts:248:3 › built dist/ styles › inlines the generated grain and the JS-reveal rule in the CSS (5ms)
+  ok 16 [chromium] › tests\e2e\theme.spec.ts:190:3 › Backdrop › is decorative, absolutely positioned and adds no horizontal scroll (324ms)
+  ok 17 [chromium] › tests\e2e\theme.spec.ts:212:5 › Backdrop › scales the first glow to 900px at 1440px wide (302ms)
+  ok 18 [chromium] › tests\e2e\theme.spec.ts:212:5 › Backdrop › scales the first glow to 702px at 800px wide (277ms)
+  ok 19 [chromium] › tests\e2e\theme.spec.ts:212:5 › Backdrop › scales the first glow to 540px at 375px wide (262ms)
+  ok  6 [chromium] › tests\e2e\placeholder-page.spec.ts:40:3 › static HTML of / › has no axe violations (1.5s)
+
+  22 passed (6.0s)
+pw_exit=0

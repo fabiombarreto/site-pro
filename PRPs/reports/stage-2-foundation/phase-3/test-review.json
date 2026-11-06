@@ -1,0 +1,15 @@
+{
+  "run_id": "97315039-3639-4430-804f-607e814d98fb",
+  "reviewed_at": "2026-11-05T19:08:16Z",
+  "base_branch": "main",
+  "verdict": "APPROVED",
+  "analyzed_files": 8,
+  "concerns": [],
+  "notes": [
+    {"type": "scan_path", "path": "pathspec"},
+    {"type": "untracked_test_files", "files": ["tests/unit/content-copy.test.ts", "tests/unit/content-schemas.test.ts"]},
+    "coverage baseline unavailable (no PRPs/reports/coverage-baseline.json); weakening detection limited to structural checks",
+    "ledger APPROVED, create-only session (empty authorized set); no removals, skips, or file deletions detected"
+  ],
+  "phase": 3
+}

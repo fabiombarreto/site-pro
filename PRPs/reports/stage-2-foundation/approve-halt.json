@@ -1,0 +1,12 @@
+{
+  "steps_attempted": ["worktree_remove", "branch_delete_local", "branch_delete_remote", "worktree_prune"],
+  "steps_succeeded": ["branch_delete_local", "branch_delete_remote", "worktree_prune"],
+  "step_failed": "worktree_remove",
+  "error": "error: failed to delete 'C:/repos/site-pro/.worktrees/stage-2-foundation': Directory not empty",
+  "note": "git unregistered the worktree (git worktree list shows only main) but could not delete the folder; the leftover holds node_modules, test outputs and files identical to main (verified with diff --strip-trailing-cr). The follow-up rm -rf was denied by the session permissions. The folder is git-ignored (.worktrees/).",
+  "manual_recovery_steps": [
+    "Check: git worktree list",
+    "Delete the leftover folder: rm -rf .worktrees/stage-2-foundation (or delete it in Explorer)",
+    "If stale worktree refs: git worktree prune"
+  ]
+}

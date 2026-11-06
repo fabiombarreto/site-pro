@@ -1,0 +1,759 @@
+diff --git a/src/components/page/Icon.tsx b/src/components/page/Icon.tsx
+index b4e12cb..9385a7f 100644
+--- a/src/components/page/Icon.tsx
++++ b/src/components/page/Icon.tsx
+@@ -3,6 +3,7 @@ export type IconName =
+   | 'moon'
+   | 'arrowUpRight'
+   | 'arrowLeft'
++  | 'arrowDown'
+   | 'menu'
+   | 'x'
+   | 'github'
+@@ -43,6 +44,10 @@ const LUCIDE: Record<StrokeIconName, React.JSX.Element[]> = {
+     <path key="0" d="m12 19-7-7 7-7" />,
+     <path key="1" d="M19 12H5" />,
+   ],
++  arrowDown: [
++    <path key="0" d="M12 5v14" />,
++    <path key="1" d="m19 12-7 7-7-7" />,
++  ],
+   menu: [
+     <path key="0" d="M4 5h16" />,
+     <path key="1" d="M4 12h16" />,
+diff --git a/src/components/page/NavBar.css b/src/components/page/NavBar.css
+index 03c9488..8a019a2 100644
+--- a/src/components/page/NavBar.css
++++ b/src/components/page/NavBar.css
+@@ -1,7 +1,12 @@
+ .sp-nav {
+-  position: relative;
++  position: sticky;
++  top: 0;
++  z-index: 10;
+   height: var(--nav-height);
+-  border-bottom: 1px solid transparent;
++  border-bottom: 1px solid var(--border);
++  background: var(--bg-overlay);
++  -webkit-backdrop-filter: blur(12px);
++  backdrop-filter: blur(12px);
+   transition:
+     background-color 200ms,
+     border-color 200ms;
+@@ -129,8 +134,34 @@
+ }
+ 
+ @media (min-width: 768px) {
+-  .sp-menu-toggle,
++  .sp-nav .sp-menu-toggle,
+   .sp-menu {
+     display: none;
+   }
+ }
++
++/* Transparent at the top only once JavaScript has marked the document; without it the nav stays translucent. */
++:root[data-js] .sp-nav:not(.is-scrolled) {
++  background: transparent;
++  border-bottom-color: transparent;
++  -webkit-backdrop-filter: none;
++  backdrop-filter: none;
++}
++
++@media (prefers-reduced-transparency: reduce) {
++  .sp-nav,
++  :root[data-js] .sp-nav:not(.is-scrolled) {
++    background: var(--bg-raised);
++    -webkit-backdrop-filter: none;
++    backdrop-filter: none;
++  }
++}
++
++@supports not (
++  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
++) {
++  .sp-nav,
++  :root[data-js] .sp-nav:not(.is-scrolled) {
++    background: var(--bg-raised);
++  }
++}
+diff --git a/src/components/page/SiteMark.tsx b/src/components/page/SiteMark.tsx
+deleted file mode 100644
+index 74980a0..0000000
+--- a/src/components/page/SiteMark.tsx
++++ /dev/null
+@@ -1,3 +0,0 @@
+-export function SiteMark(): React.JSX.Element {
+-  return <h1>Fabio Barreto.</h1>;
+-}
+diff --git a/src/layouts/Base.astro b/src/layouts/Base.astro
+index a79e90d..26f2b6f 100644
+--- a/src/layouts/Base.astro
++++ b/src/layouts/Base.astro
+@@ -3,6 +3,7 @@ import '../styles/tokens.css';
+ import '../styles/fonts.css';
+ import '../styles/base.css';
+ import { THEME_STORAGE_KEY } from '../scripts/theme';
++import { strings } from '../strings';
+ 
+ interface Props {
+   title: string;
+@@ -48,9 +49,13 @@ const { title, description } = Astro.props;
+     <meta name="description" content={description} />
+   </head>
+   <body>
++    <a class="sp-skip" href="#main">
++      {strings.skipLink}
++    </a>
+     <slot />
+     <script>
+       import '../scripts/theme-toggle';
++      import '../scripts/nav';
+     </script>
+   </body>
+ </html>
+diff --git a/src/pages/index.astro b/src/pages/index.astro
+index 696113e..95bf6f6 100644
+--- a/src/pages/index.astro
++++ b/src/pages/index.astro
+@@ -1,24 +1,46 @@
+ ---
+-// Phase 2 placeholder (theme toggle and backdrop on the Base layout), replaced by the real home page in Phase 5.
++import { getCollection, getEntry } from 'astro:content';
+ import Base from '../layouts/Base.astro';
+ import { Backdrop, DEFAULT_GLOWS } from '../components/page/Backdrop';
+-import { SiteMark } from '../components/page/SiteMark';
+-import { ThemeToggle } from '../components/page/ThemeToggle';
++import { Footer } from '../components/page/Footer';
++import { NavBar } from '../components/page/NavBar';
++import About from '../sections/About.astro';
++import Contact from '../sections/Contact.astro';
++import Hero from '../sections/Hero.astro';
++import Projects from '../sections/Projects.astro';
++import Stack from '../sections/Stack.astro';
++import { profileLinks } from '../sections/profile-links';
++import '../styles/home.css';
++
++const profileEntry = await getEntry('profile', 'profile');
++const stackEntry = await getEntry('stack', 'stack');
++if (!profileEntry) throw new Error('The profile entry is missing');
++if (!stackEntry) throw new Error('The stack entry is missing');
++const profile = profileEntry.data;
++const projects = (await getCollection('projects')).sort(
++  (a, b) => a.data.order - b.data.order,
++);
++const links = profileLinks(profile);
++const sourceHref = projects.find((p) => p.id === 'site-pro')?.data.links.repo;
++if (!sourceHref) throw new Error('The site-pro project has no repo link');
++
++const title = `${profile.headline.replace(/\.$/, '')} - ${profile.role}`;
++const description = profile.subtitle;
+ ---
+ 
+-<Base
+-  title="Fabio Barreto"
+-  description="Personal portfolio of Fabio Barreto, Senior Software Engineer."
+->
++<Base title={title} description={description}>
+   <div class="sp-page">
+     <Backdrop glows={DEFAULT_GLOWS} />
+     <div class="sp-page-content">
+-      <header>
+-        <ThemeToggle />
+-      </header>
+-      <main>
+-        <SiteMark />
++      <NavBar githubHref={links.github} linkedinHref={links.linkedin} />
++      <main id="main" tabindex="-1">
++        <Hero profile={profile} />
++        <About profile={profile} />
++        <Projects projects={projects} />
++        <Stack stack={stackEntry.data} />
++        <Contact profile={profile} />
+       </main>
++      <Footer sourceHref={sourceHref} owner={profile.name} />
+     </div>
+   </div>
+ </Base>
+diff --git a/src/scripts/nav.ts b/src/scripts/nav.ts
+new file mode 100644
+index 0000000..bc2fb7a
+--- /dev/null
++++ b/src/scripts/nav.ts
+@@ -0,0 +1,19 @@
++const nav = document.querySelector<HTMLElement>('.sp-nav');
++
++if (nav) {
++  const sync = (): void => {
++    nav.classList.toggle('is-scrolled', window.scrollY > 0);
++  };
++  sync();
++  window.addEventListener('scroll', sync, { passive: true });
++}
++
++const menu = document.getElementById('mobile-menu');
++
++if (menu) {
++  menu.addEventListener('click', (event) => {
++    if (!(event.target instanceof Element)) return;
++    const link = event.target.closest('a');
++    if (link && menu.contains(link)) menu.hidePopover();
++  });
++}
+diff --git a/src/sections/About.astro b/src/sections/About.astro
+new file mode 100644
+index 0000000..e16f29e
+--- /dev/null
++++ b/src/sections/About.astro
+@@ -0,0 +1,43 @@
++---
++import type { CollectionEntry } from 'astro:content';
++import { Button } from '../components/page/Button';
++import { SectionHeading } from '../components/page/SectionHeading';
++import { strings } from '../strings';
++import { profileLinks } from './profile-links';
++
++interface Props {
++  profile: CollectionEntry<'profile'>['data'];
++}
++
++const { profile } = Astro.props;
++const links = profileLinks(profile);
++const paragraphs = profile.bio.split('\n\n');
++---
++
++<section id="about" aria-labelledby="about-title" class="sp-section">
++  <div class="sp-section-inner">
++    <SectionHeading
++      id="about-title"
++      eyebrow={strings.sections.about.eyebrow}
++      title={strings.sections.about.title}
++    />
++    <div class="sp-about-body">
++      {paragraphs.map((p) => (
++        <p class="text-lg">{p}</p>
++      ))}
++      <div class="sp-actions">
++        <Button variant="secondary" icon="github" href={links.github} external>
++          {strings.buttons.github}
++        </Button>
++        <Button
++          variant="secondary"
++          icon="linkedin"
++          href={links.linkedin}
++          external
++        >
++          {strings.buttons.linkedin}
++        </Button>
++      </div>
++    </div>
++  </div>
++</section>
+diff --git a/src/sections/Contact.astro b/src/sections/Contact.astro
+new file mode 100644
+index 0000000..fe9b8d9
+--- /dev/null
++++ b/src/sections/Contact.astro
+@@ -0,0 +1,46 @@
++---
++import type { CollectionEntry } from 'astro:content';
++import { Button } from '../components/page/Button';
++import { SectionHeading } from '../components/page/SectionHeading';
++import { strings } from '../strings';
++import { profileLinks } from './profile-links';
++
++interface Props {
++  profile: CollectionEntry<'profile'>['data'];
++}
++
++const { profile } = Astro.props;
++const links = profileLinks(profile);
++if (!profile.location) throw new Error('profile.location is missing');
++---
++
++<section
++  id="contact"
++  aria-labelledby="contact-title"
++  class="sp-section sp-contact"
++>
++  <div class="sp-section-inner">
++    <SectionHeading
++      id="contact-title"
++      eyebrow={strings.sections.contact.eyebrow}
++      title={strings.sections.contact.title}
++      lead={strings.sections.contact.lead}
++    />
++    <div class="sp-contact-row">
++      <div class="sp-actions">
++        <Button variant="primary" icon="github" href={links.github} external>
++          {strings.buttons.github}
++        </Button>
++        <Button
++          variant="secondary"
++          icon="linkedin"
++          href={links.linkedin}
++          external
++        >
++          {strings.buttons.linkedin}
++        </Button>
++      </div>
++      <p class="sp-contact-location mono-sm">{profile.location}</p>
++    </div>
++  </div>
++</section>
+diff --git a/src/sections/Hero.astro b/src/sections/Hero.astro
+new file mode 100644
+index 0000000..024c37d
+--- /dev/null
++++ b/src/sections/Hero.astro
+@@ -0,0 +1,46 @@
++---
++import type { CollectionEntry } from 'astro:content';
++import { Button } from '../components/page/Button';
++import { Photo } from '../components/page/Photo';
++import { resolveAssetUrl } from '../components/page/resolve-asset';
++import { strings } from '../strings';
++import { profileLinks } from './profile-links';
++
++interface Props {
++  profile: CollectionEntry<'profile'>['data'];
++}
++
++const { profile } = Astro.props;
++const links = profileLinks(profile);
++const photoUrl = resolveAssetUrl(profile.photo);
++if (!photoUrl) throw new Error('profile.photo does not resolve to an asset');
++const [first = '', ...rest] = profile.headline.split(' ');
++const remainder = rest.join(' ');
++---
++
++<section id="top" aria-label={strings.hero.ariaLabel} class="sp-hero">
++  <div class="sp-hero-inner">
++    <h1 class="banner sp-hero-name">
++      {first} <br />
++      {remainder}
++    </h1>
++    <div class="sp-hero-photo">
++      <Photo src={photoUrl} alt={profile.name} />
++    </div>
++    <p class="sp-hero-role text-2xl">{profile.role}</p>
++    <div class="sp-hero-copy">
++      <p class="text-lg">{profile.subtitle}</p>
++      <div class="sp-hero-actions">
++        <Button variant="primary" href="#projects" iconEnd="arrowDown">
++          {strings.hero.seeMyWork}
++        </Button>
++        <Button variant="ghost" icon="github" href={links.github} external>
++          {strings.buttons.github}
++        </Button>
++        <Button variant="ghost" icon="linkedin" href={links.linkedin} external>
++          {strings.buttons.linkedin}
++        </Button>
++      </div>
++    </div>
++  </div>
++</section>
+diff --git a/src/sections/Projects.astro b/src/sections/Projects.astro
+new file mode 100644
+index 0000000..8a6102a
+--- /dev/null
++++ b/src/sections/Projects.astro
+@@ -0,0 +1,44 @@
++---
++import type { CollectionEntry } from 'astro:content';
++import { ProjectCard } from '../components/page/ProjectCard';
++import { SectionHeading } from '../components/page/SectionHeading';
++import { resolveAssetUrl } from '../components/page/resolve-asset';
++import { strings } from '../strings';
++
++interface Props {
++  projects: CollectionEntry<'projects'>[];
++}
++
++const { projects } = Astro.props;
++---
++
++<section
++  id="projects"
++  aria-labelledby="projects-title"
++  class="sp-section sp-projects"
++>
++  <div class="sp-section-inner is-loose">
++    <SectionHeading
++      id="projects-title"
++      eyebrow={strings.sections.projects.eyebrow}
++      title={strings.sections.projects.title}
++      lead={strings.sections.projects.lead}
++    />
++    <div class="sp-projects-grid">
++      {projects.map(({ id, data }) => (
++        <div class="sp-projects-cell">
++          <ProjectCard
++            title={data.title}
++            slug={id}
++            year={data.year}
++            summary={data.summary}
++            tags={data.tags}
++            status={data.status}
++            repo={data.links.repo}
++            cover={resolveAssetUrl(data.cover)}
++          />
++        </div>
++      ))}
++    </div>
++  </div>
++</section>
+diff --git a/src/sections/Stack.astro b/src/sections/Stack.astro
+new file mode 100644
+index 0000000..2c76b96
+--- /dev/null
++++ b/src/sections/Stack.astro
+@@ -0,0 +1,27 @@
++---
++import type { CollectionEntry } from 'astro:content';
++import { SectionHeading } from '../components/page/SectionHeading';
++import { StackGroup } from '../components/page/StackGroup';
++import { strings } from '../strings';
++
++interface Props {
++  stack: CollectionEntry<'stack'>['data'];
++}
++
++const { stack } = Astro.props;
++---
++
++<section id="stack" aria-labelledby="stack-title" class="sp-section">
++  <div class="sp-section-inner is-loose">
++    <SectionHeading
++      id="stack-title"
++      eyebrow={strings.sections.stack.eyebrow}
++      title={strings.sections.stack.title}
++    />
++    <div class="sp-stack-grid">
++      {stack.groups.map((group) => (
++        <StackGroup name={group.name} items={group.items} />
++      ))}
++    </div>
++  </div>
++</section>
+diff --git a/src/sections/profile-links.ts b/src/sections/profile-links.ts
+new file mode 100644
+index 0000000..b2025e3
+--- /dev/null
++++ b/src/sections/profile-links.ts
+@@ -0,0 +1,19 @@
++import type { CollectionEntry } from 'astro:content';
++
++type ProfileData = CollectionEntry<'profile'>['data'];
++
++function urlFor(profile: ProfileData, icon: 'github' | 'linkedin'): string {
++  const link = profile.links.find((l) => l.icon === icon);
++  if (!link) throw new Error(`profile.json has no link with icon "${icon}"`);
++  return link.url;
++}
++
++export function profileLinks(profile: ProfileData): {
++  github: string;
++  linkedin: string;
++} {
++  return {
++    github: urlFor(profile, 'github'),
++    linkedin: urlFor(profile, 'linkedin'),
++  };
++}
+diff --git a/src/styles/base.css b/src/styles/base.css
+index 634fce1..e259200 100644
+--- a/src/styles/base.css
++++ b/src/styles/base.css
+@@ -160,6 +160,30 @@ svg {
+   }
+ }
+ 
++/* Skip link: out of view until focused. */
++.sp-skip {
++  position: absolute;
++  left: var(--space-4);
++  top: var(--space-4);
++  z-index: 20;
++  padding: var(--space-2) var(--space-4);
++  border: 1px solid var(--border);
++  border-radius: var(--radius-sm);
++  background: var(--bg-raised);
++  color: var(--fg);
++  text-decoration: none;
++  transform: translateY(-200%);
++}
++
++.sp-skip:focus {
++  transform: none;
++}
++
++/* The skip target is focused programmatically (tabindex -1); it is not a control. */
++main:focus {
++  outline: none;
++}
++
+ @media (prefers-reduced-motion: reduce) {
+   *,
+   *::before,
+diff --git a/src/styles/home.css b/src/styles/home.css
+new file mode 100644
+index 0000000..843e0d6
+--- /dev/null
++++ b/src/styles/home.css
+@@ -0,0 +1,256 @@
++:root {
++  --gutter: clamp(16px, 4vw, 32px);
++}
++
++.sp-section {
++  padding: clamp(80px, 10vw, 128px) 0;
++}
++
++.sp-section-inner {
++  box-sizing: border-box;
++  max-width: var(--container);
++  margin: 0 auto;
++  padding: 0 var(--gutter);
++  display: flex;
++  flex-direction: column;
++  gap: var(--space-8);
++}
++
++.sp-section-inner.is-loose {
++  gap: var(--space-12);
++}
++
++.sp-actions {
++  display: flex;
++  flex-wrap: wrap;
++  gap: var(--space-3);
++}
++
++.sp-about-body {
++  max-width: 680px;
++  display: flex;
++  flex-direction: column;
++  gap: 20px;
++}
++
++.sp-about-body p {
++  margin: 0;
++}
++
++.sp-about-body .sp-actions {
++  margin-top: var(--space-3);
++}
++
++.sp-contact {
++  padding-bottom: clamp(96px, 12vw, 160px);
++}
++
++.sp-contact .sp-heading-title.text-3xl {
++  font-size: var(--text-display);
++  line-height: 1.02;
++  letter-spacing: -0.03em;
++}
++
++.sp-contact-row {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  gap: var(--space-4) var(--space-6);
++}
++
++.sp-contact-location {
++  margin: 0;
++  color: var(--fg-muted);
++}
++
++/* Hero: absolutely positioned layers; the photo runs past the hero box into About. */
++.sp-hero {
++  position: relative;
++}
++
++.sp-hero-inner {
++  position: relative;
++  height: 100%;
++  box-sizing: border-box;
++  max-width: var(--container);
++  margin: 0 auto;
++  padding: 0 var(--gutter);
++}
++
++.sp-hero-name {
++  position: absolute;
++  z-index: 1;
++  margin: 0;
++  left: var(--gutter);
++  right: var(--gutter);
++  color: var(--fg);
++}
++
++.sp-hero-photo {
++  position: absolute;
++  z-index: 2;
++}
++
++.sp-hero-role {
++  position: absolute;
++  z-index: 3;
++  margin: 0;
++  left: var(--gutter);
++  color: var(--fg);
++}
++
++.sp-hero-copy {
++  position: absolute;
++  z-index: 3;
++  left: var(--gutter);
++  display: flex;
++  flex-direction: column;
++  gap: 20px;
++}
++
++.sp-hero-copy p {
++  margin: 0;
++  color: var(--fg-muted);
++}
++
++.sp-hero-actions {
++  display: flex;
++  flex-wrap: wrap;
++  gap: var(--space-3);
++  margin-top: var(--space-2);
++}
++
++.sp-projects {
++  padding-bottom: 48px;
++}
++
++.sp-projects-grid {
++  position: relative;
++  z-index: 1;
++  display: grid;
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: var(--space-6);
++  align-items: start;
++}
++
++.sp-projects-cell {
++  min-width: 0;
++}
++
++.sp-projects-cell:nth-child(even) {
++  transform: translateY(96px);
++}
++
++.sp-stack-grid {
++  display: grid;
++  gap: var(--space-6);
++  grid-template-columns: repeat(3, minmax(0, 1fr));
++}
++
++@media (min-width: 1024px) {
++  .sp-hero {
++    height: 836px;
++  }
++
++  .sp-hero-name {
++    top: 56px;
++  }
++
++  .sp-hero-photo {
++    top: 40px;
++    left: 50%;
++  }
++
++  .sp-hero-photo .sp-photo {
++    --photo-h: 960px;
++  }
++
++  .sp-hero-role {
++    top: 520px;
++    width: 440px;
++  }
++
++  .sp-hero-copy {
++    bottom: 64px;
++    width: 440px;
++  }
++}
++
++@media (min-width: 768px) and (max-width: 1023px) {
++  .sp-hero {
++    height: 700px;
++  }
++
++  .sp-hero-name {
++    top: 56px;
++  }
++
++  .sp-hero-photo {
++    top: 44px;
++    left: 52%;
++  }
++
++  .sp-hero-photo .sp-photo {
++    --photo-h: 760px;
++  }
++
++  .sp-hero-role {
++    top: 330px;
++    width: 330px;
++  }
++
++  .sp-hero-copy {
++    bottom: 48px;
++    width: 330px;
++  }
++
++  .sp-stack-grid {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
++}
++
++@media (max-width: 767px) {
++  .sp-hero {
++    height: 900px;
++  }
++
++  .sp-hero-name {
++    top: 24px;
++  }
++
++  .sp-hero-photo {
++    top: 150px;
++    left: auto;
++    right: 0;
++  }
++
++  .sp-hero-photo .sp-photo {
++    --photo-h: 480px;
++  }
++
++  .sp-hero-role {
++    top: 200px;
++    width: 150px;
++  }
++
++  .sp-hero-copy {
++    bottom: 32px;
++    width: calc(100% - 32px);
++  }
++
++  .sp-projects {
++    padding-bottom: 80px;
++  }
++
++  .sp-projects-grid {
++    grid-template-columns: repeat(1, minmax(0, 1fr));
++  }
++
++  .sp-projects-cell:nth-child(even) {
++    transform: none;
++  }
++
++  .sp-stack-grid {
++    grid-template-columns: repeat(1, minmax(0, 1fr));
++  }
++}

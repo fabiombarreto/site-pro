@@ -14,7 +14,7 @@ The project is scaffolded (Stage 2 Phase 1): the commands below are real and mat
 |---|---|
 | Install | `pnpm install --frozen-lockfile` |
 | Dev server | `pnpm dev` |
-| Type check | `pnpm astro check` |
+| Type check | `pnpm check` (`astro check`) |
 | Lint / format | `pnpm lint` · `pnpm format` · `pnpm format:check` |
 | Unit tests | `pnpm test` (Vitest) |
 | E2E, visual, accessibility | `pnpm test:e2e` (Playwright + axe) |
@@ -55,4 +55,4 @@ The relay pipeline (`/relay-prd` → `/relay-plan` → `/relay-implement` → `/
 
 ## Adding a project
 
-Add one Markdown file under `src/content/projects/` with the fields in docs/05-content.md (`slug`, `title`, `summary` ≤ 140 chars, `cover` 16:9, 2–4 `tags`, `status`, `order`…). Only personal projects; follow the voice rules in docs/09-content-draft.md.
+Add one Markdown file under `src/content/projects/` with the fields in docs/05-content.md (the file name is the slug; `title`, `summary` ≤ 140 chars, `cover` 16:9, 2–4 `tags`, `status`, `order`…). Only personal projects; follow the voice rules in docs/09-content-draft.md.

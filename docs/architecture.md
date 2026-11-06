@@ -1,6 +1,6 @@
 # Architecture (developer overview)
 
-A workflow-focused companion to docs/06-architecture.md (the approved design) and docs/context/architecture.md (stack, folders, design sources). No application code exists yet; this describes how the pieces will fit when Stage 2 starts.
+A workflow-focused companion to docs/06-architecture.md (the approved design) and docs/context/architecture.md (stack, folders, design sources). Stage 2 (foundation) is merged (PR #1): the static page, project pages, 404, tokens, fonts, content collections and CI exist. The build runtime and build layer come in Stage 3; sections about them describe the plan.
 
 ## How a page load works
 

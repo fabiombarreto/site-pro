@@ -1,0 +1,33 @@
+{
+  "run_id": "d0f06a65-d29f-41be-9557-902e7d5a39e7",
+  "feature": "stage-2-foundation",
+  "started_at": "2026-11-05T20:13:18.576Z",
+  "ended_at": "2026-11-05T20:14:36.756Z",
+  "elapsed_ms": 78180,
+  "max_test_retries": 3,
+  "max_test_minutes": 30,
+  "outcome": "GREEN",
+  "phase": 5,
+  "time_breakdown": {
+    "attempt_1_suite_ms": 78180
+  },
+  "tdd_mode": false,
+  "secrets_redacted": {
+    "count": 0,
+    "categories": {
+      "env_names": 0,
+      "url_values": 0,
+      "regex_matches": 0
+    }
+  },
+  "notes": [
+    "React dev warning: Invalid DOM property popovertarget (NavBar lowercase spread); no test failed"
+  ],
+  "attempts": [
+    {
+      "n": 1,
+      "verdict": "GREEN",
+      "record": "test-attempts/1/record.json"
+    }
+  ]
+}

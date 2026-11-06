@@ -1,0 +1,27 @@
+{
+  "run_id": "8c6485c1-a87d-4558-a760-d87a97343fb3",
+  "reviewed_at": "2026-11-05T20:39:23Z",
+  "base_branch": "main",
+  "verdict": "APPROVED",
+  "analyzed_files": 25,
+  "concerns": [],
+  "notes": [
+    {
+      "type": "scan_path",
+      "path": "pathspec"
+    },
+    {
+      "type": "untracked_test_files",
+      "files": [
+        "tests/e2e/not-found.spec.ts",
+        "tests/e2e/project-pages.spec.ts",
+        "tests/e2e/subpages-axe.spec.ts",
+        "tests/e2e/subpages-navigation.spec.ts",
+        "tests/unit/home-href.test.ts"
+      ]
+    },
+    "coverage baseline unavailable; structural checks only",
+    "five new untracked phase-6 test files named, not diffable; create-only manifest"
+  ],
+  "phase": 6
+}

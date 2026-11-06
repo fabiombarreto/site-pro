@@ -1,0 +1,51 @@
+{
+  "attempt": 1,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [
+    "src/assets/photo-placeholder-body.svg",
+    "src/components/page/Actions.css",
+    "src/components/page/Button.tsx",
+    "src/components/page/CoverPlaceholder.tsx",
+    "src/components/page/Footer.css",
+    "src/components/page/Footer.tsx",
+    "src/components/page/Icon.tsx",
+    "src/components/page/IconLink.tsx",
+    "src/components/page/Labels.css",
+    "src/components/page/MobileMenu.tsx",
+    "src/components/page/NavBar.css",
+    "src/components/page/NavBar.tsx",
+    "src/components/page/Photo.css",
+    "src/components/page/Photo.tsx",
+    "src/components/page/ProjectCard.css",
+    "src/components/page/ProjectCard.tsx",
+    "src/components/page/ProjectHeader.css",
+    "src/components/page/ProjectHeader.tsx",
+    "src/components/page/Prose.css",
+    "src/components/page/Prose.tsx",
+    "src/components/page/SectionHeading.css",
+    "src/components/page/SectionHeading.tsx",
+    "src/components/page/StackChip.tsx",
+    "src/components/page/StackGroup.tsx",
+    "src/components/page/StatusBadge.tsx",
+    "src/components/page/Tag.tsx",
+    "src/components/page/TextLink.tsx",
+    "src/components/page/cx.ts",
+    "src/components/page/resolve-asset.ts",
+    "src/strings.ts"
+  ],
+  "validation": {
+    "level_1": "PASS",
+    "level_2": "FAIL",
+    "level_3": "PASS"
+  },
+  "plan_validation_defect": {
+    "level": 2,
+    "command": "node -e 'const fs=require(\"fs\");const defs=[\"tokens\",\"base\",\"fonts\"].map(n=>fs.readFileSync(\"src/styles/\"+n+\".css\",\"utf8\")).join(\"\\n\");const local=[\"--glow-size\",\"--photo-h\"];const bad=[];for(const f of process.argv.slice(1)){for(const m of fs.readFileSync(f,\"utf8\").matchAll(/var\\(\\s*(--[\\w-]+)/g)){if(!defs.includes(m[1]+\":\")&&!local.includes(m[1]))bad.push(f+\" \"+m[1]);}}if(bad.length){console.error(\"undefined tokens: \"+bad.join(\", \"));process.exit(1)}' src/components/page/*.css",
+    "observed": "undefined tokens: src/components/page/Backdrop.css --glow-scale, src/components/page/Backdrop.css --glow-scale",
+    "prd_refs": [
+      "PRD AC-9 (via plan AC-A1)"
+    ],
+    "reason": "The check globs every CSS file in src/components/page/, including the unchanged phase-2 Backdrop.css, but only allow-lists --glow-size and --photo-h; Backdrop.css declares --glow-scale itself (line 2) and uses it on lines 12-13. Every var() in this phase's CSS resolves. Fix: allow file-local custom properties declared in the same file, or add --glow-scale to the allow-list."
+  },
+  "base_commit": "64690a09d190f7d93362bc1f829fe0f04a71182d"
+}

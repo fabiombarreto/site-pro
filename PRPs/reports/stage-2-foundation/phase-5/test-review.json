@@ -1,0 +1,35 @@
+{
+  "run_id": "d0f06a65-d29f-41be-9557-902e7d5a39e7",
+  "reviewed_at": "2026-11-05T20:15:08Z",
+  "base_branch": "main",
+  "verdict": "APPROVED",
+  "analyzed_files": 12,
+  "concerns": [],
+  "notes": [
+    {
+      "type": "scan_path",
+      "path": "pathspec"
+    },
+    {
+      "type": "untracked_test_files",
+      "files": [
+        "tests/e2e/home-axe.spec.ts",
+        "tests/e2e/home-content.spec.ts",
+        "tests/e2e/home-keyboard.spec.ts",
+        "tests/e2e/home-mobile-menu.spec.ts",
+        "tests/e2e/home-no-build-layer.spec.ts",
+        "tests/e2e/home-responsive-layout.spec.ts",
+        "tests/e2e/support/"
+      ]
+    },
+    "coverage baseline unavailable; structural checks only",
+    {
+      "type": "accepted_removal",
+      "file": "tests/unit/site-mark.test.ts",
+      "classification": "OBSOLETE_TEST_REMOVED",
+      "justification": "covered only the deleted SiteMark placeholder; single-h1 behavior asserted by home-content.spec.ts and placeholder-page.spec.ts"
+    },
+    "EXISTING_TEST_UPDATED placeholder-page.spec.ts and theme.spec.ts: assertions updated to new values, none dropped, no skips"
+  ],
+  "phase": 5
+}

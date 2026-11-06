@@ -1,0 +1,29 @@
+{
+  "outcome": "PLAN_VALIDATION_DEFECT",
+  "plan_validation_defect": {
+    "level": 1,
+    "command": "pnpm check (plan ## Validation Commands Level 1: set -euo pipefail; pnpm check; pnpm lint; pnpm format:check — the same pnpm check also opens the VALIDATE lines of Tasks 1, 3, 4, 5, 6 and later)",
+    "observed": "tests/unit/site-mark.test.ts:5:26 - error ts(2307): Cannot find module ../../src/components/page/SiteMark. Result (53 files): 1 error. lint and format:check exit 0; Levels 2 and 3 pass.",
+    "prd_refs": [
+      "PRD AC-11 (astro check is a required CI check)",
+      "plan Task 12 + Notes (SiteMark deleted; its test is a REMOVE op for the test pair)"
+    ],
+    "reason": "A project-wide type check cannot pass while the obsolete test that imports the deleted SiteMark still exists, and the Implementer may not touch it (R-X); the test pair removes it after the Implementer in test-after."
+  },
+  "claim_check": "accepted: pnpm check is in the plan (Level 1 and task VALIDATE lines); observed is this attempt's real output; the implementer cited plan lines as prd_refs, which the command mapped to PRD AC-11 (astro check in CI); Levels 2 and 3 PASS",
+  "attempt": 2,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "verdict": "IMPLEMENTATION_COMPLETE",
+      "code_review": "CHANGES_REQUESTED (R-L1 only)",
+      "diff": "attempts/1/diff.patch"
+    },
+    {
+      "attempt": 2,
+      "verdict": "IMPLEMENTATION_COMPLETE + plan_validation_defect",
+      "code_review": "not dispatched (PLAN_VALIDATION_DEFECT)",
+      "diff": "attempts/2/diff.patch"
+    }
+  ]
+}

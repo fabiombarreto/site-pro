@@ -1,0 +1,629 @@
+{
+  "feature": "stage-2-foundation",
+  "prd_path": "C:/repos/site-pro/PRPs/prds/stage-2-foundation.prd.md",
+  "started_at": "2026-11-05T17:56:33Z",
+  "ended_at": "2026-11-05T21:10:26Z",
+  "max_plan_review_retries": 2,
+  "max_tdd_review_retries": 2,
+  "max_orchestrator_minutes": 240,
+  "lane_selection": "serial (lane_runtime_safe: false declared in docs/context/methodology.md; one derived lane)",
+  "phases": [
+    {
+      "phase": 1,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-2-foundation-phase-1-scaffold-and-ci-skeleton.plan.md"
+    },
+    {
+      "phase": 1,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-2-foundation/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null
+    },
+    {
+      "phase": 1,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 1,
+      "stage": "implement",
+      "outcome": "PLAN_VALIDATION_DEFECT",
+      "attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-L3 only: plan's recursive dist grep matched the react-dom bundle); attempt 2 reported plan_validation_defect, claim accepted"
+    },
+    {
+      "phase": 1,
+      "stage": "plan_repair",
+      "outcome": "STARTED",
+      "defect": "Level 3: if grep -rEq 'mailto:|tel:|<form' dist; then ... exit 1; fi"
+    },
+    {
+      "phase": 1,
+      "stage": "plan_repair",
+      "outcome": "APPROVED",
+      "note": "only ## Validation Commands changed (grep scoped to dist/**/*.html); pre-repair attempts archived at PRPs/reports/stage-2-foundation/phase-1/attempts-pre-repair-1/"
+    },
+    {
+      "phase": 1,
+      "stage": "implement",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 1,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "deferred_questions": [
+        "docs/context/architecture.md, the CLAUDE.md intro and the docs/libs line still say no application code / no package manifest exists; update at the end of Stage 2 (suggested default)",
+        "docs/development.md lists `pnpm astro check` while the script is `pnpm check` (minor)"
+      ]
+    },
+    {
+      "phase": 1,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 1,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-2-foundation/test-suite.diff",
+      "note": "command-layer formatting used code_root package.json (target_root has none), scoped prettier --write on the touched files"
+    },
+    {
+      "phase": 1,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "f278085d-73d7-46b2-9492-d819872f41d6"
+    },
+    {
+      "phase": 1,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 1,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "829510482495efcf9df7a9e1ee0529e0ed117657"
+    },
+    {
+      "phase": 1,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-2-foundation-phase-1-scaffold-and-ci-skeleton.plan.md",
+      "timestamp": "2026-11-05T18:26:42Z"
+    },
+    {
+      "phase": 2,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-2-foundation-phase-2-tokens-themes-and-fonts.plan.md",
+      "plan_review_attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-COH-FILES-UNTOUCHED, R-COH-VALIDATE-SEARCH-AMBIGUOUS); writer grounded by direct reads, no research subagents"
+    },
+    {
+      "phase": 2,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-2-foundation/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 2,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 2,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1
+    },
+    {
+      "phase": 2,
+      "stage": "docs_sync",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 2,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 2,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-2-foundation/test-suite.diff",
+      "tdd_review_attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-GREEN-LEGITIMATE: arbitrary >= 40 token-count floor); fixed by the test-writer"
+    },
+    {
+      "phase": 2,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "48332c18-3be5-4483-9fcb-b172ee46bd4c"
+    },
+    {
+      "phase": 2,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 2,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete",
+      "note": "test-review APPROVED satisfied the tested condition; the row was edited implemented -> complete in one Edit, so the tested intermediate value was never written to the PRD on its own"
+    },
+    {
+      "phase": 2,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "e42a8bb25995ba283e1cb9842c837deedd5f84ea"
+    },
+    {
+      "phase": 2,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-2-foundation-phase-2-tokens-themes-and-fonts.plan.md",
+      "timestamp": "2026-11-05T18:50:10Z"
+    },
+    {
+      "phase": 3,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-2-foundation-phase-3-content-collections-and-strings.plan.md",
+      "open_advisories": 1
+    },
+    {
+      "phase": 3,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-2-foundation/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 3,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 3,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1
+    },
+    {
+      "phase": 3,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "deferred_questions": [
+        "drop slug from the project field lists in docs/05-content.md and docs/development.md (file name is the slug); default yes"
+      ]
+    },
+    {
+      "phase": 3,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 3,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-2-foundation/test-suite.diff"
+    },
+    {
+      "phase": 3,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "97315039-3639-4430-804f-607e814d98fb"
+    },
+    {
+      "phase": 3,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 3,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "64690a09d190f7d93362bc1f829fe0f04a71182d"
+    },
+    {
+      "phase": 3,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-2-foundation-phase-3-content-collections-and-strings.plan.md",
+      "timestamp": "2026-11-05T19:08:16Z"
+    },
+    {
+      "phase": 4,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-2-foundation-phase-4-page-components.plan.md"
+    },
+    {
+      "phase": 4,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-2-foundation/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 4,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 4,
+      "stage": "implement",
+      "outcome": "PLAN_VALIDATION_DEFECT",
+      "attempts": 1,
+      "note": "Level 2 token-definition check flags --glow-scale declared locally in the unchanged phase-2 Backdrop.css"
+    },
+    {
+      "phase": 4,
+      "stage": "plan_repair",
+      "outcome": "STARTED",
+      "defect": "Level 2 token-definition node check (plan line 356)"
+    },
+    {
+      "phase": 4,
+      "stage": "plan_repair",
+      "outcome": "APPROVED",
+      "note": "only ## Validation Commands changed (token check counts file-local custom properties); pre-repair attempt archived at phase-4/attempts-pre-repair-1/"
+    },
+    {
+      "phase": 4,
+      "stage": "implement",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 4,
+      "stage": "docs_sync",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 4,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-2-foundation/test-suite.diff",
+      "tdd_review_attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-GREEN-LEGITIMATE: start-anchored regex vs React 19 hoisted preload link)"
+    },
+    {
+      "phase": 4,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "44c1e8d9-64f0-403c-97e3-948e5d814384"
+    },
+    {
+      "phase": 4,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 4,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "7de1a1080c63196e075fa1f33a3d75751c13e8a7"
+    },
+    {
+      "phase": 4,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-2-foundation-phase-4-page-components.plan.md",
+      "timestamp": "2026-11-05T19:36:42Z",
+      "followups": [
+        "src/components/page/Icon.tsx has a duplicated unreachable isBrand branch (test-writer note)",
+        "React dev warning: Invalid DOM property popovertarget (NavBar lowercase spread)"
+      ]
+    },
+    {
+      "phase": 5,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-2-foundation-phase-5-home-page.plan.md",
+      "note": "R8 pertinence note: AC-A7 (sticky nav) cites PRD AC-2"
+    },
+    {
+      "phase": 5,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-2-foundation/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 5,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 5,
+      "stage": "implement",
+      "outcome": "PLAN_VALIDATION_DEFECT",
+      "attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-L1: pnpm check errors on the obsolete site-mark.test.ts); attempt 2 reported plan_validation_defect, claim accepted (prd_refs mapped to PRD AC-11 by the command)"
+    },
+    {
+      "phase": 5,
+      "stage": "plan_repair",
+      "outcome": "STARTED",
+      "defect": "Level 1 / task VALIDATE pnpm check vs the obsolete site-mark.test.ts"
+    },
+    {
+      "phase": 5,
+      "stage": "plan_repair",
+      "outcome": "WRITER_REVISION_2",
+      "note": "orchestrator dry-run of the repaired Level 1 failed before review (astro check output is ANSI-coloured, so the error-line greps never match); fed back to the plan-writer within the same repair, before plan review"
+    },
+    {
+      "phase": 5,
+      "stage": "plan_repair",
+      "outcome": "APPROVED",
+      "note": "pnpm check sites now strip ANSI and tolerate only the obsolete site-mark.test.ts; pre-repair attempts archived at phase-5/attempts-pre-repair-1/"
+    },
+    {
+      "phase": 5,
+      "stage": "implement",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 5,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "deferred_questions": [
+        "docs/context/architecture.md and CLAUDE.md still say no application code exists / (planned) markers: update at Stage 2 close-out (default)"
+      ]
+    },
+    {
+      "phase": 5,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-2-foundation/test-suite.diff",
+      "lifecycle": [
+        "EXISTING_TEST_UPDATED tests/e2e/placeholder-page.spec.ts",
+        "EXISTING_TEST_UPDATED tests/e2e/theme.spec.ts",
+        "OBSOLETE_TEST_REMOVED tests/unit/site-mark.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "d0f06a65-d29f-41be-9557-902e7d5a39e7"
+    },
+    {
+      "phase": 5,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 5,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "cecdd4fbfef562eecda1a7f918e770b4b56ba961"
+    },
+    {
+      "phase": 5,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-2-foundation-phase-5-home-page.plan.md",
+      "timestamp": "2026-11-05T20:15:08Z"
+    },
+    {
+      "phase": 6,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-2-foundation-phase-6-project-pages-and-404.plan.md",
+      "plan_review_attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-COH-VALIDATE-PATTERN-UNGROUNDED: astro check output scrape)"
+    },
+    {
+      "phase": 6,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-2-foundation/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 6,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 6,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "code-reviewer noted a plan check flaw: Task 4 inline check html.includes(sp-prose) matches the inlined CSS rule; DOM correct"
+    },
+    {
+      "phase": 6,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "deferred_questions": [
+        "track the ENOENT 404 build window as a Stage 3/5 roadmap item (default yes)"
+      ]
+    },
+    {
+      "phase": 6,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 6,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-2-foundation/test-suite.diff"
+    },
+    {
+      "phase": 6,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "8c6485c1-a87d-4558-a760-d87a97343fb3",
+      "note": "runner returned an empty verdict text; GREEN derived from its attempt record and JUnit files"
+    },
+    {
+      "phase": 6,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 6,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "b4e9c942a6e4f2c6b461b323c83d272e6dbbc73a"
+    },
+    {
+      "phase": 6,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-2-foundation-phase-6-project-pages-and-404.plan.md",
+      "timestamp": "2026-11-05T20:39:23Z"
+    },
+    {
+      "phase": 7,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-2-foundation-phase-7-quality-gates-and-preview-deploy.plan.md",
+      "plan_review_attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R3: TBD in a MIRROR line); orchestrator also relayed a verified reviewer observation (git status check vs the uncommitted worktree)"
+    },
+    {
+      "phase": 7,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-2-foundation/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 7,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 7,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "local Lighthouse used Playwright chrome-headless-shell (full chromium cannot be spawned from the sandbox); CI uses executablePath()"
+    },
+    {
+      "phase": 7,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "deferred_questions": [
+        "docs/context/architecture.md line 3 still says no application code exists (PRESERVE-ENTIRELY; default: rewrite at Stage 2 close-out)",
+        "drop slug from the field tables in docs/05-content.md and docs/development.md (default yes)"
+      ]
+    },
+    {
+      "phase": 7,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 7,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-2-foundation/test-suite.diff"
+    },
+    {
+      "phase": 7,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "2f88d9ad-77b2-456b-a28d-093416e058c0",
+      "note": "250 unit + 153 e2e passed on attempt 1"
+    },
+    {
+      "phase": 7,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 7,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "ecdcf452d129a164346c769f6984dabc78b68a6b"
+    },
+    {
+      "phase": 7,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-2-foundation-phase-7-quality-gates-and-preview-deploy.plan.md",
+      "timestamp": "2026-11-05T21:10:26Z"
+    }
+  ],
+  "outcome": "ALL_PHASES_COMPLETE",
+  "phases_completed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "worktree_attempted": true,
+  "worktree_succeeded": true,
+  "fallback_reason": null,
+  "phase_diff_bases": {
+    "1": "829510482495efcf9df7a9e1ee0529e0ed117657",
+    "2": "e42a8bb25995ba283e1cb9842c837deedd5f84ea",
+    "3": "64690a09d190f7d93362bc1f829fe0f04a71182d",
+    "4": "7de1a1080c63196e075fa1f33a3d75751c13e8a7",
+    "5": "cecdd4fbfef562eecda1a7f918e770b4b56ba961",
+    "6": "b4e9c942a6e4f2c6b461b323c83d272e6dbbc73a",
+    "7": "ecdcf452d129a164346c769f6984dabc78b68a6b"
+  },
+  "suite_diff_bases": {},
+  "plan_validation_repairs": {
+    "1": 1,
+    "4": 1,
+    "5": 1
+  },
+  "lane_durations_ms": {},
+  "total_duration_ms": 11633000,
+  "deviations": [],
+  "pr_url": "https://github.com/fabiombarreto/site-pro/pull/1",
+  "merged_at": "2026-11-06T12:59:55Z",
+  "approve_outcome": "COMPLETE",
+  "docs_outcome": "FAILED_DOCS_PUSH_BLOCKED",
+  "approve_notes": [
+    "worktree unregistered but its folder could not be deleted (Directory not empty; rm -rf denied); see approve-halt.json",
+    "docs commit 95a1d5a kept local on main: .claude/settings.json denies git push origin main; the owner pushes"
+  ]
+}

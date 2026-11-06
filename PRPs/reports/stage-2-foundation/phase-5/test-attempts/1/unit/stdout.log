@@ -1,0 +1,22 @@
+
+ RUN  v5.1.0 C:/repos/site-pro/.worktrees/stage-2-foundation
+
+ ✓ tests/unit/page-styles.test.ts (36 tests) 32ms
+ ✓ tests/unit/content-copy.test.ts (21 tests) 48ms
+ ✓ tests/unit/design-tokens.test.ts (29 tests) 104ms
+ ✓ tests/unit/scaffold-config.test.ts (17 tests) 17ms
+ ✓ tests/unit/theme-helpers.test.ts (10 tests) 20ms
+stderr | tests/unit/page-navigation.test.ts > NavBar > is a header with the brand linking to the top of the page
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+ ✓ tests/unit/page-navigation.test.ts (11 tests) 52ms
+ ✓ tests/unit/page-content-components.test.ts (22 tests) 23ms
+ ✓ tests/unit/content-schemas.test.ts (25 tests) 19ms
+ ✓ tests/unit/page-primitives.test.ts (31 tests) 26ms
+
+ Test Files  9 passed (9)
+      Tests  202 passed (202)
+   Start at  17:13:41
+   Duration  608ms (import 54%, tests 23%, transform 17%, worker 6%)
+
+JUNIT report written to C:/repos/site-pro/PRPs/reports/stage-2-foundation/attempts/1/unit/junit.xml

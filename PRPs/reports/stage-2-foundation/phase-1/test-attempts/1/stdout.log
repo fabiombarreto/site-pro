@@ -1,0 +1,52 @@
+
+ RUN  v5.1.0 C:/repos/site-pro/.worktrees/stage-2-foundation
+
+ ✓ tests/unit/scaffold-config.test.ts (17 tests) 10ms
+ ✓ tests/unit/site-mark.test.ts (1 test) 12ms
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  15:25:10
+   Duration  280ms (import 54%, transform 18%, tests 16%, worker 11%)
+
+JUNIT report written to C:/repos/site-pro/PRPs/reports/stage-2-foundation/attempts/1/junit-unit.xml
+$ astro build
+[2m15:25:18[22m [34m[types][39m Generated [2m53ms[22m
+[2m15:25:18[22m [34m[build][39m output: [34m"static"[39m
+[2m15:25:18[22m [34m[build][39m mode: [34m"static"[39m
+[2m15:25:18[22m [34m[build][39m directory: [34mC:\repos\site-pro\.worktrees\stage-2-foundation\dist\[39m
+[2m15:25:18[22m [34m[build][39m Collecting build info...
+[2m15:25:18[22m [34m[build][39m [32m✓ Completed in 103ms.[39m
+[2m15:25:18[22m [34m[build][39m Building static entrypoints...
+[33m[1m15:25:19[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[33m[1m15:25:19[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js (74:0): A comment
+
+"/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+ * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+ * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[2m15:25:19[22m [34m[vite][39m [32m✓ built in 1.74s[39m
+[2m15:25:20[22m [34m[vite][39m [32m✓ built in 692ms[39m
+[2m15:25:20[22m [34m[build][39m Rearranging server assets...
+
+[42m[30m generating static routes [39m[49m
+[2m15:25:20[22m   [34m├─[39m [2m/index.html[22m [2m(+19ms)[22m 
+[2m15:25:20[22m [32m✓ Completed in 143ms.
+[39m
+[2m15:25:20[22m [34m[build][39m [32m✓ Completed in 2.65s.[39m
+[2m15:25:20[22m [34m[build][39m 1 page(s) built in [1m2.76s[22m
+[2m15:25:20[22m [34m[build][39m [1mComplete![22m
+
+Running 4 tests using 4 workers
+
+  ok 4 [chromium] › tests\e2e\placeholder-page.spec.ts:57:3 › built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form (10ms)
+  ok 3 [chromium] › tests\e2e\placeholder-page.spec.ts:13:3 › static HTML of / › is a complete document with one main and one h1, before any script runs (44ms)
+  ok 1 [chromium] › tests\e2e\placeholder-page.spec.ts:30:3 › static HTML of / › shows the heading with JavaScript disabled (221ms)
+  ok 2 [chromium] › tests\e2e\placeholder-page.spec.ts:40:3 › static HTML of / › has no axe violations (617ms)
+
+  4 passed (4.8s)

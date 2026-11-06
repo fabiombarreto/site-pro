@@ -1,0 +1,12 @@
+<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="4.786409000000001">
+<testsuite name="placeholder-page.spec.ts" timestamp="2026-11-05T18:25:24.902Z" hostname="chromium" tests="4" failures="0" skipped="0" time="0.892" errors="0">
+<testcase name="static HTML of / › is a complete document with one main and one h1, before any script runs" classname="placeholder-page.spec.ts" time="0.044">
+</testcase>
+<testcase name="static HTML of / › shows the heading with JavaScript disabled" classname="placeholder-page.spec.ts" time="0.221">
+</testcase>
+<testcase name="static HTML of / › has no axe violations" classname="placeholder-page.spec.ts" time="0.617">
+</testcase>
+<testcase name="built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form" classname="placeholder-page.spec.ts" time="0.01">
+</testcase>
+</testsuite>
+</testsuites>

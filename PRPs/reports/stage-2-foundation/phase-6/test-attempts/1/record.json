@@ -1,0 +1,46 @@
+{
+  "attempt": 1,
+  "run_id": "8c6485c1-a87d-4558-a760-d87a97343fb3",
+  "tiers": [
+    {
+      "run_id": "8c6485c1-a87d-4558-a760-d87a97343fb3",
+      "attempt": 1,
+      "tier": "unit",
+      "framework": "vitest",
+      "outcome": "PASSED",
+      "duration_ms": 821,
+      "counts": {
+        "passed": 209,
+        "failed": 0,
+        "skipped": 0,
+        "total": 209
+      },
+      "failures": [],
+      "coverage": null,
+      "artifacts": {
+        "junit_xml": "C:\\repos\\site-pro\\PRPs\\reports\\stage-2-foundation\\attempts\\1\\junit-unit.xml"
+      },
+      "generated_at": "2026-11-05T20:38:04.690Z"
+    },
+    {
+      "run_id": "8c6485c1-a87d-4558-a760-d87a97343fb3",
+      "attempt": 1,
+      "tier": "e2e",
+      "framework": "playwright",
+      "outcome": "PASSED",
+      "duration_ms": 106647,
+      "counts": {
+        "passed": 151,
+        "failed": 0,
+        "skipped": 0,
+        "total": 151
+      },
+      "failures": [],
+      "coverage": null,
+      "artifacts": {
+        "junit_xml": "C:\\repos\\site-pro\\PRPs\\reports\\stage-2-foundation\\attempts\\1\\junit-e2e.xml"
+      },
+      "generated_at": "2026-11-05T20:38:04.789Z"
+    }
+  ]
+}

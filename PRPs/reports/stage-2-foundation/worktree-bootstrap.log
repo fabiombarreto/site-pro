@@ -1,0 +1,5 @@
+# worktree-bootstrap.log (redacted per relay redaction policy)
+script: scripts/worktree-bootstrap.sh
+exit_code: 0
+--- output ---
+

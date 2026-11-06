@@ -39,11 +39,10 @@ There is no public email, availability line or "at a glance" facts box: contact 
 
 ### `projects`: one Markdown file per project
 
-Only personal projects appear on the site; client work stays in the CV and on LinkedIn.
+Only personal projects appear on the site; client work stays in the CV and on LinkedIn. The file name is the project slug (`relay.md` → `/projects/relay`, `projects.card("relay")`); it is not a front-matter field.
 
 | Field | Type | Rule |
 |---|---|---|
-| `slug` | text | Used in the URL (`/projects/slug`) and in the build commands (`projects.card("slug")`) |
 | `title` | text | Short |
 | `summary` | text | **≤ 140 characters**, shown on the card |
 | `cover` | image | 16:9, ≥ 1280 px |

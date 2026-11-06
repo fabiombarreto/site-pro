@@ -1,0 +1,15 @@
+{
+  "attempt": 2,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [],
+  "files_changed_note": "No edits this attempt; the diff against base is byte-identical to attempt 1.",
+  "validation": {"level_1": "PASS", "level_2": "PASS", "level_3": "FAIL"},
+  "plan_validation_defect": {
+    "level": 3,
+    "command": "if grep -rEq 'mailto:|tel:|<form' dist; then echo \"FAIL: forbidden contact markup in dist\"; exit 1; fi",
+    "observed": "grep -rEl matches only dist/_astro/client.C1IbzcEF.js; the matched text is `range:!0,search:!0,tel:!0,text:!0` (react-dom client bundle input-type map). `grep -Eq 'mailto:|tel:|<form' dist/index.html` finds nothing.",
+    "prd_refs": ["PRD AC-1", "plan AC-A6 (PRD AC-8)"],
+    "reason": "The command greps all of dist recursively, so it matches vendor JS and not contact markup. The built page contains no mailto:, tel: or <form. Suggested plan fix: grep only dist/**/*.html, or exclude dist/_astro."
+  },
+  "base_commit": "e430ada54e16c6910514ff5d32bacc4f93f2a160"
+}

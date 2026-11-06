@@ -15,7 +15,7 @@ A personal website for the developer community that **builds itself in front of 
 ✔ Projects Section created. (2.31s)           ← the window fades; the section stays
 ```
 
-> **Status:** planning. There is no code yet: documentation and design come first.
+> **Status:** Stage 2 (foundation) merged: the static, accessible page, project pages, 404 and CI. The live build layer comes in Stage 3.
 
 ## Documentation
 

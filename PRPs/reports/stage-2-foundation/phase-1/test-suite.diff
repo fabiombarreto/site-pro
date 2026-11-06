@@ -1,0 +1,42 @@
+# TDD initial suite — phase 1
+# Source PRD: PRPs/prds/stage-2-foundation.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-2-foundation-phase-1-scaffold-and-ci-skeleton.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-05
+# Mode: test-after (tests live in code_root C:/repos/site-pro/.worktrees/stage-2-foundation/)
+
+## AC outcomes
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-A1 (PRD AC-1, partial) | NEW_TEST_REQUIRED | tests/e2e/placeholder-page.spec.ts (raw HTML + no-JS), tests/unit/site-mark.test.ts |
+| AC-A2 (PRD AC-11, partial) | NEW_TEST_REQUIRED | tests/unit/scaffold-config.test.ts ("CI workflow") |
+| AC-A3 (PRD AC-11, partial) | NEW_TEST_REQUIRED | tests/unit/scaffold-config.test.ts ("Workers Static Assets config") |
+| AC-A4 (PRD AC-1, partial) | NEW_TEST_REQUIRED | tests/unit/scaffold-config.test.ts ("toolchain pins"); the frozen install itself is exercised by every CI job |
+| AC-A5 (PRD AC-11, partial) | NEW_TEST_REQUIRED | The new unit and e2e files give `pnpm test` and `pnpm test:e2e` real smoke tests (Vitest and Playwright + axe, as the PRD asks); lint, format:check and astro check are tooling commands verified by CI jobs, not test files |
+| AC-A6 (PRD AC-8, partial) | NEW_TEST_REQUIRED | tests/e2e/placeholder-page.spec.ts ("built dist/ privacy") |
+| PRD AC-2 to AC-7, AC-9, AC-10, AC-12 to AC-14 | OUT_OF_PHASE_SCOPE | deferred to phases 2 to 7 |
+
+## Test files written this session
+
+- .worktrees/stage-2-foundation/tests/unit/scaffold-config.test.ts
+- .worktrees/stage-2-foundation/tests/unit/site-mark.test.ts
+- .worktrees/stage-2-foundation/tests/e2e/placeholder-page.spec.ts
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| (none — no update/delete this session) | — | — | — |
+
+## Formatting Outcome
+
+- Outcome: formatted (exit 0).
+- Command: `pnpm exec prettier --write tests/unit/scaffold-config.test.ts tests/unit/site-mark.test.ts tests/e2e/placeholder-page.spec.ts`, run in code_root, scoped to the touched-file set only.
+- Discovery source: the project's `package.json` `scripts.format` (`prettier --write .`) in code_root. `<target_root>/package.json` does not exist (the project is scaffolded in the worktree), and `methodology.md` declares no `formatter_cmd`; the script's own `.` argument would format the whole repo, so the scoped `prettier --write <files>` form was used instead.
+- Files changed by the formatter: `tests/unit/scaffold-config.test.ts`, `tests/e2e/placeholder-page.spec.ts` (`tests/unit/site-mark.test.ts` unchanged).
+
+## Status
+
+*Approved: 2026-11-05*
+*Status: APPROVED*

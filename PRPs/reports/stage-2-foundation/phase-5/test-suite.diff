@@ -1,0 +1,73 @@
+# TDD initial suite — phase 5
+# Source PRD: PRPs/prds/stage-2-foundation.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-2-foundation-phase-5-home-page.plan.md
+# Mode: test-after (tdd: false; vitest + playwright)
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-05
+
+Note: phase 4's APPROVED manifest stays archived at
+PRPs/reports/stage-2-foundation/phase-4/test-suite.diff; this manifest is phase 5's.
+Plan ACs are AC-A1..AC-A9, mapped to PRD ACs as the plan states. Test files live
+in the feature worktree (code_root C:/repos/site-pro/.worktrees/stage-2-foundation/).
+Shared fixtures (approved copy as literals, axe tags, viewports) are in
+tests/e2e/support/home.ts (a helper, not a spec).
+
+## AC outcomes
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-A1 (PRD AC-1) static HTML: one main, section ids in order, one h1, one h2 per section labelling it, approved copy | NEW_TEST_REQUIRED | tests/e2e/home-content.spec.ts ("static HTML of / (AC-1)"); title and description also in tests/e2e/placeholder-page.spec.ts (UPDATED) |
+| AC-A2 (PRD AC-2) nav links without JS set the hash and show the h2; section text visible; card links /projects/<slug> | NEW_TEST_REQUIRED | tests/e2e/home-content.spec.ts ("navigation without JavaScript (AC-2)"); hrefs only, the pages arrive in phase 6 |
+| AC-A3 (PRD AC-3) skip link first, focuses main; every link/button in DOM order with 2px accent ring offset 2px | NEW_TEST_REQUIRED | tests/e2e/home-keyboard.spec.ts; toggle ring after the new first stop: tests/e2e/theme.spec.ts "rings the focused toggle..." (UPDATED) |
+| AC-A4 (PRD AC-6) mobile menu with and without JS, Esc and focus return, close on link, no button at >= 768 | NEW_TEST_REQUIRED | tests/e2e/home-mobile-menu.spec.ts |
+| AC-A5 (PRD AC-12) no build layer, main text equals no-JS, transitions 150-300 ms, none under reduced motion | NEW_TEST_REQUIRED | tests/e2e/home-no-build-layer.spec.ts. Static-CSS side: EXISTING_TEST_COVERS tests/e2e/theme.spec.ts "runs the 150 ms hover transition only without reduced motion" |
+| AC-A6 (PRD AC-13) photo 960/760/480 at 9:16, two-line name, project grid 2/2/1 with 96 px stagger, stack 3/2/1, no horizontal scroll, CLS <= 0.01 | NEW_TEST_REQUIRED | tests/e2e/home-responsive-layout.spec.ts. Backdrop scale and overflow at 375: EXISTING_TEST_COVERS tests/e2e/theme.spec.ts ("Backdrop" describe) |
+| AC-A7 (PRD AC-2) sticky 64 px nav, transparent at top with JS, translucent after scroll and without JS | NEW_TEST_REQUIRED | tests/e2e/home-mobile-menu.spec.ts ("sticky nav"); the reduced-transparency and no-backdrop-filter fallbacks are not driven by Playwright emulation (plan Notes) and stay unasserted here |
+| AC-A8 (PRD AC-8) no form, mailto, tel | EXISTING_TEST_COVERS | tests/e2e/placeholder-page.spec.ts ("built dist/ privacy (AC-A6)": scans every dist HTML file); GitHub/LinkedIn hrefs also asserted in home-content.spec.ts and home-mobile-menu.spec.ts |
+| AC-A9 (PRD AC-9, AC-10) tokens only, CSS budget | EXISTING_TEST_COVERS | tests/unit/design-tokens.test.ts:130 and :137 (scan every src css/ts/tsx file); tests/e2e/css-budget.spec.ts; tests/e2e/theme.spec.ts "keeps the emitted CSS within 25 KB gzip" |
+| PRD AC-5 (axe) on / | NEW_TEST_REQUIRED | tests/e2e/home-axe.spec.ts (both themes at 1280x800, 800x1024, 375x812, plus 375x812 with the menu open). /projects/<slug> and 404 axe: OUT_OF_PHASE_SCOPE (phase 6) |
+| PRD AC-4, AC-7 | EXISTING_TEST_COVERS | tests/e2e/theme.spec.ts (theme without a flash); tests/unit/content-schemas.test.ts |
+| PRD AC-8 (full privacy script), AC-10 (Lighthouse), AC-11, AC-14 | OUT_OF_PHASE_SCOPE | phases 6 and 7 |
+
+Note on the PRD's "54-word About text": the approved bio in profile.json has 57 words;
+no word count is asserted, the three paragraphs are asserted verbatim.
+
+## Test files written this session
+
+- tests/e2e/support/home.ts (helper)
+- tests/e2e/home-content.spec.ts
+- tests/e2e/home-keyboard.spec.ts
+- tests/e2e/home-mobile-menu.spec.ts
+- tests/e2e/home-no-build-layer.spec.ts
+- tests/e2e/home-responsive-layout.spec.ts
+- tests/e2e/home-axe.spec.ts
+
+(all under C:/repos/site-pro/.worktrees/stage-2-foundation/)
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| DELETE | OBSOLETE_TEST_REMOVED | tests/unit/site-mark.test.ts:"SiteMark placeholder renders a single h1 reading Fabio Barreto." | The only behavior covered is the SiteMark placeholder component, deleted by phase 5 (Task 12). The live behavior it served (a single h1 "Fabio Barreto.", PRD AC-1) is now asserted on the real page by tests/e2e/home-content.spec.ts and tests/e2e/placeholder-page.spec.ts. The file imported the removed module and was the one tolerated `pnpm check` error. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/placeholder-page.spec.ts:"is a complete document with one main and one h1, before any script runs" | AC-1: title is now "Fabio Barreto - Senior Software Engineer", description is the profile subtitle, and the h1 is `Fabio <br>Barreto.` on two lines (text still "Fabio Barreto."). Every prior assertion is kept (lang, title, description, one main, one h1, h1 text) with the new expected values; none dropped. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/theme.spec.ts:"rings the focused toggle with a 2px solid accent outline offset 2px" | AC-3: the skip link is now the first Tab stop. The test tabs past skip link, brand and four section links, asserts focus is on Contact, then asserts the toggle is focused with the same four outline assertions (solid, 2px, offset 2px, accent). No assertion dropped. |
+
+Other existing tests were checked for staleness and left untouched: the remaining
+placeholder-page.spec.ts cases (no-JS heading, axe, dist privacy), the other theme.spec.ts
+cases (no-JS toggle hidden, Backdrop, fonts, CSS budget) and every tests/unit file other
+than site-mark.test.ts.
+
+## Formatting and run outcome
+
+- Prettier was applied to the touched files by a delegated shell run in code_root (it reformatted five of the new/updated e2e files; the rest were clean).
+- In code_root after that: `eslint tests` clean; `pnpm check` 0 errors; `pnpm test` 9 files / 202 tests passed; `pnpm build` ok; `pnpm test:e2e` 82 passed, 0 failed (chromium). The writer itself had no shell; these figures come from the delegated run.
+
+## Formatting Outcome
+
+- Outcome: nothing left to format (command layer, /relay-write-test Phase A.4): `pnpm exec prettier --write` scoped to the nine touched files (the seven new e2e files plus the updated `placeholder-page.spec.ts` and `theme.spec.ts`) reported every file unchanged. The removed `tests/unit/site-mark.test.ts` is excluded (DELETE row).
+- Discovery source: the project's `package.json` `scripts.format` in code_root (`<target_root>/package.json` does not exist; `methodology.md` declares no `formatter_cmd`); scoped `prettier --write <files>` instead of the script's whole-repo `.`.
+
+## Status
+
+*Approved: 2026-11-05*
+*Status: APPROVED*
