@@ -1,6 +1,6 @@
 # Architecture
 
-State on 2026-11-04: **no application code exists yet**. Stage 1 (design) is approved; Stage 2 scaffolds the project. Everything below comes from the approved documents (06, 07, 08) and the Claude Design artifacts, not from a code scan. Items that only exist as a plan are marked *(planned)*.
+State on 2026-11-06: Stage 2 (foundation) is merged: the Astro project, the static page, tokens, fonts, content collections and CI exist (PR #1). The build runtime, build-layer components and stores are not built yet (Stage 3). The stack comes from the approved documents (06, 07, 08) and the Claude Design artifacts; items that only exist as a plan are marked *(planned)*.
 
 ## Stack (decided)
 

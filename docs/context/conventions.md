@@ -1,6 +1,6 @@
 # Conventions
 
-No application code exists yet (2026-11-04). These conventions come from the approved docs and the Design System; code-level ones are set in Stage 2 and must be added here then.
+Stage 2 code exists since 2026-11-06 (PR #1). These conventions come from the approved docs and the Design System; code-level ones beyond the Stage 2 foundation are set in later stages and must be added here then.
 
 ## Language
 
