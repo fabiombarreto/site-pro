@@ -1,0 +1,15 @@
+{
+  "stack": {
+    "groups": [
+      { "name": "languages", "items": ["java", "python", "typescript", "sql"] },
+      { "name": "frontend", "items": ["react", "angular"] },
+      {
+        "name": "backend",
+        "items": ["spring-boot", "django", "graphql", "node", "fastapi"]
+      },
+      { "name": "data", "items": ["postgresql", "redis", "rabbitmq"] },
+      { "name": "cloud", "items": ["aws", "ci-cd"] },
+      { "name": "ai", "items": ["claude-code"] }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { ProjectCard } from '../components/page/ProjectCard';
+import { SectionHeading } from '../components/page/SectionHeading';
+import { resolveAssetUrl } from '../components/page/resolve-asset';
+import { strings } from '../strings';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section
+  id="projects"
+  aria-labelledby="projects-title"
+  class="sp-section sp-projects"
+>
+  <div class="sp-section-inner is-loose">
+    <SectionHeading
+      id="projects-title"
+      eyebrow={strings.sections.projects.eyebrow}
+      title={strings.sections.projects.title}
+      lead={strings.sections.projects.lead}
+    />
+    <div class="sp-projects-grid">
+      {projects.map(({ id, data }) => (
+        <div class="sp-projects-cell">
+          <ProjectCard
+            title={data.title}
+            slug={id}
+            year={data.year}
+            summary={data.summary}
+            tags={data.tags}
+            status={data.status}
+            repo={data.links.repo}
+            cover={resolveAssetUrl(data.cover)}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,25 +1,40 @@
 # Development
 
-State on 2026-11-04: Stages 0 and 1 are done; there is no `package.json` yet. The commands below are the planned ones from docs/06-architecture.md and docs/08-tools.md and become real when Stage 2 scaffolds the project [INFERRED - VALIDATE: confirm the script names then].
+The project is scaffolded (Stage 2 Phase 1): the commands below are real and match what CI runs.
 
 ## Prerequisites
 
-- Node.js LTS, pnpm, Git.
-- For E2E and visual tests: Playwright browsers (`pnpm exec playwright install`).
+- Node and pnpm are pinned: `.node-version` (Node 24) and the `packageManager` field (pnpm 12.16.1, enabled with `corepack enable`). Git.
+- For E2E and visual tests: Playwright browsers (`pnpm exec playwright install --with-deps chromium`).
 - The repository's Git `user.email` is the GitHub noreply address; keep it that way for every commit.
 
-## Planned commands
+## Commands
 
 | Task | Command |
 |---|---|
-| Install | `pnpm install` |
+| Install | `pnpm install --frozen-lockfile` |
 | Dev server | `pnpm dev` |
 | Type check | `pnpm astro check` |
-| Lint / format | `pnpm lint` · `pnpm format` |
+| Lint / format | `pnpm lint` · `pnpm format` · `pnpm format:check` |
 | Unit tests | `pnpm test` (Vitest) |
 | E2E, visual, accessibility | `pnpm test:e2e` (Playwright + axe) |
 | Production build | `pnpm build` · `pnpm preview` |
-| Lighthouse | Lighthouse CI in GitHub Actions |
+| Lighthouse | `pnpm lighthouse` (Lighthouse CI; needs `pnpm build` and `CHROME_PATH`) |
+| Token check | `pnpm check:tokens` |
+| Privacy check | `pnpm check:privacy` (needs `pnpm build`) |
+| Size budgets | `pnpm check:budgets` (needs `pnpm build`) |
+
+## Continuous integration
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pushes to `main`, with nine separately reported jobs: `lint`, `check`, `unit`, `build`, `e2e`, `tokens`, `privacy`, `budgets` and `lighthouse`. Deploys are done by Cloudflare Workers Builds, not by CI.
+
+Playwright screenshot baselines (a PRD Should; gate versus advisory is still open) must be generated in CI's Linux environment, so they are a follow-up and not part of the nine jobs.
+
+## Owner steps outside the pipeline
+
+1. Connect the GitHub repository to Cloudflare Workers Builds with production branch `main` and non-production branch builds and preview URLs enabled, before the Stage 2 pull request opens.
+2. Add branch protection on `main` requiring the nine CI checks.
+3. On the pull request, open the Workers Builds preview URL and confirm it serves that commit's build and matches the five final-page artboards in both themes.
 
 ## Workflow
 

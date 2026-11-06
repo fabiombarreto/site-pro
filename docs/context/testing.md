@@ -48,15 +48,32 @@ nor this explicit warning is incomplete.
 
 ## Detected test suites
 
-No automated test suites were detected at `*init` time. The guardrail
-above still applies the moment any suite is added: record its run command
-and prerequisites here, then keep it green on every subsequent change. If
-you believe this project should have tests (especially e2e), say so to
-the user rather than proceeding silently.
+The guardrail above applies to both suites below: keep them green on every
+change. Both suites have specs (`tests/unit/` and `tests/e2e/`), so an empty
+run fails; the test files are authored and maintained by the test pair.
 
-Planned suites (docs/06-architecture.md, not installed yet): Vitest for the
-runtime, scheduler and React components; Playwright for E2E (boot, scroll
-trigger, skip, run all, deep links, focus rule, reduced motion, no JS,
-mobile), visual screenshots with a deterministic clock, and axe
-accessibility checks. Record their real run commands here when Stage 2 adds
-them.
+### Vitest (unit)
+
+- Command: `pnpm test`
+- Config: `vitest.config.ts`
+- Test files: under `tests/unit/`
+
+### Playwright (E2E and axe)
+
+- Command: `pnpm test:e2e`
+- Config: `playwright.config.ts`
+- Test files: under `tests/e2e/`
+- Prerequisite: `pnpm exec playwright install --with-deps chromium`
+- Served by `astro preview`, so run `pnpm build` first.
+
+The axe matrix runs inside `pnpm test:e2e` (the `e2e` CI job). Screenshot
+baselines are not part of Stage 2 yet.
+
+### Quality gate scripts (CI)
+
+Each gate is its own CI job and exits non-zero on a violation.
+
+- `pnpm check:tokens` (CI job `tokens`, AC-9): no color or `box-shadow` literal in `src/` outside `src/styles/tokens.css` and `src/assets/`.
+- `pnpm check:privacy` (CI job `privacy`, AC-8): privacy rules over `dist/`; run `pnpm build` first.
+- `pnpm check:budgets` (CI job `budgets`, AC-10): gzip budgets over `dist/` (JS total 90 KB, JS before first paint 20 KB, CSS 25 KB); run `pnpm build` first.
+- `pnpm lighthouse` (CI job `lighthouse`, AC-10): Lighthouse CI per `lighthouserc.json`, median of 3 runs on `/` and `/projects/relay/`, every category >= 0.95 and CLS <= 0.01. It needs `pnpm build` and Chrome; locally set `CHROME_PATH=$(node -p "require('@playwright/test').chromium.executablePath()")`.

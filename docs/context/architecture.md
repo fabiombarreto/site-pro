@@ -41,7 +41,8 @@ Two visual registers never mix: **the page** (modern, readable) and **the build 
 | `src/content/` | profile, projects/, stack.json |
 | `src/components/page/` | React page components (NavBar, Button, ProjectCard, StackGroup, Footer, CommandPalette…) |
 | `src/components/build/` | Build-layer components (BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor for v1.1) |
-| `src/sections/` | Astro sections (Hero, About, Projects, Stack, Contact), each with its build script |
+| `src/sections/` | Astro sections (Hero, About, Projects, Stack, Contact), each with its build script; `profile-links.ts` resolves the GitHub and LinkedIn URLs from the profile entry. Stage 2 Phase 5 composes them in `src/pages/index.astro` with `src/styles/home.css` |
+| `src/scripts/` | Small client modules loaded from `Base.astro`: `theme-toggle`, and `nav.ts` (toggles `is-scrolled` on `.sp-nav` and closes the mobile menu popover when one of its links is clicked) |
 | `src/runtime/` | Scheduler, effects, triggers, overlays, controls |
 | `src/stores/` | nanostores shared by the runtime and the islands |
 | `src/styles/` | tokens.css, themes, base.css |

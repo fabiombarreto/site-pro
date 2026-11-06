@@ -18,9 +18,13 @@ $ErrorActionPreference = 'Stop'
 # $FeatureSlug = Split-Path $WorktreePath -Leaf
 # "COMPOSE_PROJECT_NAME=relay-$FeatureSlug" | Add-Content (Join-Path $WorktreePath '.env.local')
 
-# TODO: Uncomment and adapt — dependency install
+# Dependency install
 # Run after env files are in place so the install can read them.
-# Push-Location $WorktreePath; pnpm install --frozen-lockfile; Pop-Location
+Push-Location $WorktreePath
+try {
+  pnpm install --frozen-lockfile
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+} finally { Pop-Location }
 
 # TODO: Uncomment and adapt — port allocation
 # Derive an offset from the feature slug hash to avoid port collisions.

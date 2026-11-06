@@ -5,7 +5,7 @@ No application code exists yet (2026-11-04). These conventions come from the app
 ## Language
 
 - Every artifact is in **English**: site copy, docs, code, comments, commits, pull requests, issues (D1). The owner chats in Brazilian Portuguese; that never leaks into artifacts.
-- Interface copy lives in one file (`src/strings.ts`, planned) so another language could be added later.
+- Interface copy lives in one file (`src/strings.ts`) so another language could be added later.
 
 ## Site copy (voice, docs/09-content-draft.md)
 
@@ -36,7 +36,13 @@ No application code exists yet (2026-11-04). These conventions come from the app
 | Docs | Two-digit prefix for the numbered set | `docs/04-animations.md` |
 | Decisions | `D<n>` in docs/07-roadmap-and-decisions.md | D20 |
 
-File naming, import order and folder-per-component rules for `src/` are not defined yet [INFERRED - VALIDATE: set in Stage 2].
+File naming, import order and folder-per-component rules for `src/` are not fully defined yet [INFERRED - VALIDATE: set in Stage 2]. Observed in `src/components/page/` (Stage 2 Phase 4):
+
+- No folder per component: files are flat in `src/components/page/`. One PascalCase `.tsx` file per component (`Button.tsx`, `ProjectCard.tsx`), with named exports.
+- Plain helpers are lowercase `.ts` files in the same folder (`cx.ts`, `resolve-asset.ts`, kebab-case when two words).
+- Styles are plain `.css` files imported by the component, named after the component (`NavBar.css`) or the family that shares them (`Actions.css` for Button and TextLink, `Labels.css`), using `sp-` classes.
+- In a component file, the CSS import comes first, then sibling components, then types and helpers.
+- Small reusable assets used by components live in `src/assets/` and are resolved through `resolveAssetUrl`.
 
 ## Styling
 

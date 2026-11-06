@@ -1,0 +1,22 @@
+.sp-subpage {
+  --subpage-gutter: clamp(16px, 4vw, 32px);
+  box-sizing: border-box;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: var(--space-12) var(--subpage-gutter) clamp(96px, 12vw, 160px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.sp-notfound {
+  min-height: 50vh;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+.sp-notfound-title {
+  margin: 0;
+  color: var(--fg);
+}

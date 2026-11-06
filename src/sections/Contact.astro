@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Button } from '../components/page/Button';
+import { SectionHeading } from '../components/page/SectionHeading';
+import { strings } from '../strings';
+import { profileLinks } from './profile-links';
+
+interface Props {
+  profile: CollectionEntry<'profile'>['data'];
+}
+
+const { profile } = Astro.props;
+const links = profileLinks(profile);
+if (!profile.location) throw new Error('profile.location is missing');
+---
+
+<section
+  id="contact"
+  aria-labelledby="contact-title"
+  class="sp-section sp-contact"
+>
+  <div class="sp-section-inner">
+    <SectionHeading
+      id="contact-title"
+      eyebrow={strings.sections.contact.eyebrow}
+      title={strings.sections.contact.title}
+      lead={strings.sections.contact.lead}
+    />
+    <div class="sp-contact-row">
+      <div class="sp-actions">
+        <Button variant="primary" icon="github" href={links.github} external>
+          {strings.buttons.github}
+        </Button>
+        <Button
+          variant="secondary"
+          icon="linkedin"
+          href={links.linkedin}
+          external
+        >
+          {strings.buttons.linkedin}
+        </Button>
+      </div>
+      <p class="sp-contact-location mono-sm">{profile.location}</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+.sp-photo {
+  position: relative;
+  flex: none;
+  aspect-ratio: 9 / 16;
+  height: var(--photo-h, auto);
+}
+
+.sp-photo.has-glow::before {
+  content: '';
+  position: absolute;
+  inset: -18%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--accent-glow), transparent);
+  pointer-events: none;
+}
+
+.sp-photo > * {
+  position: relative;
+  z-index: 1;
+}
+
+.sp-photo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}

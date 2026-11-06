@@ -19,9 +19,9 @@ WORKTREE_PATH="${1:?Usage: worktree-bootstrap.sh <absolute-worktree-path>}"
 # FEATURE_SLUG="$(basename "${WORKTREE_PATH}")"
 # echo "COMPOSE_PROJECT_NAME=relay-${FEATURE_SLUG}" >> "${WORKTREE_PATH}/.env.local"
 
-# TODO: Uncomment and adapt — dependency install
+# Dependency install
 # Run after env files are in place so the install can read them.
-# cd "${WORKTREE_PATH}" && pnpm install --frozen-lockfile
+cd "${WORKTREE_PATH}" && pnpm install --frozen-lockfile
 
 # TODO: Uncomment and adapt — port allocation
 # Derive an offset from the feature slug hash to avoid port collisions.

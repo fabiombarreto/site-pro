@@ -30,4 +30,4 @@ The Design System artifact (tokens.json, 32 components on `window.SitePro`, prev
 ## Open Questions
 
 - ~~How the Design System's `components/src/index.tsx` maps onto Astro components vs React islands in Stage 2.~~ Answered by the Stage 2 PRD (2026-11-05): sections are Astro files in `src/sections/`, page components are typed React rendered statically in `src/components/page/`, ThemeToggle is the only hydrated control and the mobile menu is a static `popover`.
-- Whether the film grain is an image asset or a generated SVG noise filter in production [INFERRED - VALIDATE].
+- ~~Whether the film grain is an image asset or a generated SVG noise filter in production [INFERRED - VALIDATE].~~ Answered in Stage 2 Phase 2: a generated SVG noise filter (feTurbulence) inlined as a data URI in the Backdrop styles, so the grain adds no image request and no asset; its opacity comes from --grain-opacity.

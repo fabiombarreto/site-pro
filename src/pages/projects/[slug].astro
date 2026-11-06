@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { Backdrop, DEFAULT_GLOWS } from '../../components/page/Backdrop';
+import { Footer } from '../../components/page/Footer';
+import { NavBar } from '../../components/page/NavBar';
+import { ProjectHeader } from '../../components/page/ProjectHeader';
+import { Prose } from '../../components/page/Prose';
+import { resolveAssetUrl } from '../../components/page/resolve-asset';
+import { loadSiteChrome, pageTitle } from '../../sections/site-chrome';
+import '../../styles/subpages.css';
+
+export async function getStaticPaths() {
+  return (await getCollection('projects')).map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { profile, links, sourceHref } = await loadSiteChrome();
+const hasBody = Boolean(entry.body?.trim());
+const Content = hasBody ? (await render(entry)).Content : undefined;
+---
+
+<Base title={pageTitle(data.title, profile)} description={data.summary}>
+  <div class="sp-page">
+    <Backdrop glows={DEFAULT_GLOWS} />
+    <div class="sp-page-content">
+      <NavBar
+        githubHref={links.github}
+        linkedinHref={links.linkedin}
+        homeHref="/"
+      />
+      <main id="main" tabindex="-1" class="sp-subpage">
+        <ProjectHeader
+          title={data.title}
+          slug={entry.id}
+          summary={data.summary}
+          year={data.year}
+          status={data.status}
+          tags={data.tags}
+          repo={data.links.repo}
+          cover={resolveAssetUrl(data.cover)}
+        />
+        {Content && (
+          <Prose>
+            <Content />
+          </Prose>
+        )}
+      </main>
+      <Footer sourceHref={sourceHref} owner={profile.name} />
+    </div>
+  </div>
+</Base>

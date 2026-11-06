@@ -1,0 +1,256 @@
+:root {
+  --gutter: clamp(16px, 4vw, 32px);
+}
+
+.sp-section {
+  padding: clamp(80px, 10vw, 128px) 0;
+}
+
+.sp-section-inner {
+  box-sizing: border-box;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.sp-section-inner.is-loose {
+  gap: var(--space-12);
+}
+
+.sp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.sp-about-body {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sp-about-body p {
+  margin: 0;
+}
+
+.sp-about-body .sp-actions {
+  margin-top: var(--space-3);
+}
+
+.sp-contact {
+  padding-bottom: clamp(96px, 12vw, 160px);
+}
+
+.sp-contact .sp-heading-title.text-3xl {
+  font-size: var(--text-display);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.sp-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+}
+
+.sp-contact-location {
+  margin: 0;
+  color: var(--fg-muted);
+}
+
+/* Hero: absolutely positioned layers; the photo runs past the hero box into About. */
+.sp-hero {
+  position: relative;
+}
+
+.sp-hero-inner {
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.sp-hero-name {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  left: var(--gutter);
+  right: var(--gutter);
+  color: var(--fg);
+}
+
+.sp-hero-photo {
+  position: absolute;
+  z-index: 2;
+}
+
+.sp-hero-role {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  left: var(--gutter);
+  color: var(--fg);
+}
+
+.sp-hero-copy {
+  position: absolute;
+  z-index: 3;
+  left: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sp-hero-copy p {
+  margin: 0;
+  color: var(--fg-muted);
+}
+
+.sp-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.sp-projects {
+  padding-bottom: 48px;
+}
+
+.sp-projects-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.sp-projects-cell {
+  min-width: 0;
+}
+
+.sp-projects-cell:nth-child(even) {
+  transform: translateY(96px);
+}
+
+.sp-stack-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (min-width: 1024px) {
+  .sp-hero {
+    height: 836px;
+  }
+
+  .sp-hero-name {
+    top: 56px;
+  }
+
+  .sp-hero-photo {
+    top: 40px;
+    left: 50%;
+  }
+
+  .sp-hero-photo .sp-photo {
+    --photo-h: 960px;
+  }
+
+  .sp-hero-role {
+    top: 520px;
+    width: 440px;
+  }
+
+  .sp-hero-copy {
+    bottom: 64px;
+    width: 440px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sp-hero {
+    height: 700px;
+  }
+
+  .sp-hero-name {
+    top: 56px;
+  }
+
+  .sp-hero-photo {
+    top: 44px;
+    left: 52%;
+  }
+
+  .sp-hero-photo .sp-photo {
+    --photo-h: 760px;
+  }
+
+  .sp-hero-role {
+    top: 330px;
+    width: 330px;
+  }
+
+  .sp-hero-copy {
+    bottom: 48px;
+    width: 330px;
+  }
+
+  .sp-stack-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .sp-hero {
+    height: 900px;
+  }
+
+  .sp-hero-name {
+    top: 24px;
+  }
+
+  .sp-hero-photo {
+    top: 150px;
+    left: auto;
+    right: 0;
+  }
+
+  .sp-hero-photo .sp-photo {
+    --photo-h: 480px;
+  }
+
+  .sp-hero-role {
+    top: 200px;
+    width: 150px;
+  }
+
+  .sp-hero-copy {
+    bottom: 32px;
+    width: calc(100% - 32px);
+  }
+
+  .sp-projects {
+    padding-bottom: 80px;
+  }
+
+  .sp-projects-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .sp-projects-cell:nth-child(even) {
+    transform: none;
+  }
+
+  .sp-stack-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}

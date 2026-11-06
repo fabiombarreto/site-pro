@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { SectionHeading } from '../components/page/SectionHeading';
+import { StackGroup } from '../components/page/StackGroup';
+import { strings } from '../strings';
+
+interface Props {
+  stack: CollectionEntry<'stack'>['data'];
+}
+
+const { stack } = Astro.props;
+---
+
+<section id="stack" aria-labelledby="stack-title" class="sp-section">
+  <div class="sp-section-inner is-loose">
+    <SectionHeading
+      id="stack-title"
+      eyebrow={strings.sections.stack.eyebrow}
+      title={strings.sections.stack.title}
+    />
+    <div class="sp-stack-grid">
+      {stack.groups.map((group) => (
+        <StackGroup name={group.name} items={group.items} />
+      ))}
+    </div>
+  </div>
+</section>
