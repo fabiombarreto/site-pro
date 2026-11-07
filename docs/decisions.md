@@ -186,6 +186,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 
 ---
 
+## [2026-11-06] Stage 2 approved: the static page is the base for Stage 3
+
+**Context:** Stage 2 exit criteria (docs/07-roadmap-and-decisions.md); merged in PR #1.
+**Decision:** The static page (tokens, themes, nav, the five sections, project pages, the 404) and its CI gates are approved. Stage 3 adds the runtime on top without changing layout, content or accessibility, and keeps the Stage 2 section markup contract.
+**Reason:** Approved by the owner on 2026-11-06 after checking the site.
+**Areas affected:** build, visual-design, navigation, content
+
+---
+
 <!-- Template for future entries:
 
 ## [YYYY-MM-DD] Title of the decision
