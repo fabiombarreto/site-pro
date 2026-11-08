@@ -8,7 +8,7 @@ Nav bar, Command Palette, shortcuts, project pages and the 404. Sources: docs/02
 |---|---|
 | N1 | Nav: `fabiombarreto` (top of page), About · Projects · Stack · Contact, `⌘K`, theme toggle `◐`, GitHub. Transparent at the top, translucent with blur after scrolling |
 | N2 | Scroll-spy highlights the link of the visible section |
-| N3 | A nav link to an unbuilt section builds it (and those before it) in turbo first, then scrolls |
+| N3 | A nav link to an unbuilt section scrolls there at once; the sections before it build in turbo, in order, then the target builds |
 | N4 | `⌘K` shows as `Ctrl K` on Windows and Linux |
 | N5 | Below 768 px the links move into a `☰` menu |
 | N6 | Command Palette (`Ctrl/⌘ + K`, the nav button or the collapsed dock): `Go to <section>`, `Open project: <name>`, `Run all`, `Replay the build`, `Speed: 1× / 2× / instant`, `Theme: Midnight / Daylight`, `Open GitHub / LinkedIn`; fuzzy search |

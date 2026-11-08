@@ -11,15 +11,15 @@ The self-building show: boot terminal, command dock, build windows, element effe
 | B3 | After the hero, if the visitor stays still for ~4 s, the dock's `scroll ↓` hint pulses |
 | B4 | **The final layout never moves**: windows, cursors and selection boxes are overlays; animate only `transform`, `opacity`, `clip-path` |
 | B5 | Every section keeps its final height before building (reserved space, dashed outline with the window name) |
-| B6 | Scrolling past unbuilt sections queues them and builds them in **turbo (5–10×)**; the prototype uses ×5 [INFERRED - VALIDATE: final multiplier] |
+| B6 | Scrolling past unbuilt sections queues them and builds them in **turbo (×5)** while a later section is already triggered; the dock shows `queued n/5` |
 | B7 | **Never hijack scrolling**, except nav/palette clicks, deep links and Replay |
 | B8 | **Skip** (`Esc`, `» Skip`, click on window title or command bar) finishes the current section immediately |
 | B9 | **Run all** (`Shift + Esc`, palette) finishes every remaining section |
-| B10 | Deep link `/#<section>` builds everything before it in turbo and scrolls to it |
-| B11 | Keyboard focus entering an unbuilt section finishes it instantly |
+| B10 | Deep link `/#<section>` goes to the target at once; everything before it builds in turbo, in order, then the target builds at 1× |
+| B11 | Keyboard focus entering an unbuilt section finishes it and every section before it instantly; focus in the nav during the boot finishes the hero |
 | B12 | Built sections never animate again when scrolling up |
 | B13 | Elements are clickable as soon as they exist; clicks on a window body reach the page |
-| B14 | A resize during a build finishes the current section instantly |
+| B14 | A viewport **width** change during a build finishes the current section instantly; height-only changes (a phone's address bar) do not |
 | B15 | Every visit plays the full build (D6); a saved `∞` speed is the only exception |
 | B16 | Reduced motion: no windows or typing; content ready; dock offers `▶ Play build` |
 | B17 | No JavaScript: the final page renders statically; no dock, no windows |
@@ -50,6 +50,7 @@ Interactive dock (D7), multi-cursor agents (D8), keyboard sound, element counter
 
 ## Open Questions
 
-- Final turbo multiplier inside the 5–10× range (the prototype uses 5×) [INFERRED - VALIDATE].
-- Whether the "unstyled → styled" joke effect ships in v1 (listed as optional in docs/04-animations.md).
+- ~~Final turbo multiplier inside the 5–10× range (the prototype uses 5×) [INFERRED - VALIDATE].~~ Answered by the Stage 3 PRD (2026-11-08): ×5.
+- Whether Chrome on Windows and Linux lets the page receive `Shift + Esc`, which Chrome lists as its Task Manager shortcut; checked in Stage 3 Phase 4.
+- Whether the "unstyled → styled" joke effect ships in v1 (listed as optional in docs/04-animations.md); decided in Stage 4.
 - Whether the rare `warn  Coffee level low` boot easter egg ships.

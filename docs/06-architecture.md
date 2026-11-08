@@ -95,7 +95,7 @@ site-pro/
    ├─ content/                ← profile, projects/, stack.json
    ├─ components/
    │  ├─ page/                ← React: NavBar, Button, Tag, ProjectCard, StackGroup, Footer, CommandPalette…
-   │  └─ build/               ← BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor (v1.1)
+   │  └─ build/               ← TypeScript DOM factories (not React): BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor (v1.1)
    ├─ sections/               ← Astro: Hero, About, Projects, Stack, Contact (each with its build script)
    ├─ runtime/                ← scheduler, effects, triggers, overlays, controls (framework-agnostic TS)
    ├─ stores/                 ← nanostores shared by the runtime and the islands
@@ -108,20 +108,21 @@ site-pro/
 
 | Piece | Responsibility |
 |---|---|
-| **Program** | Ordered list of section builds, read from the HTML's `data-*` attributes |
+| **Program** | Ordered list of section builds, read from the HTML's `data-*` attributes; each section's script is compiled at build time into an absolute 1× timeline |
 | **Section build** | A section's dock steps (`type`, `log`), window steps (`call` + `target` + `effect`) and its lifecycle state |
-| **Scheduler** | One section at a time, with a speed multiplier (1×, 2×, ∞, turbo). Inside a section, steps run on a timeline and may overlap |
+| **Scheduler** | One section at a time, with a speed multiplier (1×, 2×, ∞, turbo ×5). Inside a section, steps run on a timeline and may overlap |
 | **Effects** | Registry of the effects in [04](04-animations.md#effects-catalog). Each effect knows how to run and how to finish instantly (for skip) |
 | **Overlays** | Draw the boot terminal, the dock and each build window; place windows from the section's box and keep them aligned with `ResizeObserver` |
 | **Triggers** | `IntersectionObserver` on each section's top edge; a `focusin` listener for the keyboard focus rule |
 | **Controls** | Skip, run all, speed, replay, play build, deep link |
 | **Persistence** | `localStorage` for the visitor's speed and theme. Nothing else is remembered: every visit plays the full build (D6) |
 | **State** | Publishes `currentSection`, `progress` and `status` to nanostores, and mirrors them as `data-*` attributes for the static page |
-| **Clock** | Real time by default; a deterministic clock in tests |
+| **Clock** | Real time by default (`performance.now()` + `requestAnimationFrame`); a manual clock in Vitest and Playwright's `page.clock` in E2E, with no test hook in production |
 
 ## The build layer
 
 - The dock, the windows, selection boxes, skeletons and agent cursors live in **one overlay layer** above the page, created by the runtime. None of it exists in the static HTML.
+- Its components are small TypeScript DOM factories ported from the Design System markup and classes, not React, so React stays off the critical path and the runtime stays within its budget.
 - The whole layer is **decorative** (`aria-hidden`). Its controls (Skip, speed, Replay, Play build) are real buttons with labels, reachable by keyboard.
 - Window bodies let clicks through (`pointer-events: none`), so elements are usable as soon as they exist. Only the title bar and the command bar catch clicks, to skip.
 - Pending content is hidden with `opacity` and `clip-path`, never with `display` or `visibility`, so it stays in the accessibility tree and keeps its layout.
@@ -131,7 +132,7 @@ site-pro/
 - Semantic HTML: `<header>` with the `<nav>`, `<main>` with one `<section>` per section, `<footer>`; one `<h1>` (the hero headline, which includes the name) and one `<h2>` per section.
 - The build layer is `aria-hidden`; the ASCII photo and skeletons too. Screen readers get the final content.
 - Typing is **not** announced letter by letter.
-- When keyboard focus enters a section that has not been built, the section is finished instantly.
+- When keyboard focus enters a section that has not been built, that section and every one before it are finished instantly.
 - A "Skip to content" link and a logical focus order.
 - Visible focus everywhere: a 2 px `--accent` ring with a 2 px offset.
 - `prefers-reduced-motion` is respected, and the speed control is always available.
@@ -151,6 +152,7 @@ site-pro/
 | Item | Budget / strategy |
 |---|---|
 | Critical JS | ≤ 20 KB gzip (inline head script + runtime) |
+| Runtime + effects | ≤ 18 KB gzip (the runtime's chunks, nanostores included), measured with the critical JS by `pnpm check:budgets` |
 | Total JS | ≤ 90 KB gzip after idle (React + islands), loaded off the critical path |
 | CSS | ≤ 25 KB gzip |
 | Fonts | Geist (D18) as one variable WOFF2 and JetBrains Mono in 1–2 files, Latin subsets, self-hosted; both preloaded, since the boot types in mono and the headline is in sans |

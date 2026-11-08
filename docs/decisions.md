@@ -195,6 +195,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 
 ---
 
+## [2026-11-08] Stage 3 PRD approved: runtime boundaries and rules
+
+**Context:** Stage 3 · Runtime needed its boundary with Stage 4 and the behavior details prototype v2 left open (PRPs/prds/stage-3-runtime.prd.md).
+**Decision:** Stage 3 ships the runtime, the effects catalog except `image-resolve`, and base build scripts for the five sections with prototype v2's commands and timings on the current content; Stage 4 adds `image-resolve` (the ASCII photo, covers resolving from blur), the real assets and per-section tuning. Build scripts are written as step sequences and compiled at build time into absolute 1× timelines in the sections' `data-*`. Turbo is ×5. Nav clicks and deep links go to the target at once while earlier sections catch up in turbo. The focus rule finishes the focused section and every one before it. Only a viewport width change counts as a resize. `Esc` with the mobile menu open only closes the menu; `Shift + Esc` stays and is checked on Chrome for Windows. Until the Stage 5 palette, the collapsed `❯_` dock reopens its done state. The footer build summary and Replay arrive in Stage 3, in a slot reserved in the static footer. The runtime runs only on `/` and stores only `sp-speed`. A head-script watchdog reveals the page if the runtime never starts. Build-layer components are TypeScript DOM factories, effects are driven by the runtime's clock, and E2E tests use Playwright's `page.clock`. Methodology stays test-after.
+**Reason:** Approved by the owner on 2026-11-08: every behavior rule must be testable end to end in Stage 3, content never waits for the animation, and React and extra dependencies stay off the critical path.
+**Areas affected:** build, navigation, visual-design
+
+---
+
 <!-- Template for future entries:
 
 ## [YYYY-MM-DD] Title of the decision

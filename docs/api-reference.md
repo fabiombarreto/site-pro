@@ -7,7 +7,7 @@ site-pro has **no HTTP API**: it is a static, presentation-only site with no bac
 | Route | Content |
 |---|---|
 | `/` | The one-page site: Hero, About, Projects, Stack, Contact |
-| `/#about`, `/#projects`, `/#stack`, `/#contact` | Deep links: build everything before the target in turbo, then scroll |
+| `/#about`, `/#projects`, `/#stack`, `/#contact` | Deep links: go to the target at once; everything before it builds in turbo, then the target builds |
 | `/projects/<slug>` | Project page (D5), one per `projects` entry (`slug` is the file name). Stage 2 renders the project header, plus the Markdown body only when the entry has one; nav links point back to `/#<section>` |
 | any unknown path | 404. Stage 2 ships a plain page-register 404 (title and a link home); the `ENOENT` build window is not implemented yet |
 

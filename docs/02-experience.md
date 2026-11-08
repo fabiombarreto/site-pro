@@ -97,7 +97,7 @@ The **dot grid** now belongs to the build layer: it shows inside build windows, 
 | Item | Behavior |
 |---|---|
 | `fabiombarreto` | Goes to the top of the page |
-| About · Projects · Stack · Contact | Smooth scroll to the section; a section that has not been built yet is built first, in turbo mode |
+| About · Projects · Stack · Contact | Scroll to the section at once; sections before it that have not been built yet are queued and built in turbo, and then the target builds |
 | `⌘K` | Opens the Command Palette (shows `Ctrl K` on Windows and Linux) |
 | `◐` | Switches between the Midnight (dark) and Daylight (light) themes |
 | GitHub | Opens the owner's GitHub profile |
@@ -295,15 +295,15 @@ dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the nex
 | **Order** | Sections are always built in order, one at a time. Inside a section, element steps may overlap. |
 | **Reserved space** | Each section takes its final height from the start, so the page scrolls normally and nothing shifts. Before its build, a section's content is laid out but invisible, and a faint dashed outline with the window name (`projects.tsx`) marks the area. |
 | **The final layout never moves** | Windows, cursors and selection boxes are overlays. Elements animate in place, using only transform, opacity and clip-path. |
-| **Fast scrolling (turbo)** | If the visitor scrolls past sections that have not been built, they are queued and built accelerated (5–10×) until they catch up with what is on screen. |
+| **Fast scrolling (turbo)** | If the visitor scrolls past sections that have not been built, they are queued and built accelerated (5×, the pace approved in prototype v2) until they catch up with what is on screen. |
 | **Never hijack scrolling** | The runtime never moves the page on its own, except when the visitor asks: a click in the nav or the palette, a deep link, or Replay. |
-| **Skip** | `Esc`, the `» Skip` button in the dock, or a click on the window's title bar or command bar finishes the current section immediately. |
+| **Skip** | `Esc`, the `» Skip` button in the dock, or a click on the window's title bar or command bar finishes the current section immediately. While the mobile menu is open, `Esc` only closes the menu. |
 | **Run all** | `Shift + Esc` or `Run all` in the palette builds every remaining section at once. |
-| **Deep links** | Arriving via `/#projects` builds everything before the target in turbo mode and scrolls to it. |
-| **Keyboard focus** | When keyboard focus enters a section that has not been built, that section is finished instantly. |
+| **Deep links** | Arriving via `/#projects` goes to the target at once, through the browser's own anchor navigation; everything before it is built in turbo mode, in order, and then the target builds at normal speed. |
+| **Keyboard focus** | When keyboard focus enters a section that has not been built, that section and every section before it are finished instantly, so sections stay in order. Focus in the nav during the boot finishes the hero. |
 | **Scrolling up** | Sections that are already built stay as they are. Nothing animates again. |
 | **Immediate interaction** | Elements are clickable as soon as they exist, even while their window is still open. Clicks on the window body go through to the page. |
-| **Resize during a build** | The current section finishes instantly (the overlay would no longer match), and the next ones build normally. |
+| **Resize during a build** | When the viewport width changes, the current section finishes instantly (the overlay would no longer match), and the next ones build normally. Height-only changes, such as a phone's address bar showing or hiding, do not count. |
 | **Revisits** | Every visit plays the full build again, reloads included (decision **D6**). The only exception is a visitor who set the speed to `∞`: that choice is saved in the browser and kept. |
 | **Reduced motion** | With `prefers-reduced-motion`, there are no windows and no typing. Everything appears ready, and the dock offers `▶ Play build` for those who want to watch it anyway. |
 | **No JavaScript** | The whole site appears statically in its final state. There is no dock and no window. |

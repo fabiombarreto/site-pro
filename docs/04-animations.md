@@ -30,6 +30,8 @@ Sample script (illustrative format, not final code):
 
 Benefits: every section shares the same rhythm and grammar, and controls such as skip, run all, speed and replay work on any section without section-specific code. The commands shown on screen come from this script, so they match the site's real source.
 
+**Authoring and compiling** (Stage 3 PRD). A script is written as a sequence of steps. Each effect's duration comes from its content (a headline types for 28 ms per character after its 150 ms selection), and `gap` or `overlap` shifts the next step. At build time the sequence is compiled into an absolute timeline in milliseconds at 1× and serialized into the section's `data-*` attributes; the runtime only plays that timeline. A longer title moves every later step automatically, and tests can freeze any moment of it.
+
 The runtime is plain TypeScript, independent of React: it manipulates the DOM directly and publishes its state for the rest of the page (see [06 · How React is used](06-architecture.md#how-react-is-used)).
 
 ## Section build lifecycle
@@ -180,5 +182,6 @@ With `prefers-reduced-motion: reduce` (or `∞` speed):
 - Typing writes into a line with reserved width, so it never triggers layout recalculation.
 - Blur is applied only while a build-layer surface is visible, and removed when the window closes.
 - Execution pauses while `document.visibilityState === "hidden"`.
-- A deterministic clock can replace real time, so tests can capture any moment of a build.
+- A deterministic clock can replace real time, so tests can capture any moment of a build: a manual clock in Vitest and Playwright's `page.clock` (which fakes `requestAnimationFrame` and `performance`) in E2E, with no test hook in production. Every effect is driven from the runtime's clock, with seeded randomness for the decode scramble and the typing jitter; only decorative loops (cursor blink, skeleton shimmer) run in CSS.
+- Turbo builds at 5× while a later section is already triggered.
 - Budget: runtime + effects **≤ 18 KB** (gzip).

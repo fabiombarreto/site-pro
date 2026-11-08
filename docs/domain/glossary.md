@@ -23,7 +23,7 @@ Terms used across the docs, the Design System and (later) the code. Sources: doc
 | **Effect** | A named way an element or the build layer appears: `type`, `log`, `spinner`, `boot-fold`, `window-open`, `window-close`, `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `image-resolve`, `pop`, `stagger`, `build-card` |
 | **Lifecycle states** | `pending → queued → command → window → building → closing → done`, or `skipped` from any state |
 | **Trigger** | The moment a section's top crosses ~75% of the viewport height; starts its section build |
-| **Turbo** | Accelerated building (5–10×) of queued sections when the visitor scrolls past unbuilt ones, jumps via nav/palette or arrives by deep link |
+| **Turbo** | Accelerated building (×5) of queued sections when the visitor scrolls past unbuilt ones, jumps via nav/palette or arrives by deep link |
 | **Skip** | Finish the current section immediately (`Esc`, `» Skip`, click on window chrome, focus entering it, resize) |
 | **Run all** | Finish every remaining section at once (`Shift + Esc`, palette) |
 | **Speed** | Timing multiplier `1×`, `2×`, `∞` (instant); saved in the browser |

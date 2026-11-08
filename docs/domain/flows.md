@@ -19,7 +19,7 @@ Plain-language visitor flows. Full scripts and wireframes: docs/02-experience.md
 
 ## 3. Jump to a section
 
-Clicking a nav link, choosing `Go to <section>` in the palette or arriving via `/#projects` builds everything before the target in turbo and scrolls there. The page never scrolls on its own otherwise.
+Clicking a nav link, choosing `Go to <section>` in the palette or arriving via `/#projects` goes to the target at once; everything before it builds in turbo, in order, and then the target builds. The page never scrolls on its own otherwise.
 
 ## 4. Open a project
 

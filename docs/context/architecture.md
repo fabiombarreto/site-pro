@@ -40,7 +40,7 @@ Two visual registers never mix: **the page** (modern, readable) and **the build 
 | `tests/` | Playwright E2E, visual and accessibility tests |
 | `src/content/` | profile, projects/, stack.json |
 | `src/components/page/` | React page components (NavBar, Button, ProjectCard, StackGroup, Footer, CommandPalette…) |
-| `src/components/build/` | Build-layer components (BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor for v1.1) |
+| `src/components/build/` | Build-layer components as TypeScript DOM factories, not React (BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor for v1.1) |
 | `src/sections/` | Astro sections (Hero, About, Projects, Stack, Contact), each with its build script; `profile-links.ts` resolves the GitHub and LinkedIn URLs from the profile entry. Stage 2 Phase 5 composes them in `src/pages/index.astro` with `src/styles/home.css` |
 | `src/scripts/` | Small client modules loaded from `Base.astro`: `theme-toggle`, and `nav.ts` (toggles `is-scrolled` on `.sp-nav` and closes the mobile menu popover when one of its links is clicked) |
 | `src/runtime/` | Scheduler, effects, triggers, overlays, controls |
@@ -63,7 +63,7 @@ Two visual registers never mix: **the page** (modern, readable) and **the build 
 - The runtime manipulates the DOM directly instead of re-rendering React per typed character (docs/06-architecture.md, "Why Astro + React").
 - The build layer is one overlay; it never moves the page (animate `transform`, `opacity`, `clip-path` only).
 - Pending content is hidden with `opacity`/`clip-path`, never `display`/`visibility`, so it stays in the accessibility tree.
-- The prototype v2 drives the Design System components from a per-section timeline in milliseconds; Stage 3 is expected to keep that model in the real runtime [INFERRED - VALIDATE].
+- The prototype v2 drives the Design System components from a per-section timeline in milliseconds. Stage 3 keeps that model: each section's script is written as a sequence of steps and compiled at build time into an absolute timeline (Stage 3 PRD, 2026-11-08).
 
 ## External services
 
