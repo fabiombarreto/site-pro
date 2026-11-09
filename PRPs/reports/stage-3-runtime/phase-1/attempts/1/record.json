@@ -1,0 +1,50 @@
+{
+  "attempt": 1,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [
+    "astro.config.mjs",
+    "package.json",
+    "pnpm-lock.yaml",
+    "scripts/check-budgets.mjs",
+    "scripts/verify-build-targets.mjs",
+    "src/layouts/Base.astro",
+    "src/pages/index.astro",
+    "src/runtime/clock.ts",
+    "src/runtime/compiler.ts",
+    "src/runtime/main.ts",
+    "src/runtime/scheduler.ts",
+    "src/runtime/triggers.ts",
+    "src/runtime/types.ts",
+    "src/scripts/build-mode.ts",
+    "src/sections/About.astro",
+    "src/sections/Contact.astro",
+    "src/sections/Hero.astro",
+    "src/sections/Projects.astro",
+    "src/sections/Stack.astro",
+    "src/sections/about.build.ts",
+    "src/sections/contact.build.ts",
+    "src/sections/hero.build.ts",
+    "src/sections/projects.build.ts",
+    "src/sections/stack.build.ts",
+    "src/stores/build.ts",
+    "src/styles/build-pending.css",
+    "src/styles/home.css"
+  ],
+  "validation": {
+    "level_1": "PASS",
+    "level_2": "PASS",
+    "level_3": "FAIL"
+  },
+  "plan_validation_defect": {
+    "level": 3,
+    "command": "check(!/data-build-state/.test(html), 'no runtime state without JavaScript');   (scenario D, where html = await pageD.content())",
+    "observed": "FAIL: no runtime state without JavaScript. The only match in dist/index.html is the inlined pending stylesheet selector html[data-build-mode=pending] main>section[data-build]:not([data-build-state=done]):not([data-build-state=skipped]); no element carries the attribute.",
+    "prd_refs": [
+      "PRD AC-15 (PRPs/prds/stage-3-runtime.prd.md:83)",
+      "plan Task 9 build-pending.css ACTION",
+      "plan AC-A1"
+    ],
+    "reason": "The scenario D regex scans the whole serialized page, including the inline <style> that Task 9 requires to name [data-build-state=done] and [data-build-state=skipped]; Astro inlines that small CSS into index.html, so the plan's own CSS makes the assertion fail. The DOM-level check holds: with JavaScript disabled no element has data-build-state, data-build-mode is absent and About has opacity 1."
+  },
+  "base_commit": "28e52b9f2e51d89e78fb7be3dfa03486641efcca"
+}

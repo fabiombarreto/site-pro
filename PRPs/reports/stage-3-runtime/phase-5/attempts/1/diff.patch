@@ -1,0 +1,148 @@
+diff --git a/docs/api-reference.md b/docs/api-reference.md
+index 01f314a..0c2e898 100644
+--- a/docs/api-reference.md
++++ b/docs/api-reference.md
+@@ -33,7 +33,7 @@ Defined in docs/05-content.md and validated at build time with Astro Content Col
+ | Command Palette | `Ctrl/⌘ + K`, nav `⌘K`, collapsed dock |
+ | Shortcut list | `?` |
+ 
+-The runtime's internal TypeScript API (program, scheduler, effects registry, stores) is designed in docs/06-architecture.md and documented here once Stage 3 implements it.
++The runtime's internal design (program, scheduler, effects registry, stores) is in docs/06-architecture.md; its public TypeScript API is documented below (Controls API, Build data contract and Runtime TypeScript API).
+ 
+ ### Controls API (Stage 3 Phase 4)
+ 
+@@ -42,3 +42,29 @@ The runtime's internal TypeScript API (program, scheduler, effects registry, sto
+ ### Build data contract (Stage 3 Phase 1)
+ 
+ Each home-page `<section>` carries `data-build`, the JSON of a compiled `Timeline` (`v`, `section`, `file`, `command`, `commandEnd`, `windowEnd`, `buildStart`, `steps[]` with `call`, `target`, `effect`, `start`, `end`, `createdAt`, `duration`). Step targets resolve to `data-build-target` elements in the section. `<html>` reflects runtime state: `data-build-mode` (`pending` or `instant`), `data-build-speed` (`1`, `2`, `inf`), `data-build-started`, `data-build-status` (`idle`, `building`, `done`, `instant`, `failed`), `data-build-section`, `data-build-progress` and `data-build-queue` (`<n>/<total>` while turbo is catching up, absent otherwise); sections carry `data-build-state`. Speed persists in `localStorage` key `sp-speed`. Source: `src/runtime/types.ts`, `src/stores/build.ts`.
++
++### Runtime TypeScript API (Stage 3)
++
++**Controls.** `src/runtime/api.ts` exports the `Controls` interface (`skip(): void`, `runAll(): void`, `setSpeed(speed: Speed): void`, `cycleSpeed(): void`, `replay(): void`, `play(): void`), where `Speed` is `'1' | '2' | 'inf'` (from `src/scripts/build-mode.ts`). `getControls(): Controls | null` returns the live controls, or `null` on pages without the runtime. `setControls(next: Controls | null): void` is called by the runtime entry to publish them; Stage 5 consumes `getControls`.
++
++**Stores.** `src/stores/build.ts` exports the nanostores atoms below and `src/runtime/api.ts` re-exports them.
++
++| Store | Value type | Meaning |
++|---|---|---|
++| `currentSection` | `SectionId \| null` | The section being built, `null` when none |
++| `progress` | `number` | Fraction (0 to 1) of the current section build |
++| `status` | `BuildStatus` | `'idle'`, `'building'`, `'done'`, `'instant'` or `'failed'` |
++| `speed` | `Speed` | `'1'`, `'2'` or `'inf'` |
++| `queue` | `{ position: number; total: number } \| null` | The turbo catch-up position, `null` otherwise |
++
++`BuildStatus` is also exported from `src/stores/build.ts`.
++
++**Types.** `src/runtime/types.ts` exports `EFFECTS` (the eight effect names: `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger`, `build-card`) and `EffectName` (their union); `SectionId` (`'top' | 'about' | 'projects' | 'stack' | 'contact'`); `SectionState` (`pending`, `queued`, `command`, `window`, `building`, `closing`, `done`, `skipped`); `BuildStep` (`call`, `target`, `effect`, optional `text`, `count`, `gap`, `overlap`); `TimelineStep` (`call`, `target`, `effect`, `start`, `end`); `Timeline` (the shape of the Build data contract above); and `BuildScript` (`section`, `file`, `command`, `steps: BuildStep[]`, optional `settle` and `timing`).
++
++**Compiler.** `src/runtime/compiler.ts` exports `compileScript(script: BuildScript): Timeline` and `serializeTimeline(timeline: Timeline): string`. The input is a step sequence, each step with a call, a target, an effect and an optional gap or overlap; the output is an absolute 1x timeline in milliseconds (`start` and `end` per step, `createdAt` and `duration` for the section). An unknown effect or an empty target throws an error naming the section and the step, and a step target missing from the section HTML fails `pnpm build` the same way (`scripts/verify-build-targets.mjs`, run from `astro.config.mjs`).
++
++**Clock.** `src/runtime/clock.ts` exports the `Clock` interface (`now(): number`, `onFrame(cb: (now: number) => void): () => void`), the real implementation `realClock` (`performance.now` and `requestAnimationFrame`) and the manual one, `ManualClock` created by `createManualClock(start?)`, with `advance(ms, step?)`, which Vitest uses. E2E uses Playwright's `page.clock`; no hook exists in production code.
++
++**Entry.** `src/runtime/main.ts` is a side-effect entry with no exports, loaded only by `src/pages/index.astro`.
++
++Stage 4 changes build scripts and effects data only; a scheduler change needs a record in docs/decisions.md.
+diff --git a/docs/context/testing.md b/docs/context/testing.md
+index ea3ad30..bc46428 100644
+--- a/docs/context/testing.md
++++ b/docs/context/testing.md
+@@ -66,8 +66,7 @@ run fails; the test files are authored and maintained by the test pair.
+ - Prerequisite: `pnpm exec playwright install --with-deps chromium`
+ - Served by `astro preview`, so run `pnpm build` first.
+ 
+-The axe matrix runs inside `pnpm test:e2e` (the `e2e` CI job). Screenshot
+-baselines are not part of Stage 2 yet.
++The axe matrix (the boot, mid-hero, mid-projects and done moments, in both themes, at 1280x800 and 375x812) runs inside `pnpm test:e2e` (the `e2e` CI job). Screenshot baselines of build states are advisory and not generated yet: they must be created in CI's Linux environment (docs/development.md) and are not a gate.
+ 
+ ### Quality gate scripts (CI)
+ 
+@@ -75,5 +74,51 @@ Each gate is its own CI job and exits non-zero on a violation.
+ 
+ - `pnpm check:tokens` (CI job `tokens`, AC-9): no color or `box-shadow` literal in `src/` outside `src/styles/tokens.css` and `src/assets/`.
+ - `pnpm check:privacy` (CI job `privacy`, AC-8): privacy rules over `dist/`; run `pnpm build` first.
+-- `pnpm check:budgets` (CI job `budgets`, AC-10): gzip budgets over `dist/` (JS total 90 KB, JS before first paint 20 KB, runtime 18 KB, CSS 25 KB; the runtime is the JS only the home page loads, followed through its module imports); run `pnpm build` first.
+-- `pnpm lighthouse` (CI job `lighthouse`, AC-10): Lighthouse CI per `lighthouserc.json`, median of 3 runs on `/` and `/projects/relay/`, every category >= 0.95 and CLS <= 0.01. It needs `pnpm build` and Chrome; locally set `CHROME_PATH=$(node -p "require('@playwright/test').chromium.executablePath()")`.
++- `pnpm check:budgets` (CI job `budgets`, AC-10): gzip budgets over `dist/` (JS total 90 KB, JS before first paint 20 KB, runtime 18 KB, CSS 25 KB; the runtime is the JS only the home page loads, followed through its module imports); run `pnpm build` first. Measured on 2026-11-08 (Stage 3 Phase 5): JS total 13.9 KB, runtime 12.1 KB, critical 12.8 KB, CSS 7.4 KB gzip.
++- `pnpm lighthouse` (CI job `lighthouse`, AC-10): Lighthouse CI per `lighthouserc.json`, median of 3 runs on `/` and `/projects/relay/`, every category >= 0.95 and CLS <= 0.01. It needs `pnpm build` and Chrome; locally set `CHROME_PATH=$(node -p "require('@playwright/test').chromium.executablePath()")`. Local Windows recipe: docs/development.md.
++
++## Behavior rule coverage (Stage 3)
++
++The 18 rules of the "Behavior rules" section of docs/02-experience.md map to PRD ACs and specs as below. The specs in the "Covered by" column exist today; the specs in the "Gap closed by" column are authored by the test pair in Stage 3 Phase 5 to close the gaps, and `-` means the rule has no gap.
++
++| Rule | ACs | Covered by | Gap closed by |
++|---|---|---|---|
++| **Trigger** | AC-2 | `tests/e2e/runtime-build-order.spec.ts` (About stays pending after 30 s without scrolling), `tests/unit/runtime-scheduler.test.ts` | `tests/e2e/behavior-gaps.spec.ts` (the 75 % boundary and the `renderAbout();` window) |
++| **Scroll hint** | AC-3 | `tests/e2e/controls-done-replay.spec.ts`, `tests/e2e/controls-speed.spec.ts` (reduced motion never pulses), `tests/unit/runtime-controls-timing.test.ts` | - |
++| **Order** | AC-2, AC-5 | `tests/e2e/runtime-build-order.spec.ts` (order and at most one window), `tests/e2e/controls-turbo-navigation.spec.ts`, `tests/unit/runtime-scheduler.test.ts` | - |
++| **Reserved space** | AC-4 | `tests/e2e/runtime-fallbacks.spec.ts` (pending content stays laid out and in the tree), `tests/e2e/build-layer-show.spec.ts` (outline file names, outlines hidden), `tests/e2e/controls-turbo-navigation.spec.ts`, `tests/e2e/controls-done-replay.spec.ts` (footer slot) | `tests/e2e/behavior-gaps.spec.ts` (dashed outline style, hero at first paint) |
++| **The final layout never moves** | AC-4 | `tests/e2e/build-layer-layout.spec.ts`, `tests/e2e/effects-layout.spec.ts`, `tests/e2e/runtime-build-order.spec.ts` (all at 1280x800), `tests/e2e/effects-layout.spec.ts` (no horizontal scroll at 375x812) | `tests/e2e/layout-invariance.spec.ts` (against the no-JS page, at 375x812, at the done moment) |
++| **Fast scrolling (turbo)** | AC-5 | `tests/e2e/controls-turbo-navigation.spec.ts`, `tests/unit/runtime-scheduler-controls.test.ts` | - |
++| **Never hijack scrolling** | AC-6 | `tests/e2e/controls-turbo-navigation.spec.ts`, `tests/e2e/controls-done-replay.spec.ts`, `tests/e2e/controls-speed.spec.ts` | - |
++| **Skip** | AC-7, AC-21 | `tests/e2e/controls-skip.spec.ts` (Esc, dock button, bars, body, the open menu), `tests/unit/runtime-scheduler-controls.test.ts` | `tests/e2e/mobile-build.spec.ts` (tap on the compact bar) |
++| **Run all** | AC-8 | `tests/e2e/controls-skip.spec.ts`, `tests/unit/runtime-scheduler-controls.test.ts` | - |
++| **Deep links** | AC-9 | `tests/e2e/controls-turbo-navigation.spec.ts` (`#projects`, `#about`, `#contact`, nav Stack link) | - |
++| **Keyboard focus** | AC-10 | `tests/e2e/controls-focus-resize.spec.ts`, `tests/unit/runtime-scheduler-controls.test.ts` | - |
++| **Scrolling up** | AC-2 | `tests/unit/runtime-scheduler.test.ts` only (never replays a built section) | `tests/e2e/behavior-gaps.spec.ts` |
++| **Immediate interaction** | AC-11 | `tests/e2e/effects-pointer.spec.ts` (hit tests, pointer events), `tests/e2e/build-layer-show.spec.ts` (window body ignores the pointer) | `tests/e2e/behavior-gaps.spec.ts` (a real click navigates to `/projects/relay`) |
++| **Resize during a build** | AC-12 | `tests/e2e/controls-focus-resize.spec.ts`, `tests/e2e/build-layer-layout.spec.ts`, `tests/unit/runtime-controls-timing.test.ts` | - |
++| **Revisits** | AC-13 | `tests/e2e/runtime-fallbacks.spec.ts` (saved speed still builds), `tests/e2e/controls-speed.spec.ts` | - |
++| **Reduced motion** | AC-14 | `tests/e2e/controls-speed.spec.ts`, `tests/e2e/runtime-fallbacks.spec.ts`, `tests/e2e/build-layer-absent.spec.ts`, `tests/e2e/effects-absent.spec.ts` | - |
++| **No JavaScript** | AC-15 | `tests/e2e/runtime-fallbacks.spec.ts` (no JS, aborted runtime, throwing runtime; the aborted-runtime test reveals the page after 1.5 s paused plus 3 s run of clock time), `tests/e2e/build-layer-absent.spec.ts`, `tests/e2e/effects-absent.spec.ts`, `tests/unit/runtime-mode-clock.test.ts` (the watchdog constant is 3 s) | `tests/e2e/behavior-gaps.spec.ts` (an explicit 3 s end-to-end bound) |
++| **Background tab** | AC-16 | `tests/e2e/runtime-build-order.spec.ts`, `tests/unit/runtime-scheduler.test.ts`, `tests/unit/runtime-scheduler-tick.test.ts` | - |
++
++### Other acceptance criteria
++
++- **AC-1** (hero build): `tests/e2e/effects-scripts.spec.ts`, `tests/e2e/effects-hero.spec.ts`, `tests/e2e/build-layer-show.spec.ts` and `tests/unit/runtime-pacing.test.ts` cover the order, the 2.0 s headline, the compiled duration of at most 3200 ms and the idle dock. The first-paint pending state and the clock-measured 3.2 s are gaps closed by `tests/e2e/behavior-gaps.spec.ts`.
++- **AC-17** (done state and Replay): `tests/e2e/controls-done-replay.spec.ts` and `tests/e2e/controls-speed.spec.ts`.
++- **AC-18** (accessibility): `tests/e2e/controls-dock-a11y.spec.ts` (dock buttons and names), `tests/e2e/effects-layout.spec.ts` (the tree equals the no-JS page at six hero moments, mid-projects and mid-stack, desktop), `tests/e2e/effects-axe.spec.ts` (mid-hero and mid-projects, desktop, both themes) and `tests/e2e/home-axe.spec.ts` (ready dock, both themes, three viewports). The 12 axe cells still missing (boot and done on desktop, all four moments on mobile, both themes) and the mobile tree comparison are closed by `tests/e2e/axe-build-matrix.spec.ts`.
++- **AC-19** (budgets): `tests/unit/runtime-budget.test.ts`, `tests/unit/quality-gates.test.ts` (Lighthouse config), `tests/e2e/quality-gates.spec.ts` and `tests/e2e/css-budget.spec.ts`; the Lighthouse medians are measured only by the CI `lighthouse` job.
++- **AC-20** (build script contract): `tests/unit/runtime-compiler.test.ts`, `tests/unit/runtime-pacing.test.ts`, `tests/unit/verify-build-targets.test.ts` and `tests/e2e/runtime-timeline-contract.spec.ts`.
++- **AC-21** (mobile build layer): `tests/e2e/build-layer-layout.spec.ts` covers the compact bar and the dock width and inset at 375x812; the mobile tap and the sticky bars of tall sections are closed by `tests/e2e/mobile-build.spec.ts`.
++
++The Stage 2 spec `tests/e2e/home-no-build-layer.spec.ts` was rewritten in Phase 4 for the real build layer (not weakened).
++
++### Test conventions for animated pages
++
++- Always run `pnpm build` before `pnpm test:e2e`.
++- Locally Playwright reuses an `astro preview` already serving `dist/` on 127.0.0.1:4321 (`reuseExistingServer`), so rebuild instead of restarting it.
++- Playwright's `page.clock` is installed before navigation and time is advanced with `runFor`.
++- Under the fake clock click page controls with `element.click()` inside `page.evaluate`, because `locator.click()` waits for animation frames.
++- Progress is rounded to 1 %, and sampled moments carry about 52 ms late and 16 ms early error; effects have a 150 ms selection phase before a target goes live, so never sample on a phase boundary.
++- `@axe-core/playwright` needs `browser.newContext()` before `newPage()`.
++- The dock is hidden while the boot terminal is on screen, so wait for it to be visible before checking a dock control.
+diff --git a/docs/development.md b/docs/development.md
+index df1f90c..d44fe99 100644
+--- a/docs/development.md
++++ b/docs/development.md
+@@ -26,6 +26,32 @@ The project is scaffolded (Stage 2 Phase 1): the commands below are real and mat
+ 
+ `pnpm build` also verifies the build scripts: every `data-build` step on the home page must name a `data-build-target` present in the HTML, otherwise the build fails (`scripts/verify-build-targets.mjs`).
+ 
++### Running Lighthouse locally
++
++Lighthouse CI needs `pnpm build` and a Chrome binary; the CI job points `CHROME_PATH` at Playwright's Chromium. Do the same locally.
++
++In PowerShell:
++
++```powershell
++pnpm build
++$env:CHROME_PATH = (node -p "require('@playwright/test').chromium.executablePath()")
++pnpm lighthouse
++```
++
++In bash:
++
++```bash
++pnpm build
++export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePath()")"
++pnpm lighthouse
++```
++
++If that path does not exist, run `pnpm exec playwright install chromium` first. If lhci still cannot start Chrome (for example "No Chrome installations found" on Windows), the CI `lighthouse` job is authoritative and the pull request records that Lighthouse was not run locally. Lighthouse covers `/` with the build running (the real runtime on the real clock) and `/projects/relay/`, median of 3 runs, every category >= 0.95 and CLS <= 0.01 (`lighthouserc.json`).
++
++### Running the E2E suite
++
++Build first, then run `pnpm test:e2e`. The suite drives the animated page on a fake clock; the conventions (reusing the preview on 127.0.0.1:4321, `page.clock`, sampling error, axe setup) are in docs/context/testing.md, "Test conventions for animated pages".
++
+ ## Continuous integration
+ 
+ GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pushes to `main`, with nine separately reported jobs: `lint`, `check`, `unit`, `build`, `e2e`, `tokens`, `privacy`, `budgets` and `lighthouse`. Deploys are done by Cloudflare Workers Builds, not by CI.

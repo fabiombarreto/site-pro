@@ -1,0 +1,42 @@
+
+ RUN  v5.1.0 C:/repos/site-pro/.worktrees/stage-3-runtime
+
+ ✓ tests/unit/content-copy.test.ts (21 tests) 73ms
+ ✓ tests/unit/effect-timing.test.ts (30 tests) 58ms
+ ✓ tests/unit/page-styles.test.ts (36 tests) 52ms
+ ✓ tests/unit/design-tokens.test.ts (29 tests) 174ms
+ ✓ tests/unit/verify-build-targets.test.ts (4 tests) 98ms
+stderr | tests/unit/home-href.test.ts > NavBar homeHref > prefixes the brand and the four section links with "/" when set
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+stderr | tests/unit/page-navigation.test.ts > NavBar > is a header with the brand linking to the top of the page
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+ ✓ tests/unit/home-href.test.ts (7 tests) 59ms
+ ✓ tests/unit/page-navigation.test.ts (11 tests) 69ms
+ ✓ tests/unit/page-content-components.test.ts (22 tests) 33ms
+ ✓ tests/unit/page-primitives.test.ts (31 tests) 47ms
+ ✓ tests/unit/build-layer-components.test.ts (13 tests) 25ms
+ ✓ tests/unit/theme-helpers.test.ts (10 tests) 27ms
+ ✓ tests/unit/scaffold-config.test.ts (21 tests) 65ms
+ ✓ tests/unit/runtime-scheduler.test.ts (15 tests) 23ms
+ ✓ tests/unit/content-schemas.test.ts (25 tests) 28ms
+ ✓ tests/unit/runtime-compiler.test.ts (21 tests) 17ms
+ ✓ tests/unit/runtime-pacing.test.ts (13 tests) 17ms
+ ✓ tests/unit/runtime-scheduler-controls.test.ts (10 tests) 14ms
+ ✓ tests/unit/runtime-budget.test.ts (5 tests) 945ms
+ ✓ tests/unit/runtime-controls-timing.test.ts (15 tests) 9ms
+ ✓ tests/unit/runtime-scheduler-tick.test.ts (4 tests) 10ms
+ ✓ tests/unit/runtime-layer-timing.test.ts (16 tests) 10ms
+ ✓ tests/unit/runtime-mode-clock.test.ts (19 tests) 8ms
+ ✓ tests/unit/quality-gates.test.ts (37 tests) 2383ms
+
+ Test Files  23 passed (23)
+      Tests  415 passed (415)
+   Start at  19:26:48
+   Duration  2.73s (tests 62%, import 23%, transform 12%, worker 3%)
+
+    Isolate  23 workers spawned · ~318ms startup each (spawn + environment, per file)
+             at least ~347ms faster with isolate: false — reuses workers across files instead of one per file
+
+JUNIT report written to C:/repos/site-pro/PRPs/reports/stage-3-runtime/attempts/1/junit-unit.xml

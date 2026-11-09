@@ -1,0 +1,37 @@
+{
+  "run_id": "98f1a18d-d1ef-45d4-a651-75f0cf553fcd",
+  "feature": "stage-3-runtime",
+  "started_at": "2026-11-08T20:23:26Z",
+  "ended_at": "2026-11-08T20:25:44Z",
+  "elapsed_ms": 70000,
+  "max_test_retries": 3,
+  "max_test_minutes": 30,
+  "attempts": [
+    {
+      "n": 1,
+      "verdict": "GREEN",
+      "record": "attempts/1/record.json",
+      "archived_record": "phase-3/test-attempts/1/record.json",
+      "implementer_diff": null
+    }
+  ],
+  "outcome": "GREEN",
+  "phase": 3,
+  "time_breakdown": {
+    "attempt_1_suite_ms": 70000
+  },
+  "tdd_mode": false,
+  "secrets_redacted": {
+    "count": 0,
+    "categories": {
+      "env_names": 0,
+      "url_values": 0,
+      "regex_matches": 0
+    }
+  },
+  "totals": {
+    "unit": "390/390",
+    "e2e": "213/213"
+  },
+  "note": "elapsed_ms is the runner-reported wall clock of the build + unit + e2e run (about 70 s), set by the runner by hand, not computed"
+}

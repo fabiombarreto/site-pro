@@ -1,0 +1,1445 @@
+diff --git a/src/components/build/BootTerminal.ts b/src/components/build/BootTerminal.ts
+new file mode 100644
+index 0000000..21747a0
+--- /dev/null
++++ b/src/components/build/BootTerminal.ts
+@@ -0,0 +1,70 @@
++import { buildStrings } from '../../strings';
++import { createCommandLine } from './CommandLine';
++import { createLogLine } from './LogLine';
++import { h } from './dom';
++
++export interface BootTerminal {
++  el: HTMLDivElement;
++  setCommand(command: string, chars: number, cursor: boolean): void;
++  setLogs(lines: string[]): void;
++  setFold(progress: number, to: DOMRect | null): void;
++  setVisible(visible: boolean): void;
++}
++
++export function createBootTerminal(): BootTerminal {
++  const el = h('div', 'sp-boot', { 'aria-hidden': 'true' });
++  const dots = h('div', 'sp-dots');
++  for (let i = 0; i < 3; i++) dots.append(h('span', 'sp-dot'));
++  const body = h('div', 'sp-boot-body');
++  const promptLine = h('div', 'sp-boot-prompt');
++  const prompt = h('span', 'sp-prompt');
++  prompt.textContent = buildStrings.prompt;
++  const command = createCommandLine();
++  promptLine.append(prompt, command.el);
++  const logs = h('div', 'sp-boot-logs');
++  body.append(promptLine, logs);
++  el.append(dots, body);
++
++  let logKey = '';
++  let lastFold = -1;
++  // Untransformed box of the terminal, measured once when the fold starts.
++  let from: { cx: number; cy: number; w: number; h: number } | null = null;
++
++  return {
++    el,
++    setCommand: command.set,
++    setLogs(lines) {
++      const key = lines.join('\n');
++      if (key === logKey) return;
++      logKey = key;
++      logs.replaceChildren(
++        ...lines.map((line) => createLogLine('info', line).el),
++      );
++    },
++    setFold(progress, to) {
++      if (progress === lastFold) return;
++      lastFold = progress;
++      if (!from) {
++        from = {
++          cx: el.offsetLeft + el.offsetWidth / 2,
++          cy: el.offsetTop + el.offsetHeight / 2,
++          w: el.offsetWidth,
++          h: el.offsetHeight,
++        };
++      }
++      let transform = 'none';
++      if (to && progress > 0) {
++        const dx = to.left + to.width / 2 - from.cx;
++        const dy = to.top + to.height / 2 - from.cy;
++        const sx = 1 + (to.width / from.w - 1) * progress;
++        const sy = 1 + (to.height / from.h - 1) * progress;
++        transform = `translate(${dx * progress}px, ${dy * progress}px) scale(${sx}, ${sy})`;
++      }
++      el.style.transform = transform;
++      el.style.opacity = String(1 - progress);
++    },
++    setVisible(visible) {
++      el.toggleAttribute('data-hidden', !visible);
++    },
++  };
++}
+diff --git a/src/components/build/BuildWindow.ts b/src/components/build/BuildWindow.ts
+new file mode 100644
+index 0000000..ec57d88
+--- /dev/null
++++ b/src/components/build/BuildWindow.ts
+@@ -0,0 +1,77 @@
++import { easeOut } from '../../runtime/layer-timing';
++import { createCommandLine } from './CommandLine';
++import { h } from './dom';
++
++export type WindowState = 'opening' | 'building' | 'closing';
++
++export interface BuildWindow {
++  el: HTMLDivElement;
++  setPlacement(rect: {
++    x: number;
++    y: number;
++    width: number;
++    height: number;
++  }): void;
++  setCommand(call: string, chars: number, cursor: boolean): void;
++  setOpen(progress: number, origin: { x: number; y: number }): void;
++  setClosing(progress: number): void;
++  setState(state: WindowState): void;
++}
++
++export function createBuildWindow(file: string, section: string): BuildWindow {
++  const el = h('div', 'sp-window', {
++    'aria-hidden': 'true',
++    'data-section': section,
++    'data-file': file,
++    'data-state': 'opening',
++  });
++  const frame = h('div', 'sp-window-frame');
++  const body = h('div', 'sp-window-body');
++  const chrome = h('div', 'sp-window-chrome');
++  const bar = h('div', 'sp-window-bar');
++  const dots = h('div', 'sp-dots');
++  for (let i = 0; i < 3; i++) dots.append(h('span', 'sp-dot'));
++  const name = h('span', 'sp-window-file');
++  name.textContent = file;
++  bar.append(dots, name);
++  const cmd = h('div', 'sp-window-cmd');
++  const line = createCommandLine();
++  cmd.append(line.el);
++  chrome.append(bar, cmd);
++  frame.append(body, chrome);
++  el.append(frame);
++
++  let state: WindowState = 'opening';
++  let lastOpen = -1;
++  let lastClosing = -1;
++
++  return {
++    el,
++    setPlacement(rect) {
++      // top/left, not a transform: sticky offsets ignore an ancestor's transform.
++      el.style.left = `${rect.x}px`;
++      el.style.top = `${rect.y}px`;
++      el.style.width = `${rect.width}px`;
++      el.style.height = `${rect.height}px`;
++    },
++    setCommand: line.set,
++    setOpen(progress, origin) {
++      if (progress === lastOpen) return;
++      lastOpen = progress;
++      const eased = easeOut(progress);
++      frame.style.transformOrigin = `${origin.x}px ${origin.y}px`;
++      frame.style.transform = `scale(${0.96 + 0.04 * eased})`;
++      frame.style.opacity = String(eased);
++    },
++    setClosing(progress) {
++      if (progress === lastClosing) return;
++      lastClosing = progress;
++      frame.style.opacity = String(1 - progress);
++    },
++    setState(next) {
++      if (next === state) return;
++      state = next;
++      el.setAttribute('data-state', next);
++    },
++  };
++}
+diff --git a/src/components/build/CommandDock.ts b/src/components/build/CommandDock.ts
+new file mode 100644
+index 0000000..c3d3466
+--- /dev/null
++++ b/src/components/build/CommandDock.ts
+@@ -0,0 +1,132 @@
++import { buildStrings } from '../../strings';
++import { createCommandLine } from './CommandLine';
++import { createCursor } from './Cursor';
++import { createLogLine } from './LogLine';
++import { h } from './dom';
++
++export type DockState =
++  | 'hidden'
++  | 'typing'
++  | 'building'
++  | 'created'
++  | 'idle'
++  | 'done'
++  | 'reduced'
++  | 'collapsed';
++
++export interface CommandDock {
++  el: HTMLDivElement;
++  setState(state: DockState): void;
++  setCommand(command: string, chars: number, cursor: boolean): void;
++  setLog(text: string | null): void;
++  setBuilding(name: string, spinnerFrame: number): void;
++  setCreated(text: string): void;
++  setIdle(done: number, total: number): void;
++  setDone(text: string): void;
++  setOpacity(value: number): void;
++  getRect(): DOMRect;
++}
++
++export function createCommandDock(): CommandDock {
++  const el = h('div', 'sp-dock', {
++    'aria-hidden': 'true',
++    'data-state': 'hidden',
++  });
++  const log = h('div', 'sp-dock-log');
++  const pill = h('div', 'sp-dock-pill');
++  const status = h('div', 'sp-dock-status');
++  const hint = h('span', 'sp-dock-hint');
++  pill.append(status, hint);
++  el.append(log, pill);
++
++  const logLine = createLogLine('info', '');
++  const command = createCommandLine();
++  const spinner = createLogLine('info', '', true);
++  const text = h('span', 'sp-dock-text');
++  const idle = h('span', 'sp-dock-text');
++  const prompt = (): HTMLSpanElement => {
++    const span = h('span', 'sp-prompt');
++    span.textContent = buildStrings.prompt;
++    return span;
++  };
++
++  let state: DockState = 'hidden';
++  let mode = '';
++  let lastLog: string | null = null;
++  let lastOpacity = '';
++  let idleKey = '';
++
++  const show = (next: string, nodes: Node[], hintText = '') => {
++    if (mode !== next) {
++      mode = next;
++      status.replaceChildren(...nodes);
++    }
++    if (hint.textContent !== hintText) hint.textContent = hintText;
++  };
++
++  return {
++    el,
++    setState(next) {
++      if (next === state) return;
++      state = next;
++      el.setAttribute('data-state', next);
++      if (next === 'reduced') {
++        text.textContent = buildStrings.reducedReady;
++        mode = 'reduced';
++        status.replaceChildren(text, createCursor());
++        hint.textContent = '';
++      } else if (next === 'collapsed') {
++        const fab = h('span', 'sp-dock-fab');
++        fab.textContent = buildStrings.collapsedGlyph;
++        mode = 'collapsed';
++        status.replaceChildren(fab);
++        hint.textContent = '';
++      }
++    },
++    setCommand(value, chars, cursor) {
++      show('command', [prompt(), command.el]);
++      command.set(value, chars, cursor);
++    },
++    setLog(value) {
++      if (value === lastLog) return;
++      lastLog = value;
++      if (value === null) {
++        log.replaceChildren();
++      } else {
++        logLine.setText(value);
++        log.replaceChildren(logLine.el);
++      }
++    },
++    setBuilding(name, frame) {
++      show('building', [spinner.el]);
++      spinner.setText(buildStrings.building(name));
++      spinner.setSpinnerFrame(frame);
++    },
++    setCreated(value) {
++      show('text', [text]);
++      if (text.textContent !== value) text.textContent = value;
++    },
++    setIdle(done, total) {
++      const key = `${done}/${total}`;
++      if (mode !== 'idle' || key !== idleKey) {
++        idleKey = key;
++        idle.textContent = buildStrings.idleCount(done, total);
++        mode = '';
++        show('idle', [idle, prompt(), createCursor()], buildStrings.scrollHint);
++      }
++    },
++    setDone(value) {
++      show('text', [text]);
++      if (text.textContent !== value) text.textContent = value;
++    },
++    setOpacity(value) {
++      const next = String(value);
++      if (next === lastOpacity) return;
++      lastOpacity = next;
++      el.style.opacity = next;
++    },
++    getRect() {
++      return el.getBoundingClientRect();
++    },
++  };
++}
+diff --git a/src/components/build/CommandLine.ts b/src/components/build/CommandLine.ts
+new file mode 100644
+index 0000000..f9af496
+--- /dev/null
++++ b/src/components/build/CommandLine.ts
+@@ -0,0 +1,39 @@
++import { createCursor } from './Cursor';
++import { h } from './dom';
++import { tokenize } from './tokenize';
++
++export function createCommandLine(): {
++  el: HTMLSpanElement;
++  set(command: string, chars: number, cursor: boolean): void;
++} {
++  const el = h('span', 'sp-cmdline');
++  let lastCommand: string | null = null;
++  let lastChars = -1;
++  let lastCursor: boolean | null = null;
++  return {
++    el,
++    set(command, chars, cursor) {
++      if (
++        command === lastCommand &&
++        chars === lastChars &&
++        cursor === lastCursor
++      ) {
++        return;
++      }
++      lastCommand = command;
++      lastChars = chars;
++      lastCursor = cursor;
++      const nodes: Node[] = [];
++      let remaining = Math.max(chars, 0);
++      for (const token of tokenize(command)) {
++        if (remaining <= 0) break;
++        const span = h('span', `sp-tok-${token.kind}`);
++        span.textContent = token.text.slice(0, remaining);
++        remaining -= token.text.length;
++        nodes.push(span);
++      }
++      if (cursor) nodes.push(createCursor());
++      el.replaceChildren(...nodes);
++    },
++  };
++}
+diff --git a/src/components/build/Cursor.ts b/src/components/build/Cursor.ts
+new file mode 100644
+index 0000000..5653f45
+--- /dev/null
++++ b/src/components/build/Cursor.ts
+@@ -0,0 +1,7 @@
++import { h } from './dom';
++
++export function createCursor(): HTMLSpanElement {
++  const el = h('span', 'sp-cursor');
++  el.textContent = '█';
++  return el;
++}
+diff --git a/src/components/build/LogLine.ts b/src/components/build/LogLine.ts
+new file mode 100644
+index 0000000..6219103
+--- /dev/null
++++ b/src/components/build/LogLine.ts
+@@ -0,0 +1,44 @@
++import { h } from './dom';
++
++export type LogLevel = 'info' | 'success' | 'warn' | 'error';
++
++const GLYPHS: Record<LogLevel, string> = {
++  info: 'ℹ',
++  success: '✔',
++  warn: '⚠',
++  error: '✖',
++};
++
++const SPINNER_FRAMES = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
++
++export function createLogLine(
++  level: LogLevel,
++  text: string,
++  spinner = false,
++): {
++  el: HTMLDivElement;
++  setText(text: string): void;
++  setSpinnerFrame(frame: number): void;
++} {
++  const el = h('div', 'sp-log', { 'data-level': level });
++  const glyph = h('span', spinner ? 'sp-log-glyph sp-spinner' : 'sp-log-glyph');
++  glyph.textContent = spinner ? SPINNER_FRAMES[0] : GLYPHS[level];
++  const label = h('span', 'sp-log-text');
++  label.textContent = text;
++  el.append(glyph, label);
++  let lastText = text;
++  let lastFrame = 0;
++  return {
++    el,
++    setText(next) {
++      if (next === lastText) return;
++      lastText = next;
++      label.textContent = next;
++    },
++    setSpinnerFrame(frame) {
++      if (!spinner || frame === lastFrame) return;
++      lastFrame = frame;
++      glyph.textContent = SPINNER_FRAMES[frame % SPINNER_FRAMES.length];
++    },
++  };
++}
+diff --git a/src/components/build/PendingOutline.ts b/src/components/build/PendingOutline.ts
+new file mode 100644
+index 0000000..794b322
+--- /dev/null
++++ b/src/components/build/PendingOutline.ts
+@@ -0,0 +1,32 @@
++import { h } from './dom';
++
++export interface PendingOutline {
++  el: HTMLDivElement;
++  setPlacement(rect: {
++    x: number;
++    y: number;
++    width: number;
++    height: number;
++  }): void;
++  setVisible(visible: boolean): void;
++}
++
++export function createPendingOutline(file: string): PendingOutline {
++  const el = h('div', 'sp-outline', { 'aria-hidden': 'true' });
++  const box = h('div', 'sp-outline-box');
++  const label = h('span', 'sp-outline-label');
++  label.textContent = file;
++  box.append(label);
++  el.append(box);
++  return {
++    el,
++    setPlacement(rect) {
++      el.style.transform = `translate3d(${rect.x}px, ${rect.y}px, 0)`;
++      el.style.width = `${rect.width}px`;
++      el.style.height = `${rect.height}px`;
++    },
++    setVisible(visible) {
++      el.toggleAttribute('data-hidden', !visible);
++    },
++  };
++}
+diff --git a/src/components/build/dom.ts b/src/components/build/dom.ts
+new file mode 100644
+index 0000000..8fafbe0
+--- /dev/null
++++ b/src/components/build/dom.ts
+@@ -0,0 +1,14 @@
++export function h<K extends keyof HTMLElementTagNameMap>(
++  tag: K,
++  className?: string,
++  attrs?: Record<string, string>,
++): HTMLElementTagNameMap[K] {
++  const el = document.createElement(tag);
++  if (className) el.className = className;
++  if (attrs) {
++    for (const [name, value] of Object.entries(attrs)) {
++      el.setAttribute(name, value);
++    }
++  }
++  return el;
++}
+diff --git a/src/components/build/tokenize.ts b/src/components/build/tokenize.ts
+new file mode 100644
+index 0000000..8eadd51
+--- /dev/null
++++ b/src/components/build/tokenize.ts
+@@ -0,0 +1,34 @@
++export type TokenKind =
++  'object' | 'function' | 'string' | 'number' | 'comment' | 'punct';
++
++export function tokenize(command: string): { kind: TokenKind; text: string }[] {
++  const tokens: { kind: TokenKind; text: string }[] = [];
++  let i = 0;
++  while (i < command.length) {
++    const ch = command[i];
++    if (ch === '"') {
++      const close = command.indexOf('"', i + 1);
++      const end = close === -1 ? command.length : close + 1;
++      tokens.push({ kind: 'string', text: command.slice(i, end) });
++      i = end;
++    } else if (/[0-9]/.test(ch)) {
++      let end = i;
++      while (end < command.length && /[0-9]/.test(command[end])) end++;
++      tokens.push({ kind: 'number', text: command.slice(i, end) });
++      i = end;
++    } else if (ch === '…') {
++      tokens.push({ kind: 'comment', text: ch });
++      i++;
++    } else if (/[A-Za-z_$]/.test(ch)) {
++      let end = i + 1;
++      while (end < command.length && /[\w$]/.test(command[end])) end++;
++      const kind: TokenKind = command[end] === '(' ? 'function' : 'object';
++      tokens.push({ kind, text: command.slice(i, end) });
++      i = end;
++    } else {
++      tokens.push({ kind: 'punct', text: ch });
++      i++;
++    }
++  }
++  return tokens;
++}
+diff --git a/src/components/page/Footer.css b/src/components/page/Footer.css
+index 4ec45c6..3e42dac 100644
+--- a/src/components/page/Footer.css
++++ b/src/components/page/Footer.css
+@@ -22,10 +22,19 @@
+   gap: var(--space-2);
+ }
+ 
++/* Reserved line for the build summary (filled later, so nothing moves). */
++.sp-footer-build {
++  min-height: calc(var(--text-sm) * 1.5);
++}
++
+ /* Side padding: 32px, 16px under 768px. */
+ @media (max-width: 767px) {
+   .sp-footer-inner {
+     padding-left: var(--space-4);
+     padding-right: var(--space-4);
+   }
++
++  .sp-footer-build {
++    flex-basis: 100%;
++  }
+ }
+diff --git a/src/components/page/Footer.tsx b/src/components/page/Footer.tsx
+index f8b400f..eaa2d7a 100644
+--- a/src/components/page/Footer.tsx
++++ b/src/components/page/Footer.tsx
+@@ -6,12 +6,14 @@ import { strings } from '../../strings';
+ interface FooterProps {
+   sourceHref: string;
+   owner: string;
++  buildSlot?: boolean;
+   className?: string;
+ }
+ 
+ export function Footer({
+   sourceHref,
+   owner,
++  buildSlot = false,
+   className,
+ }: FooterProps): React.JSX.Element {
+   return (
+@@ -23,6 +25,9 @@ export function Footer({
+           </TextLink>
+           <span>{`© ${strings.footer.year} ${owner}`}</span>
+         </p>
++        {buildSlot && (
++          <p className="sp-footer-build text-sm" data-footer-build="" />
++        )}
+       </div>
+     </footer>
+   );
+diff --git a/src/pages/index.astro b/src/pages/index.astro
+index c7feccd..75bcd3e 100644
+--- a/src/pages/index.astro
++++ b/src/pages/index.astro
+@@ -12,6 +12,7 @@ import Stack from '../sections/Stack.astro';
+ import { profileLinks } from '../sections/profile-links';
+ import '../styles/home.css';
+ import '../styles/build-pending.css';
++import '../styles/build-layer.css';
+ 
+ const profileEntry = await getEntry('profile', 'profile');
+ const stackEntry = await getEntry('stack', 'stack');
+@@ -41,7 +42,7 @@ const description = profile.subtitle;
+         <Stack stack={stackEntry.data} />
+         <Contact profile={profile} />
+       </main>
+-      <Footer sourceHref={sourceHref} owner={profile.name} />
++      <Footer sourceHref={sourceHref} owner={profile.name} buildSlot />
+     </div>
+   </div>
+   <script>
+diff --git a/src/runtime/compiler.ts b/src/runtime/compiler.ts
+index f84cc27..0e872c9 100644
+--- a/src/runtime/compiler.ts
++++ b/src/runtime/compiler.ts
+@@ -1,3 +1,8 @@
++import {
++  COMMAND_CHAR_MS,
++  COMMAND_ENTER_MS,
++  COMMAND_START_MS,
++} from './layer-timing';
+ import {
+   EFFECTS,
+   type BuildScript,
+@@ -25,9 +30,6 @@ export const EFFECT_DURATION_MS: Record<
+   'build-card': () => 600,
+ };
+ 
+-const COMMAND_START_MS = 250;
+-const COMMAND_CHAR_MS = 40;
+-const COMMAND_SETTLE_MS = 80;
+ const WINDOW_OPEN_MS = 100;
+ const WINDOW_HOLD_MS = 280;
+ const DEFAULT_SETTLE_MS = 300;
+@@ -67,7 +69,7 @@ export function compileScript(script: BuildScript): Timeline {
+     script.timing?.commandEnd ??
+     COMMAND_START_MS +
+       script.command.length * COMMAND_CHAR_MS +
+-      COMMAND_SETTLE_MS;
++      COMMAND_ENTER_MS;
+   const windowEnd = script.timing?.windowEnd ?? commandEnd + WINDOW_OPEN_MS;
+   const buildStart = script.timing?.buildStart ?? windowEnd + WINDOW_HOLD_MS;
+ 
+diff --git a/src/runtime/layer-timing.ts b/src/runtime/layer-timing.ts
+new file mode 100644
+index 0000000..31565ac
+--- /dev/null
++++ b/src/runtime/layer-timing.ts
+@@ -0,0 +1,85 @@
++import type { Timeline } from './types';
++
++export const COMMAND_START_MS = 250;
++export const COMMAND_CHAR_MS = 40;
++export const COMMAND_ENTER_MS = 80;
++export const WINDOW_CHAR_MS = 12;
++export const WINDOW_CHAR_CAP_MS = 350;
++export const BOOT_LOG_GAP_MS = 100;
++export const BOOT_NAV_AT_MS = 900;
++export const NAV_SLIDE_MS = 300;
++export const FOLD_MS = 300;
++export const WINDOW_CLOSE_MS = 300;
++export const SPINNER_FRAME_MS = 80;
++
++type WindowTimes = Pick<Timeline, 'windowEnd' | 'buildStart' | 'createdAt'>;
++
++const clamp = (value: number, min: number, max: number) =>
++  Math.min(Math.max(value, min), max);
++
++export function progressBetween(t: number, from: number, to: number): number {
++  if (to <= from) return t >= to ? 1 : 0;
++  return clamp((t - from) / (to - from), 0, 1);
++}
++
++export function easeOut(p: number): number {
++  return 1 - (1 - p) ** 3;
++}
++
++export function commandChars(t: number, length: number): number {
++  return clamp(Math.floor((t - COMMAND_START_MS) / COMMAND_CHAR_MS), 0, length);
++}
++
++export function commandEnterAt(length: number): number {
++  return COMMAND_START_MS + length * COMMAND_CHAR_MS + COMMAND_ENTER_MS;
++}
++
++export function bootLogCount(t: number, enterAt: number): number {
++  if (t < enterAt) return 0;
++  return Math.min(2, 1 + Math.floor((t - enterAt) / BOOT_LOG_GAP_MS));
++}
++
++export function stepIndexAt(t: number, steps: { start: number }[]): number {
++  let index = -1;
++  for (let i = 0; i < steps.length; i++) {
++    if (steps[i].start <= t) index = i;
++  }
++  return index;
++}
++
++export function windowCommandChars(
++  t: number,
++  step: { call: string; start: number },
++): number {
++  const duration = Math.min(
++    step.call.length * WINDOW_CHAR_MS,
++    WINDOW_CHAR_CAP_MS,
++  );
++  return Math.floor(
++    step.call.length * progressBetween(t, step.start, step.start + duration),
++  );
++}
++
++export function windowOpenProgress(t: number, tl: WindowTimes): number {
++  return progressBetween(t, tl.windowEnd, tl.buildStart);
++}
++
++export function foldProgress(t: number, tl: WindowTimes): number {
++  return progressBetween(t, tl.windowEnd, tl.windowEnd + FOLD_MS);
++}
++
++export function windowCloseProgress(t: number, tl: WindowTimes): number {
++  return progressBetween(t, tl.createdAt, tl.createdAt + WINDOW_CLOSE_MS);
++}
++
++export function navSlideProgress(t: number): number {
++  return progressBetween(t, BOOT_NAV_AT_MS, BOOT_NAV_AT_MS + NAV_SLIDE_MS);
++}
++
++export function spinnerFrame(loopMs: number, frames = 10): number {
++  return Math.floor(loopMs / SPINNER_FRAME_MS) % frames;
++}
++
++export function formatSeconds(ms: number, digits = 2): string {
++  return (ms / 1000).toFixed(digits);
++}
+diff --git a/src/runtime/layer.ts b/src/runtime/layer.ts
+new file mode 100644
+index 0000000..eae9491
+--- /dev/null
++++ b/src/runtime/layer.ts
+@@ -0,0 +1,296 @@
++import { createBootTerminal } from '../components/build/BootTerminal';
++import { createBuildWindow } from '../components/build/BuildWindow';
++import { createCommandDock } from '../components/build/CommandDock';
++import { createPendingOutline } from '../components/build/PendingOutline';
++import { buildStrings } from '../strings';
++import {
++  BOOT_NAV_AT_MS,
++  bootLogCount,
++  commandChars,
++  commandEnterAt,
++  foldProgress,
++  formatSeconds,
++  navSlideProgress,
++  spinnerFrame,
++  stepIndexAt,
++  windowCloseProgress,
++  windowCommandChars,
++  windowOpenProgress,
++} from './layer-timing';
++import type { SectionId, SectionState, Timeline } from './types';
++
++export interface BuildLayer {
++  onState(id: SectionId, state: SectionState): void;
++  onTick(id: SectionId, t: number, dt: number): void;
++  onAllDone(): void;
++  destroy(): void;
++}
++
++interface Box {
++  x: number;
++  y: number;
++  width: number;
++  height: number;
++}
++
++type Win = ReturnType<typeof createBuildWindow>;
++type Outline = ReturnType<typeof createPendingOutline>;
++type Boot = ReturnType<typeof createBootTerminal>;
++
++interface Slot {
++  timeline: Timeline;
++  section: HTMLElement;
++  outline: Outline | null;
++  win: Win | null;
++  origin: { x: number; y: number };
++  state: SectionState;
++  elapsed: number;
++  counted: boolean;
++}
++
++export function createBuildLayer(options: {
++  sections: HTMLElement[];
++  timelines: Timeline[];
++}): BuildLayer {
++  const { sections, timelines } = options;
++  const root = document.createElement('div');
++  root.className = 'sp-build-layer';
++  root.setAttribute('data-build-layer', '');
++  root.setAttribute('aria-hidden', 'true');
++  const page = document.querySelector('.sp-page');
++  if (page) page.after(root);
++  else document.body.append(root);
++
++  const html = document.documentElement;
++  const nav = document.querySelector<HTMLElement>('.sp-nav');
++  const dock = createCommandDock();
++  root.append(dock.el);
++
++  const slots = new Map<SectionId, Slot>();
++  timelines.forEach((timeline, i) => {
++    const slot: Slot = {
++      timeline,
++      section: sections[i],
++      outline: null,
++      win: null,
++      origin: { x: 0, y: 0 },
++      state: 'pending',
++      elapsed: 0,
++      counted: false,
++    };
++    if (i > 0) {
++      slot.outline = createPendingOutline(timeline.file);
++      root.append(slot.outline.el);
++    }
++    slots.set(timeline.section, slot);
++  });
++
++  const heroId = timelines[0]?.section;
++  let boot: Boot | null = null;
++  let bootDone = false;
++  let foldRect: DOMRect | null = null;
++  let loopMs = 0;
++  let doneCount = 0;
++  let navState: 'hidden' | 'sliding' | 'in' = 'hidden';
++  let navProgress = -1;
++  let destroyed = false;
++
++  const boxOf = (el: HTMLElement): Box => {
++    const r = el.getBoundingClientRect();
++    return {
++      x: r.left + window.scrollX,
++      y: r.top + window.scrollY,
++      width: r.width,
++      height: r.height,
++    };
++  };
++
++  const placeAll = () => {
++    for (const slot of slots.values()) {
++      if (!slot.outline && !slot.win) continue;
++      const box = boxOf(slot.section);
++      slot.outline?.setPlacement(box);
++      slot.win?.setPlacement(box);
++    }
++  };
++
++  const observer = new ResizeObserver(() => {
++    if (!destroyed) placeAll();
++  });
++  const main = document.querySelector('main');
++  if (main) observer.observe(main);
++  for (const section of sections) observer.observe(section);
++  void document.fonts?.ready.then(() => {
++    if (!destroyed) placeAll();
++  });
++  placeAll();
++
++  const ensureWindow = (slot: Slot): Win => {
++    if (slot.win) return slot.win;
++    const win = createBuildWindow(slot.timeline.file, slot.timeline.section);
++    slot.win = win;
++    root.append(win.el);
++    const box = boxOf(slot.section);
++    win.setPlacement(box);
++    const d = dock.getRect();
++    const r = slot.section.getBoundingClientRect();
++    slot.origin = {
++      x: d.left + d.width / 2 - r.left,
++      y: d.top + d.height / 2 - r.top,
++    };
++    win.setOpen(0, slot.origin);
++    return win;
++  };
++
++  const removeBoot = () => {
++    if (boot) boot.el.remove();
++    boot = null;
++    bootDone = true;
++  };
++
++  const setNav = (progress: number) => {
++    if (!nav || navState === 'in') return;
++    if (progress >= 1) {
++      nav.style.removeProperty('transform');
++      nav.style.removeProperty('opacity');
++      html.setAttribute('data-build-nav', 'in');
++      navState = 'in';
++      return;
++    }
++    if (progress === navProgress) return;
++    navProgress = progress;
++    navState = 'sliding';
++    html.setAttribute('data-build-nav', 'sliding');
++    nav.style.transform = `translateY(${-(1 - progress) * 100}%)`;
++    nav.style.opacity = String(progress);
++  };
++
++  const fileName = (file: string) => file.replace(/\.[^.]+$/, '');
++
++  const finishSlot = (slot: Slot) => {
++    slot.win?.el.remove();
++    slot.win = null;
++    slot.outline?.el.remove();
++    slot.outline = null;
++    if (slot.timeline.section === heroId) removeBoot();
++    setNav(1);
++    if (!slot.counted) {
++      slot.counted = true;
++      doneCount++;
++    }
++    dock.setState('idle');
++    dock.setLog(null);
++    dock.setOpacity(1);
++    dock.setIdle(doneCount, timelines.length);
++  };
++
++  return {
++    onState(id, state) {
++      if (destroyed) return;
++      const slot = slots.get(id);
++      if (!slot) return;
++      const previous = slot.state;
++      slot.state = state;
++      slot.outline?.setVisible(state === 'pending' || state === 'queued');
++      if (state === 'command' && id === heroId && !boot && !bootDone) {
++        boot = createBootTerminal();
++        root.append(boot.el);
++      }
++      if (state === 'command' && id !== heroId) dock.setState('typing');
++      if (state === 'window' || state === 'building' || state === 'closing') {
++        const win = ensureWindow(slot);
++        win.setState(state === 'window' ? 'opening' : state);
++      }
++      if (state === 'closing' && previous !== 'closing') {
++        dock.setState('created');
++        dock.setLog(null);
++        dock.setCreated(
++          buildStrings.created(
++            buildStrings.sectionLabels[id],
++            formatSeconds(slot.elapsed),
++          ),
++        );
++      }
++      if (state === 'done' || state === 'skipped') finishSlot(slot);
++    },
++    onTick(id, t, dt) {
++      if (destroyed) return;
++      const slot = slots.get(id);
++      if (!slot) return;
++      slot.elapsed += dt;
++      loopMs += dt;
++      const tl = slot.timeline;
++      const length = tl.command.length;
++      const enterAt = commandEnterAt(length);
++
++      if (id === heroId) {
++        if (t >= BOOT_NAV_AT_MS) setNav(navSlideProgress(t));
++        if (boot) {
++          boot.setCommand(tl.command, commandChars(t, length), true);
++          boot.setLogs(
++            [
++              buildStrings.initializing,
++              buildStrings.openingFile(tl.file),
++            ].slice(0, bootLogCount(t, enterAt)),
++          );
++          const fold = foldProgress(t, tl);
++          if (fold > 0) {
++            if (!foldRect) foldRect = dock.getRect();
++            boot.setFold(fold, foldRect);
++            dock.setState('building');
++            dock.setBuilding(fileName(tl.file), spinnerFrame(loopMs));
++            dock.setOpacity(fold);
++            if (fold >= 1) removeBoot();
++          }
++        } else if (t >= tl.windowEnd && slot.state !== 'closing') {
++          dock.setBuilding(fileName(tl.file), spinnerFrame(loopMs));
++        }
++      } else if (slot.state !== 'closing') {
++        if (t < tl.windowEnd) {
++          dock.setState('typing');
++          dock.setCommand(tl.command, commandChars(t, length), true);
++          dock.setLog(t >= enterAt ? buildStrings.readingFile(tl.file) : null);
++        } else {
++          dock.setState('building');
++          dock.setLog(null);
++          dock.setBuilding(fileName(tl.file), spinnerFrame(loopMs));
++        }
++      }
++
++      const win = slot.win;
++      if (!win) return;
++      if (slot.state === 'closing') {
++        win.setClosing(windowCloseProgress(t, tl));
++        return;
++      }
++      win.setOpen(windowOpenProgress(t, tl), slot.origin);
++      if (slot.state === 'building') {
++        const index = stepIndexAt(t, tl.steps);
++        if (index < 0) win.setCommand('', 0, false);
++        else {
++          const step = tl.steps[index];
++          win.setCommand(step.call, windowCommandChars(t, step), true);
++        }
++      }
++    },
++    onAllDone() {
++      if (destroyed) return;
++      let total = 0;
++      for (const slot of slots.values()) total += slot.elapsed;
++      dock.setState('done');
++      dock.setDone(
++        buildStrings.complete(timelines.length, formatSeconds(total, 1)),
++      );
++    },
++    destroy() {
++      destroyed = true;
++      observer.disconnect();
++      root.remove();
++      if (nav) {
++        nav.style.removeProperty('transform');
++        nav.style.removeProperty('opacity');
++      }
++      html.removeAttribute('data-build-nav');
++    },
++  };
++}
+diff --git a/src/runtime/main.ts b/src/runtime/main.ts
+index 07e5ecf..1578208 100644
+--- a/src/runtime/main.ts
++++ b/src/runtime/main.ts
+@@ -1,6 +1,7 @@
+ import { parseSpeed } from '../scripts/build-mode';
+ import { currentSection, progress, speed, status } from '../stores/build';
+ import { realClock } from './clock';
++import { createBuildLayer } from './layer';
+ import { createScheduler } from './scheduler';
+ import { observeSections } from './triggers';
+ import type { SectionId, Timeline } from './types';
+@@ -10,11 +11,13 @@ const IDS: SectionId[] = ['top', 'about', 'projects', 'stack', 'contact'];
+ const root = document.documentElement;
+ let cancelFrame: (() => void) | null = null;
+ let stopObserver: (() => void) | null = null;
++let destroyLayer: (() => void) | null = null;
+ const sections: HTMLElement[] = [];
+ 
+ function reveal(): void {
+   cancelFrame?.();
+   stopObserver?.();
++  destroyLayer?.();
+   for (const s of sections) s.setAttribute('data-build-state', 'done');
+   root.removeAttribute('data-build-mode');
+   status.set('failed');
+@@ -64,6 +67,8 @@ function start(): void {
+     return;
+   }
+ 
++  const layer = createBuildLayer({ sections, timelines });
++  destroyLayer = layer.destroy;
+   const byId = new Map(sections.map((s) => [s.id, s]));
+   const scheduler = createScheduler({
+     clock: {
+@@ -79,6 +84,7 @@ function start(): void {
+     host: {
+       onState: guard((id, state) => {
+         byId.get(id)?.setAttribute('data-build-state', state);
++        layer.onState(id, state);
+         if (state !== 'pending' && status.get() !== 'building') {
+           status.set('building');
+         }
+@@ -89,9 +95,11 @@ function start(): void {
+       }),
+       onIdle: guard(() => status.set('idle')),
+       onAllDone: guard(() => {
++        layer.onAllDone();
+         status.set('done');
+         root.removeAttribute('data-build-mode');
+       }),
++      onTick: guard((id, t, dt) => layer.onTick(id, t, dt)),
+       isHidden: () => document.visibilityState === 'hidden',
+     },
+   });
+diff --git a/src/runtime/scheduler.ts b/src/runtime/scheduler.ts
+index c078f02..e1bde27 100644
+--- a/src/runtime/scheduler.ts
++++ b/src/runtime/scheduler.ts
+@@ -11,6 +11,7 @@ export interface SchedulerHost {
+   onIdle(): void;
+   onAllDone(): void;
+   isHidden(): boolean;
++  onTick?(id: SectionId, t: number, dt: number): void;
+ }
+ 
+ export interface SchedulerOptions {
+@@ -103,6 +104,7 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+     entry.t = 0;
+     setState(entry, stateAt(entry.timeline, 0));
+     publish(entry.timeline.section, 0);
++    host.onTick?.(entry.timeline.section, 0, 0);
+     if (!unsubscribe) {
+       lastNow = clock.now();
+       unsubscribe = clock.onFrame(onFrame);
+@@ -136,6 +138,7 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+     }
+     setState(entry, stateAt(entry.timeline, entry.t));
+     publish(entry.timeline.section, entry.t / entry.timeline.duration);
++    host.onTick?.(entry.timeline.section, entry.t, dt);
+   }
+ 
+   const finishUpTo = (index: number) => {
+diff --git a/src/strings.ts b/src/strings.ts
+index 9a22770..f3619e7 100644
+--- a/src/strings.ts
++++ b/src/strings.ts
+@@ -59,3 +59,26 @@ export const strings = {
+     year: '2026',
+   },
+ } as const;
++
++export const buildStrings = {
++  initializing: 'Initializing application...',
++  openingFile: (file: string) => `Opening ${file}...`,
++  readingFile: (file: string) => `Reading ${file}...`,
++  building: (name: string) => `Building ${name}…`,
++  created: (label: string, seconds: string) =>
++    `✔ ${label} Section created. (${seconds}s)`,
++  idleCount: (done: number, total: number) => `✓ ${done}/${total} sections`,
++  scrollHint: 'scroll ↓',
++  complete: (total: number, seconds: string) =>
++    `✔ Build complete: ${total} sections in ${seconds}s`,
++  reducedReady: '✔ Ready · motion reduced',
++  prompt: '❯',
++  collapsedGlyph: '❯_',
++  sectionLabels: {
++    top: 'Hero',
++    about: 'About',
++    projects: 'Projects',
++    stack: 'Stack',
++    contact: 'Contact',
++  },
++} as const;
+diff --git a/src/styles/build-layer.css b/src/styles/build-layer.css
+new file mode 100644
+index 0000000..19833ad
+--- /dev/null
++++ b/src/styles/build-layer.css
+@@ -0,0 +1,308 @@
++.sp-build-layer {
++  position: absolute;
++  top: 0;
++  left: 0;
++  width: 100%;
++  height: 0;
++  z-index: 2;
++  pointer-events: none;
++}
++
++/* Shared chrome pieces */
++.sp-dots {
++  display: flex;
++  align-items: center;
++  gap: var(--space-2);
++}
++
++.sp-dot {
++  width: 10px;
++  height: 10px;
++  border-radius: var(--radius-full);
++  background: var(--border-strong);
++}
++
++.sp-prompt {
++  color: var(--fg-muted);
++  margin-right: var(--space-2);
++}
++
++.sp-cmdline,
++.sp-log,
++.sp-dock-text {
++  font-family: var(--font-mono);
++  font-size: var(--mono-sm);
++  color: var(--fg);
++  white-space: pre;
++}
++
++.sp-tok-object {
++  color: var(--fg);
++}
++
++.sp-tok-function {
++  color: var(--syn-function);
++}
++
++.sp-tok-string {
++  color: var(--syn-string);
++}
++
++.sp-tok-number {
++  color: var(--syn-number);
++}
++
++.sp-tok-comment {
++  color: var(--syn-comment);
++}
++
++.sp-tok-punct {
++  color: var(--syn-punct);
++}
++
++.sp-log {
++  display: flex;
++  align-items: center;
++  gap: var(--space-2);
++}
++
++.sp-log[data-level='info'] .sp-log-glyph {
++  color: var(--log-info);
++}
++
++.sp-log[data-level='success'] .sp-log-glyph {
++  color: var(--log-success);
++}
++
++.sp-log[data-level='warn'] .sp-log-glyph {
++  color: var(--log-warn);
++}
++
++.sp-log[data-level='error'] .sp-log-glyph {
++  color: var(--log-error);
++}
++
++.sp-cursor {
++  color: var(--fg);
++  animation: sp-cursor-blink 1.06s steps(1) infinite;
++}
++
++@keyframes sp-cursor-blink {
++  0% {
++    opacity: 1;
++  }
++  50% {
++    opacity: 0;
++  }
++}
++
++/* Boot terminal */
++.sp-boot {
++  position: fixed;
++  inset: 0;
++  margin: auto;
++  height: var(--space-32);
++  width: min(var(--dock-width), calc(100vw - var(--space-8)));
++  box-sizing: border-box;
++  padding: var(--space-3) var(--space-4);
++  font-family: var(--font-mono);
++  font-size: var(--mono-sm);
++  background: var(--bg-overlay);
++  border: 1px solid var(--border);
++  border-radius: var(--radius-lg);
++  box-shadow: var(--shadow-dock);
++  pointer-events: none;
++  -webkit-backdrop-filter: blur(12px);
++  backdrop-filter: blur(12px);
++}
++
++.sp-boot[data-hidden],
++.sp-outline[data-hidden] {
++  opacity: 0;
++}
++
++.sp-boot-body {
++  margin-top: var(--space-3);
++  display: flex;
++  flex-direction: column;
++  gap: var(--space-1);
++}
++
++/* Dock */
++.sp-dock {
++  position: fixed;
++  bottom: max(var(--space-6), env(safe-area-inset-bottom));
++  left: 0;
++  right: 0;
++  margin-inline: auto;
++  height: var(--dock-height);
++  width: min(var(--dock-width), calc(100vw - var(--space-8)));
++  box-sizing: border-box;
++  pointer-events: none;
++}
++
++.sp-dock[data-state='hidden'] {
++  opacity: 0;
++}
++
++.sp-dock-pill {
++  box-sizing: border-box;
++  height: 100%;
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: var(--space-4);
++  padding: 0 var(--space-4);
++  background: var(--bg-overlay);
++  border: 1px solid var(--border);
++  border-radius: var(--radius-full);
++  box-shadow: var(--shadow-dock);
++}
++
++.sp-dock:not([data-state='hidden']) .sp-dock-pill {
++  -webkit-backdrop-filter: blur(12px);
++  backdrop-filter: blur(12px);
++}
++
++.sp-dock-status {
++  display: flex;
++  align-items: center;
++  min-width: 0;
++  overflow: hidden;
++}
++
++.sp-dock-hint {
++  font-family: var(--font-mono);
++  font-size: var(--mono-xs);
++  color: var(--fg-muted);
++  white-space: nowrap;
++}
++
++.sp-dock-log {
++  position: absolute;
++  bottom: 100%;
++  left: var(--space-4);
++  margin-bottom: var(--space-2);
++}
++
++.sp-dock-fab {
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  width: var(--dock-height);
++  height: var(--dock-height);
++  border-radius: var(--radius-full);
++  font-family: var(--font-mono);
++  color: var(--fg);
++}
++
++/* Build window */
++.sp-window {
++  position: absolute;
++  top: 0;
++  left: 0;
++  pointer-events: none;
++}
++
++.sp-window-frame {
++  position: absolute;
++  inset: 0;
++  box-shadow: var(--shadow-window);
++  pointer-events: none;
++}
++
++.sp-window-body {
++  position: absolute;
++  inset: 0;
++  pointer-events: none;
++  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
++  background-size: var(--space-6) var(--space-6);
++}
++
++.sp-window-chrome {
++  position: sticky;
++  top: var(--nav-height);
++  display: flex;
++  flex-direction: column;
++  pointer-events: auto;
++  -webkit-backdrop-filter: blur(12px);
++  backdrop-filter: blur(12px);
++}
++
++.sp-window-bar,
++.sp-window-cmd {
++  box-sizing: border-box;
++  height: var(--window-bar);
++  display: flex;
++  align-items: center;
++  gap: var(--space-3);
++  padding: 0 var(--space-4);
++  background: var(--bg-overlay);
++  border-bottom: 1px solid var(--border);
++  pointer-events: auto;
++}
++
++.sp-window-file {
++  font-family: var(--font-mono);
++  font-size: var(--mono-xs);
++  color: var(--fg-muted);
++}
++
++/* Pending outline */
++.sp-outline {
++  position: absolute;
++  top: 0;
++  left: 0;
++  pointer-events: none;
++}
++
++.sp-outline-box {
++  position: absolute;
++  inset: var(--space-2);
++  border: 1px dashed var(--border-strong);
++  border-radius: var(--radius-md);
++}
++
++.sp-outline-label {
++  position: absolute;
++  top: var(--space-2);
++  left: var(--space-3);
++  font-family: var(--font-mono);
++  font-size: var(--mono-xs);
++  color: var(--fg-muted);
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .sp-cursor {
++    animation: none;
++  }
++}
++
++@media (prefers-reduced-transparency: reduce) {
++  .sp-boot,
++  .sp-dock:not([data-state='hidden']) .sp-dock-pill,
++  .sp-window-chrome {
++    background: var(--bg-raised);
++    -webkit-backdrop-filter: none;
++    backdrop-filter: none;
++  }
++}
++
++@supports not (
++  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
++) {
++  .sp-boot,
++  .sp-dock:not([data-state='hidden']) .sp-dock-pill,
++  .sp-window-chrome {
++    background: var(--bg-raised);
++  }
++}
++
++/* Compact: one command bar, status-only dock */
++@media (max-width: 767px) {
++  .sp-window-bar,
++  .sp-dock-hint,
++  .sp-dock-log {
++    display: none;
++  }
++}
+diff --git a/src/styles/build-pending.css b/src/styles/build-pending.css
+index f022f5f..fdcf145 100644
+--- a/src/styles/build-pending.css
++++ b/src/styles/build-pending.css
+@@ -4,4 +4,10 @@ html[data-build-mode='pending']
+     [data-build-state='skipped']
+   ) {
+   opacity: 0;
++  pointer-events: none;
++}
++
++html[data-build-mode='pending']:not([data-build-nav]) .sp-nav {
++  opacity: 0;
++  transform: translateY(-100%);
+ }

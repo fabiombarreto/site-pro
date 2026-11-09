@@ -1,0 +1,69 @@
+# TDD initial suite — phase 1 (test-after)
+# Source PRD: PRPs/prds/stage-3-runtime.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-3-runtime-phase-1-runtime-core.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-08
+# Test files live in the feature worktree: C:/repos/site-pro/.worktrees/stage-3-runtime (paths below are relative to it)
+
+## AC outcomes
+
+Plan AC-A1..A8 map to PRD ACs as in the plan. Only the parts of a PRD AC that phase 1 delivers are asserted.
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-1 (pending before first paint, hidden by opacity only, still laid out and in the a11y tree; plan AC-A5) | NEW_TEST_REQUIRED | tests/e2e/runtime-fallbacks.spec.ts ("pending state before the runtime starts") |
+| AC-1 (boot terminal, nav entrance, window, 2.0 s / 3.2 s hero timing) | OUT_OF_PHASE_SCOPE | (build layer and tuning: phases 2 and 3) |
+| AC-2 (trigger and order parts; plan AC-A4) | NEW_TEST_REQUIRED | tests/unit/runtime-scheduler.test.ts ("order and one active section"); tests/e2e/runtime-build-order.spec.ts (first test: About pending for 30 s, document order, one at a time, never replays) |
+| AC-2 (dock text, `renderAbout();` log lines, windows) | OUT_OF_PHASE_SCOPE | (phase 2) |
+| AC-3 | OUT_OF_PHASE_SCOPE | (dock scroll hint, phase 4) |
+| AC-4 (runtime-core part: pending and data-* attributes change no box; plan AC-A6) | NEW_TEST_REQUIRED | tests/e2e/runtime-build-order.spec.ts ("lays out the pending page exactly like the ready page") |
+| AC-4 (pending outline label, overlay root, 375x812 and layout-shift sum during the build layer) | OUT_OF_PHASE_SCOPE | (phase 2; existing CLS check stays in tests/e2e/home-responsive-layout.spec.ts) |
+| AC-5 (turbo x5; plan AC-A8) | NEW_TEST_REQUIRED | tests/unit/runtime-scheduler.test.ts ("speed": turbo, 1x, 2x); tests/e2e/runtime-build-order.spec.ts (first test, turbo timing) |
+| AC-5 (`queued <n>/5` dock text) | OUT_OF_PHASE_SCOPE | (phase 2) |
+| AC-6 | OUT_OF_PHASE_SCOPE | (only the runtime-never-scrolls observation is asserted incidentally in tests/e2e/runtime-build-order.spec.ts; the full AC is verified in phase 4 with Replay and Play build) |
+| AC-7, AC-8, AC-9, AC-10, AC-11, AC-12 | OUT_OF_PHASE_SCOPE | (controls, catch-up, focus rule and resize: phase 4) |
+| AC-13 (saved infinity: ready before first paint, all sections done; speed parsing, `2x`, infinity finishing triggered sections; plan AC-A5, AC-A8) | NEW_TEST_REQUIRED | tests/unit/runtime-mode-clock.test.ts; tests/unit/runtime-scheduler.test.ts ("speed"); tests/e2e/runtime-fallbacks.spec.ts ("instant mode", "saved speed before first paint") |
+| AC-13 (speed control cycle, `sp-speed` writing, dock `5/5`) | OUT_OF_PHASE_SCOPE | (phase 4) |
+| AC-14 (reduced motion: content visible at DOMContentLoaded, every section done; plan AC-A5) | NEW_TEST_REQUIRED | tests/unit/runtime-mode-clock.test.ts ("mode resolution"); tests/e2e/runtime-fallbacks.spec.ts ("instant mode") |
+| AC-14 (dock status, Play build button) | OUT_OF_PHASE_SCOPE | (phases 2 and 4) |
+| AC-15 (plan AC-A1) | NEW_TEST_REQUIRED | tests/e2e/runtime-fallbacks.spec.ts ("JavaScript disabled", "runtime module blocked or throwing"); EXISTING_TEST_COVERS for the no-JS main text: tests/e2e/home-no-build-layer.spec.ts:22 |
+| AC-16 (plan AC-A2) | NEW_TEST_REQUIRED | tests/unit/runtime-scheduler.test.ts ("pause while the tab is hidden"); tests/e2e/runtime-build-order.spec.ts (hidden tab test) |
+| AC-17, AC-21 | OUT_OF_PHASE_SCOPE | (done state, Replay, mobile build layer: phases 2 and 4) |
+| AC-18 | OUT_OF_PHASE_SCOPE | (axe during the build is phase 5; the existing home axe spec was only brought to the final page, see the ledger) |
+| AC-19 (size-check part: runtime <= 18 KB, critical with entry <= 20 KB, failing on excess; plan AC-A7) | NEW_TEST_REQUIRED | tests/unit/runtime-budget.test.ts; existing real-build gate: tests/e2e/quality-gates.spec.ts:25 (EXISTING_TEST_COVERS for the total and CSS limits) |
+| AC-19 (Lighthouse medians) | OUT_OF_PHASE_SCOPE | (measured by the existing `lighthouse` CI job; pinned by tests/unit/quality-gates.test.ts "Lighthouse CI configuration") |
+| AC-20 (plan AC-A3) | NEW_TEST_REQUIRED | tests/unit/runtime-compiler.test.ts; tests/unit/verify-build-targets.test.ts; tests/e2e/runtime-timeline-contract.spec.ts |
+| AC-20 (unknown effect fails `pnpm build` naming section and step) | NEW_TEST_REQUIRED | tests/unit/runtime-compiler.test.ts ("validation": exact message from the compiler that the build integration throws); the build-level failure was verified by the plan's Level 2 mutation check, not duplicated as a test that edits sources |
+
+## Test files written this session
+
+- tests/unit/runtime-compiler.test.ts
+- tests/unit/runtime-scheduler.test.ts
+- tests/unit/runtime-mode-clock.test.ts
+- tests/unit/verify-build-targets.test.ts
+- tests/unit/runtime-budget.test.ts
+- tests/e2e/support/runtime.ts (shared helpers, not a spec)
+- tests/e2e/runtime-timeline-contract.spec.ts
+- tests/e2e/runtime-fallbacks.spec.ts
+- tests/e2e/runtime-build-order.spec.ts
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/home-no-build-layer.spec.ts:"carries no build-layer markup and no pending runtime state" (was "carries no build-layer markup or pending state") | AC-1 / AC-15 (Stage 3). The old assertion `not.toContain('data-build')` contradicts the PRD by design: the served HTML now carries the compiled build scripts in `data-build`. The test's intent (no build-layer markup and no pending state in the served page) is kept and tightened: the sp-boot/dock/window/select/skel class check is unchanged, and it now asserts there is no `data-build-mode/speed/status/started` on `<html>` and no `data-build-state` attribute on any element, plus that `data-build` is present so the check is not vacuous. No assertion about the build layer was dropped. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/home-axe.spec.ts:"has no axe violations on / at 1280x800", "...at 800x1024", "...at 375x812", "...at 375x812 with the mobile menu open" (both themes; one added line in `beforeEach`) | AC-13 / AC-1 (Stage 3). Stage 2 audits the final page. With a real clock the sections are at opacity 0 for part of the build, so the audit would no longer see the final page. The suite now saves `sp-speed = inf` before navigation (instant mode: final page at DOMContentLoaded) via `useInstantBuild`. Assertions, themes, viewports and tags are unchanged. |
+| (reviewed, no change needed) | — | tests/e2e/home-content.spec.ts, home-keyboard.spec.ts, home-responsive-layout.spec.ts, home-mobile-menu.spec.ts, theme.spec.ts, quality-gates.spec.ts, css-budget.spec.ts | They read served HTML, run without JavaScript, or assert geometry, focus, CSS and gates that do not depend on opacity (Playwright visibility ignores opacity, boxes are unchanged by the pending state). If the e2e run shows otherwise they should follow the same instant-mode pattern. |
+| (reviewed, no change needed) | — | tests/unit/scaffold-config.test.ts, tests/unit/quality-gates.test.ts | `check-budgets.mjs` keeps its behavior for pages without module imports and still prints the three older metrics; nanostores does not touch the pinned toolchain or CI shape. |
+
+## Formatting Outcome
+
+- Outcome: formatted
+- Discovery source: package.json scripts.format (formatter_cmd `npm run format --`)
+- Command run: `pnpm exec prettier --write <11 touched files>` in the worktree. scripts.format is `prettier --write .`, so appending paths to it would format the whole repo; the underlying formatter was invoked directly to keep the run scoped to the touched-file set.
+- Files the formatter changed: tests/unit/runtime-compiler.test.ts, tests/unit/runtime-scheduler.test.ts, tests/e2e/support/runtime.ts (the other 8 were already formatted)
+
+## Status
+
+*Approved: 2026-11-08*
+*Status: APPROVED*

@@ -1,0 +1,117 @@
+# TDD initial suite — phase 4 (test-after)
+# Source PRD: PRPs/prds/stage-3-runtime.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-3-runtime-phase-4-controls-and-navigation.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-08
+# Test files live in the feature worktree: C:/repos/site-pro/.worktrees/stage-3-runtime (paths below are relative to it)
+# Replaces the Phase 3 manifest (APPROVED, archived at PRPs/reports/stage-3-runtime/phase-3/test-suite.diff)
+# Note: the writer had no shell in this session (Read, Write, Edit, Glob only); none of the new or updated tests were executed. The command layer must run prettier on the touched files, `pnpm build`, then the full unit and e2e suites.
+
+## AC outcomes
+
+Plan AC-A1..A12 map to PRD AC-3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18, 19. Shift + Esc on real Chrome for Windows is an owner step (docs/02-experience.md); the Playwright tests dispatch the key to the page and prove only the runtime's handler, not the browser's reservation of the key.
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-3 (pulse after 4 s idle, steady before, stops at the next scroll and counts again) | NEW_TEST_REQUIRED | tests/e2e/controls-done-replay.spec.ts ("the scroll hint pulses after 4 s ..."); thresholds: tests/unit/runtime-controls-timing.test.ts ("scroll hint and idle timers") |
+| AC-3 (reduced motion never pulses) | NEW_TEST_REQUIRED | tests/e2e/controls-speed.spec.ts ("reduced motion › shows the ready dock ..." runs 6 s idle and asserts no pulse) |
+| AC-4 (filling the reserved footer slot moves no box, height or text) | NEW_TEST_REQUIRED | tests/e2e/controls-done-replay.spec.ts ("a finished 1x build shows the complete state ..." uses expectSameBoxes) |
+| AC-4 (one overlay root outside main, everything aria-hidden except the dock's control group) | EXISTING_TEST_UPDATED | tests/e2e/build-layer-show.spec.ts:93 (see ledger) ; tests/e2e/effects-absent.spec.ts "writes only opacity ..." (see ledger); new dock assertions in tests/e2e/controls-dock-a11y.spec.ts |
+| AC-5 (queued n/5 in the dock, 2/5 3/5 4/5 walk, 5x per section, the last at 1x, no queue while the last builds) | NEW_TEST_REQUIRED | tests/e2e/controls-turbo-navigation.spec.ts ("scrolling straight to Contact ...", "the dock shows the queue status ..."); queue position and text: tests/unit/runtime-scheduler-controls.test.ts ("queue status for turbo"), tests/unit/runtime-controls-timing.test.ts |
+| AC-6 (scrollY never changes during the hero, triggered sections and turbo; only Replay and Play build scroll to the top) | NEW_TEST_REQUIRED | tests/e2e/controls-turbo-navigation.spec.ts ("the runtime never moves the page ..."; scroll checks in the turbo and deep-link tests); Replay and Play build scrolling: tests/e2e/controls-done-replay.spec.ts, tests/e2e/controls-speed.spec.ts |
+| AC-7 (Esc, dock Skip button name and action, title bar click, command bar click, body click does not skip, next section waits, created text) | NEW_TEST_REQUIRED | tests/e2e/controls-skip.spec.ts; scheduler semantics: tests/unit/runtime-scheduler-controls.test.ts ("skip") |
+| AC-7 (Esc yields to the open mobile menu) | NEW_TEST_REQUIRED | tests/e2e/controls-skip.spec.ts ("on a phone"); key mapping: tests/unit/runtime-controls-timing.test.ts ("keyboard") |
+| AC-8 (Shift + Esc finishes everything within a frame, no window, complete text with Replay; triggered or not) | NEW_TEST_REQUIRED | tests/e2e/controls-skip.spec.ts (two Shift + Esc tests); tests/unit/runtime-scheduler-controls.test.ts ("run all") |
+| AC-9 (first visit to /#projects: anchor navigation, pending outline, hero and About in turbo, Projects at 1x; /#about and /#contact; nav Stack click) | NEW_TEST_REQUIRED | tests/e2e/controls-turbo-navigation.spec.ts |
+| AC-10 (focus in Stack finishes Stack and all before, focus kept; focus ring 2px accent; focus in nav, #main or the hero during the boot finishes the hero) | NEW_TEST_REQUIRED | tests/e2e/controls-focus-resize.spec.ts (Stack renders no focusable element, so its heading is given tabindex for the test); tests/unit/runtime-scheduler-controls.test.ts ("finish through") |
+| AC-12 (width change to 1024 or 800 finishes the building section, next builds with its window on the new box; height-only change at 375 continues) | NEW_TEST_REQUIRED | tests/e2e/controls-focus-resize.spec.ts; tests/unit/runtime-controls-timing.test.ts ("resize during a build") |
+| AC-13 (cycle 1x, 2x, infinity, 1x with names and sp-speed; infinity finishes current and triggered; 2x hero in about half the time; saved infinity ready dock with 5/5 sections) | NEW_TEST_REQUIRED | tests/e2e/controls-speed.spec.ts; tests/unit/runtime-controls-timing.test.ts ("speed control", "persisting the speed") |
+| AC-13 (reload with 1x or 2x saved plays the full build from the boot) | EXISTING_TEST_COVERS | tests/e2e/runtime-fallbacks.spec.ts:148 ("resolves a saved sp-speed ... and still builds"); at 2x timing: tests/e2e/controls-speed.spec.ts |
+| AC-14 (reduced motion: ready dock text, only Play build, steady cursor, no layer piece; Play build scrolls to top and plays at 1x from the boot) | NEW_TEST_REQUIRED | tests/e2e/controls-speed.spec.ts ("reduced motion"); no layer piece and nav visible: tests/e2e/build-layer-absent.spec.ts (updated) |
+| AC-14 (content visible at DOMContentLoaded under reduced motion) | EXISTING_TEST_COVERS | tests/e2e/runtime-fallbacks.spec.ts:100 |
+| AC-17 (done text, Replay, collapse after about 4 s, expand reopens and collapses again, footer summary with the same t, instant footer shows only Replay, Replay from dock and footer) | NEW_TEST_REQUIRED | tests/e2e/controls-done-replay.spec.ts; instant footer and Replay from a ready page: tests/e2e/controls-speed.spec.ts |
+| AC-18 (dock controls are real buttons with the required names, in the group "Site build", reachable by Tab with the 2px accent ring, status text hidden; main text and tree equal the no-JS page with the dock present) | NEW_TEST_REQUIRED | tests/e2e/controls-dock-a11y.spec.ts; button names while building: controls-skip.spec.ts, controls-speed.spec.ts; Replay name: controls-done-replay.spec.ts |
+| AC-18 (axe with the dock present, both themes, mid-build moments, main tree equal at every moment) | EXISTING_TEST_COVERS | tests/e2e/home-axe.spec.ts (ready dock in instant mode); tests/e2e/effects-axe.spec.ts; tests/e2e/effects-layout.spec.ts |
+| AC-19 (runtime + effects <= 18 KB, critical <= 20 KB, total JS <= 90 KB, CSS <= 25 KB) | EXISTING_TEST_COVERS | tests/unit/runtime-budget.test.ts; tests/e2e/quality-gates.spec.ts:25 (check-budgets on the real build); tests/e2e/css-budget.spec.ts:17 |
+| AC-19 (Lighthouse medians) | OUT_OF_PHASE_SCOPE | (CI `lighthouse` job) |
+| AC-1, AC-2, AC-11, AC-15, AC-16, AC-20, AC-21 | OUT_OF_PHASE_SCOPE | (delivered by phases 1 to 3 or reserved for phase 5; no phase 4 delta beyond the ledger rows below) |
+
+## Test files written this session
+
+- tests/unit/runtime-controls-timing.test.ts
+- tests/unit/runtime-scheduler-controls.test.ts
+- tests/e2e/support/controls.ts (helpers on top of support/runtime.ts, layer.ts and effects.ts, not a spec)
+- tests/e2e/controls-skip.spec.ts
+- tests/e2e/controls-speed.spec.ts
+- tests/e2e/controls-turbo-navigation.spec.ts
+- tests/e2e/controls-focus-resize.spec.ts
+- tests/e2e/controls-done-replay.spec.ts
+- tests/e2e/controls-dock-a11y.spec.ts
+
+Updated (see the lifecycle ledger):
+
+- tests/e2e/home-no-build-layer.spec.ts
+- tests/e2e/build-layer-absent.spec.ts
+- tests/e2e/build-layer-show.spec.ts
+- tests/e2e/effects-absent.spec.ts
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/home-no-build-layer.spec.ts:"has no boot terminal, dock, window, outline, selection box or skeleton in instant mode" | AC-13 / AC-14 (Stage 3 phase 4). Instant mode (saved infinity, reduced motion) now creates the ready dock (`✓ 5/5 sections` / `✔ Ready · motion reduced`), so asserting that no `.sp-dock` or `[data-build-layer]` exists contradicts the PRD. The BUILD_LAYER selector drops `.sp-dock` and `.sp-dock-fab` and gains `.sp-outline`; the test still asserts zero boot, window, selection box, skeleton and outline, and now asserts exactly one `.sp-dock`. The `[data-build-layer]` root is no longer asserted absent because the dock lives in it. No assertion that still holds was dropped. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/home-no-build-layer.spec.ts:"keeps only the dock once the hero is built: ..." | AC-17 / AC-18. `.sp-dock-fab` (the collapsed-dock button) is now a persistent hidden node in the dock, so a count of 0 would fail. The test still asserts one dock and zero boot, window, selection box and skeleton, and asserts the stronger intent: no visible `.sp-dock-fab` (`:visible` count 0). |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/build-layer-absent.spec.ts:"no layer is created › under reduced motion, with the nav visible" | AC-14. The reduced-motion page now shows the ready dock. The layerCount of 0 becomes a zero count of the show pieces (`.sp-boot, .sp-window, .sp-outline`) plus `data-state="reduced"` on the dock; the nav-visible assertion is unchanged. The no-JS and blocked-runtime tests in the same file keep the full LAYER selector unchanged. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/build-layer-absent.spec.ts:"no layer is created › with a saved infinity speed, with the nav visible" | AC-13. Same reason: the saved-infinity page shows the ready dock. Zero show pieces plus `data-state="idle"` on the dock; nav assertion unchanged. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/build-layer-show.spec.ts:"keeps the layer in one decorative overlay outside main and only catches clicks on the bars" | AC-4 / AC-18. The dock leaves the aria-hidden layer as a `role="group"` named "Site build" with five real buttons, so `controls` 0 and `unhidden` 0 over the whole root no longer hold. `controls` now counts every interactive element that is not a `.sp-dock-btn` (still 0), `unhidden` excludes only the dock subtree (still 0), and new assertions require five dock buttons, the group name, an un-hidden root, and aria-hidden on the dock's log, status and hint. Window, outline, pointer-events, animation and transition assertions are untouched. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-absent.spec.ts:"writes only opacity, clip-path and pointer-events ... with every overlay in the aria-hidden layer" | AC-4. The layer root is no longer aria-hidden as a whole (the dock group holds real buttons), so `closest('[data-build-layer][aria-hidden="true"]')` fails for every overlay. The selector is now `[data-build-layer] [aria-hidden="true"]`, which still requires each effect overlay to sit inside an aria-hidden element inside the layer and outside main. The overlay-count and property assertions are unchanged. |
+
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/build-layer-layout.spec.ts:"desktop: the bars stick under the nav and the window follows the section after a width change" (revision 1; renamed "... after a height-only resize") | AC-12 (Stage 3 phase 4). A width change now finishes the building section and removes its window, so reading `.sp-window` after the 1100 px resize threw. The sticky-bars assertion (chrome top 64 px at scrollY 150) is kept and re-asserted after the resize; the window-follows-section alignment (|dx|, |dwidth| <= 0.5) is kept but driven by a height-only resize (1280x700), which AC-12 says continues the build. The width-change half moved to a new test in the same file ("a width change finishes the building hero and leaves no window for it"), which asserts the hero is final and no window carries the hero's data-file. No assertion that still holds was dropped. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-controls-timing.test.ts:"speed control (AC-13) > names the button ..." (revision 1; phase 4 test written in attempt 1) | AC-13 / AC-18. Expected names follow src/strings.ts speedLabel after the footer-slot fix pass: `Build speed: 1×. Switch to 2×`, `Build speed: 2×. Switch to instant`, `Build speed: ∞ (instant). Switch to 1×`. State-then-next structure unchanged. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/controls-speed.spec.ts:"the speed button cycles ..." and "a saved infinity renders the ready page ..." (revision 1; attempt 1 tests) | AC-13 / AC-18. Same new accessible names (aria-label expectations at the 1x, 2x, infinity and back-to-1x steps, and the saved-infinity dock). |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/controls-dock-a11y.spec.ts:"the ready dock is a group named ..." (revision 1; attempt 1 test) | AC-18. The speed button role lookup uses `Build speed: ∞ (instant). Switch to 1×`. |
+
+Existing specs reviewed against the phase 4 behavior and left unchanged:
+
+| Spec | Verdict | Reason |
+|---|---|---|
+| tests/e2e/runtime-fallbacks.spec.ts | reviewed, no change | Reads `data-build-*` attributes, modes and section opacity; instant mode still ends every section `done`, and the 3 s watchdog and failure paths are untouched. |
+| tests/e2e/home-axe.spec.ts, effects-axe.spec.ts | reviewed, no change | They now also scan the dock group and its buttons, which have accessible names; an axe finding there would be an implementation defect, not a test to change. |
+| tests/e2e/build-layer-layout.spec.ts (other tests) | reviewed, no change | Its mobile dock geometry (343 px wide, 16 px inset, hint display none) is unaffected; the compact rule only hides the speed button. The desktop width-change test was a miss in attempt 1 and is updated in revision 1 (see ledger). |
+| tests/e2e/effects-hero.spec.ts:143 | reviewed, no change | Asserts the idle dock state at hero done, unchanged. |
+| tests/e2e/home-keyboard.spec.ts | reviewed, no change | Collects the focusable list at call time; dock buttons are hidden while the dock is `hidden` and share the global 2px ring. Residual risk: a dock button that becomes visible between the list snapshot and the Tab presses could add a stop; if the full run shows this, fix it with the instant-mode pattern, not a looser check. |
+| tests/e2e/home-mobile-menu.spec.ts, theme.spec.ts | reviewed, no change | Menu and theme controls; no dock button name matches their role lookups. |
+| tests/e2e/home-no-build-layer.spec.ts (other tests) | reviewed, no change | Main text equality, transition durations (the hint pulse is an animation, not a transition), reduced-motion no-animation (the pulse is disabled there) and the served HTML check still hold. |
+
+## Notes for the reviewer
+
+- The writer had no shell; every selector and timing comes from reading `src/runtime/layer.ts`, `scheduler.ts`, `main.ts`, `CommandDock.ts`, `BuildWindow.ts` and `focus-rule.ts`.
+- Clocked tests click page controls with `element.click()` in `page.evaluate` (Playwright's click waits for animation frames, which the fake clock freezes); window bar clicks use `page.mouse.click`, which does not. Keyboard input uses `page.keyboard.press`.
+- Sampled moments: idle thresholds are sampled at 3 s and 4.5 s (4 s threshold, 500 ms margin); the done collapse at 2 s and 5 s; turbo and 1x durations carry 150 to 300 ms tolerances (progress rounds to 1 %, 20 ms steps). The 2x hero check accepts 1100 to 2100 ms because the boot runs a few frames in real time before the clock pauses; 1x would exceed 2400 ms.
+- The deep-link hero check is an upper bound only (a fifth of 3100 ms plus 250 ms), since the hero may run a few frames at 1x before the deep link queues it.
+- Stack renders no focusable element, so the Stack focus test adds `tabindex="0"` to its heading; the ring check uses a Projects card link.
+- Shift + Esc in a real Chrome for Windows window is not claimed here (owner step).
+
+## Revision 1
+
+Attempt 2 of the A.4.5 retry, driven by three R-GREEN-LEGITIMATE findings. All AC outcomes and earlier ledger rows are preserved unchanged; the rows added above are marked "revision 1".
+
+1. Stale pre-existing spec: tests/e2e/build-layer-layout.spec.ts desktop test read `.sp-window` after a width change, which AC-12 now ends. Split into a height-only resize test (sticky bars plus window alignment kept) and a width-change test (hero final, no window for the hero). The new width-change test imports `snapshot`, `layerState` and `isFinal` from the existing support helpers.
+2. Speed button names now carry the visible glyphs (src/strings.ts speedLabel; AC-18 label-content-name-mismatch). Updated tests/unit/runtime-controls-timing.test.ts, tests/e2e/controls-speed.spec.ts and tests/e2e/controls-dock-a11y.spec.ts to the names in the source.
+3. Footer build slot and speed-button axe findings were fixed in production; tests/e2e/controls-done-replay.spec.ts, build-layer-layout.spec.ts:64, effects-layout.spec.ts and effects-axe.spec.ts are untouched, as instructed.
+
+Files touched this revision: tests/e2e/build-layer-layout.spec.ts, tests/unit/runtime-controls-timing.test.ts, tests/e2e/controls-speed.spec.ts, tests/e2e/controls-dock-a11y.spec.ts. The writer still had no shell; the command layer must run prettier on them (the `import { DESKTOP_VIEWPORT, runUntil, sleep, snapshot }` line in build-layer-layout.spec.ts may need wrapping) and re-run the suites.
+
+## Formatting Outcome
+
+- Outcome: formatted (by the /relay-write-test command layer, Phase A.4)
+- Discovery source: package.json scripts.format (formatter_cmd `npm run format --`)
+- Command run: `pnpm exec prettier --write <13 touched files>` in the worktree (the underlying formatter, kept scoped; scripts.format is `prettier --write .`, which would format the whole repo)
+- Files the formatter changed: 7 of 13 (runtime-scheduler-controls.test.ts, controls-skip, controls-speed, controls-turbo-navigation, controls-focus-resize, controls-done-replay, build-layer-show); 6 already formatted
+
+- Revision 1 (command layer): `pnpm exec prettier --write` on tests/e2e/build-layer-layout.spec.ts, tests/unit/runtime-controls-timing.test.ts, tests/e2e/controls-speed.spec.ts, tests/e2e/controls-dock-a11y.spec.ts in the worktree, exit 0 (scoped; scripts.format is `prettier --write .`).
+
+## Status
+
+*Approved: 2026-11-08*
+*Status: APPROVED*

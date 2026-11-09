@@ -1,0 +1,39 @@
+{
+  "attempt": 1,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [
+    "src/components/build/SelectionBox.ts",
+    "src/components/build/Skeleton.ts",
+    "src/components/build/TextOverlay.ts",
+    "src/runtime/compiler.ts",
+    "src/runtime/effect-dom.ts",
+    "src/runtime/effect-timing.ts",
+    "src/runtime/effects.ts",
+    "src/runtime/layer.ts",
+    "src/runtime/main.ts",
+    "src/sections/about.build.ts",
+    "src/sections/contact.build.ts",
+    "src/sections/hero.build.ts",
+    "src/sections/pacing.ts",
+    "src/sections/projects.build.ts",
+    "src/sections/stack.build.ts",
+    "src/styles/build-layer.css",
+    "src/styles/build-pending.css"
+  ],
+  "validation": {
+    "level_1": "PASS",
+    "level_2": "PASS",
+    "level_3": "FAIL"
+  },
+  "plan_validation_defect": {
+    "level": 3,
+    "command": "Scenario D: await runUntil(page, (s) => s.states[2] === 'building' && s.p * tl.duration >= cards[0].start + 400, 90000, 'first card window command', 20); followed by the check that .sp-window-cmd equals the truncated cards[0].call",
+    "observed": "FAIL: window command is the call cut to 29 characters with an ellipsis: proje (the bar already shows card 1, which starts at card0.start + 330)",
+    "prd_refs": [
+      "plan AC-A2 (traces to PRD AC-20: each project card starts 120 ms before the previous card ends)",
+      "plan AC-A7 (traces to PRD AC-1 and AC-20: window command cut to at most 29 characters)"
+    ],
+    "reason": "The sample moment +400 ms is after card 1 starts (+330 ms pitch from the plan's own pacing), so the command bar shows card 1. Sampling at +320 ms passes, including the truncation, pointer-event and hit-test checks."
+  },
+  "base_commit": "0a0633e5cd89d41124558ce23e4b47aba6a93ea2"
+}

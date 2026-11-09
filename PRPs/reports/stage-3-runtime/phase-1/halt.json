@@ -1,0 +1,33 @@
+{
+  "outcome": "PLAN_VALIDATION_DEFECT",
+  "plan_validation_defect": {
+    "level": 3,
+    "command": "check(!/data-build-state/.test(html), 'no runtime state without JavaScript');   (scenario D, where html = await pageD.content())",
+    "observed": "FAIL: no runtime state without JavaScript. The only match in dist/index.html is the inlined pending stylesheet selector html[data-build-mode=pending] main>section[data-build]:not([data-build-state=done]):not([data-build-state=skipped]); no element carries the attribute.",
+    "prd_refs": [
+      "PRD AC-15 (PRPs/prds/stage-3-runtime.prd.md:83)",
+      "plan Task 9 build-pending.css ACTION",
+      "plan AC-A1"
+    ],
+    "reason": "The scenario D regex scans the whole serialized page, including the inline <style> that Task 9 requires to name [data-build-state=done] and [data-build-state=skipped]; Astro inlines that small CSS into index.html, so the plan's own CSS makes the assertion fail. The DOM-level check holds: with JavaScript disabled no element has data-build-state, data-build-mode is absent and About has opacity 1."
+  },
+  "attempt": 1,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "verdict": "IMPLEMENTATION_COMPLETE",
+      "levels": {
+        "l1": "PASS",
+        "l2": "PASS",
+        "l3": "FAIL (scenario D only)"
+      }
+    }
+  ],
+  "claim_check": {
+    "command_in_plan": "yes, ## Validation Commands line 494",
+    "observed_from_this_attempt": "yes (validation_outputs level_3)",
+    "prd_refs": "PRD AC-15 resolves to PRPs/prds/stage-3-runtime.prd.md:83; the two other entries point at the plan (Task 9, AC-A1), supplementary context rather than PRD lines",
+    "other_levels": "level_1 PASS, level_2 PASS"
+  },
+  "note": "The implementer also reported that the full Level 3 heredoc could not be parsed by the Bash tool (unexpected EOF looking for a matching quote) and ran its scenarios as equivalent inline scripts; and that Task 8 (remove data-build-mode in instant mode) contradicts Level 3 scenarios E/F and AC-A5 (instant at DOMContentLoaded), resolved by keeping instant."
+}

@@ -1,0 +1,1478 @@
+diff --git a/astro.config.mjs b/astro.config.mjs
+index 3eaaf25..c10e743 100644
+--- a/astro.config.mjs
++++ b/astro.config.mjs
+@@ -1,7 +1,24 @@
++import { readFileSync } from 'node:fs';
++import { fileURLToPath } from 'node:url';
+ import { defineConfig } from 'astro/config';
+ import react from '@astrojs/react';
++import { verifyBuildTargets } from './scripts/verify-build-targets.mjs';
++
++const verifyTargets = {
++  name: 'verify-build-targets',
++  hooks: {
++    'astro:build:done': ({ dir }) => {
++      const html = readFileSync(
++        fileURLToPath(new URL('index.html', dir)),
++        'utf8',
++      );
++      const problems = verifyBuildTargets(html);
++      if (problems.length > 0) throw new Error(problems.join('\n'));
++    },
++  },
++};
+ 
+ export default defineConfig({
+   output: 'static',
+-  integrations: [react()],
++  integrations: [react(), verifyTargets],
+ });
+diff --git a/package.json b/package.json
+index 4d24284..6ff57ca 100644
+--- a/package.json
++++ b/package.json
+@@ -24,6 +24,7 @@
+   "dependencies": {
+     "@astrojs/react": "^7.1.2",
+     "astro": "^6.4.8",
++    "nanostores": "^1.5.5",
+     "react": "^19.3.1",
+     "react-dom": "^19.3.1"
+   },
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index 3af17d6..6bdc6fb 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -172,6 +172,9 @@ importers:
+       astro:
+         specifier: ^6.4.8
+         version: 6.4.8(@types/node@26.6.6)(lightningcss@1.33.0)(rollup@4.67.5)(supports-color@7.2.0)(yaml@2.9.1)
++      nanostores:
++        specifier: ^1.5.5
++        version: 1.5.5
+       react:
+         specifier: ^19.3.1
+         version: 19.3.1
+@@ -3313,6 +3316,10 @@ packages:
+     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+     hasBin: true
+ 
++  nanostores@1.5.5:
++    resolution: {integrity: sha512-FixtE239Gl6Gz0ZGCK0WzvNwObNCIwVT+L7zQcf1QgcA6AzBxblzqe9OT88qiucNkhsjSOqiogSaF5jVbJiqSA==}
++    engines: {node: ^20.0.0 || >=22.0.0}
++
+   natural-compare@1.4.0:
+     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+ 
+@@ -8114,6 +8121,8 @@ snapshots:
+ 
+   nanoid@3.3.20: {}
+ 
++  nanostores@1.5.5: {}
++
+   natural-compare@1.4.0: {}
+ 
+   negotiator@0.6.3: {}
+diff --git a/scripts/check-budgets.mjs b/scripts/check-budgets.mjs
+index bb47930..3edc190 100644
+--- a/scripts/check-budgets.mjs
++++ b/scripts/check-budgets.mjs
+@@ -1,11 +1,12 @@
+ #!/usr/bin/env node
+ // AC-10: gzip size budgets measured on what the pages actually load.
+ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+-import { posix, resolve } from 'node:path';
++import { posix, relative, resolve } from 'node:path';
+ import { pathToFileURL } from 'node:url';
+ import { gzipSync } from 'node:zlib';
+ 
+ const JS_TOTAL_KB = 90;
++const JS_RUNTIME_KB = 18;
+ const JS_CRITICAL_KB = 20;
+ const CSS_TOTAL_KB = 25;
+ 
+@@ -33,8 +34,11 @@ function parsePage(html) {
+       !/\btype\s*=\s*["']module["']/i.test(m[1]) &&
+       !/\b(async|defer)\b/i.test(m[1]);
+     const critical = headEnd !== -1 && m.index < headEnd;
+-    if (src) page.scripts.push({ src, critical: critical && blocking });
+-    else if (m[2].trim()) page.inlineJs.push({ body: m[2], critical });
++    const module = /\btype\s*=\s*["']module["']/i.test(m[1]);
++    if (src) page.scripts.push({ src, critical: critical && blocking, module });
++    else if (m[2].trim()) {
++      page.inlineJs.push({ body: m[2], critical, module });
++    }
+   }
+   for (const m of html.matchAll(/<link\b[^>]*>/gi)) {
+     if (/\brel\s*=\s*["']?stylesheet/i.test(m[0])) {
+@@ -48,6 +52,19 @@ function parsePage(html) {
+   return page;
+ }
+ 
++// Specifiers of static imports, re-exports and dynamic imports in a JS file.
++function importSpecifiers(text) {
++  const found = [];
++  const patterns = [
++    /\b(?:import|export)\s*(?:[\w$*{},\s]*?\bfrom\s*)?["']([^"']+)["']/g,
++    /\bimport\(\s*["']([^"']+)["']\s*\)/g,
++  ];
++  for (const re of patterns) {
++    for (const m of text.matchAll(re)) found.push(m[1]);
++  }
++  return found;
++}
++
+ export function measureBudgets(distDir) {
+   const files = walk(distDir);
+   const htmlFiles = files.filter((f) => f.endsWith('.html'));
+@@ -76,22 +93,50 @@ export function measureBudgets(distDir) {
+     return abs;
+   };
+ 
++  // Every JS file reachable from `entry` through relative or root-absolute
++  // `.js` imports, entry included.
++  const reach = (entry, seen) => {
++    const stack = [entry];
++    while (stack.length > 0) {
++      const abs = stack.pop();
++      if (seen.has(abs)) continue;
++      seen.add(abs);
++      const from = relative(distDir, abs).replace(/\\/g, '/');
++      for (const spec of importSpecifiers(readFileSync(abs, 'utf8'))) {
++        if (!/^(?:\.{1,2}\/|\/(?!\/))/.test(spec)) continue;
++        const path = spec.split(/[?#]/)[0];
++        if (!path.endsWith('.js')) continue;
++        const rel = path.startsWith('/')
++          ? path.slice(1)
++          : posix.join(posix.dirname(from), path);
++        const next = resolve(distDir, rel);
++        if (!existsSync(next)) continue;
++        referenced.add(rel);
++        stack.push(next);
++      }
++    }
++  };
++
++  const infos = [];
+   for (const rel of htmlFiles) {
+     const page = parsePage(readFileSync(resolve(distDir, rel), 'utf8'));
++    const info = { rel, page, reached: new Set(), entries: [], critical: 0 };
++    infos.push(info);
+     let critical = page.inlineJs
+       .filter((s) => s.critical)
+       .reduce((sum, s) => sum + gz(s.body), 0);
+     for (const s of page.scripts) {
+       const abs = resolveAsset(s.src, rel);
+       if (!abs) continue;
+-      jsFiles.add(abs);
++      reach(abs, info.reached);
++      if (s.module) info.entries.push(abs);
+       if (s.critical) critical += gz(readFileSync(abs));
+     }
+     for (const href of page.styles) {
+       const abs = resolveAsset(href, rel);
+       if (abs) cssFiles.add(abs);
+     }
+-    maxCritical = Math.max(maxCritical, critical);
++    info.critical = critical;
+     maxInlineJs = Math.max(
+       maxInlineJs,
+       page.inlineJs.reduce((sum, s) => sum + gz(s.body), 0),
+@@ -102,10 +147,40 @@ export function measureBudgets(distDir) {
+     );
+   }
+ 
++  for (const { reached } of infos) {
++    for (const abs of reached) jsFiles.add(abs);
++  }
++
++  // The runtime is what only the home page loads: its module entries, their
++  // imports and its own inline module bodies.
++  let runtimeBytes = 0;
++  const home = infos.find((i) => i.rel === 'index.html');
++  if (home) {
++    const others = infos.filter((i) => i !== home);
++    const otherFiles = new Set(others.flatMap((i) => [...i.reached]));
++    const otherBodies = new Set(
++      others.flatMap((i) => i.page.inlineJs.map((s) => s.body)),
++    );
++    for (const abs of home.reached) {
++      if (!otherFiles.has(abs)) runtimeBytes += gz(readFileSync(abs));
++    }
++    for (const abs of home.entries) {
++      if (!otherFiles.has(abs)) home.critical += gz(readFileSync(abs));
++    }
++    for (const s of home.page.inlineJs) {
++      if (s.module && !otherBodies.has(s.body)) {
++        runtimeBytes += gz(s.body);
++        if (!s.critical) home.critical += gz(s.body);
++      }
++    }
++  }
++  for (const info of infos) maxCritical = Math.max(maxCritical, info.critical);
++
+   const sizeOf = (set) =>
+     [...set].reduce((sum, abs) => sum + gz(readFileSync(abs)), 0);
+   const jsTotal = kb(sizeOf(jsFiles) + maxInlineJs);
+   const jsCritical = kb(maxCritical);
++  const jsRuntime = kb(runtimeBytes);
+   const cssTotal = kb(sizeOf(cssFiles) + maxInlineCss);
+ 
+   const assets = files.filter((f) => /\.(js|css)$/.test(f));
+@@ -122,6 +197,11 @@ export function measureBudgets(distDir) {
+       `JS total ${jsTotal.toFixed(1)} KB exceeds ${JS_TOTAL_KB} KB`,
+     );
+   }
++  if (jsRuntime > JS_RUNTIME_KB) {
++    problems.push(
++      `JS runtime ${jsRuntime.toFixed(1)} KB exceeds ${JS_RUNTIME_KB} KB`,
++    );
++  }
+   if (jsCritical > JS_CRITICAL_KB) {
+     problems.push(
+       `JS critical ${jsCritical.toFixed(1)} KB exceeds ${JS_CRITICAL_KB} KB`,
+@@ -136,6 +216,7 @@ export function measureBudgets(distDir) {
+   return {
+     jsTotal,
+     jsCritical,
++    jsRuntime,
+     cssTotal,
+     distWideJs: distWide('.js'),
+     distWideCss: distWide('.css'),
+@@ -149,6 +230,9 @@ function main() {
+   const distDir = resolve(flag === -1 ? 'dist' : process.argv[flag + 1]);
+   const r = measureBudgets(distDir);
+   console.log(`JS total ${r.jsTotal.toFixed(1)} / ${JS_TOTAL_KB} KB gzip`);
++  console.log(
++    `JS runtime ${r.jsRuntime.toFixed(1)} / ${JS_RUNTIME_KB} KB gzip`,
++  );
+   console.log(
+     `JS critical ${r.jsCritical.toFixed(1)} / ${JS_CRITICAL_KB} KB gzip`,
+   );
+@@ -164,4 +248,9 @@ function main() {
+   console.log('PASS: budgets within limits');
+ }
+ 
+-if (import.meta.url === pathToFileURL(process.argv[1]).href) main();
++if (
++  process.argv[1] &&
++  import.meta.url === pathToFileURL(process.argv[1]).href
++) {
++  main();
++}
+diff --git a/scripts/verify-build-targets.mjs b/scripts/verify-build-targets.mjs
+new file mode 100644
+index 0000000..48b4d54
+--- /dev/null
++++ b/scripts/verify-build-targets.mjs
+@@ -0,0 +1,32 @@
++// Checks that every compiled build step names a target present in the page.
++const decode = (value) =>
++  value
++    .replace(/&quot;/g, '"')
++    .replace(/&#39;/g, "'")
++    .replace(/&lt;/g, '<')
++    .replace(/&gt;/g, '>')
++    .replace(/&amp;/g, '&');
++
++export function verifyBuildTargets(html) {
++  const problems = [];
++  for (const m of html.matchAll(
++    /<section\b[^>]*?\sdata-build="([^"]*)"[^>]*>/g,
++  )) {
++    let timeline;
++    try {
++      timeline = JSON.parse(decode(m[1]));
++    } catch {
++      const id = /\sid="([^"]*)"/.exec(m[0])?.[1] ?? 'unknown';
++      problems.push(`build script "${id}": data-build is not valid JSON`);
++      continue;
++    }
++    timeline.steps.forEach((step, i) => {
++      if (!html.includes(`data-build-target="${step.target}"`)) {
++        problems.push(
++          `build script "${timeline.section}" step ${i} (${step.call}): target "${step.target}" not found in the page`,
++        );
++      }
++    });
++  }
++  return problems;
++}
+diff --git a/src/layouts/Base.astro b/src/layouts/Base.astro
+index 26f2b6f..0c97616 100644
+--- a/src/layouts/Base.astro
++++ b/src/layouts/Base.astro
+@@ -2,15 +2,17 @@
+ import '../styles/tokens.css';
+ import '../styles/fonts.css';
+ import '../styles/base.css';
++import { SPEED_STORAGE_KEY, WATCHDOG_MS } from '../scripts/build-mode';
+ import { THEME_STORAGE_KEY } from '../scripts/theme';
+ import { strings } from '../strings';
+ 
+ interface Props {
+   title: string;
+   description: string;
++  build?: boolean;
+ }
+ 
+-const { title, description } = Astro.props;
++const { title, description, build = false } = Astro.props;
+ ---
+ 
+ <html lang="en" data-theme="midnight">
+@@ -31,6 +33,39 @@ const { title, description } = Astro.props;
+           theme === 'daylight' ? 'light' : 'dark';
+       })();
+     </script>
++    {build && <script
++      is:inline
++      define:vars={{ speedKey: SPEED_STORAGE_KEY, watchdogMs: WATCHDOG_MS }}
++    >
++      // Keep in sync with parseSpeed and resolveMode in src/scripts/build-mode.ts.
++      (function () {
++        const root = document.documentElement;
++        let speed = '1';
++        try {
++          const raw = localStorage.getItem(speedKey);
++          if (raw === '2' || raw === 'inf') speed = raw;
++        } catch {
++          // Storage may be blocked; keep the default speed.
++        }
++        const reduced = window.matchMedia(
++          '(prefers-reduced-motion: reduce)',
++        ).matches;
++        const mode = reduced || speed === 'inf' ? 'instant' : 'pending';
++        root.setAttribute('data-build-speed', speed);
++        root.setAttribute('data-build-mode', mode);
++        if (mode === 'pending') {
++          setTimeout(function () {
++            if (
++              !root.hasAttribute('data-build-started') &&
++              root.getAttribute('data-build-mode') === 'pending'
++            ) {
++              root.removeAttribute('data-build-mode');
++              root.setAttribute('data-build-status', 'failed');
++            }
++          }, watchdogMs);
++        }
++      })();
++    </script>}
+     <link
+       rel="preload"
+       href="/fonts/geist-latin-wght-normal.woff2"
+diff --git a/src/pages/index.astro b/src/pages/index.astro
+index 95bf6f6..c7feccd 100644
+--- a/src/pages/index.astro
++++ b/src/pages/index.astro
+@@ -11,6 +11,7 @@ import Projects from '../sections/Projects.astro';
+ import Stack from '../sections/Stack.astro';
+ import { profileLinks } from '../sections/profile-links';
+ import '../styles/home.css';
++import '../styles/build-pending.css';
+ 
+ const profileEntry = await getEntry('profile', 'profile');
+ const stackEntry = await getEntry('stack', 'stack');
+@@ -28,7 +29,7 @@ const title = `${profile.headline.replace(/\.$/, '')} - ${profile.role}`;
+ const description = profile.subtitle;
+ ---
+ 
+-<Base title={title} description={description}>
++<Base title={title} description={description} build>
+   <div class="sp-page">
+     <Backdrop glows={DEFAULT_GLOWS} />
+     <div class="sp-page-content">
+@@ -43,4 +44,7 @@ const description = profile.subtitle;
+       <Footer sourceHref={sourceHref} owner={profile.name} />
+     </div>
+   </div>
++  <script>
++    import '../runtime/main';
++  </script>
+ </Base>
+diff --git a/src/runtime/clock.ts b/src/runtime/clock.ts
+new file mode 100644
+index 0000000..670aad4
+--- /dev/null
++++ b/src/runtime/clock.ts
+@@ -0,0 +1,49 @@
++export interface Clock {
++  now(): number;
++  onFrame(cb: (now: number) => void): () => void;
++}
++
++export const realClock: Clock = {
++  now: () => performance.now(),
++  onFrame(cb) {
++    let handle = 0;
++    let active = true;
++    const tick = (now: number) => {
++      if (!active) return;
++      handle = requestAnimationFrame(tick);
++      cb(now);
++    };
++    handle = requestAnimationFrame(tick);
++    return () => {
++      active = false;
++      cancelAnimationFrame(handle);
++    };
++  },
++};
++
++export interface ManualClock extends Clock {
++  advance(ms: number, step?: number): void;
++}
++
++export function createManualClock(start = 0): ManualClock {
++  let current = start;
++  const listeners = new Set<(now: number) => void>();
++  return {
++    now: () => current,
++    onFrame(cb) {
++      listeners.add(cb);
++      return () => {
++        listeners.delete(cb);
++      };
++    },
++    advance(ms, step = 16) {
++      let remaining = ms;
++      while (remaining > 0) {
++        const chunk = Math.min(step, remaining);
++        current += chunk;
++        remaining -= chunk;
++        for (const cb of [...listeners]) cb(current);
++      }
++    },
++  };
++}
+diff --git a/src/runtime/compiler.ts b/src/runtime/compiler.ts
+new file mode 100644
+index 0000000..f84cc27
+--- /dev/null
++++ b/src/runtime/compiler.ts
+@@ -0,0 +1,110 @@
++import {
++  EFFECTS,
++  type BuildScript,
++  type BuildStep,
++  type EffectName,
++  type Timeline,
++  type TimelineStep,
++} from './types';
++
++// Provisional effect durations in ms at 1x. Phase 3 tunes this table.
++export const EFFECT_DURATION_MS: Record<
++  EffectName,
++  (step: BuildStep) => number | string
++> = {
++  select: () => 150,
++  skeleton: () => 300,
++  'type-text': (s) =>
++    s.text === undefined ? 'needs text' : 150 + s.text.length * 28,
++  decode: (s) =>
++    s.text === undefined ? 'needs text' : 150 + s.text.length * 20,
++  'resolve-lines': (s) =>
++    s.count === undefined ? 'needs count' : 150 + s.count * 60,
++  pop: () => 300,
++  stagger: (s) => (s.count === undefined ? 'needs count' : 150 + s.count * 80),
++  'build-card': () => 600,
++};
++
++const COMMAND_START_MS = 250;
++const COMMAND_CHAR_MS = 40;
++const COMMAND_SETTLE_MS = 80;
++const WINDOW_OPEN_MS = 100;
++const WINDOW_HOLD_MS = 280;
++const DEFAULT_SETTLE_MS = 300;
++const CLOSING_MS = 500;
++
++function fail(script: BuildScript, i: number, call: string, problem: string) {
++  return new Error(
++    `build script "${script.section}" step ${i} (${call}): ${problem}`,
++  );
++}
++
++function durationOf(script: BuildScript, step: BuildStep, i: number): number {
++  if (!(EFFECTS as readonly string[]).includes(step.effect)) {
++    throw fail(script, i, step.call, `unknown effect "${step.effect}"`);
++  }
++  if (step.target.trim() === '') {
++    throw fail(script, i, step.call, 'empty target');
++  }
++  if (/[<>]/.test(step.call)) {
++    throw fail(script, i, step.call, 'call must not contain < or >');
++  }
++  const result = EFFECT_DURATION_MS[step.effect](step);
++  if (typeof result === 'string') throw fail(script, i, step.call, result);
++  return result;
++}
++
++export function compileScript(script: BuildScript): Timeline {
++  if (script.steps.length === 0) {
++    throw new Error(`build script "${script.section}": no steps`);
++  }
++  if (/[<>]/.test(script.command)) {
++    throw new Error(
++      `build script "${script.section}": command must not contain < or >`,
++    );
++  }
++  const commandEnd =
++    script.timing?.commandEnd ??
++    COMMAND_START_MS +
++      script.command.length * COMMAND_CHAR_MS +
++      COMMAND_SETTLE_MS;
++  const windowEnd = script.timing?.windowEnd ?? commandEnd + WINDOW_OPEN_MS;
++  const buildStart = script.timing?.buildStart ?? windowEnd + WINDOW_HOLD_MS;
++
++  const steps: TimelineStep[] = [];
++  let previousEnd = buildStart;
++  script.steps.forEach((step, i) => {
++    const length = durationOf(script, step, i);
++    const start =
++      i === 0
++        ? buildStart + (step.gap ?? 0)
++        : previousEnd + (step.gap ?? 0) - (step.overlap ?? 0);
++    const end = start + length;
++    steps.push({
++      call: step.call,
++      target: step.target,
++      effect: step.effect,
++      start,
++      end,
++    });
++    previousEnd = end;
++  });
++
++  const createdAt = previousEnd + (script.settle ?? DEFAULT_SETTLE_MS);
++  return {
++    v: 1,
++    section: script.section,
++    file: script.file,
++    command: script.command,
++    commandEnd,
++    windowEnd,
++    buildStart,
++    steps,
++    createdAt,
++    duration: createdAt + CLOSING_MS,
++  };
++}
++
++export function serializeTimeline(timeline: Timeline): string {
++  return JSON.stringify(timeline);
++}
+diff --git a/src/runtime/main.ts b/src/runtime/main.ts
+new file mode 100644
+index 0000000..07e5ecf
+--- /dev/null
++++ b/src/runtime/main.ts
+@@ -0,0 +1,102 @@
++import { parseSpeed } from '../scripts/build-mode';
++import { currentSection, progress, speed, status } from '../stores/build';
++import { realClock } from './clock';
++import { createScheduler } from './scheduler';
++import { observeSections } from './triggers';
++import type { SectionId, Timeline } from './types';
++
++const IDS: SectionId[] = ['top', 'about', 'projects', 'stack', 'contact'];
++
++const root = document.documentElement;
++let cancelFrame: (() => void) | null = null;
++let stopObserver: (() => void) | null = null;
++const sections: HTMLElement[] = [];
++
++function reveal(): void {
++  cancelFrame?.();
++  stopObserver?.();
++  for (const s of sections) s.setAttribute('data-build-state', 'done');
++  root.removeAttribute('data-build-mode');
++  status.set('failed');
++}
++
++function guard<A extends unknown[]>(fn: (...args: A) => void) {
++  return (...args: A): void => {
++    try {
++      fn(...args);
++    } catch (error) {
++      reveal();
++      console.error(error);
++    }
++  };
++}
++
++function start(): void {
++  for (const id of IDS) {
++    const el = document.getElementById(id);
++    if (!el) throw new Error(`section #${id} is missing`);
++    sections.push(el);
++  }
++  const timelines = sections.map(
++    (s) => JSON.parse(s.dataset.build ?? '') as Timeline,
++  );
++  const startSpeed = parseSpeed(root.dataset.buildSpeed);
++  speed.set(startSpeed);
++  for (const s of sections) s.setAttribute('data-build-state', 'pending');
++
++  currentSection.subscribe((v) => {
++    if (v === null) root.removeAttribute('data-build-section');
++    else root.setAttribute('data-build-section', v);
++  });
++  progress.subscribe((v) =>
++    root.setAttribute('data-build-progress', String(v)),
++  );
++  status.subscribe((v) => root.setAttribute('data-build-status', v));
++  speed.subscribe((v) => root.setAttribute('data-build-speed', v));
++
++  if (root.dataset.buildMode === 'instant') {
++    for (const s of sections) s.setAttribute('data-build-state', 'done');
++    status.set('instant');
++    status.set('done');
++    // data-build-mode stays "instant": the pending CSS never matches it, and
++    // AC-A5 has <html> carry the resolved mode.
++    root.setAttribute('data-build-started', '');
++    return;
++  }
++
++  const byId = new Map(sections.map((s) => [s.id, s]));
++  const scheduler = createScheduler({
++    clock: {
++      now: realClock.now,
++      onFrame(cb) {
++        const cancel = realClock.onFrame(guard(cb));
++        cancelFrame = cancel;
++        return cancel;
++      },
++    },
++    timelines,
++    speed: startSpeed,
++    host: {
++      onState: guard((id, state) => {
++        byId.get(id)?.setAttribute('data-build-state', state);
++        if (state !== 'pending' && status.get() !== 'building') {
++          status.set('building');
++        }
++      }),
++      onProgress: guard((section, fraction) => {
++        currentSection.set(section);
++        progress.set(fraction);
++      }),
++      onIdle: guard(() => status.set('idle')),
++      onAllDone: guard(() => {
++        status.set('done');
++        root.removeAttribute('data-build-mode');
++      }),
++      isHidden: () => document.visibilityState === 'hidden',
++    },
++  });
++  stopObserver = observeSections(sections, guard(scheduler.trigger));
++  root.setAttribute('data-build-started', '');
++}
++
++guard(start)();
+diff --git a/src/runtime/scheduler.ts b/src/runtime/scheduler.ts
+new file mode 100644
+index 0000000..c078f02
+--- /dev/null
++++ b/src/runtime/scheduler.ts
+@@ -0,0 +1,193 @@
++import type { Speed } from '../scripts/build-mode';
++import type { Clock } from './clock';
++import type { SectionId, SectionState, Timeline } from './types';
++
++export const TURBO_FACTOR = 5;
++export const MAX_FRAME_MS = 50;
++
++export interface SchedulerHost {
++  onState(id: SectionId, state: SectionState): void;
++  onProgress(section: SectionId | null, fraction: number): void;
++  onIdle(): void;
++  onAllDone(): void;
++  isHidden(): boolean;
++}
++
++export interface SchedulerOptions {
++  clock: Clock;
++  timelines: Timeline[];
++  speed: Speed;
++  host: SchedulerHost;
++}
++
++export interface Scheduler {
++  trigger(id: SectionId): void;
++  finish(id: SectionId): void;
++  setSpeed(speed: Speed): void;
++  destroy(): void;
++}
++
++interface Entry {
++  timeline: Timeline;
++  state: SectionState;
++  t: number;
++}
++
++function stateAt(timeline: Timeline, t: number): SectionState {
++  if (t >= timeline.duration) return 'done';
++  if (t >= timeline.createdAt) return 'closing';
++  if (t >= timeline.buildStart) return 'building';
++  // The short hold between the window opening (windowEnd) and the build start
++  // is also reported as "window".
++  if (t >= timeline.commandEnd) return 'window';
++  return 'command';
++}
++
++export function createScheduler(options: SchedulerOptions): Scheduler {
++  const { clock, host } = options;
++  const entries: Entry[] = options.timelines.map((timeline) => ({
++    timeline,
++    state: 'pending',
++    t: 0,
++  }));
++  let speed: Speed = options.speed;
++  let active = -1;
++  let unsubscribe: (() => void) | null = null;
++  let lastNow = 0;
++  let lastPublished = '';
++  let allDoneFired = false;
++
++  const indexOf = (id: SectionId) =>
++    entries.findIndex((e) => e.timeline.section === id);
++
++  const setState = (entry: Entry, state: SectionState) => {
++    if (entry.state === state) return;
++    entry.state = state;
++    host.onState(entry.timeline.section, state);
++  };
++
++  const publish = (section: SectionId | null, fraction: number) => {
++    const rounded = Math.round(fraction * 100) / 100;
++    const key = `${section ?? ''}:${rounded}`;
++    if (key === lastPublished) return;
++    lastPublished = key;
++    host.onProgress(section, rounded);
++  };
++
++  const isFinished = (e: Entry) => e.state === 'done' || e.state === 'skipped';
++
++  const stop = () => {
++    unsubscribe?.();
++    unsubscribe = null;
++  };
++
++  const checkAllDone = () => {
++    if (!allDoneFired && entries.every(isFinished)) {
++      allDoneFired = true;
++      host.onAllDone();
++    }
++  };
++
++  const startNext = () => {
++    const next = entries.findIndex((e) => e.state === 'queued');
++    if (next === -1) {
++      active = -1;
++      stop();
++      publish(null, 0);
++      host.onIdle();
++      checkAllDone();
++      return;
++    }
++    active = next;
++    const entry = entries[next];
++    entry.t = 0;
++    setState(entry, stateAt(entry.timeline, 0));
++    publish(entry.timeline.section, 0);
++    if (!unsubscribe) {
++      lastNow = clock.now();
++      unsubscribe = clock.onFrame(onFrame);
++    }
++  };
++
++  const complete = (entry: Entry) => {
++    setState(entry, 'done');
++    if (entries[active] === entry) startNext();
++    else checkAllDone();
++  };
++
++  function onFrame(now: number): void {
++    if (host.isHidden()) {
++      // Time spent hidden is never accumulated: re-measure from the next
++      // visible frame.
++      lastNow = now;
++      return;
++    }
++    const dt = Math.min(Math.max(now - lastNow, 0), MAX_FRAME_MS);
++    lastNow = now;
++    if (active === -1) return;
++    const entry = entries[active];
++    const turbo = entries[active + 1]?.state === 'queued';
++    const factor = (speed === '2' ? 2 : 1) * (turbo ? TURBO_FACTOR : 1);
++    entry.t += dt * factor;
++    if (entry.t >= entry.timeline.duration) {
++      publish(entry.timeline.section, 1);
++      complete(entry);
++      return;
++    }
++    setState(entry, stateAt(entry.timeline, entry.t));
++    publish(entry.timeline.section, entry.t / entry.timeline.duration);
++  }
++
++  const finishUpTo = (index: number) => {
++    for (let i = 0; i <= index; i++) {
++      const entry = entries[i];
++      if (!isFinished(entry)) {
++        const wasActive = i === active;
++        setState(entry, 'done');
++        if (wasActive) active = -1;
++      }
++    }
++    if (active === -1) startNext();
++    else checkAllDone();
++  };
++
++  return {
++    trigger(id) {
++      const index = indexOf(id);
++      if (index === -1) return;
++      if (speed === 'inf') {
++        finishUpTo(index);
++        return;
++      }
++      for (let i = 0; i <= index; i++) {
++        if (entries[i].state === 'pending') setState(entries[i], 'queued');
++      }
++      if (active === -1) startNext();
++    },
++    finish(id) {
++      const index = indexOf(id);
++      if (index === -1 || isFinished(entries[index])) return;
++      const wasActive = index === active;
++      setState(entries[index], 'done');
++      if (wasActive) {
++        active = -1;
++        startNext();
++      } else {
++        checkAllDone();
++      }
++    },
++    setSpeed(next) {
++      speed = next;
++      if (next !== 'inf') return;
++      let last = active;
++      entries.forEach((e, i) => {
++        if (e.state === 'queued') last = Math.max(last, i);
++      });
++      if (last >= 0) finishUpTo(last);
++    },
++    destroy() {
++      stop();
++      active = -1;
++    },
++  };
++}
+diff --git a/src/runtime/triggers.ts b/src/runtime/triggers.ts
+new file mode 100644
+index 0000000..9768416
+--- /dev/null
++++ b/src/runtime/triggers.ts
+@@ -0,0 +1,23 @@
++import type { SectionId } from './types';
++
++export function observeSections(
++  sections: HTMLElement[],
++  onTrigger: (id: SectionId) => void,
++): () => void {
++  const fired = new Set<Element>();
++  const observer = new IntersectionObserver(
++    (entries) => {
++      for (const entry of entries) {
++        if (fired.has(entry.target)) continue;
++        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
++          fired.add(entry.target);
++          observer.unobserve(entry.target);
++          onTrigger(entry.target.id as SectionId);
++        }
++      }
++    },
++    { rootMargin: '0px 0px -25% 0px', threshold: 0 },
++  );
++  for (const section of sections) observer.observe(section);
++  return () => observer.disconnect();
++}
+diff --git a/src/runtime/types.ts b/src/runtime/types.ts
+new file mode 100644
+index 0000000..171da69
+--- /dev/null
++++ b/src/runtime/types.ts
+@@ -0,0 +1,64 @@
++export const EFFECTS = [
++  'select',
++  'skeleton',
++  'type-text',
++  'decode',
++  'resolve-lines',
++  'pop',
++  'stagger',
++  'build-card',
++] as const;
++
++export type EffectName = (typeof EFFECTS)[number];
++
++export type SectionId = 'top' | 'about' | 'projects' | 'stack' | 'contact';
++
++export type SectionState =
++  | 'pending'
++  | 'queued'
++  | 'command'
++  | 'window'
++  | 'building'
++  | 'closing'
++  | 'done'
++  | 'skipped';
++
++export interface BuildStep {
++  call: string;
++  target: string;
++  effect: EffectName;
++  text?: string;
++  count?: number;
++  gap?: number;
++  overlap?: number;
++}
++
++export interface TimelineStep {
++  call: string;
++  target: string;
++  effect: EffectName;
++  start: number;
++  end: number;
++}
++
++export interface Timeline {
++  v: 1;
++  section: SectionId;
++  file: string;
++  command: string;
++  commandEnd: number;
++  windowEnd: number;
++  buildStart: number;
++  steps: TimelineStep[];
++  createdAt: number;
++  duration: number;
++}
++
++export interface BuildScript {
++  section: SectionId;
++  file: string;
++  command: string;
++  steps: BuildStep[];
++  settle?: number;
++  timing?: Partial<Pick<Timeline, 'commandEnd' | 'windowEnd' | 'buildStart'>>;
++}
+diff --git a/src/scripts/build-mode.ts b/src/scripts/build-mode.ts
+new file mode 100644
+index 0000000..49d820e
+--- /dev/null
++++ b/src/scripts/build-mode.ts
+@@ -0,0 +1,14 @@
++export const SPEED_STORAGE_KEY = 'sp-speed';
++export const WATCHDOG_MS = 3000;
++
++export type Speed = '1' | '2' | 'inf';
++export type BuildMode = 'instant' | 'pending';
++
++// The inline head script in src/layouts/Base.astro mirrors these two helpers.
++export function parseSpeed(raw: string | null | undefined): Speed {
++  return raw === '2' || raw === 'inf' ? raw : '1';
++}
++
++export function resolveMode(reducedMotion: boolean, speed: Speed): BuildMode {
++  return reducedMotion || speed === 'inf' ? 'instant' : 'pending';
++}
+diff --git a/src/sections/About.astro b/src/sections/About.astro
+index e16f29e..467c3e6 100644
+--- a/src/sections/About.astro
++++ b/src/sections/About.astro
+@@ -2,7 +2,9 @@
+ import type { CollectionEntry } from 'astro:content';
+ import { Button } from '../components/page/Button';
+ import { SectionHeading } from '../components/page/SectionHeading';
++import { compileScript, serializeTimeline } from '../runtime/compiler';
+ import { strings } from '../strings';
++import { aboutBuild } from './about.build';
+ import { profileLinks } from './profile-links';
+ 
+ interface Props {
+@@ -12,20 +14,30 @@ interface Props {
+ const { profile } = Astro.props;
+ const links = profileLinks(profile);
+ const paragraphs = profile.bio.split('\n\n');
++const timeline = compileScript(aboutBuild(profile));
+ ---
+ 
+-<section id="about" aria-labelledby="about-title" class="sp-section">
++<section
++  id="about"
++  aria-labelledby="about-title"
++  class="sp-section"
++  data-build={serializeTimeline(timeline)}
++>
+   <div class="sp-section-inner">
+-    <SectionHeading
+-      id="about-title"
+-      eyebrow={strings.sections.about.eyebrow}
+-      title={strings.sections.about.title}
+-    />
++    <div class="sp-build-wrap" data-build-target="heading">
++      <SectionHeading
++        id="about-title"
++        eyebrow={strings.sections.about.eyebrow}
++        title={strings.sections.about.title}
++      />
++    </div>
+     <div class="sp-about-body">
+       {paragraphs.map((p) => (
+-        <p class="text-lg">{p}</p>
++        <p class="text-lg" data-build-target="text">
++          {p}
++        </p>
+       ))}
+-      <div class="sp-actions">
++      <div class="sp-actions" data-build-target="links">
+         <Button variant="secondary" icon="github" href={links.github} external>
+           {strings.buttons.github}
+         </Button>
+diff --git a/src/sections/Contact.astro b/src/sections/Contact.astro
+index fe9b8d9..93f977d 100644
+--- a/src/sections/Contact.astro
++++ b/src/sections/Contact.astro
+@@ -2,7 +2,9 @@
+ import type { CollectionEntry } from 'astro:content';
+ import { Button } from '../components/page/Button';
+ import { SectionHeading } from '../components/page/SectionHeading';
++import { compileScript, serializeTimeline } from '../runtime/compiler';
+ import { strings } from '../strings';
++import { contactBuild } from './contact.build';
+ import { profileLinks } from './profile-links';
+ 
+ interface Props {
+@@ -12,22 +14,26 @@ interface Props {
+ const { profile } = Astro.props;
+ const links = profileLinks(profile);
+ if (!profile.location) throw new Error('profile.location is missing');
++const timeline = compileScript(contactBuild(profile));
+ ---
+ 
+ <section
+   id="contact"
+   aria-labelledby="contact-title"
+   class="sp-section sp-contact"
++  data-build={serializeTimeline(timeline)}
+ >
+   <div class="sp-section-inner">
+-    <SectionHeading
+-      id="contact-title"
+-      eyebrow={strings.sections.contact.eyebrow}
+-      title={strings.sections.contact.title}
+-      lead={strings.sections.contact.lead}
+-    />
++    <div class="sp-build-wrap" data-build-target="heading">
++      <SectionHeading
++        id="contact-title"
++        eyebrow={strings.sections.contact.eyebrow}
++        title={strings.sections.contact.title}
++        lead={strings.sections.contact.lead}
++      />
++    </div>
+     <div class="sp-contact-row">
+-      <div class="sp-actions">
++      <div class="sp-actions" data-build-target="links">
+         <Button variant="primary" icon="github" href={links.github} external>
+           {strings.buttons.github}
+         </Button>
+@@ -40,7 +46,9 @@ if (!profile.location) throw new Error('profile.location is missing');
+           {strings.buttons.linkedin}
+         </Button>
+       </div>
+-      <p class="sp-contact-location mono-sm">{profile.location}</p>
++      <p class="sp-contact-location mono-sm" data-build-target="location">
++        {profile.location}
++      </p>
+     </div>
+   </div>
+ </section>
+diff --git a/src/sections/Hero.astro b/src/sections/Hero.astro
+index 024c37d..5a4235b 100644
+--- a/src/sections/Hero.astro
++++ b/src/sections/Hero.astro
+@@ -3,7 +3,9 @@ import type { CollectionEntry } from 'astro:content';
+ import { Button } from '../components/page/Button';
+ import { Photo } from '../components/page/Photo';
+ import { resolveAssetUrl } from '../components/page/resolve-asset';
++import { compileScript, serializeTimeline } from '../runtime/compiler';
+ import { strings } from '../strings';
++import { heroBuild } from './hero.build';
+ import { profileLinks } from './profile-links';
+ 
+ interface Props {
+@@ -16,21 +18,31 @@ const photoUrl = resolveAssetUrl(profile.photo);
+ if (!photoUrl) throw new Error('profile.photo does not resolve to an asset');
+ const [first = '', ...rest] = profile.headline.split(' ');
+ const remainder = rest.join(' ');
++const timeline = compileScript(heroBuild(profile));
+ ---
+ 
+-<section id="top" aria-label={strings.hero.ariaLabel} class="sp-hero">
++<section
++  id="top"
++  aria-label={strings.hero.ariaLabel}
++  class="sp-hero"
++  data-build={serializeTimeline(timeline)}
++>
+   <div class="sp-hero-inner">
+-    <h1 class="banner sp-hero-name">
++    <h1 class="banner sp-hero-name" data-build-target="title">
+       {first} <br />
+       {remainder}
+     </h1>
+-    <div class="sp-hero-photo">
++    <div class="sp-hero-photo" data-build-target="photo">
+       <Photo src={photoUrl} alt={profile.name} />
+     </div>
+-    <p class="sp-hero-role text-2xl">{profile.role}</p>
++    <p class="sp-hero-role text-2xl" data-build-target="role">
++      {profile.role}
++    </p>
+     <div class="sp-hero-copy">
+-      <p class="text-lg">{profile.subtitle}</p>
+-      <div class="sp-hero-actions">
++      <p class="text-lg" data-build-target="intro">
++        {profile.subtitle}
++      </p>
++      <div class="sp-hero-actions" data-build-target="links">
+         <Button variant="primary" href="#projects" iconEnd="arrowDown">
+           {strings.hero.seeMyWork}
+         </Button>
+diff --git a/src/sections/Projects.astro b/src/sections/Projects.astro
+index 8a6102a..7b87d95 100644
+--- a/src/sections/Projects.astro
++++ b/src/sections/Projects.astro
+@@ -3,30 +3,36 @@ import type { CollectionEntry } from 'astro:content';
+ import { ProjectCard } from '../components/page/ProjectCard';
+ import { SectionHeading } from '../components/page/SectionHeading';
+ import { resolveAssetUrl } from '../components/page/resolve-asset';
++import { compileScript, serializeTimeline } from '../runtime/compiler';
+ import { strings } from '../strings';
++import { projectsBuild } from './projects.build';
+ 
+ interface Props {
+   projects: CollectionEntry<'projects'>[];
+ }
+ 
+ const { projects } = Astro.props;
++const timeline = compileScript(projectsBuild(projects));
+ ---
+ 
+ <section
+   id="projects"
+   aria-labelledby="projects-title"
+   class="sp-section sp-projects"
++  data-build={serializeTimeline(timeline)}
+ >
+   <div class="sp-section-inner is-loose">
+-    <SectionHeading
+-      id="projects-title"
+-      eyebrow={strings.sections.projects.eyebrow}
+-      title={strings.sections.projects.title}
+-      lead={strings.sections.projects.lead}
+-    />
++    <div class="sp-build-wrap" data-build-target="heading">
++      <SectionHeading
++        id="projects-title"
++        eyebrow={strings.sections.projects.eyebrow}
++        title={strings.sections.projects.title}
++        lead={strings.sections.projects.lead}
++      />
++    </div>
+     <div class="sp-projects-grid">
+       {projects.map(({ id, data }) => (
+-        <div class="sp-projects-cell">
++        <div class="sp-projects-cell" data-build-target={`card-${id}`}>
+           <ProjectCard
+             title={data.title}
+             slug={id}
+diff --git a/src/sections/Stack.astro b/src/sections/Stack.astro
+index 2c76b96..0926b3f 100644
+--- a/src/sections/Stack.astro
++++ b/src/sections/Stack.astro
+@@ -2,25 +2,37 @@
+ import type { CollectionEntry } from 'astro:content';
+ import { SectionHeading } from '../components/page/SectionHeading';
+ import { StackGroup } from '../components/page/StackGroup';
++import { compileScript, serializeTimeline } from '../runtime/compiler';
+ import { strings } from '../strings';
++import { stackBuild } from './stack.build';
+ 
+ interface Props {
+   stack: CollectionEntry<'stack'>['data'];
+ }
+ 
+ const { stack } = Astro.props;
++const timeline = compileScript(stackBuild(stack));
+ ---
+ 
+-<section id="stack" aria-labelledby="stack-title" class="sp-section">
++<section
++  id="stack"
++  aria-labelledby="stack-title"
++  class="sp-section"
++  data-build={serializeTimeline(timeline)}
++>
+   <div class="sp-section-inner is-loose">
+-    <SectionHeading
+-      id="stack-title"
+-      eyebrow={strings.sections.stack.eyebrow}
+-      title={strings.sections.stack.title}
+-    />
++    <div class="sp-build-wrap" data-build-target="heading">
++      <SectionHeading
++        id="stack-title"
++        eyebrow={strings.sections.stack.eyebrow}
++        title={strings.sections.stack.title}
++      />
++    </div>
+     <div class="sp-stack-grid">
+-      {stack.groups.map((group) => (
+-        <StackGroup name={group.name} items={group.items} />
++      {stack.groups.map((group, index) => (
++        <div class="sp-build-wrap" data-build-target={`group-${index}`}>
++          <StackGroup name={group.name} items={group.items} />
++        </div>
+       ))}
+     </div>
+   </div>
+diff --git a/src/sections/about.build.ts b/src/sections/about.build.ts
+new file mode 100644
+index 0000000..0c2274a
+--- /dev/null
++++ b/src/sections/about.build.ts
+@@ -0,0 +1,29 @@
++import type { CollectionEntry } from 'astro:content';
++import type { BuildScript } from '../runtime/types';
++import { strings } from '../strings';
++
++type ProfileData = CollectionEntry<'profile'>['data'];
++
++export function aboutBuild(profile: ProfileData): BuildScript {
++  const paragraphs = profile.bio.split('\n\n');
++  return {
++    section: 'about',
++    file: 'about.md',
++    command: 'renderAbout();',
++    steps: [
++      {
++        call: `about.heading("${strings.sections.about.title}")`,
++        target: 'heading',
++        effect: 'type-text',
++        text: strings.sections.about.title,
++      },
++      {
++        call: 'about.text(…)',
++        target: 'text',
++        effect: 'resolve-lines',
++        count: paragraphs.length,
++      },
++      { call: 'about.links([…])', target: 'links', effect: 'pop' },
++    ],
++  };
++}
+diff --git a/src/sections/contact.build.ts b/src/sections/contact.build.ts
+new file mode 100644
+index 0000000..6a8c343
+--- /dev/null
++++ b/src/sections/contact.build.ts
+@@ -0,0 +1,29 @@
++import type { CollectionEntry } from 'astro:content';
++import type { BuildScript } from '../runtime/types';
++import { strings } from '../strings';
++
++type ProfileData = CollectionEntry<'profile'>['data'];
++
++export function contactBuild(profile: ProfileData): BuildScript {
++  if (!profile.location) throw new Error('profile.location is missing');
++  return {
++    section: 'contact',
++    file: 'contact.tsx',
++    command: 'renderContact();',
++    steps: [
++      {
++        call: `contact.heading("${strings.sections.contact.title}")`,
++        target: 'heading',
++        effect: 'type-text',
++        text: strings.sections.contact.title,
++      },
++      { call: 'contact.links([…])', target: 'links', effect: 'pop' },
++      {
++        call: 'contact.location(…)',
++        target: 'location',
++        effect: 'type-text',
++        text: profile.location,
++      },
++    ],
++  };
++}
+diff --git a/src/sections/hero.build.ts b/src/sections/hero.build.ts
+new file mode 100644
+index 0000000..1b39ffe
+--- /dev/null
++++ b/src/sections/hero.build.ts
+@@ -0,0 +1,41 @@
++import type { CollectionEntry } from 'astro:content';
++import type { BuildScript } from '../runtime/types';
++
++type ProfileData = CollectionEntry<'profile'>['data'];
++
++export function heroBuild(profile: ProfileData): BuildScript {
++  const words = profile.subtitle.split(/\s+/).filter(Boolean).length;
++  return {
++    section: 'top',
++    file: 'hero.tsx',
++    command: 'startSite();',
++    timing: { commandEnd: 730, windowEnd: 1000, buildStart: 1300 },
++    steps: [
++      {
++        call: `hero.title("${profile.headline}")`,
++        target: 'title',
++        effect: 'type-text',
++        text: profile.headline,
++      },
++      {
++        call: `hero.role("${profile.role}")`,
++        target: 'role',
++        effect: 'type-text',
++        text: profile.role,
++      },
++      { call: 'hero.photo(…)', target: 'photo', effect: 'skeleton' },
++      {
++        call: 'hero.intro(…)',
++        target: 'intro',
++        effect: 'resolve-lines',
++        count: words,
++      },
++      {
++        call: 'hero.links([…])',
++        target: 'links',
++        effect: 'pop',
++        gap: 60,
++      },
++    ],
++  };
++}
+diff --git a/src/sections/projects.build.ts b/src/sections/projects.build.ts
+new file mode 100644
+index 0000000..b3e242d
+--- /dev/null
++++ b/src/sections/projects.build.ts
+@@ -0,0 +1,28 @@
++import type { CollectionEntry } from 'astro:content';
++import type { BuildScript, BuildStep } from '../runtime/types';
++import { strings } from '../strings';
++
++export function projectsBuild(
++  projects: CollectionEntry<'projects'>[],
++): BuildScript {
++  const cards: BuildStep[] = projects.map(({ id }, index) => ({
++    call: `projects.card("${id}")`,
++    target: `card-${id}`,
++    effect: 'build-card',
++    ...(index > 0 ? { overlap: 120 } : {}),
++  }));
++  return {
++    section: 'projects',
++    file: 'projects.tsx',
++    command: 'renderProjects();',
++    steps: [
++      {
++        call: `projects.heading("${strings.sections.projects.title}")`,
++        target: 'heading',
++        effect: 'type-text',
++        text: strings.sections.projects.title,
++      },
++      ...cards,
++    ],
++  };
++}
+diff --git a/src/sections/stack.build.ts b/src/sections/stack.build.ts
+new file mode 100644
+index 0000000..a938365
+--- /dev/null
++++ b/src/sections/stack.build.ts
+@@ -0,0 +1,28 @@
++import type { CollectionEntry } from 'astro:content';
++import type { BuildScript, BuildStep } from '../runtime/types';
++import { strings } from '../strings';
++
++type StackData = CollectionEntry<'stack'>['data'];
++
++export function stackBuild(stack: StackData): BuildScript {
++  const groups: BuildStep[] = stack.groups.map((group, index) => ({
++    call: `stack.group("${group.name}")`,
++    target: `group-${index}`,
++    effect: 'stagger',
++    count: group.items.length,
++  }));
++  return {
++    section: 'stack',
++    file: 'stack.tsx',
++    command: 'renderStack();',
++    steps: [
++      {
++        call: `stack.heading("${strings.sections.stack.title}")`,
++        target: 'heading',
++        effect: 'type-text',
++        text: strings.sections.stack.title,
++      },
++      ...groups,
++    ],
++  };
++}
+diff --git a/src/stores/build.ts b/src/stores/build.ts
+new file mode 100644
+index 0000000..1a22940
+--- /dev/null
++++ b/src/stores/build.ts
+@@ -0,0 +1,10 @@
++import { atom } from 'nanostores';
++import type { SectionId } from '../runtime/types';
++import type { Speed } from '../scripts/build-mode';
++
++export type BuildStatus = 'idle' | 'building' | 'done' | 'instant' | 'failed';
++
++export const currentSection = atom<SectionId | null>(null);
++export const progress = atom<number>(0);
++export const status = atom<BuildStatus>('idle');
++export const speed = atom<Speed>('1');
+diff --git a/src/styles/build-pending.css b/src/styles/build-pending.css
+new file mode 100644
+index 0000000..f022f5f
+--- /dev/null
++++ b/src/styles/build-pending.css
+@@ -0,0 +1,7 @@
++html[data-build-mode='pending']
++  main
++  > section[data-build]:not([data-build-state='done']):not(
++    [data-build-state='skipped']
++  ) {
++  opacity: 0;
++}
+diff --git a/src/styles/home.css b/src/styles/home.css
+index 843e0d6..5b6033b 100644
+--- a/src/styles/home.css
++++ b/src/styles/home.css
+@@ -254,3 +254,7 @@
+     grid-template-columns: repeat(1, minmax(0, 1fr));
+   }
+ }
++
++.sp-build-wrap {
++  display: contents;
++}

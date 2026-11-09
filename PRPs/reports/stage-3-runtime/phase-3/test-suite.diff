@@ -1,0 +1,137 @@
+# TDD initial suite — phase 3 (test-after)
+# Source PRD: PRPs/prds/stage-3-runtime.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-3-runtime-phase-3-element-effects-and-base-scripts.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-08
+# Test files live in the feature worktree: C:/repos/site-pro/.worktrees/stage-3-runtime (paths below are relative to it)
+# Replaces the Phase 2 manifest (APPROVED, archived at PRPs/reports/stage-3-runtime/phase-2/test-suite.diff)
+# Note: the writer had no shell in this session (Read, Write, Edit, Glob only); none of the new tests were executed. The full unit and e2e suites run afterwards.
+
+## AC outcomes
+
+Plan AC-A1..A9 map to PRD ACs as in the plan. Only the parts of a PRD AC that phase 3 delivers are asserted; Skip, Run all, speed, Replay and the collapse (phase 4) are not tested.
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-1 (hero order, effects and offsets 1300/1500/1600/1900/2200; headline step ends by 2.0 s; hero duration <= 3.2 s; plan AC-A1, AC-A9) | NEW_TEST_REQUIRED | tests/e2e/effects-scripts.spec.ts ("builds the hero in the approved order..."); tests/unit/runtime-pacing.test.ts ("builds the hero in the approved order..."); tests/e2e/effects-hero.spec.ts ("compiles the hero within its budget...") |
+| AC-1 (headline typed with a caret and readable by 2.0 s, role decodes, photo skeleton, intro lines, links pop, final state: plan AC-A1) | NEW_TEST_REQUIRED | tests/e2e/effects-hero.spec.ts (selection box and hidden targets; typing with caret and clip-path polygon, readable by 1.92 s; decode glyphs and photo skeleton; intro bars then links pop; nothing left behind and idle dock at done) |
+| AC-1 (window command typed at 12 ms per character, cut to 29 characters with an ellipsis; plan AC-A7) | NEW_TEST_REQUIRED | tests/unit/effect-timing.test.ts ("window command cut"); tests/e2e/effects-hero.spec.ts ("shows the current call in the window bar..."); tests/e2e/effects-pointer.spec.ts (first two project cards, second cut to `projects.card("ai-track-re…")`); 12 ms per character itself: EXISTING_TEST_COVERS tests/unit/runtime-layer-timing.test.ts:93 |
+| AC-1 (dock and boot typing: seeded jitter, `startSite();` ends at 730 ms, identical every run; plan AC-A7) | NEW_TEST_REQUIRED | tests/unit/effect-timing.test.ts ("dock and boot typing with seeded jitter") |
+| AC-1 (nav, boot, fold, window, created line) | EXISTING_TEST_COVERS | tests/e2e/build-layer-show.spec.ts:16; tests/unit/runtime-layer-timing.test.ts |
+| AC-4 (no box, document height or text moves at fixed moments: title typing, decode and skeleton, intro, links pop, two project cards overlapping, Stack stagger; layout shift <= 0.01; plan AC-A3) | NEW_TEST_REQUIRED | tests/e2e/effects-layout.spec.ts ("keeps every box, the document height and the text of the ready page...") |
+| AC-4 (no horizontal scroll added by selection boxes and handles during the hero build) | NEW_TEST_REQUIRED | tests/e2e/effects-layout.spec.ts ("never adds horizontal scroll while the hero elements are created at 1280px / 375px") |
+| AC-4 (page elements only receive opacity, clip-path and pointer-events; only transform, opacity and clip-path animate; overlays inside the aria-hidden layer outside main; plan AC-A4, AC-A6) | NEW_TEST_REQUIRED | tests/e2e/effects-absent.spec.ts ("writes only opacity, clip-path and pointer-events on page elements...") |
+| AC-4 (effect phases as pure functions of the clock: pop clip overshoot without transform, card phases) | NEW_TEST_REQUIRED | tests/unit/effect-timing.test.ts ("type-text and decode phases", "resolve-lines, pop, stagger and card phases") |
+| AC-4 (one overlay root, windows and bars, pending and data-* attributes change no box) | EXISTING_TEST_COVERS | tests/e2e/build-layer-show.spec.ts:93; tests/e2e/build-layer-layout.spec.ts:64; tests/e2e/runtime-build-order.spec.ts:153 |
+| AC-11 (elements not yet created hidden and unclickable, created ones clickable while the window is open: hero targets and project cards; plan AC-A5) | NEW_TEST_REQUIRED | tests/e2e/effects-hero.spec.ts (computed pointer-events and data-build-fx per hero target before and after its step); tests/e2e/effects-pointer.spec.ts ("lets a created card take clicks while the next ones are hidden...", "keeps a section that has not started building from taking the pointer") |
+| AC-11 (window body ignores the pointer, bars catch clicks) | EXISTING_TEST_COVERS | tests/e2e/build-layer-show.spec.ts:93 |
+| AC-14 (reduced motion: no effect attribute, overlay or inline style; plan AC-A6) | NEW_TEST_REQUIRED | tests/e2e/effects-absent.spec.ts ("under reduced motion") |
+| AC-13 (saved infinity: instant mode renders no effect) | NEW_TEST_REQUIRED | tests/e2e/effects-absent.spec.ts ("with a saved infinity speed") |
+| AC-15 (no JS, runtime blocked, runtime throwing, non-home paths: no effect artifact, headline visible after failure; plan AC-A6) | NEW_TEST_REQUIRED | tests/e2e/effects-absent.spec.ts ("without JavaScript", "when the runtime is blocked...", "when the runtime script throws...", "on /projects/relay/ ...", "serves no effect markup on the home page, the 404 or the project pages") |
+| AC-15 (no layer, nav visible, page equals Stage 2) | EXISTING_TEST_COVERS | tests/e2e/build-layer-absent.spec.ts:17-70; tests/e2e/runtime-fallbacks.spec.ts:20,39 |
+| AC-18 (text and accessibility tree of main equal the no-JS page at every sampled moment; plan AC-A4) | NEW_TEST_REQUIRED | tests/e2e/effects-layout.spec.ts (six hero moments, mid-projects, mid-stack: ariaSnapshot and text against the no-JS page) |
+| AC-18 (axe at fixed moments mid-hero and mid-projects, both themes; plan AC-A4) | NEW_TEST_REQUIRED | tests/e2e/effects-axe.spec.ts (4 tests; the runtime is frozen with a hidden-tab pause so axe sees the mid-build DOM) |
+| AC-18 (nothing pops in unannounced: every heading, paragraph, link, image, chip inside a data-build-target; plan AC-A9) | NEW_TEST_REQUIRED | tests/e2e/effects-scripts.spec.ts ("names every target of every step inside its section and leaves no content outside a target") |
+| AC-19 (runtime + effects <= 18 KB, critical <= 20 KB, total JS <= 90 KB, CSS <= 25 KB; plan AC-A8) | EXISTING_TEST_COVERS | tests/unit/runtime-budget.test.ts; tests/e2e/quality-gates.spec.ts:25 (check-budgets on the real build); tests/e2e/css-budget.spec.ts:17; tests/e2e/theme.spec.ts:236. No effect markup or CSS on the 404 or project pages: tests/e2e/effects-absent.spec.ts. Token-literal check is `pnpm check:tokens` (CI) |
+| AC-19 (Lighthouse medians) | OUT_OF_PHASE_SCOPE | (CI `lighthouse` job) |
+| AC-20 (effect durations: type 150 + n x 28, decode 500, lines 150 + 200 + n x 40, pop 330, stagger, card 450; needs-text and needs-count errors; plan AC-A2) | NEW_TEST_REQUIRED | tests/unit/effect-timing.test.ts ("effect durations") |
+| AC-20 (steps start at previous end plus gap or minus overlap; pacing helper; settle) | NEW_TEST_REQUIRED | tests/unit/runtime-pacing.test.ts ("pacedSteps") |
+| AC-20 (commands and arguments come from the content: one projects.card per project, one stack.group per group; content-derived headline duration) | NEW_TEST_REQUIRED | tests/unit/runtime-pacing.test.ts ("base scripts compiled against the content"); tests/e2e/effects-scripts.spec.ts |
+| AC-20 (cards overlap by 120 ms, createdAt not before the last step end) | EXISTING_TEST_COVERS | tests/e2e/runtime-timeline-contract.spec.ts:35,51 (also asserted in effects-scripts and runtime-pacing) |
+| AC-20 (compiler timeline rules) | EXISTING_TEST_COVERS | tests/unit/runtime-compiler.test.ts (builds its own scripts; unaffected by the new duration table) |
+| AC-2, AC-3, AC-5, AC-6, AC-7, AC-8, AC-9, AC-10, AC-12, AC-16, AC-17, AC-21 | OUT_OF_PHASE_SCOPE | (phases 1, 2, 4, 5: controls, navigation, dock behavior, layer layout; no phase 3 delta) |
+
+## Test files written this session
+
+- tests/unit/effect-timing.test.ts
+- tests/unit/runtime-pacing.test.ts
+- tests/e2e/support/effects.ts (helpers on top of tests/e2e/support/runtime.ts and layer.ts, not a spec)
+- tests/e2e/effects-hero.spec.ts
+- tests/e2e/effects-layout.spec.ts
+- tests/e2e/effects-axe.spec.ts
+- tests/e2e/effects-pointer.spec.ts
+- tests/e2e/effects-absent.spec.ts
+- tests/e2e/effects-scripts.spec.ts
+
+Updated (see the lifecycle ledger):
+
+- tests/e2e/placeholder-page.spec.ts
+
+Not unit-tested on purpose: the three overlay factories and effect-dom/effects (they need a DOM and vitest runs in the node environment); they are covered through the e2e specs above.
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/placeholder-page.spec.ts:"static HTML of / › has no axe violations" | AC-18 / AC-4 (Stage 3 phase 3). On a default real-clock visit axe scanned `/` while the hero targets were hidden (`data-build-fx`), clipped by a typing polygon or mid-pop with a partial opacity, so the result depended on the scan's timing against the 1.3 to 2.5 s hero build. The test now calls useInstantBuild (saved infinity speed) before goto, the same pattern home-axe.spec.ts already uses, so the final page is audited. The assertion is unchanged (zero violations, same WCAG tag set); axe during the build is now asserted at fixed moments in tests/e2e/effects-axe.spec.ts. Nothing dropped or weakened. |
+
+Existing specs reviewed against the new hidden-target behavior (`data-build-fx` hides targets with opacity 0 and pointer-events none from the section's `command` state until created; clip-path while revealing; sections visible from `building`; hero effects until about 2.1 s). No edit was needed in any of them, and none was weakened:
+
+| Spec | Verdict | Reason |
+|---|---|---|
+| tests/e2e/home-no-build-layer.spec.ts | reviewed, no change | The `.sp-select`/`.sp-skel` absence checks already run in instant mode (Phase 2 rewrite) or after the hero is done (effects remove their overlays at step end); main text is read with `textContent`, which clip-path and opacity do not change; transition checks add no transition (the overlay uses a CSS animation only). |
+| tests/e2e/home-keyboard.spec.ts | reviewed, no change | Tab focus and `getComputedStyle` outline values do not depend on opacity, pointer-events or clip-path; the focusable list filters on client rects and `visibility`, which the effects never write. |
+| tests/e2e/home-content.spec.ts | reviewed, no change | Reads the served HTML, or runs with JavaScript disabled where no effect exists. |
+| tests/e2e/home-responsive-layout.spec.ts | reviewed, no change | Uses `boundingBox`, `Range` rects and grid computed styles, none of which opacity, pointer-events or clip-path alter; no page element receives a transform. Residual risk: its real-clock "never scrolls horizontally and shifts layout by at most 0.01" test samples at about 1 s after load, when selection boxes can first appear; the new effects-layout spec samples scrollWidth at fixed hero moments at 1280 and 375 px, so a real overflow would be localized there. If the full run fails this test, the fix is the instant-mode pattern, not a looser limit. |
+| tests/e2e/theme.spec.ts | reviewed, no change | Clicks the nav toggle (nav behavior unchanged since Phase 2) and reads computed styles of the toggle, body and glow; no hero target is clicked or measured. |
+| tests/e2e/home-mobile-menu.spec.ts, home-axe.spec.ts | reviewed, no change | Menu clicks are on the nav and popover; axe already runs in instant mode; the sticky-nav test already uses instant mode (Phase 2 ledger). |
+| tests/e2e/placeholder-page.spec.ts | updated (see the UPDATE row above) | Only its axe test scans the live home page on a default visit; its other tests read HTML or run without JavaScript. |
+| tests/e2e/subpages-navigation.spec.ts, subpages-axe.spec.ts, project-pages.spec.ts, not-found.spec.ts | reviewed, no change | Non-home pages, or the home page is only read as HTML or reached with JavaScript disabled. |
+| tests/e2e/build-layer-show.spec.ts, build-layer-layout.spec.ts, build-layer-absent.spec.ts | reviewed, no change | Hero moments are read from the compiled timeline, so the retimed hero (duration 3100) is followed; `windowCommand` content for the hero at 1700 still contains `hero`; the new `.sp-build-fx` container is aria-hidden and pointer-events none so the layer invariants (unhidden 0, controls 0, pointer checks) hold; the hit test over the Projects h2 reaches the page whether the h2 is hidden (falls through) or not. |
+| tests/e2e/runtime-build-order.spec.ts, runtime-fallbacks.spec.ts, runtime-timeline-contract.spec.ts | reviewed, no change | They observe section attributes, timelines and section-level opacity; `createdAt >= last step end`, 120 ms card overlap and headline 150 + n x 28 hold by design (also asserted by the new unit tests). |
+| tests/unit/runtime-compiler.test.ts, runtime-layer-timing.test.ts, runtime-scheduler*.test.ts, runtime-budget.test.ts | reviewed, no change | They build their own scripts or exercise `layer-timing`, which this phase leaves exported and unchanged; no test reads the old duration values. |
+
+## Notes for the reviewer
+
+- The plan's prose says `SCRAMBLE_GLYPHS` has sixteen characters; the literal it gives (`!<>-_\/[]{}=+*^?#`) has seventeen. The test asserts the literal string, not a count.
+- AC-18 axe: the runtime is frozen by the hidden-tab pause (AC-16) and Playwright's clock is then resumed so axe's timers run. If axe reports a color-contrast result on a partially clipped or opacity-0 element, that is an implementation or PRD question, not a test to loosen.
+- Mid-step moments carry at least about 50 ms of margin because `data-build-progress` has a 1 percent resolution and the loops advance the clock 20 ms per slice.
+
+## Revision 1 (after test-reviewer R-GREEN-LEGITIMATE CHANGES_REQUESTED)
+
+No AC outcome and no lifecycle ledger entry changed; the ledger above is preserved as written. Three red results, each classified:
+
+1. Bad test, fixed. tests/unit/effect-timing.test.ts "opens the clip from a 10 percent inset...": `expect(popInset(1)).toBe(0)` received 8.88e-16, a floating-point residue of `-4 * (1 - (p - 0.7) / 0.3)`. Now `toBeCloseTo(0, 9)`. The AC property (the clip settles at 0) is unchanged and still discriminative.
+2. Bad test, fixed. tests/e2e/effects-hero.spec.ts "resolves the intro line by line ... then pops the buttons": it read `clip-path` from the `data-build-target="links"` wrapper. The plan (Task 5, pop) says the pop clips "the children of the target (its direct element children ...)" and the wrapper itself is only made live; src/runtime/effects.ts `pop` does exactly that, so the wrapper's inline clip is empty by design. The probe in tests/e2e/support/effects.ts now also reads `childClips` (inline clip-path of each direct child) and the test asserts at least one child and that every child clip matches `^inset`. The other assertions (wrapper `data-build-fx` null, pointer-events not none) are untouched.
+3. Implementation defect, test kept unchanged. tests/e2e/effects-layout.spec.ts "never adds horizontal scroll while the hero elements are created at 375px" measured a 2 px overflow at hero t=1600 (limit 0). The PRD (AC-4) and Stage 2 require that the page never scrolls horizontally. Suspected cause: src/styles/build-layer.css `.sp-build-fx` (and `.sp-build-layer`) is `position: absolute; width: 100%; height: 0` with no horizontal overflow clipping, and `.sp-select-handle` corner squares (6 px, offset -3 px) plus the selection box placed from `docRect` can extend past the viewport edge on a narrow screen. Evidence status: the test-writer has no shell in this session, so the exact overflowing element was not measured; the diagnosis is from the CSS and the orchestrator's read, and must be confirmed by the Implementer (for example by logging the element whose right edge exceeds the viewport at t=1600). The limit stays at 0; the test must not be loosened. The suite is therefore expected to stay red on this one case until the implementation is fixed.
+
+## Revision 2 (after second test-reviewer R-GREEN-LEGITIMATE CHANGES_REQUESTED)
+
+No test file changed in this revision. No AC outcome and no lifecycle ledger entry changed; the ledger and Revision 1 above are preserved as written.
+
+Remaining red: tests/e2e/effects-layout.spec.ts:24 ("never adds horizontal scroll while the hero elements are created at 375px"), `expect(overflow).toBeLessThanOrEqual(0)` at :38, 2 px overflow at hero t=1600. Fixes 1 and 2 from Revision 1 are confirmed green (vitest 390/390, e2e 212/213).
+
+Classification: implementation defect, not a bad test. The test asserts AC-4 (the page never scrolls horizontally; the overlay adds no document width) with a limit of 0, which the PRD and Stage 2 require. No test change is legitimate: the only edits that would turn it green are loosening the limit or skipping it, and both are forbidden.
+
+Defect location (confirmed by reading the CSS):
+- src/styles/build-layer.css:307-310 and 317-320: `.sp-select-handle:nth-child(2)` and `:nth-child(4)` use `right: -3px`, so the right-hand 6 px corner squares stick out 3 px past the right edge of a selection box that reaches the viewport edge (about 2 px of scrollWidth at 375 px).
+- src/styles/build-layer.css:276-283 (`.sp-build-fx`) and 1-9 (`.sp-build-layer`): neither clips horizontally, so the overhang extends the document's scrollable width.
+
+Recovery belongs to the Implementer: `overflow-x: clip` on `.sp-build-layer` and `.sp-build-fx`, or inset the right-hand handles at the viewport edge. The limit stays at 0 and the test must not be loosened. Static confirmation only: the exact overflowing element was not measured in this session.
+
+## Revision 3 (after third test-reviewer R-GREEN-LEGITIMATE CHANGES_REQUESTED)
+
+The Phase 2 and Phase 3 AC outcomes and the lifecycle ledger above are preserved as written; no UPDATE or DELETE of a pre-existing test happened in this revision (the edits below are to specs this phase authored, so the ledger gets no new row). Note: the writer had no shell in this session (Read, Write, Edit, Glob only); the edits below were not executed. The command layer must run `pnpm build`, prettier on the touched files, and the full e2e suite (repeat effects-hero.spec.ts, for example `--repeat-each=5` inside the full run).
+
+1. Flaky test, fixed: tests/e2e/effects-hero.spec.ts, test "resolves the intro line by line from skeleton bars, then pops the buttons...". The sample at hero t=2330 asserted `links.fx === 'hidden'`, but the links step starts at 2200 and its pop effect is SELECT_MS 150 + POP_MS 180 (src/runtime/effect-timing.ts), so the target stays hidden only until 2350; the real clock could land ~50 ms past the requested moment and cross it. Sampling error derived from the code: src/runtime/scheduler.ts `publish` rounds progress to 1 % (31 ms of the 3100 ms hero), so advanceTo can return up to ~16 ms early and, with the 1 % step plus a 20 ms slice plus one 16.7 ms frame, up to ~52 ms late. The window in which both asserted facts hold is [2250, 2350): the intro goes live at l >= 350 of its 1900 start, the links pop at 2350. The sample moved to 2285 with advanceTo's step set to 10 ms (late bound ~35 ms): real moment within about [2269, 2320]. Every assertion and its meaning is unchanged. The spec header was corrected (links 2200-2530 now lists the 150 ms selection phase; the false "~50 ms margin" claim is replaced by the derived bound and the per-target go-live moments).
+2. Audit of every other sampled moment in tests/e2e/effects-*.spec.ts against the -16 / +52 ms bound (go-live moments: title 1450, role 1650, photo 1950, intro 2250, links 2350):
+   - effects-hero "types the headline...": the sample at 1600 asserted `role.fx === 'hidden'` with the role going live at 1650 (real up to ~1652): moved to 1550, the middle of the window between the headline going live (1450) and the role going live (1650). Assertions unchanged.
+   - effects-pointer "lets a created card take clicks...": the first window-command sample was cards[1].start - 10 (the next card's call could already be showing); moved to cards[1].start - 70. The prefix assertion is unchanged and now observes the first card's call.
+   - Checked and kept: effects-hero 1340, 1920, 1800, 2150 (both), 2450, 2750, window command 2110, 2260, 2450; effects-pointer cards[2].start - 80 and + 100; effects-layout and effects-axe moments assert layout invariants and zero axe violations that hold at any moment (no phase boundary asserted); effects-absent samples every 20 ms and asserts per-sample invariants; effects-scripts reads compiled timelines only.
+3. Covered by a production fix, test unchanged: tests/e2e/effects-layout.spec.ts:24 ("never adds horizontal scroll while the hero elements are created at 375px / 1280px", limit 0 at :38, hero t=1600 among the moments). The 2 px overflow from Revision 1 and 2 was fixed in production by PRPs/plans/completed/stage-3-runtime-fix-build-overlay-horizontal-overflow.plan.md (`overflow-x: clip; overflow-y: visible` on `.sp-build-layer` and `.sp-build-fx`, rule B26 in docs/domain/areas/build.md). The test and its limit are exactly as written; it is recorded as EXISTING_TEST_COVERS for PRD AC-4 (no horizontal scroll added by selection boxes and handles during the hero build; the row above that names it as NEW_TEST_REQUIRED stays, as the test was authored this phase) and for AC-21 (the overlay layer adds no document width, rule B26) at tests/e2e/effects-layout.spec.ts:24-41.
+
+## Formatting Outcome
+
+- Outcome: formatted (by the /relay-write-test command layer, Phase A.4)
+- Discovery source: package.json scripts.format (formatter_cmd `npm run format --`)
+- Command run: `pnpm exec prettier --write <10 touched files>` in the worktree (the underlying formatter, kept scoped; scripts.format is `prettier --write .`)
+- Files the formatter changed: 7 of 10 (3 were already formatted)
+
+- Revision 1 (command layer): `pnpm exec prettier --write` on tests/unit/effect-timing.test.ts, tests/e2e/support/effects.ts, tests/e2e/effects-hero.spec.ts.
+
+- Revision 3 (command layer, recovery): `pnpm exec prettier --write tests/e2e/effects-hero.spec.ts tests/e2e/effects-pointer.spec.ts` in the worktree, exit 0, both files already formatted (unchanged). Scoped invocation for the same reason as above (scripts.format is `prettier --write .`).
+
+## Status
+
+*Approved: 2026-11-08*
+*Status: APPROVED*

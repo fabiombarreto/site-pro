@@ -1,0 +1,69 @@
+# TDD initial suite — phase 2 (test-after)
+# Source PRD: PRPs/prds/stage-3-runtime.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-3-runtime-phase-2-build-layer.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-08
+# Test files live in the feature worktree: C:/repos/site-pro/.worktrees/stage-3-runtime (paths below are relative to it)
+# Replaces the Phase 1 manifest (APPROVED, archived at PRPs/reports/stage-3-runtime/phase-1/test-suite.diff)
+# Note: the writer had no shell in this session; none of the new or updated tests were executed. The full suites run afterwards.
+
+## AC outcomes
+
+Plan AC-A1..A8 map to PRD ACs as in the plan. Only the parts of a PRD AC that phase 2 delivers are asserted.
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-1 (boot types startSite() with a function token, logs, nav entrance by 900 ms, fold into the dock, hero.tsx window aligned to #top, created line, idle dock; plan AC-A1) | NEW_TEST_REQUIRED | tests/e2e/build-layer-show.spec.ts ("shows the boot, folds it into the dock..."); tests/unit/runtime-layer-timing.test.ts (boot typing, logs, fold, nav slide); tests/unit/build-layer-components.test.ts (tokenizer, copy) |
+| AC-1 (nav hidden before first paint, still laid out) | EXISTING_TEST_COVERS | tests/e2e/build-layer-absent.spec.ts asserts the nav is hidden while pending (new, blocked-runtime case); pending opacity and laid-out state of sections: tests/e2e/runtime-fallbacks.spec.ts:74 |
+| AC-1 (headline visible by 2.0 s, 3.2 s hero budget) | OUT_OF_PHASE_SCOPE | (phase 3) |
+| AC-2 (dock types renderAbout();, Reading about.md..., Building about…, about.md window, one window at a time; plan AC-A2) | NEW_TEST_REQUIRED | tests/e2e/build-layer-show.spec.ts (same first test, About part; second test asserts one window at a time during Projects); tests/unit/runtime-scheduler-tick.test.ts (section clock hook); tests/unit/runtime-layer-timing.test.ts |
+| AC-2 (trigger and order parts) | EXISTING_TEST_COVERS | tests/e2e/runtime-build-order.spec.ts:20; tests/unit/runtime-scheduler.test.ts:104 |
+| AC-3, AC-5 (queued n/5), AC-6, AC-7, AC-8, AC-9, AC-10 | OUT_OF_PHASE_SCOPE | (controls and dock behavior: phase 4; effects: phase 3) |
+| AC-4 (final layout never moves at mid-hero, mid-projects, after projects; layout shift <= 0.01; main text equals ready page; plan AC-A3) | NEW_TEST_REQUIRED | tests/e2e/build-layer-layout.spec.ts ("never moves a box or the text...") |
+| AC-4 (pending outline labeled by file, not in the accessibility tree; one overlay root outside main, aria-hidden, transform/opacity/clip-path only) | NEW_TEST_REQUIRED | tests/e2e/build-layer-show.spec.ts ("keeps the layer in one decorative overlay...") |
+| AC-4 (pending and data-* attributes change no box) | EXISTING_TEST_COVERS | tests/e2e/runtime-build-order.spec.ts:153 |
+| AC-11 (window body pointer-events none, bars catch clicks, click over the body reaches the page, pending sections ignore the pointer; plan AC-A4) | NEW_TEST_REQUIRED | tests/e2e/build-layer-show.spec.ts (second test) |
+| AC-12 (windows realign to the section's new box on a width change; plan AC-A3) | NEW_TEST_REQUIRED | tests/e2e/build-layer-layout.spec.ts ("desktop: the bars stick under the nav and the window follows the section...") ; finishing the section on resize is phase 4 |
+| AC-13 (saved infinity: no layer) | NEW_TEST_REQUIRED | tests/e2e/build-layer-absent.spec.ts ("with a saved infinity speed") ; instant mode itself: tests/e2e/runtime-fallbacks.spec.ts:121 |
+| AC-14 (reduced motion: no layer, nav visible; plan AC-A6) | NEW_TEST_REQUIRED | tests/e2e/build-layer-absent.spec.ts ("under reduced motion") |
+| AC-15 (no JS or failure: no layer, nav visible; plan AC-A6) | NEW_TEST_REQUIRED | tests/e2e/build-layer-absent.spec.ts ("without JavaScript", "when the runtime is blocked") ; page equals Stage 2: tests/e2e/runtime-fallbacks.spec.ts:20 |
+| AC-16, AC-18, AC-20 | OUT_OF_PHASE_SCOPE | (no phase 2 delta; AC-16 and AC-20 stay covered by phase 1 specs; axe during the build is phase 5) |
+| AC-17 (only the reserved empty footer slot, one line, own row under 768 px, absent on project pages; plan AC-A7) | NEW_TEST_REQUIRED | tests/e2e/build-layer-absent.spec.ts ("reserved footer build slot"); tests/unit/build-layer-components.test.ts ("footer reserved build slot") ; filling the slot is phase 4 |
+| AC-19 (size budgets; plan AC-A8) | EXISTING_TEST_COVERS | tests/unit/runtime-budget.test.ts; tests/e2e/quality-gates.spec.ts:25 (total JS and CSS limits on the real build); tests/e2e/build-layer-absent.spec.ts asserts no layer markup on project pages |
+| AC-19 (Lighthouse medians) | OUT_OF_PHASE_SCOPE | (CI `lighthouse` job) |
+| AC-21 (375x812: one compact bar with the command, dock spans viewport minus 16 px per side, status only; sticky bars at 64 px on desktop and mobile; plan AC-A5) | NEW_TEST_REQUIRED | tests/e2e/build-layer-layout.spec.ts (desktop and mobile tests) |
+
+## Test files written this session
+
+- tests/unit/runtime-layer-timing.test.ts
+- tests/unit/runtime-scheduler-tick.test.ts
+- tests/unit/build-layer-components.test.ts
+- tests/e2e/support/layer.ts (helpers on top of tests/e2e/support/runtime.ts, not a spec)
+- tests/e2e/build-layer-show.spec.ts
+- tests/e2e/build-layer-layout.spec.ts
+- tests/e2e/build-layer-absent.spec.ts
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/home-no-build-layer.spec.ts:"has no boot terminal, dock, window, selection box or skeleton" (now "...in instant mode") | AC-13 / AC-14 / AC-1 (Stage 3 phase 2). The old assertion (no .sp-boot/.sp-dock/.sp-window after 2 s idle with a real clock on a default visit) contradicts the PRD by design: the boot terminal, dock and windows now exist while building and the dock persists. The still-live contract, no layer element when nothing is built live, is kept on the paths where it holds (saved infinity, same BUILD_LAYER selector, now also .sp-outline and [data-build-layer]); no-JS and reduced-motion absence are asserted in build-layer-absent.spec.ts. Nothing the PRD still requires was dropped. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/home-no-build-layer.spec.ts:"carries no build-layer markup and no pending runtime state" | AC-15 / AC-4. The class regex ran against the whole served page, but the layer stylesheet, which names those classes, may be inlined into index.html. The same regex now runs against the markup with <style> blocks removed, and a `data-build-layer` absence check is added. The assertion about markup is unchanged, not weakened. |
+| ADD (no removal) | — | tests/e2e/home-no-build-layer.spec.ts:"keeps only the dock once the hero is built..." | New test in the same file for the post-build state: after the hero is done, one dock remains and no boot terminal, window, fab, selection box or skeleton. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/home-mobile-menu.spec.ts:"sticky nav › is sticky, 64px tall, transparent at the top and translucent once scrolled" | AC-1 (nav entrance, Stage 3 phase 2); revision 1 after R-GREEN-LEGITIMATE. The Phase 2 nav entrance hides the nav on a default real-clock visit, so the test scrolled and measured it before it slid in (top was -64). The test now calls useInstantBuild (saved infinity speed) before goto, so the nav is in at once. Every assertion is kept: position sticky, height 64px, transparent at the top, translucent once scrolled, and bounding top equal to 0. Nothing dropped or weakened. |
+| (reviewed, no change needed) | — | tests/e2e/runtime-build-order.spec.ts, runtime-fallbacks.spec.ts, runtime-timeline-contract.spec.ts, tests/unit/runtime-scheduler.test.ts, runtime-compiler.test.ts | Phase 1 specs observe section attributes, timelines and opacity on the page, none of which the overlay changes; the onTick hook is optional so the scheduler tests are unchanged; the compiler output is byte-identical. The pending-layout test sees the footer slot on both pages it compares. |
+| (reviewed, not run) | — | tests/e2e/home-content.spec.ts, home-keyboard.spec.ts, home-responsive-layout.spec.ts, home-axe.spec.ts (home-mobile-menu.spec.ts: the sticky test was the risk described below and is now updated, see the UPDATE row above) | They either run without JavaScript, use instant mode (home-axe), or assert geometry and focus that do not depend on opacity or on an overlay with pointer-events none. Risk: a spec that runs with a real clock and reads the nav or a pending section could be affected by the hidden nav; if the full e2e run shows it, the fix is the instant-mode pattern (useInstantBuild). |
+
+## Formatting Outcome
+
+- Outcome: formatted (by the /relay-write-test command layer, Phase A.4)
+- Discovery source: package.json scripts.format (formatter_cmd `npm run format --`)
+- Command run: `pnpm exec prettier --write <8 touched files>` in the worktree, the underlying formatter invoked directly because scripts.format is `prettier --write .` and would run unscoped
+- Files the formatter changed: 7 of 8 (tests/unit/runtime-scheduler-tick.test.ts was already formatted)
+- The writer had no shell tool and left this section as "not run"; the command layer replaced it.
+- Retry 1 (17:42Z): `pnpm exec prettier --write tests/e2e/home-mobile-menu.spec.ts`; the file was already formatted (unchanged).
+
+## Status
+
+*Approved: 2026-11-08*
+*Status: APPROVED*

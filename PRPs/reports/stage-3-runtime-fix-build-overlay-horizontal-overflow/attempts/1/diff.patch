@@ -1,0 +1,85 @@
+diff --git a/docs/02-experience.md b/docs/02-experience.md
+index 92799bb..c24c66f 100644
+--- a/docs/02-experience.md
++++ b/docs/02-experience.md
+@@ -294,7 +294,7 @@ dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the nex
+ | **Scroll hint** | If the visitor stays still for ~4 s after the hero, the `scroll ↓` hint in the dock pulses gently. |
+ | **Order** | Sections are always built in order, one at a time. Inside a section, element steps may overlap. |
+ | **Reserved space** | Each section takes its final height from the start, so the page scrolls normally and nothing shifts. Before its build, a section's content is laid out but invisible, and a faint dashed outline with the window name (`projects.tsx`) marks the area. |
+-| **The final layout never moves** | Windows, cursors and selection boxes are overlays. Elements animate in place, using only transform, opacity and clip-path. |
++| **The final layout never moves** | Windows, cursors and selection boxes are overlays. Elements animate in place, using only transform, opacity and clip-path. No overlay piece may widen the page: the build layer clips horizontal overflow, so the page never scrolls sideways while building. |
+ | **Fast scrolling (turbo)** | If the visitor scrolls past sections that have not been built, they are queued and built accelerated (5×, the pace approved in prototype v2) until they catch up with what is on screen. |
+ | **Never hijack scrolling** | The runtime never moves the page on its own, except when the visitor asks: a click in the nav or the palette, a deep link, or Replay. |
+ | **Skip** | `Esc`, the `» Skip` button in the dock, or a click on the window's title bar or command bar finishes the current section immediately. While the mobile menu is open, `Esc` only closes the menu. |
+diff --git a/docs/context/architecture.md b/docs/context/architecture.md
+index 2807243..13b0941 100644
+--- a/docs/context/architecture.md
++++ b/docs/context/architecture.md
+@@ -45,7 +45,7 @@ Two visual registers never mix: **the page** (modern, readable) and **the build
+ | `src/scripts/` | Small client modules loaded from `Base.astro`: `theme-toggle`, and `nav.ts` (toggles `is-scrolled` on `.sp-nav` and closes the mobile menu popover when one of its links is clicked). `build-mode.ts` holds `SPEED_STORAGE_KEY` (`sp-speed`), `WATCHDOG_MS`, `parseSpeed` and `resolveMode`; the inline head script in `Base.astro` (rendered only when the page passes `build`) mirrors the two helpers |
+ | `src/runtime/` | Stage 3 Phase 1 (runtime core): `types.ts` (effects, section states, `BuildScript`, `Timeline`), `compiler.ts` (`compileScript` turns a section's step list into an absolute millisecond timeline; `serializeTimeline`), `clock.ts` (real and manual clocks), `scheduler.ts` (section queue, turbo, speed, hidden-tab handling), `triggers.ts` (`IntersectionObserver` per section) and `main.ts` (entry loaded by `index.astro`; reflects state on `<html>` data attributes and reveals the page if anything throws). Phase 2 adds `layer.ts` (the overlay: boot terminal, dock, build windows, pending outlines, driven by scheduler state) and `layer-timing.ts` (overlay timing and easing). Windows are placed by writing `left`/`top`/`width`/`height` on the absolutely positioned overlay, on placement and resize only, never per frame (a transformed window root would break the sticky bars); per-frame animation stays `transform`/`opacity` only. Phase 3 adds the effects registry: `effect-timing.ts` (pure, DOM-free: effect durations, seeded randomness, the phase of every effect as a function of the step's local time, the dock typing schedule, `truncateCall` that cuts window commands to 29 characters with `…`), `effect-dom.ts` (measurement plus the only writes an effect may make on a page element: the `data-build-fx` attribute and inline `opacity`/`clip-path`) and `effects.ts` (`createEffects`, runners for `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger` and `build-card`, driven by scheduler state and ticks). Effects reveal the real page elements in place with `clip-path` and `opacity`; the caret, scramble glyphs, selection boxes and skeletons live only in the overlay. `pop` and `stagger` use an inset `clip-path` with overshoot plus opacity, not a scale, because a transform on a page element would change measured boxes. `EFFECT_DURATION_MS` moved from `compiler.ts` to `effect-timing.ts` (re-exported). Controls come in a later phase |
+ | `src/stores/` | nanostores shared by the runtime and the islands; `build.ts` holds `currentSection`, `progress`, `status` and `speed` atoms |
+-| `src/styles/` | tokens.css, themes, base.css; `build-pending.css` hides not-yet-built sections (`opacity: 0`) only while `<html data-build-mode="pending">`; `build-layer.css` styles the build layer (overlay only, including the `sp-build-fx` effects layer); a second rule hides elements marked `data-build-fx="hidden"` (`opacity: 0`, no pointer events) while pending, and sections in `building` or `closing` are no longer hidden as a whole |
++| `src/styles/` | tokens.css, themes, base.css; `build-pending.css` hides not-yet-built sections (`opacity: 0`) only while `<html data-build-mode="pending">`; `build-layer.css` styles the build layer (overlay only, including the `sp-build-fx` effects layer); a second rule hides elements marked `data-build-fx="hidden"` (`opacity: 0`, no pointer events) while pending, and sections in `building` or `closing` are no longer hidden as a whole; its roots (`.sp-build-layer`, `.sp-build-fx`) clip horizontal overflow with `overflow-x: clip` (vertical stays visible, and `clip` does not create a scroll container) so no overlay piece can widen the document |
+ | `src/strings.ts` | Interface copy, centralized |
+ | `src/pages/` | index, projects/[slug], 404 |
+ | `PRPs/` | relay pipeline artifacts (PRDs, plans, reports) |
+diff --git a/docs/decisions.md b/docs/decisions.md
+index c79fa9b..82757f0 100644
+--- a/docs/decisions.md
++++ b/docs/decisions.md
+@@ -204,6 +204,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
+ 
+ ---
+ 
++## [2026-11-08] Build layer clips horizontal overflow
++
++**Context:** A selection box drawn at the 375 px viewport edge made `scrollWidth` 377 against `clientWidth` 375 during the hero build, so the page scrolled sideways.
++**Decision:** The build layer's overlay roots clip the horizontal axis with `overflow-x: clip` and keep the vertical axis visible; fixed pieces such as the dock and boot terminal are unaffected; insetting individual handles was rejected.
++**Reason:** Protects "the final layout never moves" for every present and future overlay piece; `clip` over `hidden` so the layer is not a scroll container and sticky window bars keep working; supported by the last two versions of every target browser.
++**Areas affected:** build, visual-design
++
++---
++
+ <!-- Template for future entries:
+ 
+ ## [YYYY-MM-DD] Title of the decision
+diff --git a/docs/domain/areas/build.md b/docs/domain/areas/build.md
+index aaffcc2..18501e2 100644
+--- a/docs/domain/areas/build.md
++++ b/docs/domain/areas/build.md
+@@ -31,6 +31,7 @@ The self-building show: boot terminal, command dock, build windows, element effe
+ | B23 | Every element is **created**, not faded in: `select → skeleton → content` |
+ | B24 | The build layer is `aria-hidden`; typing is never announced letter by letter |
+ | B25 | Clicking a window's first dot "closes" it: `warn  Window closed. Building anyway...` and the section finishes (easter egg) |
++| B26 | **The build layer never widens the document**: its roots clip horizontal overflow (`overflow-x: clip`, vertical stays visible), so no overlay piece (handles, windows, skeletons, text overlays) can create horizontal scroll; `clip`, not `hidden`, so the sticky window bars keep working |
+ 
+ ## Timings (1×, docs/04-animations.md)
+ 
+diff --git a/src/styles/build-layer.css b/src/styles/build-layer.css
+index 0e292a4..414d1c7 100644
+--- a/src/styles/build-layer.css
++++ b/src/styles/build-layer.css
+@@ -1,3 +1,4 @@
++/* The overlay never widens the document (B26): clip, not hidden, so the layer is not a scroll container (sticky window bars keep working) and the vertical axis stays visible. Fixed pieces (dock, boot) are unaffected. */
+ .sp-build-layer {
+   position: absolute;
+   top: 0;
+@@ -6,6 +7,8 @@
+   height: 0;
+   z-index: 2;
+   pointer-events: none;
++  overflow-x: clip;
++  overflow-y: visible;
+ }
+ 
+ /* Shared chrome pieces */
+@@ -280,6 +283,8 @@
+   width: 100%;
+   height: 0;
+   pointer-events: none;
++  overflow-x: clip;
++  overflow-y: visible;
+ }
+ 
+ .sp-select {

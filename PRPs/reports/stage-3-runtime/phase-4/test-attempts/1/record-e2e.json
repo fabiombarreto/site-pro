@@ -1,0 +1,20 @@
+{
+  "run_id": "1855eb96-275c-496c-b598-dffbd3363f25",
+  "attempt": 1,
+  "tier": "e2e",
+  "framework": "playwright",
+  "outcome": "PASSED",
+  "duration_ms": 281929,
+  "counts": {
+    "passed": 250,
+    "failed": 0,
+    "skipped": 0,
+    "total": 250
+  },
+  "failures": [],
+  "coverage": null,
+  "artifacts": {
+    "junit_xml": "C:\\repos\\site-pro\\PRPs\\reports\\stage-3-runtime\\attempts\\1\\junit-e2e.xml"
+  },
+  "generated_at": "2026-11-08T21:46:00.002Z"
+}

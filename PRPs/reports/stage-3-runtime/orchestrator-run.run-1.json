@@ -1,0 +1,424 @@
+{
+  "feature": "stage-3-runtime",
+  "prd_path": "C:/repos/site-pro/PRPs/prds/stage-3-runtime.prd.md",
+  "started_at": "2026-11-08T16:19:47Z",
+  "ended_at": "2026-11-08T20:27:35Z",
+  "max_plan_review_retries": 2,
+  "max_tdd_review_retries": 2,
+  "max_orchestrator_minutes": 240,
+  "lane_selection": {
+    "mode": "serial",
+    "reason": "lane_runtime_safe: false in docs/context/methodology.md; Depends graph is one linear chain (1 lane)"
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-3-runtime-phase-1-runtime-core.plan.md",
+      "plan_review_attempts": 1,
+      "note": "research-codebase and research-web dispatched by the plan-writer"
+    },
+    {
+      "phase": 1,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-3-runtime/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "base origin/main 28e52b9; settings.json copied; bootstrap OK in 33 s (run with a 120 s timeout instead of the specified 60 s; its output was captured to a temp file outside PRPs/ and deleted after the redacted log was written)"
+    },
+    {
+      "phase": 1,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 1,
+      "stage": "implement",
+      "outcome": "PLAN_VALIDATION_DEFECT",
+      "attempts": 1,
+      "note": "Level 3 scenario D regex matches the inlined pending CSS; claim checked (command in plan, observed output real, PRD AC-15 resolves, L1/L2 PASS); code reviewer not dispatched"
+    },
+    {
+      "phase": 1,
+      "stage": "plan_repair",
+      "outcome": "STARTED",
+      "defect": "Level 3 · check(!/data-build-state/.test(html), 'no runtime state without JavaScript')"
+    },
+    {
+      "phase": 1,
+      "stage": "plan_repair",
+      "outcome": "APPROVED",
+      "note": "Level 3 split into self-contained blocks; scenario D asserts on the DOM; Task 8 keeps data-build-mode=instant"
+    },
+    {
+      "phase": 1,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 2,
+      "note": "invocation 1: attempt 1 PLAN_VALIDATION_DEFECT (accepted); invocation 2 (after plan repair): attempt 1 IMPLEMENTATION_COMPLETE, code review APPROVED, artifacts at attempts/2"
+    },
+    {
+      "phase": 1,
+      "stage": "docs_sync",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 1,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 1,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-3-runtime/test-suite.diff",
+      "tdd_review_attempts": 1,
+      "note": "9 test files written, 2 updated with ledger entries; formatter run scoped via pnpm exec prettier"
+    },
+    {
+      "phase": 1,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "ef2fb49c-b4ba-41c7-b793-796f0a3b9976",
+      "note": "485/485 (unit 314, e2e 171) on attempt 1"
+    },
+    {
+      "phase": 1,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 1,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested",
+      "flip": "implemented->tested"
+    },
+    {
+      "phase": 1,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete",
+      "flip": "tested->complete"
+    },
+    {
+      "phase": 1,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "6f5be0a756062ae8688d9890017d2492c23d42ed"
+    },
+    {
+      "phase": 1,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-3-runtime-phase-1-runtime-core.plan.md",
+      "timestamp": "2026-11-08T17:09:14Z"
+    },
+    {
+      "phase": 2,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-3-runtime-phase-2-build-layer.plan.md",
+      "plan_review_attempts": 1,
+      "note": "1 open advisory (R-COH-OTHER-INTERNAL-CONTRADICTION: Metadata says five vs nine files in src/components/build/); writer grounded by direct reads, no research subagents"
+    },
+    {
+      "phase": 2,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-3-runtime/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 2,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 2,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "R-SEM advisory: windows placed with left/top/width/height on the overlay (placement and resize only) so sticky bars work; per-frame animation stays transform/opacity"
+    },
+    {
+      "phase": 2,
+      "stage": "docs_sync",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 2,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 2,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-3-runtime/test-suite.diff",
+      "tdd_review_attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-GREEN-LEGITIMATE: home-mobile-menu sticky-nav test saw the nav before its entrance); fixed with useInstantBuild, all assertions kept"
+    },
+    {
+      "phase": 2,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "5fe991e7-ed7d-492f-b8ed-fdedc1f5ddb3",
+      "note": "531/531 (unit 347, e2e 184) on attempt 1"
+    },
+    {
+      "phase": 2,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 2,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested",
+      "flip": "implemented->tested"
+    },
+    {
+      "phase": 2,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete",
+      "flip": "tested->complete"
+    },
+    {
+      "phase": 2,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "0a0633e5cd89d41124558ce23e4b47aba6a93ea2"
+    },
+    {
+      "phase": 2,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-3-runtime-phase-2-build-layer.plan.md",
+      "timestamp": "2026-11-08T17:46:02Z"
+    },
+    {
+      "phase": 3,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-3-runtime-phase-3-element-effects-and-base-scripts.plan.md",
+      "plan_review_attempts": 1,
+      "note": "writer grounded by direct reads, no research subagents; 0 advisories"
+    },
+    {
+      "phase": 3,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-3-runtime/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 3,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 3,
+      "stage": "implement",
+      "outcome": "PLAN_VALIDATION_DEFECT",
+      "attempts": 1,
+      "note": "Level 3 scenario D samples card 0 at +400 ms, after card 1 starts (+330 ms pitch); claim checked; code reviewer not dispatched"
+    },
+    {
+      "phase": 3,
+      "stage": "plan_repair",
+      "outcome": "STARTED",
+      "defect": "Level 3 · scenario D runUntil(... cards[0].start + 400 ...)"
+    },
+    {
+      "phase": 3,
+      "stage": "plan_repair",
+      "outcome": "APPROVED",
+      "note": "scenario D samples at cards[1].start - 10 and asserts a prefix of the truncated call"
+    },
+    {
+      "phase": 3,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 2,
+      "note": "invocation 1: PLAN_VALIDATION_DEFECT (scenario D sample moment); invocation 2: re-validation PASS, code review APPROVED (attempts/2)"
+    },
+    {
+      "phase": 3,
+      "stage": "docs_sync",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 3,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 3,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "attempt": 1,
+      "note": "R-GREEN-LEGITIMATE: (1) float toBe in effect-timing.test.ts:278; (2) effects-hero links clip read on the wrapper; (3) 2px horizontal overflow at 375px t=1600 (likely real: .sp-build-layer has no overflow clipping)"
+    },
+    {
+      "phase": 3,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "attempt": 2,
+      "note": "(1),(2) fixed and green; (3) still red: 2px horizontal overflow at 375px, hero t=1600; probable cause .sp-select-handle right:-3px overhang with no horizontal clip on .sp-build-layer/.sp-build-fx (build-layer.css:1-9, 276-283, 307-320) — an implementation defect the test pair cannot fix"
+    },
+    {
+      "phase": 3,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "attempt": 3,
+      "note": "R-GREEN-LEGITIMATE: (a) effects-layout.spec.ts:38 still red, measured: two right-hand span.sp-select-handle at 371..377 px at 375x812 hero t=1600 (build-layer.css:307-320, no horizontal clip on .sp-build-layer/.sp-build-fx) — implementation defect; (b) new: effects-hero.spec.ts:100 links expected hidden at t=2330, got null (sample on the intro-end/pop-start boundary, 3/3 reruns)"
+    },
+    {
+      "phase": 3,
+      "stage": "recovery",
+      "outcome": "STARTED",
+      "timestamp": "2026-11-08T19:58:50Z",
+      "owner_reply": "Yes, recover",
+      "note": "manual_recovery from orchestrator-halt.json: (1) fix pass through a PRD-less plan (/relay-plan description mode -> /relay-plan-review -> /relay-implement, code_root = worktree, supplied diff base = tree 0e84aa1a76960845de0850924d67da26524cc85f, the worktree state at the halt); (2) Phase 3 test pair re-run with a fresh max_tdd_review_retries budget; (3) /relay-test + /relay-test-review, row 3 tested -> complete, snapshot; (4) /relay-execute for phases 4-5. The stray preview server on :4321 is gone (no listener; one FIN_WAIT_1 socket)."
+    },
+    {
+      "phase": 3,
+      "stage": "recovery_plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-3-runtime-fix-build-overlay-horizontal-overflow.plan.md",
+      "note": "/relay-plan description mode; containment chosen (overflow-x: clip; overflow-y: visible on .sp-build-layer and .sp-build-fx); 4 tasks (2 docs-first, 1 CSS, 1 verification); writer had no Bash/Grep, grounded by reads"
+    },
+    {
+      "phase": 3,
+      "stage": "recovery_plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-3-runtime-fix-build-overlay-horizontal-overflow.plan.md",
+      "plan_review_attempts": 1,
+      "note": "R1-R8 + R-COH all pass (description-mode R8 variant); 0 advisories"
+    },
+    {
+      "phase": 3,
+      "stage": "recovery_housekeeping",
+      "outcome": "CORRECTION",
+      "note": "the stray astro preview on 127.0.0.1:4321 is NOT gone: PID 36980 (worktree astro preview, started 2026-11-08T18:35:38Z) still listens and serves the worktree dist/; served HTML and assets are byte-identical to the current build, so e2e runs that reuse it test the current build. Not stopped by the orchestrator (an agent kill was denied earlier); left to the owner."
+    },
+    {
+      "phase": 3,
+      "stage": "recovery_implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "plan_path": "PRPs/plans/stage-3-runtime-fix-build-overlay-horizontal-overflow.plan.md",
+      "artifacts": "PRPs/reports/stage-3-runtime-fix-build-overlay-horizontal-overflow/attempts/1",
+      "note": "overflow-x: clip; overflow-y: visible on .sp-build-layer and .sp-build-fx + docs (build.md B26, 02-experience, architecture, decisions); effects-layout 3/3 green. Code review R-L3 caveat: the plan Level 3 allow-list names effects-hero.spec.ts:100 but Playwright JSON reports the test line :86 (same test); flaky 3/5 full runs, green alone — left to the Phase 3 test pair"
+    },
+    {
+      "phase": 3,
+      "stage": "recovery_docs_sync",
+      "outcome": "APPROVED",
+      "note": "docs-updater edited 0 files (plan docs-first edits already in the patch); docs-reviewer D-R1..D-R8 pass"
+    },
+    {
+      "phase": 3,
+      "stage": "recovery_d8",
+      "outcome": "APPLIED",
+      "note": "mutation a (plan IMPLEMENTED) + b (moved to PRPs/plans/completed/); mutation c skipped (PRD-less plan)"
+    },
+    {
+      "phase": 3,
+      "stage": "test_after",
+      "outcome": "STARTED",
+      "attempt": 1,
+      "budget": "fresh max_tdd_review_retries=2 (recovery invocation)",
+      "note": "prior_feedback: effects-hero.spec.ts:100 (test :86) sample on the links selection/pop boundary (pop starts 2350 = 2200 + SELECT_MS 150; advanceTo overshoot up to ~50 ms); effects-layout.spec.ts:38 resolved in code by the fix pass"
+    },
+    {
+      "phase": 3,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "attempt": 1,
+      "suite_path": "PRPs/reports/stage-3-runtime/test-suite.diff",
+      "tdd_review_attempts": 1,
+      "note": "recovery invocation: Revision 3 moved three sample moments (hero links 2330->2285 with a 10 ms slice, headline 1600->1550, pointer cards[1].start-10 -> -70), no assertion changed; reviewer dynamic check: vitest 390/390, e2e 213/213 twice, hero+pointer repeat-each=5 45/45 under a parallel full run"
+    },
+    {
+      "phase": 3,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "98f1a18d-d1ef-45d4-a651-75f0cf553fcd",
+      "note": "603/603 (unit 390, e2e 213) on attempt 1; runner overwrote a stale attempts/1 from an earlier run (archived copies of earlier phases are under phase-N/test-attempts)"
+    },
+    {
+      "phase": 3,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 3,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested",
+      "flip": "implemented->tested"
+    },
+    {
+      "phase": 3,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete",
+      "flip": "tested->complete"
+    },
+    {
+      "phase": 3,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "f113eca29c153c411974e96619213a2e709f42b9"
+    },
+    {
+      "phase": 3,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-3-runtime-phase-3-element-effects-and-base-scripts.plan.md",
+      "timestamp": "2026-11-08T20:26:53Z",
+      "note": "completed through the owner-approved manual recovery (fix plan + test pair re-run)"
+    },
+    {
+      "phase": 3,
+      "stage": "recovery",
+      "outcome": "COMPLETE",
+      "timestamp": "2026-11-08T20:26:53Z"
+    }
+  ],
+  "outcome": "FAILED_TDD_REVIEW_BUDGET_EXCEEDED",
+  "phases_completed": [
+    1,
+    2,
+    3
+  ],
+  "worktree_attempted": true,
+  "worktree_succeeded": true,
+  "fallback_reason": null,
+  "phase_diff_bases": {
+    "1": "6f5be0a756062ae8688d9890017d2492c23d42ed",
+    "2": "0a0633e5cd89d41124558ce23e4b47aba6a93ea2",
+    "3": "f113eca29c153c411974e96619213a2e709f42b9"
+  },
+  "suite_diff_bases": {},
+  "plan_validation_repairs": {
+    "1": 1,
+    "3": 1
+  },
+  "lane_durations_ms": {},
+  "total_duration_ms": null,
+  "recovery_diff_base": "0e84aa1a76960845de0850924d67da26524cc85f",
+  "outcome_note": "run 1 halted with FAILED_TDD_REVIEW_BUDGET_EXCEEDED at phase 3 (18:37Z); the owner-approved manual recovery completed phase 3 at 20:30Z; archived as orchestrator-run.run-1.json when run 2 started"
+}

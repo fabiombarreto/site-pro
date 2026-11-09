@@ -1,0 +1,124 @@
+diff --git a/docs/02-experience.md b/docs/02-experience.md
+index 3d48ad6..7769beb 100644
+--- a/docs/02-experience.md
++++ b/docs/02-experience.md
+@@ -116,7 +116,7 @@ On mobile, the links move into a `☰` menu.
+ | **Collapsed** | A small round `❯_` button at the bottom right. It opens the Command Palette (and, in v1.1, the interactive dock) |
+ | **Reduced motion** | `✔ Ready · motion reduced   ▶ Play build` |
+ 
+-Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. Replay and Play build always play the show at normal speed from the boot. Toasts (such as `warn  Window closed. Building anyway...`) appear just above the dock.
++Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. The speed button's accessible name repeats what it shows: `Build speed: 1×. Switch to 2×`, `Build speed: 2×. Switch to instant`, `Build speed: ∞ (instant). Switch to 1×`. Replay and Play build always play the show at normal speed from the boot. Toasts (such as `warn  Window closed. Building anyway...`) appear just above the dock.
+ 
+ ### Build window
+ 
+@@ -293,7 +293,7 @@ dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the nex
+ | **Trigger** | The next section build starts when the top of that section crosses ~75% of the viewport height. Without scrolling, the dock waits at `❯ █`, like a terminal waiting for input. |
+ | **Scroll hint** | If the visitor stays still for ~4 s after the hero, the `scroll ↓` hint in the dock pulses gently. |
+ | **Order** | Sections are always built in order, one at a time. Inside a section, element steps may overlap. |
+-| **Reserved space** | Each section takes its final height from the start, so the page scrolls normally and nothing shifts. Before its build, a section's content is laid out but invisible, and a faint dashed outline with the window name (`projects.tsx`) marks the area. |
++| **Reserved space** | Each section takes its final height from the start, so the page scrolls normally and nothing shifts. Before its build, a section's content is laid out but invisible, and a faint dashed outline with the window name (`projects.tsx`) marks the area. The footer's build-summary slot is reserved the same way: it takes the free width of the footer row, so the summary and Replay appear without moving any box. |
+ | **The final layout never moves** | Windows, cursors and selection boxes are overlays. Elements animate in place, using only transform, opacity and clip-path. No overlay piece may widen the page: the build layer clips horizontal overflow, so the page never scrolls sideways while building. |
+ | **Fast scrolling (turbo)** | If the visitor scrolls past sections that have not been built, they are queued and built accelerated (5×, the pace approved in prototype v2) until they catch up with what is on screen. |
+ | **Never hijack scrolling** | The runtime never moves the page on its own, except when the visitor asks: a click in the nav or the palette, a deep link, or Replay. |
+diff --git a/docs/06-architecture.md b/docs/06-architecture.md
+index 27babef..a758a8e 100644
+--- a/docs/06-architecture.md
++++ b/docs/06-architecture.md
+@@ -129,7 +129,7 @@ site-pro/
+ 
+ ### Dock accessibility
+ 
+-The dock is a `role="group"` named "Site build". Its status text, log and hint are aria-hidden. Its controls are persistent real buttons toggled with `hidden`, so focus survives a state change: "Skip this section's build", "Build speed: 1x. Switch to 2x" (and its two siblings), "Replay the build", "Play the build animation" and "Show build status". Every other layer child (boot terminal, windows, outlines, effects) is aria-hidden. Phase 4 modules: `controls-timing` (pure constants and mappings), `keys`, `focus-rule`, `resize`, `api` and the `FooterBuild` factory.
++The dock is a `role="group"` named "Site build". Its status text, log and hint are aria-hidden. Its controls are persistent real buttons toggled with `hidden`, so focus survives a state change: "Skip this section's build", "Build speed: 1×. Switch to 2×" (and its two siblings, which also repeat the visible glyph), "Replay the build", "Play the build animation" and "Show build status". Every other layer child (boot terminal, windows, outlines, effects) is aria-hidden. Phase 4 modules: `controls-timing` (pure constants and mappings), `keys`, `focus-rule`, `resize`, `api` and the `FooterBuild` factory.
+ 
+ ## Accessibility
+ 
+diff --git a/docs/context/architecture.md b/docs/context/architecture.md
+index ab6d712..96fa469 100644
+--- a/docs/context/architecture.md
++++ b/docs/context/architecture.md
+@@ -39,7 +39,7 @@ Two visual registers never mix: **the page** (modern, readable) and **the build
+ | `scripts/` | Build scripts (photo → ASCII, OG images), `check-budgets.mjs`, `verify-build-targets.mjs` (run from `astro.config.mjs` after `astro build`; fails the build if a `data-build` step names a `data-build-target` missing from the page) and the relay worktree bootstrap scripts |
+ | `tests/` | Playwright E2E, visual and accessibility tests |
+ | `src/content/` | profile, projects/, stack.json |
+-| `src/components/page/` | React page components (NavBar, Button, ProjectCard, StackGroup, Footer, CommandPalette…). `Footer` has an opt-in `buildSlot` prop that renders an empty reserved line (`data-footer-build`) for the build summary; `index.astro` enables it |
++| `src/components/page/` | React page components (NavBar, Button, ProjectCard, StackGroup, Footer, CommandPalette…). `Footer` has an opt-in `buildSlot` prop that renders an empty reserved line (`data-footer-build`) for the build summary; `index.astro` enables it; the slot takes the free width of the footer row, so filling it moves nothing |
+ | `src/components/build/` | Build-layer components as TypeScript DOM factories, not React (BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor for v1.1). Stage 3 Phase 2 built `dom.ts`, `tokenize.ts`, `Cursor`, `LogLine`, `CommandLine`, `BootTerminal`, `CommandDock`, `BuildWindow` and `PendingOutline`; Phase 4 adds `FooterBuild` (fills the reserved footer slot); Phase 3 adds `SelectionBox`, `Skeleton` and `TextOverlay` (the selection box with handles and label, the skeleton blocks, and the caret and scramble glyphs). Styled by `src/styles/build-layer.css` |
+ | `src/sections/` | Astro sections (Hero, About, Projects, Stack, Contact), each with its build script (`<section>.build.ts`, a step list compiled at build time and serialized into the section's `data-build` attribute; steps name `data-build-target` elements, wrapped in `.sp-build-wrap` where needed); `pacing.ts` (`pacedSteps` turns prototype v2 start offsets into step `gap`/`overlap` values and a final settle); the five base scripts use prototype v2's commands and pacing; `profile-links.ts` resolves the GitHub and LinkedIn URLs from the profile entry. Stage 2 Phase 5 composes them in `src/pages/index.astro` with `src/styles/home.css` |
+ | `src/scripts/` | Small client modules loaded from `Base.astro`: `theme-toggle`, and `nav.ts` (toggles `is-scrolled` on `.sp-nav` and closes the mobile menu popover when one of its links is clicked). `build-mode.ts` holds `SPEED_STORAGE_KEY` (`sp-speed`), `WATCHDOG_MS`, `parseSpeed` and `resolveMode`; the inline head script in `Base.astro` (rendered only when the page passes `build`) mirrors the two helpers |
+diff --git a/docs/decisions.md b/docs/decisions.md
+index a48da9b..21a958f 100644
+--- a/docs/decisions.md
++++ b/docs/decisions.md
+@@ -222,6 +222,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
+ 
+ ---
+ 
++## [2026-11-08] Footer slot reserves its width and the speed button name contains its glyph
++
++**Context:** The Stage 3 Phase 4 test-after review found two defects: the footer build-summary slot moved boxes when it filled, up to 176.6 px, against PRD AC-4 and AC-17; and axe reported `label-content-name-mismatch` on the dock speed button, against AC-18, because its visible `1×`, `2×`, `∞` was not part of its name `Build speed: 1x. Switch to 2x`.
++**Decision:** The footer slot takes the free width of the footer row so its box no longer depends on its content, with the same look as Stage 2 while empty. The three speed button names change to `Build speed: 1×. Switch to 2×`, `Build speed: 2×. Switch to instant` and `Build speed: ∞ (instant). Switch to 1×`, keeping the PRD AC-13 structure (state, then next state). This wording change is owner-visible and the glyphs are unchanged.
++**Reason:** The final layout never moves; WCAG 2.5.3 Label in Name lets speech-input users say what they see; a fixed width would guess the summary length and fail on mobile; the PRD quotes the names as examples, so the structure is kept and only the characters change.
++**Areas affected:** build, visual-design
++
++---
++
+ <!-- Template for future entries:
+ 
+ ## [YYYY-MM-DD] Title of the decision
+diff --git a/docs/domain/areas/build.md b/docs/domain/areas/build.md
+index 3272837..8b686dc 100644
+--- a/docs/domain/areas/build.md
++++ b/docs/domain/areas/build.md
+@@ -32,6 +32,8 @@ The self-building show: boot terminal, command dock, build windows, element effe
+ | B24 | The build layer is `aria-hidden` except the dock's `role="group"` controls (Skip, speed, Replay, Play build, Show build status); typing is never announced letter by letter |
+ | B25 | Clicking a window's first dot "closes" it: `warn  Window closed. Building anyway...` and the section finishes (easter egg) |
+ | B26 | **The build layer never widens the document**: its roots clip horizontal overflow (`overflow-x: clip`, vertical stays visible), so no overlay piece (handles, windows, skeletons, text overlays) can create horizontal scroll; `clip`, not `hidden`, so the sticky window bars keep working |
++| B27 | **The footer slot never moves anything**: the reserved build-summary slot takes the free width of the footer row (its box does not depend on its content), so filling it with the summary and Replay moves no other box, with or without JavaScript, at every viewport width |
++| B28 | **A control's accessible name contains its visible text** (WCAG 2.5.3): the speed button names its state and the next one with the same glyph it shows, `Build speed: 1×. Switch to 2×`, `Build speed: 2×. Switch to instant` and `Build speed: ∞ (instant). Switch to 1×` |
+ 
+ ## Timings (1×, docs/04-animations.md)
+ 
+diff --git a/src/components/page/Footer.css b/src/components/page/Footer.css
+index 3a139e2..5db05c0 100644
+--- a/src/components/page/Footer.css
++++ b/src/components/page/Footer.css
+@@ -22,9 +22,12 @@
+   gap: var(--space-2);
+ }
+ 
+-/* Reserved line for the build summary (filled later, so nothing moves). */
++/* Reserved slot for the build summary: it takes the free width of the footer row, so its box never depends on its content and filling it moves nothing (B27). Empty, it is invisible. */
+ .sp-footer-build {
+   min-height: calc(var(--text-sm) * 1.5);
++  flex: 1 1 0;
++  min-width: 0;
++  justify-content: flex-end;
+ }
+ 
+ .sp-footer-replay {
+@@ -51,5 +54,6 @@
+ 
+   .sp-footer-build {
+     flex-basis: 100%;
++    justify-content: flex-start;
+   }
+ }
+diff --git a/src/strings.ts b/src/strings.ts
+index 4439577..9173442 100644
+--- a/src/strings.ts
++++ b/src/strings.ts
+@@ -77,10 +77,10 @@ export const buildStrings = {
+     speed === 'inf' ? '∞' : speed === '2' ? '2×' : '1×',
+   speedLabel: (speed: Speed) =>
+     speed === 'inf'
+-      ? 'Build speed: instant. Switch to 1x'
++      ? 'Build speed: ∞ (instant). Switch to 1×'
+       : speed === '2'
+-        ? 'Build speed: 2x. Switch to instant'
+-        : 'Build speed: 1x. Switch to 2x',
++        ? 'Build speed: 2×. Switch to instant'
++        : 'Build speed: 1×. Switch to 2×',
+   initializing: 'Initializing application...',
+   openingFile: (file: string) => `Opening ${file}...`,
+   readingFile: (file: string) => `Reading ${file}...`,

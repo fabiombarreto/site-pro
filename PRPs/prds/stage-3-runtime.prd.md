@@ -197,11 +197,11 @@ Current value of `tdd` in `docs/context/methodology.md`: **false**. Test-after o
 
 | # | Phase | Description | Status | Repo | Parallel | Depends | PRP Plan |
 |---|-------|-------------|--------|------|----------|---------|----------|
-| 1 | Runtime core | Mode head script and watchdog, pending state, build-script format and compiler with the `data-*` contract, Clock, scheduler (order, lifecycle, one loop, speed, turbo, pause when hidden), 75% triggers, nanostores, the size check extension | pending | - | - | - | - |
-| 2 | Build layer | BootTerminal, CommandDock (every state, compact), BuildWindow (open/close, sticky bars, compact, `ResizeObserver`, pointer events), CommandLine with the tokenizer, LogLine and spinner, the pending outline, the footer summary slot | pending | - | - | 1 | - |
-| 3 | Element effects and base scripts | `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger`, `build-card`, and the five base scripts with prototype v2's commands and timings | pending | - | - | 2 | - |
-| 4 | Controls and navigation | Skip, Run all, speed and persistence, Replay, Play build, the collapsed dock, turbo queue status, deep links, nav clicks, the focus rule, width-only resize, the scroll hint, the `Shift + Esc` check | pending | - | - | 3 | - |
-| 5 | Quality gates | E2E for the 18 behavior rules, axe during the build in both themes, layout invariance, mobile, budgets and Lighthouse, the rewritten Stage 2 spec, docs/context/testing.md and the runtime API docs | pending | - | - | 4 | - |
+| 1 | Runtime core | Mode head script and watchdog, pending state, build-script format and compiler with the `data-*` contract, Clock, scheduler (order, lifecycle, one loop, speed, turbo, pause when hidden), 75% triggers, nanostores, the size check extension | complete | - | - | - | PRPs/plans/stage-3-runtime-phase-1-runtime-core.plan.md |
+| 2 | Build layer | BootTerminal, CommandDock (every state, compact), BuildWindow (open/close, sticky bars, compact, `ResizeObserver`, pointer events), CommandLine with the tokenizer, LogLine and spinner, the pending outline, the footer summary slot | complete | - | - | 1 | PRPs/plans/stage-3-runtime-phase-2-build-layer.plan.md |
+| 3 | Element effects and base scripts | `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger`, `build-card`, and the five base scripts with prototype v2's commands and timings | complete | - | - | 2 | PRPs/plans/stage-3-runtime-phase-3-element-effects-and-base-scripts.plan.md |
+| 4 | Controls and navigation | Skip, Run all, speed and persistence, Replay, Play build, the collapsed dock, turbo queue status, deep links, nav clicks, the focus rule, width-only resize, the scroll hint, the `Shift + Esc` check | complete | - | - | 3 | PRPs/plans/stage-3-runtime-phase-4-controls-and-navigation.plan.md |
+| 5 | Quality gates | E2E for the 18 behavior rules, axe during the build in both themes, layout invariance, mobile, budgets and Lighthouse, the rewritten Stage 2 spec, docs/context/testing.md and the runtime API docs | complete | - | - | 4 | PRPs/plans/stage-3-runtime-phase-5-quality-gates.plan.md |
 
 ### Phase Details
 

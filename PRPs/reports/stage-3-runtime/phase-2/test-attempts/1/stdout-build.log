@@ -1,0 +1,38 @@
+$ astro build
+[2m14:44:16[22m [34m[content][39m Syncing content
+[2m14:44:16[22m [34m[content][39m Synced content
+[2m14:44:16[22m [34m[types][39m Generated [2m774ms[22m
+[2m14:44:16[22m [34m[build][39m output: [34m"static"[39m
+[2m14:44:16[22m [34m[build][39m mode: [34m"static"[39m
+[2m14:44:16[22m [34m[build][39m directory: [34mC:\repos\site-pro\.worktrees\stage-3-runtime\dist\[39m
+[2m14:44:16[22m [34m[build][39m Collecting build info...
+[2m14:44:16[22m [34m[build][39m [32m✓ Completed in 827ms.[39m
+[2m14:44:16[22m [34m[build][39m Building static entrypoints...
+[33m[1m14:44:17[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[33m[1m14:44:17[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js (74:0): A comment
+
+"/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+ * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+ * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[2m14:44:18[22m [34m[vite][39m [32m✓ built in 2.37s[39m
+[2m14:44:19[22m [34m[vite][39m [32m✓ built in 836ms[39m
+[2m14:44:19[22m [34m[build][39m Rearranging server assets...
+
+[42m[30m generating static routes [39m[49m
+[2m14:44:19[22m   [34m├─[39m [2m/404.html[22m [2m(+28ms)[22m 
+[2m14:44:19[22m   [34m├─[39m [2m/projects/ai-track-record/index.html[22m [2m(+8ms)[22m 
+[2m14:44:19[22m   [34m├─[39m [2m/projects/praesto-sum/index.html[22m [2m(+5ms)[22m 
+[2m14:44:19[22m   [34m├─[39m [2m/projects/relay/index.html[22m [2m(+6ms)[22m 
+[2m14:44:19[22m   [34m├─[39m [2m/projects/site-pro/index.html[22m [2m(+6ms)[22m 
+[2m14:44:19[22m   [34m├─[39m [2m/index.html[22m [2m(+17ms)[22m 
+[2m14:44:19[22m [32m✓ Completed in 241ms.
+[39m
+[2m14:44:19[22m [34m[build][39m [32m✓ Completed in 3.53s.[39m
+[2m14:44:19[22m [34m[build][39m 6 page(s) built in [1m4.41s[22m
+[2m14:44:19[22m [34m[build][39m [1mComplete![22m

@@ -1,0 +1,46 @@
+
+ RUN  v5.1.0 C:/repos/site-pro/.worktrees/stage-3-runtime
+
+ ✓ tests/unit/page-styles.test.ts (36 tests) 98ms
+ ✓ tests/unit/content-copy.test.ts (21 tests) 84ms
+ ✓ tests/unit/design-tokens.test.ts (29 tests) 239ms
+ ✓ tests/unit/effect-timing.test.ts (30 tests) 51ms
+ ✓ tests/unit/verify-build-targets.test.ts (4 tests) 37ms
+stderr | tests/unit/home-href.test.ts > NavBar homeHref > prefixes the brand and the four section links with "/" when set
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+stderr | tests/unit/page-navigation.test.ts > NavBar > is a header with the brand linking to the top of the page
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+ ✓ tests/unit/home-href.test.ts (7 tests) 190ms
+ ✓ tests/unit/page-navigation.test.ts (11 tests) 249ms
+ ✓ tests/unit/page-primitives.test.ts (31 tests) 85ms
+ ✓ tests/unit/theme-helpers.test.ts (10 tests) 35ms
+ ✓ tests/unit/page-content-components.test.ts (22 tests) 43ms
+ ✓ tests/unit/build-layer-components.test.ts (13 tests) 31ms
+ ✓ tests/unit/runtime-scheduler.test.ts (15 tests) 29ms
+ ✓ tests/unit/content-schemas.test.ts (25 tests) 41ms
+ ✓ tests/unit/scaffold-config.test.ts (21 tests) 30ms
+ ✓ tests/unit/runtime-pacing.test.ts (13 tests) 18ms
+ ✓ tests/unit/runtime-compiler.test.ts (21 tests) 22ms
+ ✓ tests/unit/runtime-scheduler-tick.test.ts (4 tests) 12ms
+ ✓ tests/unit/runtime-layer-timing.test.ts (16 tests) 16ms
+ ✓ tests/unit/runtime-budget.test.ts (5 tests) 1523ms
+   ✓ runtime budget (5)
+     ✓ prints the runtime number next to the other metrics and passes when small 391ms
+     ✓ fails when the script only the home page loads exceeds 18 KB gzip 413ms
+ ✓ tests/unit/runtime-mode-clock.test.ts (19 tests) 13ms
+ ✓ tests/unit/quality-gates.test.ts (37 tests) 3826ms
+   ✓ token gate on fixtures (AC-9) (8)
+     ✓ passes when literals only live in tokens.css and assets/ 476ms
+     ✓ fails on a hex literal in a source file 364ms
+
+ Test Files  21 passed (21)
+      Tests  390 passed (390)
+   Start at  17:24:06
+   Duration  4.40s (tests 64%, import 21%, transform 11%, worker 4%)
+
+    Isolate  21 workers spawned · ~526ms startup each (spawn + environment, per file)
+             at least ~479ms faster with isolate: false — reuses workers across files instead of one per file
+
+JUNIT report written to C:/repos/site-pro/PRPs/reports/stage-3-runtime/attempts/1/junit-unit.xml

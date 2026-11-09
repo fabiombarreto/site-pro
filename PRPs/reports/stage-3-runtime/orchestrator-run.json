@@ -1,0 +1,323 @@
+{
+  "feature": "stage-3-runtime",
+  "prd_path": "C:/repos/site-pro/PRPs/prds/stage-3-runtime.prd.md",
+  "started_at": "2026-11-08T20:27:35Z",
+  "deadline_ts": "2026-11-09T00:27:35Z",
+  "ended_at": "2026-11-08T22:29:11Z",
+  "max_plan_review_retries": 2,
+  "max_tdd_review_retries": 2,
+  "max_orchestrator_minutes": 240,
+  "lane_selection": {
+    "mode": "serial",
+    "reason": "lane_runtime_safe: false in docs/context/methodology.md; Depends graph is one linear chain (1 lane)"
+  },
+  "run": 2,
+  "previous_run": "PRPs/reports/stage-3-runtime/orchestrator-run.run-1.json",
+  "seeded_state": {
+    "phase_diff_bases": "seeded from orchestrator-run.run-1.json (phases 1-3 of the same feature, same worktree) so phase 4 diffs against phase 3 end-state tree f113eca2; the protocol seeds only suite_diff_bases from disk (Phase A.0), the visual-approval resume path (A.2.5) reads both maps from disk — deviation recorded"
+  },
+  "phases": [
+    {
+      "phase": 4,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-3-runtime-phase-4-controls-and-navigation.plan.md",
+      "note": "8 tasks, AC-A1..A12; row 4 back-filled to in-progress; writer research-codebase hit its scope cap, core files read directly; owner decision candidates: Replay/Play at 1x, skip created text 1.5 s, reopened done collapses after 4 s, collapsed button name, focus to body after Replay/Play; Shift+Esc Windows check left as an owner step"
+    },
+    {
+      "phase": 4,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-3-runtime-phase-4-controls-and-navigation.plan.md",
+      "plan_review_attempts": 1,
+      "note": "R1-R8 + R-COH pass, 0 advisories; reviewer read the second clock.onFrame subscription (layer UI timers, unsubscribed while a section builds) as consistent with the PRD single-loop decision but an owner design point"
+    },
+    {
+      "phase": 4,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-3-runtime/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A): worktree on feature/stage-3-runtime, settings.json present"
+    },
+    {
+      "phase": 4,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 4,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "23 files; code review APPROVED (all 8 + R-COH; semantic sub-agent skipped for the wall-clock budget, recorded as R-COH-SEMANTIC-DEGRADED passed); reviewer re-ran L1-L3 itself (scenarios A-E PASS on :4399)"
+    },
+    {
+      "phase": 4,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "note": "3 updater edits (constraints, build.md, glossary: dock exception to aria-hidden); 5 candidate decisions + 2 deferred questions in phase-4/docs-update.md"
+    },
+    {
+      "phase": 4,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after",
+      "outcome": "STARTED",
+      "attempt": 1
+    },
+    {
+      "phase": 4,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "attempt": 1,
+      "note": "R-GREEN-LEGITIMATE: (1) implementation defect — footer build slot reserves only min-height in a space-between flex row, so filling it moves boxes (controls-done-replay:80, build-layer-layout:64, effects-layout:44; Footer.css:26-28); (2) implementation defect — axe label-content-name-mismatch on button[data-dock-action=speed] (visible 1x glyph vs aria-label 1x letter; effects-axe:26,:38 both themes; strings.ts:75-81); (3) test defect — build-layer-layout.spec.ts:135-157 reads the window after a width change finished the section (AC-12) without an UPDATE ledger row. vitest 415/415; e2e 241/249; controls repeat-each=3 105/108 (same deterministic failure)"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after_fix_pass",
+      "outcome": "STARTED",
+      "note": "DEVIATION: test-after has no route from the test pair to the Implementer; instead of spending the remaining tdd budget on defects the writer cannot fix (the Phase 3 halt), the orchestrator runs the owner-approved recovery pattern inside the loop: a PRD-less fix plan -> plan review -> /relay-implement (diff base = current worktree tree incl. the Phase 4 draft tests) -> docs sync -> D8, then re-adopts /relay-write-test (attempt 2) with prior_feedback for cause (3)"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after_fix_pass",
+      "outcome": "PLAN_APPROVED",
+      "plan_path": "PRPs/plans/stage-3-runtime-controls-fix-footer-slot-layout.plan.md",
+      "note": "description-mode plan approved 1st try; implementer dispatched with base tree b704c4b4 (preflight changed nothing)"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after_fix_pass",
+      "outcome": "PLAN_VALIDATION_DEFECT",
+      "attempts": 1,
+      "note": "L1/L2 PASS, L3 (a) PASS, (b) fails only on the must-be-in-passes assertion: axe runs while the dock is hidden by the boot; accepted with corrected evidence; repair via plan-writer targeted revision + plan-reviewer (Step A.4.2 pattern)"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after_fix_pass",
+      "outcome": "PLAN_REPAIR_APPROVED",
+      "note": "block (b) now waits for the visible speed button (1x, 2x), no un-hide; inf checks glyph/name/violations only; axe by name after the 2x click"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after_fix_pass",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/completed/stage-3-runtime-controls-fix-footer-slot-layout.plan.md",
+      "artifacts": "PRPs/reports/stage-3-runtime-controls-fix-footer-slot-layout/attempts/2",
+      "note": "code review APPROVED (attempt 2); docs sync APPROVED (0 updater edits); D8 a+b applied, c skipped (PRD-less). Owner-visible decision: speed button accessible names now contain the visible glyphs (Build speed: 1×. Switch to 2× / 2×. Switch to instant / ∞ (instant). Switch to 1×) — PRD AC-13 example quotes the old 1x wording"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after",
+      "outcome": "STARTED",
+      "attempt": 2,
+      "note": "re-adopted /relay-write-test with prior_feedback: stale build-layer-layout:135-157 (AC-12 width change finishes the section), new speed names in 3 new tests, footer + axe resolved in code"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-3-runtime/test-suite.diff",
+      "tdd_review_attempts": 2,
+      "note": "attempt 2 APPROVED after the in-loop fix pass; reviewer dynamic check: vitest 415/415, e2e 250/250, controls-* + build-layer-layout repeat-each=3 120/120"
+    },
+    {
+      "phase": 4,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "1855eb96-275c-496c-b598-dffbd3363f25",
+      "note": "665/665 (unit 415, e2e 250) on attempt 1"
+    },
+    {
+      "phase": 4,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 4,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested",
+      "flip": "implemented->tested"
+    },
+    {
+      "phase": 4,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete",
+      "flip": "tested->complete"
+    },
+    {
+      "phase": 4,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "eb5e2f87c84db1a1eda8787a4ef4736d0365f46a"
+    },
+    {
+      "phase": 4,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-3-runtime-phase-4-controls-and-navigation.plan.md",
+      "timestamp": "2026-11-08T21:47:13Z"
+    },
+    {
+      "phase": 5,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-3-runtime-phase-5-quality-gates.plan.md",
+      "note": "4 implementer tasks (testing.md coverage map, api-reference runtime API, development.md Lighthouse/E2E, verify gates); 4 gap specs deferred to the test pair; row 5 back-filled"
+    },
+    {
+      "phase": 5,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-3-runtime-phase-5-quality-gates.plan.md",
+      "plan_review_attempts": 1,
+      "note": "R1-R8 + R-COH pass; reviewer verified the Level 3 smoke, coverage map (partly) and owner-item strings against code_root"
+    },
+    {
+      "phase": 5,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-3-runtime/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 5,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 5,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "3 docs files, no production change; code review APPROVED (coverage-table attributions spot-checked); advisory: effects-hero.spec.ts:26 flaked once under full-suite load"
+    },
+    {
+      "phase": 5,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "note": "1 updater edit (KNOWLEDGE_BASE index); 4 candidate decisions, 3 deferred questions (owner items kept open)"
+    },
+    {
+      "phase": 5,
+      "stage": "d8",
+      "outcome": "APPLIED"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "STARTED",
+      "attempt": 1
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "attempt": 1,
+      "note": "R-GREEN-LEGITIMATE: behavior-gaps.spec.ts:145 expects 0 windows when the about log shows, but the window opens at the same instant (test defect); vitest 415/415, e2e 277/278, repeat-each=3 102/105 (same test); startPaused helper change judged legitimate"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "STARTED",
+      "attempt": 2
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-3-runtime/test-suite.diff",
+      "tdd_review_attempts": 2,
+      "note": "reviewer dynamic: vitest 415/415, e2e 278/278, repeat-each=3 105/105, repeat-each=5 workers=10 95/95; non-blocking: stale comment behavior-gaps.spec.ts:63-64 (MAX_START_OFFSET_MS)"
+    },
+    {
+      "phase": 5,
+      "stage": "test",
+      "outcome": "GREEN",
+      "run_id": "49038d6a-bc6f-490b-9fd0-46cbbf2aa3c5",
+      "note": "693/693 (unit 415, e2e 278) on attempt 1"
+    },
+    {
+      "phase": 5,
+      "stage": "test_review",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 5,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested",
+      "flip": "implemented->tested"
+    },
+    {
+      "phase": 5,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete",
+      "flip": "tested->complete"
+    },
+    {
+      "phase": 5,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "dd3370e1196172765a613d77653ad2c250dfab08"
+    },
+    {
+      "phase": 5,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-3-runtime-phase-5-quality-gates.plan.md",
+      "timestamp": "2026-11-08T22:29:11Z"
+    }
+  ],
+  "outcome": "ALL_PHASES_COMPLETE",
+  "phases_completed": [
+    4,
+    5
+  ],
+  "worktree_attempted": true,
+  "worktree_succeeded": true,
+  "fallback_reason": null,
+  "phase_diff_bases": {
+    "1": "6f5be0a756062ae8688d9890017d2492c23d42ed",
+    "2": "0a0633e5cd89d41124558ce23e4b47aba6a93ea2",
+    "3": "f113eca29c153c411974e96619213a2e709f42b9",
+    "4": "eb5e2f87c84db1a1eda8787a4ef4736d0365f46a",
+    "5": "dd3370e1196172765a613d77653ad2c250dfab08"
+  },
+  "suite_diff_bases": {},
+  "plan_validation_repairs": {},
+  "lane_durations_ms": {},
+  "total_duration_ms": 7296000,
+  "deviations_noted": [
+    "phase_diff_bases seeded from the previous run file (see seeded_state)",
+    "P5 formatter and the test pair formatting use pnpm exec prettier --write <files> instead of npm run format -- <files> (scripts.format is prettier --write ., which would format the whole repo)"
+  ],
+  "deviations": [],
+  "pr_url": "https://github.com/fabiombarreto/site-pro/pull/2",
+  "post_pr": [
+    {
+      "at": "2026-11-09T12:58:26Z",
+      "event": "ci-monitor: e2e failed on 5a9cb39",
+      "fix": "tests/e2e/effects-absent.spec.ts animation scan scoped to the build layer and main (nav Stage 2 color transition raced the first sample on CI); test-writer Revision 2 + test-reviewer APPROVED (e2e 278/278, repeat-each=5 45/45, scope probe)",
+      "commit": "630f483",
+      "pushed": true
+    }
+  ],
+  "merged_at": "2026-11-09T19:18:17Z",
+  "merge_commit": "b4271cb13cbf07fdd59804cde14c7ea4553bee7e",
+  "approve_outcome": "MERGED_CLEANUP_PARTIAL",
+  "approve_halt": "PRPs/reports/stage-3-runtime/approve-halt.json",
+  "docs_outcome": "APPROVED"
+}

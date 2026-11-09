@@ -1,0 +1,16 @@
+{
+  "run_id": "98f1a18d-d1ef-45d4-a651-75f0cf553fcd",
+  "reviewed_at": "2026-11-08T20:26:41Z",
+  "base_branch": "main",
+  "verdict": "APPROVED",
+  "analyzed_files": 29,
+  "concerns": [],
+  "notes": [
+    "coverage baseline unavailable (no PRPs/reports/coverage-baseline.json); structural checks only",
+    "ledger = APPROVED Phase 3 manifest; its single UPDATE row (placeholder-page axe uses useInstantBuild, assertion unchanged) matches the diff",
+    "tests/e2e/home-no-build-layer.spec.ts: titles renamed and one test split (net count up); the data-build check narrowed to data-build-layer plus new html-attribute and data-build-state checks, covered by the Phase 1 and 2 manifests",
+    "no deleted test files, no new skip markers, no trivial assertions",
+    "Revision 3 only moved sample moments in effects-hero.spec.ts and effects-pointer.spec.ts (new files this phase)"
+  ],
+  "phase": 3
+}

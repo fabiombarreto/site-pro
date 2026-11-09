@@ -1,0 +1,1796 @@
+diff --git a/src/components/build/SelectionBox.ts b/src/components/build/SelectionBox.ts
+new file mode 100644
+index 0000000..aec88b2
+--- /dev/null
++++ b/src/components/build/SelectionBox.ts
+@@ -0,0 +1,62 @@
++import { h } from './dom';
++
++export type SelectionState = 'drawing' | 'active' | 'fading';
++
++export interface SelectionBox {
++  el: HTMLDivElement;
++  setPlacement(rect: {
++    x: number;
++    y: number;
++    width: number;
++    height: number;
++  }): void;
++  setLabel(text: string): void;
++  setDraw(progress: number): void;
++  setState(state: SelectionState): void;
++  setOpacity(value: number): void;
++}
++
++export function createSelectionBox(): SelectionBox {
++  const el = h('div', 'sp-select', {
++    'aria-hidden': 'true',
++    'data-state': 'drawing',
++  });
++  for (let i = 0; i < 4; i++) el.append(h('span', 'sp-select-handle'));
++  const label = h('span', 'sp-select-label');
++  el.append(label);
++
++  let lastLabel = '';
++  let lastDraw = -1;
++  let lastState: SelectionState = 'drawing';
++  let lastOpacity = -1;
++
++  return {
++    el,
++    setPlacement(rect) {
++      el.style.transform = `translate3d(${rect.x}px, ${rect.y}px, 0)`;
++      el.style.width = `${rect.width}px`;
++      el.style.height = `${rect.height}px`;
++    },
++    setLabel(text) {
++      if (text === lastLabel) return;
++      lastLabel = text;
++      label.textContent = text;
++    },
++    setDraw(progress) {
++      if (progress === lastDraw) return;
++      lastDraw = progress;
++      const rest = (1 - progress) * 100;
++      el.style.clipPath = `inset(0 ${rest}% ${rest}% 0)`;
++    },
++    setState(state) {
++      if (state === lastState) return;
++      lastState = state;
++      el.setAttribute('data-state', state);
++    },
++    setOpacity(value) {
++      if (value === lastOpacity) return;
++      lastOpacity = value;
++      el.style.opacity = String(value);
++    },
++  };
++}
+diff --git a/src/components/build/Skeleton.ts b/src/components/build/Skeleton.ts
+new file mode 100644
+index 0000000..0dc2abc
+--- /dev/null
++++ b/src/components/build/Skeleton.ts
+@@ -0,0 +1,50 @@
++import { h } from './dom';
++
++interface Rect {
++  x: number;
++  y: number;
++  width: number;
++  height: number;
++}
++
++export interface Skeleton {
++  el: HTMLDivElement;
++  setOpacity(value: number): void;
++  setVisibleBlocks(from: number): void;
++}
++
++export function createSkeleton(rects: Rect[]): Skeleton {
++  const el = h('div', 'sp-skel', { 'aria-hidden': 'true' });
++  const blocks = rects.map((rect) => {
++    const block = h('span', 'sp-skel-block');
++    block.style.transform = `translate3d(${rect.x}px, ${rect.y}px, 0)`;
++    block.style.width = `${rect.width}px`;
++    block.style.height = `${rect.height}px`;
++    el.append(block);
++    return block;
++  });
++
++  let lastOpacity = -1;
++  let lastFrom = 0;
++
++  return {
++    el,
++    setOpacity(value) {
++      if (value === lastOpacity) return;
++      lastOpacity = value;
++      el.style.opacity = String(value);
++    },
++    setVisibleBlocks(from) {
++      if (from === lastFrom) return;
++      for (
++        let i = Math.min(from, lastFrom);
++        i < Math.max(from, lastFrom);
++        i++
++      ) {
++        const block = blocks[i];
++        if (block) block.style.opacity = i < from ? '0' : '';
++      }
++      lastFrom = from;
++    },
++  };
++}
+diff --git a/src/components/build/TextOverlay.ts b/src/components/build/TextOverlay.ts
+new file mode 100644
+index 0000000..b973656
+--- /dev/null
++++ b/src/components/build/TextOverlay.ts
+@@ -0,0 +1,62 @@
++import { h } from './dom';
++
++export interface TextOverlay {
++  el: HTMLDivElement;
++  setCaret(x: number, y: number, height: number): void;
++  hideCaret(): void;
++  setScramble(text: string, x: number, y: number): void;
++  setFont(font: {
++    font: string;
++    letterSpacing: string;
++    lineHeight: string;
++  }): void;
++}
++
++export function createTextOverlay(): TextOverlay {
++  const el = h('div', 'sp-text-fx', { 'aria-hidden': 'true' });
++  const caret = h('span', 'sp-caret');
++  const scramble = h('span', 'sp-scramble');
++  caret.style.display = 'none';
++  el.append(caret, scramble);
++
++  let caretKey = '';
++  let scrambleText = '';
++  let scrambleKey = '';
++  let fontKey = '';
++
++  return {
++    el,
++    setCaret(x, y, height) {
++      const key = `${x}|${y}|${height}`;
++      if (key === caretKey) return;
++      caretKey = key;
++      caret.style.display = '';
++      caret.style.transform = `translate3d(${x}px, ${y}px, 0)`;
++      caret.style.height = `${height}px`;
++    },
++    hideCaret() {
++      if (caretKey === 'hidden') return;
++      caretKey = 'hidden';
++      caret.style.display = 'none';
++    },
++    setScramble(text, x, y) {
++      if (text !== scrambleText) {
++        scrambleText = text;
++        scramble.textContent = text;
++      }
++      const key = text === '' ? '' : `${x}|${y}`;
++      if (key === scrambleKey) return;
++      scrambleKey = key;
++      if (text !== '')
++        scramble.style.transform = `translate3d(${x}px, ${y}px, 0)`;
++    },
++    setFont(font) {
++      const key = `${font.font}|${font.letterSpacing}|${font.lineHeight}`;
++      if (key === fontKey) return;
++      fontKey = key;
++      scramble.style.font = font.font;
++      scramble.style.letterSpacing = font.letterSpacing;
++      scramble.style.lineHeight = font.lineHeight;
++    },
++  };
++}
+diff --git a/src/runtime/compiler.ts b/src/runtime/compiler.ts
+index 0e872c9..845bd76 100644
+--- a/src/runtime/compiler.ts
++++ b/src/runtime/compiler.ts
+@@ -3,32 +3,16 @@ import {
+   COMMAND_ENTER_MS,
+   COMMAND_START_MS,
+ } from './layer-timing';
++import { EFFECT_DURATION_MS } from './effect-timing';
+ import {
+   EFFECTS,
+   type BuildScript,
+   type BuildStep,
+-  type EffectName,
+   type Timeline,
+   type TimelineStep,
+ } from './types';
+ 
+-// Provisional effect durations in ms at 1x. Phase 3 tunes this table.
+-export const EFFECT_DURATION_MS: Record<
+-  EffectName,
+-  (step: BuildStep) => number | string
+-> = {
+-  select: () => 150,
+-  skeleton: () => 300,
+-  'type-text': (s) =>
+-    s.text === undefined ? 'needs text' : 150 + s.text.length * 28,
+-  decode: (s) =>
+-    s.text === undefined ? 'needs text' : 150 + s.text.length * 20,
+-  'resolve-lines': (s) =>
+-    s.count === undefined ? 'needs count' : 150 + s.count * 60,
+-  pop: () => 300,
+-  stagger: (s) => (s.count === undefined ? 'needs count' : 150 + s.count * 80),
+-  'build-card': () => 600,
+-};
++export { EFFECT_DURATION_MS } from './effect-timing';
+ 
+ const WINDOW_OPEN_MS = 100;
+ const WINDOW_HOLD_MS = 280;
+diff --git a/src/runtime/effect-dom.ts b/src/runtime/effect-dom.ts
+new file mode 100644
+index 0000000..34c239e
+--- /dev/null
++++ b/src/runtime/effect-dom.ts
+@@ -0,0 +1,198 @@
++// DOM helpers for the element effects. Read-only measurement plus the few
++// writes effects may make on a page element: the data-build-fx attribute and
++// the inline opacity and clip-path. Nothing here writes transform, display,
++// visibility or text to a page element.
++
++export interface Box {
++  x: number;
++  y: number;
++  width: number;
++  height: number;
++}
++
++export interface MeasuredChar {
++  ch: string;
++  x: number;
++  right: number;
++}
++
++export interface MeasuredLine {
++  // Clip bounds: extended halfway to the neighbour lines, element-relative.
++  top: number;
++  bottom: number;
++  left: number;
++  right: number;
++  // The glyph rects of the line itself, element-relative.
++  textTop: number;
++  textBottom: number;
++  chars: MeasuredChar[];
++}
++
++const round = (value: number) => Math.round(value * 10) / 10;
++
++export function docRect(el: HTMLElement): Box {
++  const r = el.getBoundingClientRect();
++  return {
++    x: r.left + window.scrollX,
++    y: r.top + window.scrollY,
++    width: r.width,
++    height: r.height,
++  };
++}
++
++export function measureLines(el: HTMLElement): MeasuredLine[] {
++  const box = el.getBoundingClientRect();
++  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
++  const range = document.createRange();
++  const lines: MeasuredLine[] = [];
++  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
++    const text = (node as Text).data;
++    for (let i = 0; i < text.length; i++) {
++      range.setStart(node, i);
++      range.setEnd(node, i + 1);
++      const rect = range.getClientRects()[0];
++      if (!rect) continue;
++      if (rect.width === 0 && /\s/.test(text[i])) continue;
++      const top = rect.top - box.top;
++      const bottom = rect.bottom - box.top;
++      const middle = (top + bottom) / 2;
++      const char = {
++        ch: text[i],
++        x: rect.left - box.left,
++        right: rect.right - box.left,
++      };
++      let line = lines[lines.length - 1];
++      if (!line || middle < line.textTop || middle > line.textBottom) {
++        line = {
++          top: 0,
++          bottom: 0,
++          left: char.x,
++          right: char.right,
++          textTop: top,
++          textBottom: bottom,
++          chars: [],
++        };
++        lines.push(line);
++      }
++      line.textTop = Math.min(line.textTop, top);
++      line.textBottom = Math.max(line.textBottom, bottom);
++      line.left = Math.min(line.left, char.x);
++      line.right = Math.max(line.right, char.right);
++      line.chars.push(char);
++    }
++  }
++  lines.forEach((line, i) => {
++    const prev = lines[i - 1];
++    const next = lines[i + 1];
++    line.top = prev ? (prev.textBottom + line.textTop) / 2 : 0;
++    line.bottom = next ? (line.textBottom + next.textTop) / 2 : box.height;
++  });
++  return lines;
++}
++
++export function countChars(lines: MeasuredLine[]): number {
++  let total = 0;
++  for (const line of lines) total += line.chars.length;
++  return total;
++}
++
++export function textOf(lines: MeasuredLine[]): string {
++  let text = '';
++  for (const line of lines) for (const char of line.chars) text += char.ch;
++  return text;
++}
++
++// Line and index inside it of the character number `shown - 1`.
++export function locate(
++  lines: MeasuredLine[],
++  shown: number,
++): { line: MeasuredLine; index: number; lineStart: number } | null {
++  if (lines.length === 0) return null;
++  let rest = Math.max(shown, 1);
++  let start = 0;
++  let i = 0;
++  while (i < lines.length - 1 && rest > lines[i].chars.length) {
++    rest -= lines[i].chars.length;
++    start += lines[i].chars.length;
++    i++;
++  }
++  const line = lines[i];
++  return {
++    line,
++    index: Math.min(rest, line.chars.length) - 1,
++    lineStart: start,
++  };
++}
++
++export function revealPolygon(
++  lines: MeasuredLine[],
++  shown: number,
++  total: number,
++): string {
++  const at = shown > 0 ? locate(lines, Math.min(shown, total)) : null;
++  if (!at) return 'inset(0 100% 0 0)';
++  const x = round(at.line.chars[at.index].right);
++  const top = round(at.line.top);
++  const bottom = round(at.line.bottom);
++  return `polygon(0 0, 100% 0, 100% ${top}px, ${x}px ${top}px, ${x}px ${bottom}px, 0 ${bottom}px)`;
++}
++
++export function lineReveal(lines: MeasuredLine[], count: number): string {
++  if (count <= 0) return 'inset(0 100% 0 0)';
++  if (count >= lines.length) return 'inset(0)';
++  const bottom = round(lines[count - 1].bottom);
++  return `polygon(0 0, 100% 0, 100% ${bottom}px, 0 ${bottom}px)`;
++}
++
++export function popClip(inset: number, radius: string): string {
++  return `inset(${round(inset)}% round ${radius})`;
++}
++
++const TAG_LABELS = new Set(['H1', 'H2', 'H3', 'P', 'UL', 'A']);
++
++export function labelFor(el: HTMLElement): string {
++  const explicit = el.getAttribute('data-build-label');
++  if (explicit) return explicit;
++  if (el.querySelector('article')) return 'card';
++  if (el.querySelector('img') && (el.textContent ?? '').trim() === '') {
++    const r = el.getBoundingClientRect();
++    return `img ${Math.round(r.width)}x${Math.round(r.height)}`;
++  }
++  if (TAG_LABELS.has(el.tagName)) return el.tagName.toLowerCase();
++  const heading = el.querySelector('h1, h2, h3');
++  return heading ? heading.tagName.toLowerCase() : 'div';
++}
++
++const written = new WeakMap<HTMLElement, Map<string, string>>();
++
++export function setStyle(
++  el: HTMLElement,
++  prop: 'clip-path' | 'opacity',
++  value: string,
++): void {
++  let cache = written.get(el);
++  if (!cache) {
++    cache = new Map();
++    written.set(el, cache);
++  }
++  if (cache.get(prop) === value) return;
++  cache.set(prop, value);
++  el.style.setProperty(prop, value);
++}
++
++export function hide(el: HTMLElement): void {
++  el.setAttribute('data-build-fx', 'hidden');
++}
++
++export function live(el: HTMLElement): void {
++  el.removeAttribute('data-build-fx');
++}
++
++export function clear(el: HTMLElement): void {
++  el.removeAttribute('data-build-fx');
++  written.delete(el);
++  el.style.removeProperty('clip-path');
++  el.style.removeProperty('opacity');
++  el.style.removeProperty('pointer-events');
++  if (el.getAttribute('style') === '') el.removeAttribute('style');
++}
+diff --git a/src/runtime/effect-timing.ts b/src/runtime/effect-timing.ts
+new file mode 100644
+index 0000000..f44bfeb
+--- /dev/null
++++ b/src/runtime/effect-timing.ts
+@@ -0,0 +1,187 @@
++import type { BuildStep, EffectName } from './types';
++
++// Pure, DOM-free effect timing: durations, seeded randomness and the phase
++// of every effect as a function of the step's local time in ms.
++
++export const SELECT_MS = 150;
++export const SKELETON_MS = 300;
++export const SKELETON_BARS_MS = 200;
++export const TYPE_CHAR_MS = 28;
++export const DECODE_MS = 350;
++export const LINE_MS = 40;
++export const POP_MS = 180;
++export const STAGGER_GAP_MS = 90;
++export const CARD_MS = 450;
++export const SCRAMBLE_FRAME_MS = 40;
++export const WINDOW_CALL_MAX = 29;
++export const SCRAMBLE_GLYPHS = '!<>-_\\/[]{}=+*^?#';
++
++const DOCK_START_MS = 250;
++const DOCK_CHAR_MS = 40;
++const DOCK_JITTER_MS = 10;
++const DOCK_PAUSE_MS = 100;
++
++const clamp = (value: number, min: number, max: number) =>
++  Math.min(Math.max(value, min), max);
++
++function ramp(t: number, from: number, to: number): number {
++  if (to <= from) return t >= to ? 1 : 0;
++  return clamp((t - from) / (to - from), 0, 1);
++}
++
++export const EFFECT_DURATION_MS: Record<
++  EffectName,
++  (step: BuildStep) => number | string
++> = {
++  select: () => SELECT_MS,
++  skeleton: () => SELECT_MS + SKELETON_MS,
++  'type-text': (s) =>
++    s.text === undefined ? 'needs text' : 150 + s.text.length * TYPE_CHAR_MS,
++  decode: (s) => (s.text === undefined ? 'needs text' : SELECT_MS + DECODE_MS),
++  'resolve-lines': (s) =>
++    s.count === undefined
++      ? 'needs count'
++      : SELECT_MS + SKELETON_BARS_MS + s.count * LINE_MS,
++  pop: () => SELECT_MS + POP_MS,
++  stagger: (s) =>
++    s.count === undefined
++      ? 'needs count'
++      : SELECT_MS + POP_MS + Math.max(s.count - 1, 0) * STAGGER_GAP_MS,
++  'build-card': () => CARD_MS,
++};
++
++export function hashSeed(text: string): number {
++  let hash = 0x811c9dc5;
++  for (let i = 0; i < text.length; i++) {
++    hash ^= text.charCodeAt(i);
++    hash = Math.imul(hash, 0x01000193);
++  }
++  return hash >>> 0;
++}
++
++export function createRng(seed: number): () => number {
++  let state = seed >>> 0;
++  return () => {
++    state = (state + 0x6d2b79f5) >>> 0;
++    let z = state;
++    z = Math.imul(z ^ (z >>> 15), z | 1);
++    z ^= z + Math.imul(z ^ (z >>> 7), z | 61);
++    return ((z ^ (z >>> 14)) >>> 0) / 4294967296;
++  };
++}
++
++export function estimateLines(text: string, charsPerLine: number): number {
++  let lines = 0;
++  for (const paragraph of text.split('\n\n')) {
++    lines += Math.max(1, Math.ceil(paragraph.length / charsPerLine));
++  }
++  return lines;
++}
++
++const dockSchedules = new Map<string, number[]>();
++
++function dockSchedule(command: string): number[] {
++  const cached = dockSchedules.get(command);
++  if (cached) return cached;
++  const length = command.length;
++  const rng = createRng(hashSeed(command));
++  const cumulative: number[] = [];
++  let sum = 0;
++  for (let k = 0; k < length; k++) {
++    let delay = DOCK_CHAR_MS + (rng() * 2 * DOCK_JITTER_MS - DOCK_JITTER_MS);
++    if (k > 0 && (command[k - 1] === '(' || command[k - 1] === ',')) {
++      delay += DOCK_PAUSE_MS;
++    }
++    sum += delay;
++    cumulative.push(sum);
++  }
++  const scale = sum > 0 ? (length * DOCK_CHAR_MS) / sum : 1;
++  const times = cumulative.map((c) => DOCK_START_MS + scale * c);
++  if (length > 0) times[length - 1] = DOCK_START_MS + length * DOCK_CHAR_MS;
++  dockSchedules.set(command, times);
++  return times;
++}
++
++export function typedChars(t: number, command: string): number {
++  const times = dockSchedule(command);
++  let count = 0;
++  while (count < times.length && times[count] <= t) count++;
++  return count;
++}
++
++export function truncateCall(call: string, max = WINDOW_CALL_MAX): string {
++  if (call.length <= max) return call;
++  const open = call.indexOf('(');
++  if (open !== -1 && call[open + 1] === '"') {
++    const head = call.slice(0, open + 2);
++    const tail = call.endsWith('")') ? '")' : ')';
++    const keep = max - head.length - 1 - tail.length;
++    if (keep >= 0) {
++      const body = call.slice(head.length, call.length - tail.length);
++      return `${head}${body.slice(0, keep)}…${tail}`;
++    }
++  }
++  return `${call.slice(0, max - 1)}…`;
++}
++
++export function typeCharsAt(localMs: number, length: number): number {
++  return clamp(Math.floor((localMs - SELECT_MS) / TYPE_CHAR_MS), 0, length);
++}
++
++export function decodeSettled(localMs: number, length: number): number {
++  return Math.floor(length * ramp(localMs, SELECT_MS, SELECT_MS + DECODE_MS));
++}
++
++export function decodeGlyphs(
++  text: string,
++  localMs: number,
++  seed: number,
++): string {
++  const settled = decodeSettled(localMs, text.length);
++  const rng = createRng(seed + Math.floor(localMs / SCRAMBLE_FRAME_MS) * 7919);
++  let out = '';
++  for (let i = 0; i < text.length; i++) {
++    if (i < settled || text[i] === ' ') out += text[i];
++    else out += SCRAMBLE_GLYPHS[Math.floor(rng() * SCRAMBLE_GLYPHS.length)];
++  }
++  return out;
++}
++
++export function resolveLinesAt(localMs: number, count: number): number {
++  return clamp(
++    Math.floor((localMs - SELECT_MS - SKELETON_BARS_MS) / LINE_MS),
++    0,
++    count,
++  );
++}
++
++export function popProgress(localMs: number): number {
++  return ramp(localMs, SELECT_MS, SELECT_MS + POP_MS);
++}
++
++export function popInset(p: number): number {
++  if (p < 0.7) return 10 - 14 * (p / 0.7);
++  return -4 * (1 - (p - 0.7) / 0.3);
++}
++
++export function staggerChildProgress(localMs: number, index: number): number {
++  return popProgress(localMs - index * STAGGER_GAP_MS);
++}
++
++export function cardPhases(localMs: number): {
++  select: number;
++  skeleton: boolean;
++  cover: boolean;
++  title: number;
++  summary: number;
++  tags: number;
++} {
++  return {
++    select: ramp(localMs, 0, 150),
++    skeleton: localMs >= 150 && localMs < 250,
++    cover: localMs >= 250,
++    title: ramp(localMs, 250, 400),
++    summary: ramp(localMs, 300, 420),
++    tags: ramp(localMs, 360, 450),
++  };
++}
+diff --git a/src/runtime/effects.ts b/src/runtime/effects.ts
+new file mode 100644
+index 0000000..98419c9
+--- /dev/null
++++ b/src/runtime/effects.ts
+@@ -0,0 +1,516 @@
++import { createSelectionBox } from '../components/build/SelectionBox';
++import { createSkeleton } from '../components/build/Skeleton';
++import { createTextOverlay } from '../components/build/TextOverlay';
++import {
++  clear,
++  countChars,
++  docRect,
++  hide,
++  labelFor,
++  lineReveal,
++  live,
++  locate,
++  measureLines,
++  popClip,
++  revealPolygon,
++  setStyle,
++  textOf,
++  type MeasuredLine,
++} from './effect-dom';
++import {
++  LINE_MS,
++  SELECT_MS,
++  TYPE_CHAR_MS,
++  cardPhases,
++  decodeGlyphs,
++  decodeSettled,
++  hashSeed,
++  popInset,
++  popProgress,
++  resolveLinesAt,
++  staggerChildProgress,
++  typeCharsAt,
++} from './effect-timing';
++import type { EffectName, SectionId, SectionState, Timeline } from './types';
++
++export interface Effects {
++  onState(id: SectionId, state: SectionState): void;
++  onTick(id: SectionId, t: number): void;
++  destroy(): void;
++}
++
++interface Mounted {
++  render(localMs: number): void;
++  destroy(): void;
++}
++
++interface Ctx {
++  targets: HTMLElement[];
++  seed: number;
++  duration: number;
++  fx: HTMLElement;
++}
++
++interface Measured {
++  el: HTMLElement;
++  lines: MeasuredLine[];
++  total: number;
++  x: number;
++  y: number;
++}
++
++const FADE_MS = 100;
++const HIDDEN_CLIP = 'inset(0 100% 0 0)';
++
++const ramp = (t: number, from: number, to: number) =>
++  Math.min(Math.max((t - from) / (to - from), 0), 1);
++
++const measure = (el: HTMLElement): Measured => {
++  const lines = measureLines(el);
++  const box = docRect(el);
++  return { el, lines, total: countChars(lines), x: box.x, y: box.y };
++};
++
++function selection(ctx: Ctx) {
++  const boxes = ctx.targets.map((target) => {
++    const box = createSelectionBox();
++    box.setPlacement(docRect(target));
++    box.setLabel(labelFor(target));
++    ctx.fx.append(box.el);
++    return box;
++  });
++  return {
++    update(localMs: number, fadeFrom: number, fadeTo: number) {
++      const draw = ramp(localMs, 0, SELECT_MS);
++      const fade = ramp(localMs, fadeFrom, fadeTo);
++      for (const box of boxes) {
++        box.setDraw(draw);
++        box.setState(fade > 0 ? 'fading' : draw < 1 ? 'drawing' : 'active');
++        box.setOpacity(1 - fade);
++      }
++    },
++    destroy() {
++      for (const box of boxes) box.el.remove();
++    },
++  };
++}
++
++function caretOf(m: Measured, shown: number) {
++  const at = locate(m.lines, shown);
++  if (!at) return null;
++  const char = at.line.chars[Math.max(at.index, 0)];
++  return {
++    x: m.x + (shown > 0 ? char.right : char.x),
++    y: m.y + at.line.textTop,
++    height: at.line.textBottom - at.line.textTop,
++  };
++}
++
++const poof = (el: HTMLElement, p: number, radius: string) => {
++  setStyle(el, 'clip-path', popClip(popInset(p), radius));
++  setStyle(el, 'opacity', String(Math.round(Math.min(1, p * 2) * 100) / 100));
++};
++
++const radiusOf = (el: Element) => getComputedStyle(el).borderRadius || '0px';
++
++const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
++  select(ctx) {
++    const sel = selection(ctx);
++    return {
++      render: (l) => sel.update(l, SELECT_MS - FADE_MS, SELECT_MS),
++      destroy: sel.destroy,
++    };
++  },
++
++  skeleton(ctx) {
++    const sel = selection(ctx);
++    const skel = createSkeleton(ctx.targets.map(docRect));
++    skel.setOpacity(0);
++    ctx.fx.append(skel.el);
++    let shown = false;
++    return {
++      render(l) {
++        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
++        skel.setOpacity(l < SELECT_MS ? 0 : 1 - ramp(l, 350, 450));
++        if (l >= 350 && !shown) {
++          shown = true;
++          for (const t of ctx.targets) live(t);
++        }
++      },
++      destroy() {
++        sel.destroy();
++        skel.el.remove();
++      },
++    };
++  },
++
++  'type-text'(ctx) {
++    const sel = selection(ctx);
++    const text = createTextOverlay();
++    ctx.fx.append(text.el);
++    const items = ctx.targets.map(measure);
++    const n = Math.max(
++      1,
++      Math.round((ctx.duration - SELECT_MS) / TYPE_CHAR_MS),
++    );
++    let started = false;
++    return {
++      render(l) {
++        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
++        if (l < SELECT_MS) return;
++        const fraction = typeCharsAt(l, n) / n;
++        for (const m of items) {
++          const shown = Math.floor(fraction * m.total);
++          setStyle(m.el, 'clip-path', revealPolygon(m.lines, shown, m.total));
++          if (!started) live(m.el);
++        }
++        started = true;
++        const first = items[0];
++        const caret = first
++          ? caretOf(first, Math.floor(fraction * first.total))
++          : null;
++        if (caret) text.setCaret(caret.x, caret.y, caret.height);
++      },
++      destroy() {
++        sel.destroy();
++        text.el.remove();
++      },
++    };
++  },
++
++  decode(ctx) {
++    const sel = selection(ctx);
++    const text = createTextOverlay();
++    ctx.fx.append(text.el);
++    const items = ctx.targets.map(measure);
++    const first = items[0];
++    if (first && first.lines[0]) {
++      const cs = getComputedStyle(first.el);
++      const line = first.lines[0];
++      text.setFont({
++        font: cs.font,
++        letterSpacing: cs.letterSpacing,
++        lineHeight: `${line.textBottom - line.textTop}px`,
++      });
++    }
++    const full = first ? textOf(first.lines) : '';
++    let started = false;
++    return {
++      render(l) {
++        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
++        if (l < SELECT_MS) return;
++        for (const m of items) {
++          const settled = decodeSettled(l, m.total);
++          setStyle(m.el, 'clip-path', revealPolygon(m.lines, settled, m.total));
++          if (!started) live(m.el);
++        }
++        started = true;
++        if (!first) return;
++        const settled = decodeSettled(l, first.total);
++        if (settled >= first.total) {
++          text.setScramble('', 0, 0);
++          return;
++        }
++        const at = locate(first.lines, settled + 1);
++        if (!at) return;
++        const glyphs = decodeGlyphs(full, l, ctx.seed);
++        const lineEnd = at.lineStart + at.line.chars.length;
++        text.setScramble(
++          glyphs.slice(settled, lineEnd),
++          first.x + at.line.chars[at.index].x,
++          first.y + at.line.textTop,
++        );
++      },
++      destroy() {
++        sel.destroy();
++        text.el.remove();
++      },
++    };
++  },
++
++  'resolve-lines'(ctx) {
++    const sel = selection(ctx);
++    const items = ctx.targets.map(measure);
++    const rects = items.flatMap((m) =>
++      m.lines.map((line) => ({
++        x: m.x + line.left,
++        y: m.y + line.textTop,
++        width: line.right - line.left,
++        height: line.textBottom - line.textTop,
++      })),
++    );
++    const skel = createSkeleton(rects);
++    skel.setOpacity(0);
++    ctx.fx.append(skel.el);
++    const count = Math.max(1, Math.round((ctx.duration - 350) / LINE_MS));
++    const total = rects.length;
++    let started = false;
++    return {
++      render(l) {
++        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
++        skel.setOpacity(l < SELECT_MS ? 0 : ramp(l, SELECT_MS, 350));
++        if (l < 350) return;
++        const mapped = Math.floor((total * resolveLinesAt(l, count)) / count);
++        let offset = 0;
++        for (const m of items) {
++          const shown = Math.min(Math.max(mapped - offset, 0), m.lines.length);
++          setStyle(m.el, 'clip-path', lineReveal(m.lines, shown));
++          if (!started) live(m.el);
++          offset += m.lines.length;
++        }
++        started = true;
++        skel.setVisibleBlocks(mapped);
++      },
++      destroy() {
++        sel.destroy();
++        skel.el.remove();
++      },
++    };
++  },
++
++  pop(ctx) {
++    const sel = selection(ctx);
++    const parts = ctx.targets.flatMap((t) => {
++      const kids = [...t.children] as HTMLElement[];
++      return (kids.length > 0 ? kids : [t]).map((el) => ({
++        el,
++        radius: radiusOf(el),
++      }));
++    });
++    let started = false;
++    return {
++      render(l) {
++        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
++        if (l < SELECT_MS) return;
++        const p = popProgress(l);
++        for (const part of parts) poof(part.el, p, part.radius);
++        if (!started) {
++          started = true;
++          for (const t of ctx.targets) live(t);
++        }
++      },
++      destroy() {
++        sel.destroy();
++        for (const part of parts) clear(part.el);
++      },
++    };
++  },
++
++  stagger(ctx) {
++    const sel = selection(ctx);
++    const chips = ctx.targets.flatMap((t) =>
++      ([...t.querySelectorAll('li')] as HTMLElement[]).map((el, index) => ({
++        el,
++        index,
++        radius: radiusOf(el.firstElementChild ?? el),
++      })),
++    );
++    let started = false;
++    return {
++      render(l) {
++        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
++        if (l < SELECT_MS) return;
++        for (const chip of chips) {
++          poof(chip.el, staggerChildProgress(l, chip.index), chip.radius);
++        }
++        if (!started) {
++          started = true;
++          for (const t of ctx.targets) live(t);
++        }
++      },
++      destroy() {
++        sel.destroy();
++        for (const chip of chips) clear(chip.el);
++      },
++    };
++  },
++
++  'build-card'(ctx) {
++    const sel = selection(ctx);
++    const skel = createSkeleton(ctx.targets.map(docRect));
++    skel.setOpacity(0);
++    const text = createTextOverlay();
++    ctx.fx.append(skel.el, text.el);
++    const cells = ctx.targets.map((cell) => {
++      const q = (s: string) => [...cell.querySelectorAll<HTMLElement>(s)];
++      const titles = q('.sp-card-title, .sp-card-year').map(measure);
++      const summary = q('.sp-card-summary').map(measure);
++      const tags = [...q('.sp-card-tags > *'), ...q('.sp-card-foot')].map(
++        (el) => ({ el, radius: radiusOf(el) }),
++      );
++      return { cell, titles, summary, tags };
++    });
++    let covered = false;
++    return {
++      render(l) {
++        const phase = cardPhases(l);
++        sel.update(l, 300, 450);
++        skel.setOpacity(phase.skeleton ? 1 : 0);
++        if (!phase.cover) return;
++        if (!covered) {
++          covered = true;
++          for (const c of cells) {
++            for (const m of [...c.titles, ...c.summary]) {
++              setStyle(m.el, 'clip-path', HIDDEN_CLIP);
++            }
++            for (const part of c.tags) poof(part.el, 0, part.radius);
++            live(c.cell);
++          }
++        }
++        for (const c of cells) {
++          for (const m of c.titles) {
++            const shown = Math.floor(phase.title * m.total);
++            setStyle(m.el, 'clip-path', revealPolygon(m.lines, shown, m.total));
++          }
++          for (const m of c.summary) {
++            const shown = Math.floor(phase.summary * m.lines.length);
++            setStyle(m.el, 'clip-path', lineReveal(m.lines, shown));
++          }
++          for (const part of c.tags) poof(part.el, phase.tags, part.radius);
++        }
++        const title = cells[0]?.titles[0];
++        const caret =
++          title && phase.title < 1
++            ? caretOf(title, Math.floor(phase.title * title.total))
++            : null;
++        if (caret) text.setCaret(caret.x, caret.y, caret.height);
++        else text.hideCaret();
++      },
++      destroy() {
++        sel.destroy();
++        skel.el.remove();
++        text.el.remove();
++        for (const c of cells) {
++          for (const m of [...c.titles, ...c.summary]) clear(m.el);
++          for (const part of c.tags) clear(part.el);
++        }
++      },
++    };
++  },
++};
++
++interface StepState {
++  start: number;
++  end: number;
++  effect: EffectName;
++  call: string;
++  targets: HTMLElement[];
++  mounted: Mounted | null;
++  finished: boolean;
++}
++
++interface SectionRun {
++  steps: StepState[];
++}
++
++export function createEffects(options: {
++  sections: HTMLElement[];
++  timelines: Timeline[];
++  root: HTMLElement;
++}): Effects {
++  const { sections, timelines, root } = options;
++  const fx = document.createElement('div');
++  fx.className = 'sp-build-fx';
++  fx.setAttribute('data-build-fx-layer', '');
++  fx.setAttribute('aria-hidden', 'true');
++  root.insertBefore(fx, root.firstChild);
++
++  const sectionOf = new Map<SectionId, HTMLElement>();
++  const timelineOf = new Map<SectionId, Timeline>();
++  timelines.forEach((tl, i) => {
++    sectionOf.set(tl.section, sections[i]);
++    timelineOf.set(tl.section, tl);
++  });
++  const runs = new Map<SectionId, SectionRun>();
++  const closed = new Set<SectionId>();
++
++  const targetsIn = (section: HTMLElement) => [
++    ...section.querySelectorAll<HTMLElement>('[data-build-target]'),
++  ];
++
++  const finishStep = (step: StepState) => {
++    if (step.finished) return;
++    step.finished = true;
++    step.mounted?.destroy();
++    step.mounted = null;
++    for (const t of step.targets) clear(t);
++  };
++
++  const finishSection = (id: SectionId) => {
++    const run = runs.get(id);
++    if (run) for (const step of run.steps) finishStep(step);
++    runs.delete(id);
++    closed.add(id);
++    const section = sectionOf.get(id);
++    if (section) for (const t of targetsIn(section)) clear(t);
++  };
++
++  const init = (id: SectionId): SectionRun | null => {
++    const section = sectionOf.get(id);
++    const timeline = timelineOf.get(id);
++    if (!section || !timeline) return null;
++    finishSection(id);
++    closed.delete(id);
++    const all = targetsIn(section);
++    for (const t of all) hide(t);
++    const run: SectionRun = {
++      steps: timeline.steps.map((step) => {
++        const targets = all.filter(
++          (t) => t.getAttribute('data-build-target') === step.target,
++        );
++        if (targets.length === 0) {
++          throw new Error(
++            `build target "${step.target}" is missing in #${section.id}`,
++          );
++        }
++        return {
++          start: step.start,
++          end: step.end,
++          effect: step.effect,
++          call: step.call,
++          targets,
++          mounted: null,
++          finished: false,
++        };
++      }),
++    };
++    runs.set(id, run);
++    return run;
++  };
++
++  return {
++    onState(id, state) {
++      if (state === 'command') init(id);
++      else if (state === 'closing' || state === 'done' || state === 'skipped') {
++        finishSection(id);
++      }
++    },
++    onTick(id, t) {
++      if (closed.has(id)) return;
++      const run = runs.get(id) ?? init(id);
++      const timeline = timelineOf.get(id);
++      if (!run || !timeline) return;
++      for (const step of run.steps) {
++        if (step.finished || t < step.start) continue;
++        if (t >= step.end) {
++          finishStep(step);
++          continue;
++        }
++        step.mounted ??= RUNNERS[step.effect]({
++          targets: step.targets,
++          seed: hashSeed(`${timeline.section}:${step.call}`),
++          duration: step.end - step.start,
++          fx,
++        });
++        step.mounted.render(t - step.start);
++      }
++    },
++    destroy() {
++      for (const id of [...runs.keys()]) finishSection(id);
++      for (const section of sections) {
++        for (const t of targetsIn(section)) clear(t);
++      }
++      fx.remove();
++    },
++  };
++}
+diff --git a/src/runtime/layer.ts b/src/runtime/layer.ts
+index eae9491..4383ab9 100644
+--- a/src/runtime/layer.ts
++++ b/src/runtime/layer.ts
+@@ -6,7 +6,6 @@ import { buildStrings } from '../strings';
+ import {
+   BOOT_NAV_AT_MS,
+   bootLogCount,
+-  commandChars,
+   commandEnterAt,
+   foldProgress,
+   formatSeconds,
+@@ -17,9 +16,11 @@ import {
+   windowCommandChars,
+   windowOpenProgress,
+ } from './layer-timing';
++import { truncateCall, typedChars } from './effect-timing';
+ import type { SectionId, SectionState, Timeline } from './types';
+ 
+ export interface BuildLayer {
++  readonly root: HTMLElement;
+   onState(id: SectionId, state: SectionState): void;
+   onTick(id: SectionId, t: number, dt: number): void;
+   onAllDone(): void;
+@@ -185,6 +186,7 @@ export function createBuildLayer(options: {
+   };
+ 
+   return {
++    root,
+     onState(id, state) {
+       if (destroyed) return;
+       const slot = slots.get(id);
+@@ -226,7 +228,7 @@ export function createBuildLayer(options: {
+       if (id === heroId) {
+         if (t >= BOOT_NAV_AT_MS) setNav(navSlideProgress(t));
+         if (boot) {
+-          boot.setCommand(tl.command, commandChars(t, length), true);
++          boot.setCommand(tl.command, typedChars(t, tl.command), true);
+           boot.setLogs(
+             [
+               buildStrings.initializing,
+@@ -248,7 +250,7 @@ export function createBuildLayer(options: {
+       } else if (slot.state !== 'closing') {
+         if (t < tl.windowEnd) {
+           dock.setState('typing');
+-          dock.setCommand(tl.command, commandChars(t, length), true);
++          dock.setCommand(tl.command, typedChars(t, tl.command), true);
+           dock.setLog(t >= enterAt ? buildStrings.readingFile(tl.file) : null);
+         } else {
+           dock.setState('building');
+@@ -269,7 +271,12 @@ export function createBuildLayer(options: {
+         if (index < 0) win.setCommand('', 0, false);
+         else {
+           const step = tl.steps[index];
+-          win.setCommand(step.call, windowCommandChars(t, step), true);
++          const display = truncateCall(step.call);
++          win.setCommand(
++            display,
++            windowCommandChars(t, { call: display, start: step.start }),
++            true,
++          );
+         }
+       }
+     },
+diff --git a/src/runtime/main.ts b/src/runtime/main.ts
+index 1578208..1a2c2ef 100644
+--- a/src/runtime/main.ts
++++ b/src/runtime/main.ts
+@@ -1,6 +1,7 @@
+ import { parseSpeed } from '../scripts/build-mode';
+ import { currentSection, progress, speed, status } from '../stores/build';
+ import { realClock } from './clock';
++import { createEffects } from './effects';
+ import { createBuildLayer } from './layer';
+ import { createScheduler } from './scheduler';
+ import { observeSections } from './triggers';
+@@ -12,11 +13,13 @@ const root = document.documentElement;
+ let cancelFrame: (() => void) | null = null;
+ let stopObserver: (() => void) | null = null;
+ let destroyLayer: (() => void) | null = null;
++let destroyEffects: (() => void) | null = null;
+ const sections: HTMLElement[] = [];
+ 
+ function reveal(): void {
+   cancelFrame?.();
+   stopObserver?.();
++  destroyEffects?.();
+   destroyLayer?.();
+   for (const s of sections) s.setAttribute('data-build-state', 'done');
+   root.removeAttribute('data-build-mode');
+@@ -69,6 +72,8 @@ function start(): void {
+ 
+   const layer = createBuildLayer({ sections, timelines });
+   destroyLayer = layer.destroy;
++  const effects = createEffects({ sections, timelines, root: layer.root });
++  destroyEffects = effects.destroy;
+   const byId = new Map(sections.map((s) => [s.id, s]));
+   const scheduler = createScheduler({
+     clock: {
+@@ -83,6 +88,7 @@ function start(): void {
+     speed: startSpeed,
+     host: {
+       onState: guard((id, state) => {
++        effects.onState(id, state);
+         byId.get(id)?.setAttribute('data-build-state', state);
+         layer.onState(id, state);
+         if (state !== 'pending' && status.get() !== 'building') {
+@@ -99,7 +105,10 @@ function start(): void {
+         status.set('done');
+         root.removeAttribute('data-build-mode');
+       }),
+-      onTick: guard((id, t, dt) => layer.onTick(id, t, dt)),
++      onTick: guard((id, t, dt) => {
++        effects.onTick(id, t);
++        layer.onTick(id, t, dt);
++      }),
+       isHidden: () => document.visibilityState === 'hidden',
+     },
+   });
+diff --git a/src/sections/about.build.ts b/src/sections/about.build.ts
+index 0c2274a..4495c57 100644
+--- a/src/sections/about.build.ts
++++ b/src/sections/about.build.ts
+@@ -1,29 +1,43 @@
+ import type { CollectionEntry } from 'astro:content';
++import { estimateLines } from '../runtime/effect-timing';
+ import type { BuildScript } from '../runtime/types';
+ import { strings } from '../strings';
++import { pacedSteps } from './pacing';
+ 
+ type ProfileData = CollectionEntry<'profile'>['data'];
+ 
+ export function aboutBuild(profile: ProfileData): BuildScript {
+-  const paragraphs = profile.bio.split('\n\n');
+-  return {
+-    section: 'about',
+-    file: 'about.md',
+-    command: 'renderAbout();',
+-    steps: [
++  const { steps, settle } = pacedSteps(
++    [
++      {
++        step: {
++          call: `about.heading("${strings.sections.about.title}")`,
++          target: 'heading',
++          effect: 'type-text',
++          text: strings.sections.about.title,
++        },
++      },
+       {
+-        call: `about.heading("${strings.sections.about.title}")`,
+-        target: 'heading',
+-        effect: 'type-text',
+-        text: strings.sections.about.title,
++        step: {
++          call: 'about.text(…)',
++          target: 'text',
++          effect: 'resolve-lines',
++          count: estimateLines(profile.bio, 80),
++        },
++        pitch: 250,
+       },
+       {
+-        call: 'about.text(…)',
+-        target: 'text',
+-        effect: 'resolve-lines',
+-        count: paragraphs.length,
++        step: { call: 'about.links([…])', target: 'links', effect: 'pop' },
++        pitch: 600,
+       },
+-      { call: 'about.links([…])', target: 'links', effect: 'pop' },
+     ],
++    1150,
++  );
++  return {
++    section: 'about',
++    file: 'about.md',
++    command: 'renderAbout();',
++    steps,
++    settle,
+   };
+ }
+diff --git a/src/sections/contact.build.ts b/src/sections/contact.build.ts
+index 6a8c343..c271b2d 100644
+--- a/src/sections/contact.build.ts
++++ b/src/sections/contact.build.ts
+@@ -1,29 +1,43 @@
+ import type { CollectionEntry } from 'astro:content';
+ import type { BuildScript } from '../runtime/types';
+ import { strings } from '../strings';
++import { pacedSteps } from './pacing';
+ 
+ type ProfileData = CollectionEntry<'profile'>['data'];
+ 
+ export function contactBuild(profile: ProfileData): BuildScript {
+   if (!profile.location) throw new Error('profile.location is missing');
+-  return {
+-    section: 'contact',
+-    file: 'contact.tsx',
+-    command: 'renderContact();',
+-    steps: [
++  const { steps, settle } = pacedSteps(
++    [
++      {
++        step: {
++          call: `contact.heading("${strings.sections.contact.title}")`,
++          target: 'heading',
++          effect: 'type-text',
++          text: strings.sections.contact.title,
++        },
++      },
+       {
+-        call: `contact.heading("${strings.sections.contact.title}")`,
+-        target: 'heading',
+-        effect: 'type-text',
+-        text: strings.sections.contact.title,
++        step: { call: 'contact.links([…])', target: 'links', effect: 'pop' },
++        pitch: 450,
+       },
+-      { call: 'contact.links([…])', target: 'links', effect: 'pop' },
+       {
+-        call: 'contact.location(…)',
+-        target: 'location',
+-        effect: 'type-text',
+-        text: profile.location,
++        step: {
++          call: 'contact.location(…)',
++          target: 'location',
++          effect: 'type-text',
++          text: profile.location,
++        },
++        pitch: 200,
+       },
+     ],
++    1100,
++  );
++  return {
++    section: 'contact',
++    file: 'contact.tsx',
++    command: 'renderContact();',
++    steps,
++    settle,
+   };
+ }
+diff --git a/src/sections/hero.build.ts b/src/sections/hero.build.ts
+index 1b39ffe..4291e30 100644
+--- a/src/sections/hero.build.ts
++++ b/src/sections/hero.build.ts
+@@ -1,41 +1,56 @@
+ import type { CollectionEntry } from 'astro:content';
++import { estimateLines } from '../runtime/effect-timing';
+ import type { BuildScript } from '../runtime/types';
++import { pacedSteps } from './pacing';
+ 
+ type ProfileData = CollectionEntry<'profile'>['data'];
+ 
+ export function heroBuild(profile: ProfileData): BuildScript {
+-  const words = profile.subtitle.split(/\s+/).filter(Boolean).length;
+-  return {
+-    section: 'top',
+-    file: 'hero.tsx',
+-    command: 'startSite();',
+-    timing: { commandEnd: 730, windowEnd: 1000, buildStart: 1300 },
+-    steps: [
++  const { steps, settle } = pacedSteps(
++    [
++      {
++        step: {
++          call: `hero.title("${profile.headline}")`,
++          target: 'title',
++          effect: 'type-text',
++          text: profile.headline,
++        },
++      },
+       {
+-        call: `hero.title("${profile.headline}")`,
+-        target: 'title',
+-        effect: 'type-text',
+-        text: profile.headline,
++        step: {
++          call: `hero.role("${profile.role}")`,
++          target: 'role',
++          effect: 'decode',
++          text: profile.role,
++        },
++        pitch: 200,
+       },
+       {
+-        call: `hero.role("${profile.role}")`,
+-        target: 'role',
+-        effect: 'type-text',
+-        text: profile.role,
++        step: { call: 'hero.photo(…)', target: 'photo', effect: 'skeleton' },
++        pitch: 100,
+       },
+-      { call: 'hero.photo(…)', target: 'photo', effect: 'skeleton' },
+       {
+-        call: 'hero.intro(…)',
+-        target: 'intro',
+-        effect: 'resolve-lines',
+-        count: words,
++        step: {
++          call: 'hero.intro(…)',
++          target: 'intro',
++          effect: 'resolve-lines',
++          count: estimateLines(profile.subtitle, 48),
++        },
++        pitch: 300,
+       },
+       {
+-        call: 'hero.links([…])',
+-        target: 'links',
+-        effect: 'pop',
+-        gap: 60,
++        step: { call: 'hero.links([…])', target: 'links', effect: 'pop' },
++        pitch: 300,
+       },
+     ],
++    1300,
++  );
++  return {
++    section: 'top',
++    file: 'hero.tsx',
++    command: 'startSite();',
++    timing: { commandEnd: 730, windowEnd: 1000, buildStart: 1300 },
++    steps,
++    settle,
+   };
+ }
+diff --git a/src/sections/pacing.ts b/src/sections/pacing.ts
+new file mode 100644
+index 0000000..5378b2f
+--- /dev/null
++++ b/src/sections/pacing.ts
+@@ -0,0 +1,35 @@
++import { EFFECT_DURATION_MS } from '../runtime/effect-timing';
++import type { BuildStep } from '../runtime/types';
++
++export interface PacedEntry {
++  step: BuildStep;
++  // Distance from the start of the previous step to the start of this one.
++  pitch?: number;
++}
++
++export function pacedSteps(
++  entries: PacedEntry[],
++  createdRel: number,
++  minSettle = 60,
++): { steps: BuildStep[]; settle: number } {
++  const steps: BuildStep[] = [];
++  let offset = 0;
++  let previousEnd = 0;
++  for (const [i, { step, pitch = 0 }] of entries.entries()) {
++    const length = EFFECT_DURATION_MS[step.effect](step);
++    if (typeof length === 'string') {
++      throw new Error(`paced step "${step.call}": ${length}`);
++    }
++    const start = i === 0 ? 0 : offset + pitch;
++    const delta = start - previousEnd;
++    const copy: BuildStep = { ...step };
++    if (i > 0) {
++      if (delta > 0) copy.gap = delta;
++      else if (delta < 0) copy.overlap = -delta;
++    }
++    steps.push(copy);
++    offset = start;
++    previousEnd = start + length;
++  }
++  return { steps, settle: Math.max(minSettle, createdRel - previousEnd) };
++}
+diff --git a/src/sections/projects.build.ts b/src/sections/projects.build.ts
+index b3e242d..687967a 100644
+--- a/src/sections/projects.build.ts
++++ b/src/sections/projects.build.ts
+@@ -1,28 +1,37 @@
+ import type { CollectionEntry } from 'astro:content';
+-import type { BuildScript, BuildStep } from '../runtime/types';
++import type { BuildScript } from '../runtime/types';
+ import { strings } from '../strings';
++import { pacedSteps } from './pacing';
+ 
+ export function projectsBuild(
+   projects: CollectionEntry<'projects'>[],
+ ): BuildScript {
+-  const cards: BuildStep[] = projects.map(({ id }, index) => ({
+-    call: `projects.card("${id}")`,
+-    target: `card-${id}`,
+-    effect: 'build-card',
+-    ...(index > 0 ? { overlap: 120 } : {}),
+-  }));
++  const { steps, settle } = pacedSteps(
++    [
++      {
++        step: {
++          call: `projects.heading("${strings.sections.projects.title}")`,
++          target: 'heading',
++          effect: 'type-text',
++          text: strings.sections.projects.title,
++        },
++      },
++      ...projects.map(({ id }, index) => ({
++        step: {
++          call: `projects.card("${id}")`,
++          target: `card-${id}`,
++          effect: 'build-card' as const,
++        },
++        pitch: index === 0 ? 450 : 330,
++      })),
++    ],
++    1990,
++  );
+   return {
+     section: 'projects',
+     file: 'projects.tsx',
+     command: 'renderProjects();',
+-    steps: [
+-      {
+-        call: `projects.heading("${strings.sections.projects.title}")`,
+-        target: 'heading',
+-        effect: 'type-text',
+-        text: strings.sections.projects.title,
+-      },
+-      ...cards,
+-    ],
++    steps,
++    settle,
+   };
+ }
+diff --git a/src/sections/stack.build.ts b/src/sections/stack.build.ts
+index a938365..25881fb 100644
+--- a/src/sections/stack.build.ts
++++ b/src/sections/stack.build.ts
+@@ -1,28 +1,38 @@
+ import type { CollectionEntry } from 'astro:content';
+-import type { BuildScript, BuildStep } from '../runtime/types';
++import type { BuildScript } from '../runtime/types';
+ import { strings } from '../strings';
++import { pacedSteps } from './pacing';
+ 
+ type StackData = CollectionEntry<'stack'>['data'];
+ 
+ export function stackBuild(stack: StackData): BuildScript {
+-  const groups: BuildStep[] = stack.groups.map((group, index) => ({
+-    call: `stack.group("${group.name}")`,
+-    target: `group-${index}`,
+-    effect: 'stagger',
+-    count: group.items.length,
+-  }));
++  const { steps, settle } = pacedSteps(
++    [
++      {
++        step: {
++          call: `stack.heading("${strings.sections.stack.title}")`,
++          target: 'heading',
++          effect: 'type-text',
++          text: strings.sections.stack.title,
++        },
++      },
++      ...stack.groups.map((group, index) => ({
++        step: {
++          call: `stack.group("${group.name}")`,
++          target: `group-${index}`,
++          effect: 'stagger' as const,
++          count: group.items.length,
++        },
++        pitch: index === 0 ? 400 : 150,
++      })),
++    ],
++    1350,
++  );
+   return {
+     section: 'stack',
+     file: 'stack.tsx',
+     command: 'renderStack();',
+-    steps: [
+-      {
+-        call: `stack.heading("${strings.sections.stack.title}")`,
+-        target: 'heading',
+-        effect: 'type-text',
+-        text: strings.sections.stack.title,
+-      },
+-      ...groups,
+-    ],
++    steps,
++    settle,
+   };
+ }
+diff --git a/src/styles/build-layer.css b/src/styles/build-layer.css
+index 19833ad..0e292a4 100644
+--- a/src/styles/build-layer.css
++++ b/src/styles/build-layer.css
+@@ -272,10 +272,136 @@
+   color: var(--fg-muted);
+ }
+ 
++/* Element effects */
++.sp-build-fx {
++  position: absolute;
++  top: 0;
++  left: 0;
++  width: 100%;
++  height: 0;
++  pointer-events: none;
++}
++
++.sp-select {
++  position: absolute;
++  top: 0;
++  left: 0;
++  box-sizing: border-box;
++  border: 1px solid var(--build-select);
++  background: var(--accent-glow);
++  pointer-events: none;
++}
++
++.sp-select-handle {
++  position: absolute;
++  width: 6px;
++  height: 6px;
++  background: var(--build-select);
++}
++
++.sp-select-handle:nth-child(1) {
++  top: -3px;
++  left: -3px;
++}
++
++.sp-select-handle:nth-child(2) {
++  top: -3px;
++  right: -3px;
++}
++
++.sp-select-handle:nth-child(3) {
++  bottom: -3px;
++  left: -3px;
++}
++
++.sp-select-handle:nth-child(4) {
++  bottom: -3px;
++  right: -3px;
++}
++
++.sp-select-label {
++  position: absolute;
++  bottom: 100%;
++  left: -1px;
++  padding: 0 var(--space-1);
++  font-family: var(--font-mono);
++  font-size: var(--mono-xs);
++  white-space: nowrap;
++  background: var(--build-select);
++  color: var(--on-accent);
++}
++
++.sp-skel {
++  position: absolute;
++  top: 0;
++  left: 0;
++  pointer-events: none;
++}
++
++.sp-skel-block {
++  position: absolute;
++  top: 0;
++  left: 0;
++  overflow: hidden;
++  background: var(--build-skeleton);
++  border-radius: var(--radius-sm);
++}
++
++.sp-skel-block::after {
++  content: '';
++  position: absolute;
++  inset: 0;
++  background: linear-gradient(
++    90deg,
++    transparent,
++    var(--build-shine),
++    transparent
++  );
++  animation: sp-skel-shimmer 1.4s linear infinite;
++}
++
++@keyframes sp-skel-shimmer {
++  from {
++    transform: translateX(-100%);
++  }
++  to {
++    transform: translateX(100%);
++  }
++}
++
++.sp-text-fx {
++  position: absolute;
++  top: 0;
++  left: 0;
++  pointer-events: none;
++}
++
++.sp-caret {
++  position: absolute;
++  top: 0;
++  left: 0;
++  width: 2px;
++  background: var(--accent-fg);
++  pointer-events: none;
++}
++
++.sp-scramble {
++  position: absolute;
++  top: 0;
++  left: 0;
++  white-space: pre;
++  color: var(--accent-fg);
++  pointer-events: none;
++}
++
+ @media (prefers-reduced-motion: reduce) {
+   .sp-cursor {
+     animation: none;
+   }
++
++  .sp-skel-block::after {
++    animation: none;
++  }
+ }
+ 
+ @media (prefers-reduced-transparency: reduce) {
+diff --git a/src/styles/build-pending.css b/src/styles/build-pending.css
+index fdcf145..5cc144b 100644
+--- a/src/styles/build-pending.css
++++ b/src/styles/build-pending.css
+@@ -2,7 +2,12 @@ html[data-build-mode='pending']
+   main
+   > section[data-build]:not([data-build-state='done']):not(
+     [data-build-state='skipped']
+-  ) {
++  ):not([data-build-state='building']):not([data-build-state='closing']) {
++  opacity: 0;
++  pointer-events: none;
++}
++
++html[data-build-mode='pending'] [data-build-fx='hidden'] {
+   opacity: 0;
+   pointer-events: none;
+ }

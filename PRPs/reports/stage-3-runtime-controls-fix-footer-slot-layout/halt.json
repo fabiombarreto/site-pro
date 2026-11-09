@@ -1,0 +1,23 @@
+{
+  "outcome": "PLAN_VALIDATION_DEFECT",
+  "plan_validation_defect": {
+    "level": 3,
+    "command": "Level 3 block (b): const ran = named.passes.find((p) => p.id === RULE); if (!ran || ran.nodes.length === 0) failures.push(saved + ': ' + RULE + ' did not evaluate the speed button (it must be in passes)');",
+    "observed": "states 1 and 2: violations 0, inapplicable 1, passes 0; state inf: violations 0, inapplicable 0, passes 0 (implementer run on preview :4398/:4399)",
+    "prd_refs": [
+      "PRPs/prds/stage-3-runtime.prd.md AC-18",
+      "PRPs/prds/stage-3-runtime.prd.md AC-13",
+      "plan AC-A3"
+    ],
+    "reason_implementer": "axe treats short symbol-like visible text (1x-glyph, 2x-glyph, infinity) as not applicable to the rule",
+    "orchestrator_check": "the implementer reason is wrong: an orchestrator probe against the current dist/ (no saved speed, 2.5 s after load, after the boot) gives label-content-name-mismatch passes = [button[data-dock-action=speed]] with aria-label \"Build speed: 1×. Switch to 2×\" and text \"1×\". The plan check fails because block (b) runs axe right after waitForSelector(SPEED, {state: attached}), while the boot terminal is on screen and the dock is hidden, so the rule finds no rendered button; with sp-speed=inf the build finishes at once and the dock is done or collapsed with the speed button hidden. Accepted as a plan validation defect (the command cannot pass against the correct implementation as written)."
+  },
+  "attempt": 1,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "verdict": "IMPLEMENTATION_COMPLETE",
+      "level_3": "FAIL (block b passes assertion only)"
+    }
+  ]
+}

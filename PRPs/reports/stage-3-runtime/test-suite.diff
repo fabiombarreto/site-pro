@@ -1,0 +1,108 @@
+# TDD initial suite — phase 5 (test-after)
+# Source PRD: PRPs/prds/stage-3-runtime.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-3-runtime-phase-5-quality-gates.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-08
+# Test files live in the feature worktree: C:/repos/site-pro/.worktrees/stage-3-runtime (paths below are relative to it)
+# Replaces the Phase 4 manifest (APPROVED, archived at PRPs/reports/stage-3-runtime/phase-4/test-suite.diff)
+# Note: the writer had no shell in this session (Read, Write, Edit, Glob only); none of the new or updated tests were executed. The command layer must run prettier on the touched files, `pnpm build`, then the full unit and e2e suites. Line numbers below are from a read of each file in this session; the unit specs and the few e2e specs not opened are mapped at file level.
+
+## AC outcomes
+
+Plan AC-A1..A6 map to PRD AC-1 to AC-21. The four gap specs are exactly the paths named in docs/context/testing.md ("Behavior rule coverage (Stage 3)"). `tests/e2e/home-no-build-layer.spec.ts` is already the rewritten Stage 2 spec (Phase 4 ledger rows, "has no boot terminal, dock, window, outline, selection box or skeleton in instant mode" at line 16 and its sibling); it is not touched again.
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-1 (pending hero at first paint: hidden, laid out, in the accessibility tree) | NEW_TEST_REQUIRED | tests/e2e/behavior-gaps.spec.ts ("AC-1: before the runtime starts the hero is pending ..."); the pending About equivalent: tests/e2e/runtime-fallbacks.spec.ts:74 |
+| AC-1 (hero final within 3.2 s of clock time, created line, window gone, idle dock with `✓ 1/5 sections`, `❯ █`, `scroll ↓`) | NEW_TEST_REQUIRED | tests/e2e/behavior-gaps.spec.ts ("AC-1: the hero is final within 3.2 s of clock time ..."; the clock time before the pause counts against the 3.2 s); compiled duration only: tests/e2e/effects-hero.spec.ts:146 |
+| AC-1 (boot text, nav, fold into the dock, window `hero.tsx`, steps in order, h1 readable by 2.0 s, intermediate effect frames) | EXISTING_TEST_COVERS | tests/e2e/build-layer-show.spec.ts:16; tests/e2e/effects-hero.spec.ts:26, :42, :67, :94, :122, :163; tests/e2e/effects-scripts.spec.ts (file level); tests/unit/runtime-pacing.test.ts (file level) |
+| AC-2 (About starts exactly at the 75 % line, not before; `renderAbout();`, `Reading about.md...`, `about.md` window, never two windows) | NEW_TEST_REQUIRED | tests/e2e/behavior-gaps.spec.ts ("AC-2: About starts when its top crosses 75 % of the viewport height ..."); order and 30 s pending: tests/e2e/runtime-build-order.spec.ts:20; dock text and window file: tests/e2e/build-layer-show.spec.ts:16 (partial coverage: it scrolls well past the line, the boundary is the delta) |
+| AC-2 (scrolling up and down: no window over a built section, no element animates again) | NEW_TEST_REQUIRED | tests/e2e/behavior-gaps.spec.ts ("AC-2: after scrolling back up to built sections and down again ..."); previous coverage was unit only: tests/unit/runtime-scheduler.test.ts (file level) |
+| AC-3 (pulse after 4 s, stops at the next scroll, never under reduced motion) | EXISTING_TEST_COVERS | tests/e2e/controls-done-replay.spec.ts:27; tests/e2e/controls-speed.spec.ts:170; tests/unit/runtime-controls-timing.test.ts (file level) |
+| AC-4 (boxes and document height equal the no-JS page at the boot, mid-hero, mid-projects and done, at 1280x800 and 375x812, layout shift <= 0.01) | NEW_TEST_REQUIRED | tests/e2e/layout-invariance.spec.ts (two tests, one per viewport; reference is the JavaScript-disabled page; boxes include stack groups and project cards) |
+| AC-4 (pending outline dashed, labeled with the file name, not in the accessibility tree) | NEW_TEST_REQUIRED | tests/e2e/behavior-gaps.spec.ts ("AC-4: every pending section shows a dashed outline ..."); file names and tree: tests/e2e/build-layer-show.spec.ts:93 (no dashed or box-over-section assertion there) |
+| AC-4 (one overlay root outside main, aria-hidden except the dock buttons, only transform/opacity/clip-path, no horizontal scroll, footer slot) | EXISTING_TEST_COVERS | tests/e2e/build-layer-show.spec.ts:93; tests/e2e/effects-layout.spec.ts:24, :44; tests/e2e/build-layer-layout.spec.ts:65; tests/e2e/controls-done-replay.spec.ts:58; tests/e2e/runtime-build-order.spec.ts:153 |
+| AC-5 (queued n/5, 5x per section, the last at 1x) | EXISTING_TEST_COVERS | tests/e2e/controls-turbo-navigation.spec.ts:30, :60; tests/unit/runtime-scheduler-controls.test.ts (file level) |
+| AC-6 (scrollY never changes; Replay and Play build scroll to the top) | EXISTING_TEST_COVERS | tests/e2e/controls-turbo-navigation.spec.ts:77; tests/e2e/controls-done-replay.spec.ts:104; tests/e2e/controls-speed.spec.ts:204 |
+| AC-7 (Esc, dock Skip, title bar, command bar, body click does not skip, mobile menu Esc) | EXISTING_TEST_COVERS | tests/e2e/controls-skip.spec.ts:24, :43, :62, :117 |
+| AC-8 (Shift + Esc runs all, dock text with Replay) | EXISTING_TEST_COVERS | tests/e2e/controls-skip.spec.ts:149, :169 (the handler only; the real Chrome on Windows check is an owner step) |
+| AC-9 (deep links and nav clicks) | EXISTING_TEST_COVERS | tests/e2e/controls-turbo-navigation.spec.ts (the `#projects`, `#about`, `#contact` and nav Stack tests after line 77; file level, the later lines were not read) |
+| AC-10 (keyboard focus finishes sections, ring 2px accent; hero during the boot) | EXISTING_TEST_COVERS | tests/e2e/controls-focus-resize.spec.ts:19, :42, :83 |
+| AC-11 (window body ignores the pointer, bars catch clicks, elements not yet created take no pointer events) | EXISTING_TEST_COVERS | tests/e2e/effects-pointer.spec.ts:23, :116; tests/e2e/build-layer-show.spec.ts:93 |
+| AC-11 (a real click on the relay card title navigates to /projects/relay with the Projects window open) | NEW_TEST_REQUIRED | tests/e2e/behavior-gaps.spec.ts ("AC-11: with the Projects window open and the relay card created, a real click ..."; partial coverage by effects-pointer.spec.ts:23 is a hit test, not the navigation) |
+| AC-12 (width change finishes the section, height-only change continues) | EXISTING_TEST_COVERS | tests/e2e/controls-focus-resize.spec.ts:103, :137; tests/e2e/build-layer-layout.spec.ts:136, :167 |
+| AC-13 (cycle, names with glyphs, sp-speed, 2x half time, infinity, reload at saved speed, ready page) | EXISTING_TEST_COVERS | tests/e2e/controls-speed.spec.ts:34, :79, :104, :120; tests/e2e/runtime-fallbacks.spec.ts:121, :148 |
+| AC-14 (reduced motion: no show piece, ready dock, Play build) | EXISTING_TEST_COVERS | tests/e2e/controls-speed.spec.ts:170, :204; tests/e2e/runtime-fallbacks.spec.ts:100 |
+| AC-15 (no JavaScript equals the Stage 2 page) | EXISTING_TEST_COVERS | tests/e2e/runtime-fallbacks.spec.ts:20 |
+| AC-15 (runtime blocked or throwing: revealed within 3 s of clock time, no build-layer element) | NEW_TEST_REQUIRED | tests/e2e/behavior-gaps.spec.ts ("AC-15: with the runtime request aborted every section is revealed within 3 s of clock time ..."; the bound is measured from the head script arming pending mode to its removal); the earlier loose check is tests/e2e/runtime-fallbacks.spec.ts:39, :56 (left unchanged) |
+| AC-16 (hidden tab does not advance, resumes) | EXISTING_TEST_COVERS | tests/e2e/runtime-build-order.spec.ts:94; tests/unit/runtime-scheduler-tick.test.ts (file level) |
+| AC-17 (done text, collapse, expand, footer in its slot, instant footer, Replay from dock and footer) | EXISTING_TEST_COVERS | tests/e2e/controls-done-replay.spec.ts:58, :104, :143; tests/e2e/controls-speed.spec.ts:120, :151 |
+| AC-18 (axe at the boot, mid-hero, mid-projects and done, both themes, both viewports: the 16 cells; text and tree of main equal the no-JS page at every moment) | NEW_TEST_REQUIRED | tests/e2e/axe-build-matrix.spec.ts (16 axe cells; the main text and tree equality runs in the Midnight cells of each moment and viewport; four of the 16 cells repeat mid-hero and mid-projects on desktop from effects-axe.spec.ts, the discriminative inputs being the fresh page and the added tree check) |
+| AC-18 (dock buttons are real buttons with their names and the group, Tab, 2px ring) | EXISTING_TEST_COVERS | tests/e2e/controls-dock-a11y.spec.ts:22, :51, :68, :97; tests/e2e/home-axe.spec.ts (file level) |
+| AC-19 (budgets, Lighthouse config) | EXISTING_TEST_COVERS | tests/unit/runtime-budget.test.ts; tests/unit/quality-gates.test.ts; tests/e2e/quality-gates.spec.ts; tests/e2e/css-budget.spec.ts (all file level); the Lighthouse medians are the CI `lighthouse` job only |
+| AC-20 (compiler timeline, unknown effect and target fail the build, commands from content) | EXISTING_TEST_COVERS | tests/unit/runtime-compiler.test.ts; tests/unit/runtime-pacing.test.ts; tests/unit/verify-build-targets.test.ts; tests/e2e/runtime-timeline-contract.spec.ts (all file level); effects-pointer.spec.ts:23 for the 120 ms card overlap |
+| AC-21 (375x812: single compact bar, dock width and inset) | EXISTING_TEST_COVERS | tests/e2e/build-layer-layout.spec.ts:192 |
+| AC-21 (dock shows only the status and Skip; a tap on the compact bar skips) | NEW_TEST_REQUIRED | tests/e2e/mobile-build.spec.ts ("the dock shows only the status and Skip while the hero builds, and a tap on the window bar skips the hero"; a touch context, `page.touchscreen.tap`) |
+| AC-21 (a section taller than the viewport keeps both bars under the nav until its end, at 1280x800 and 375x812) | NEW_TEST_REQUIRED | tests/e2e/mobile-build.spec.ts (two tests, one per viewport; Projects is the tall section and its height is asserted against the viewport); the hero-only sticky check is tests/e2e/build-layer-layout.spec.ts:136, :192 |
+
+## Test files written this session
+
+- tests/e2e/behavior-gaps.spec.ts (AC-1, AC-2, AC-4, AC-11, AC-15; 7 tests)
+- tests/e2e/layout-invariance.spec.ts (AC-4; 2 tests)
+- tests/e2e/axe-build-matrix.spec.ts (AC-18; 16 tests, one per cell)
+- tests/e2e/mobile-build.spec.ts (AC-21, AC-7; 3 tests)
+
+Updated (see the lifecycle ledger):
+
+- tests/e2e/support/layer.ts (helper `startPaused`)
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/support/layer.ts:startPaused | Test defect behind the one flake seen under full-suite load, tests/e2e/effects-hero.spec.ts:26 ("selects the headline under a selection box ...", sampled at 1340 ms, title expected hidden, goes live at 1450; failed once under load, 7/7 alone). Cause confirmed by reading the source: the hero's own clock (the boot is its first 730 ms) starts when `src/runtime/main.ts` runs, before `goto` resolves (module scripts run before DOMContentLoaded), and `page.clock.install({ time: 0 })` leaves the fake clock running in real time until `pauseAt(60000)`. The old helper also ran `durationOf` between `goto` and `pauseAt`, so under load the hero could already be past the requested moment, and `advanceTo` (which returns at once when the section clock is at or past `ms`) then sampled a later moment. Pausing before `goto` is not used because Playwright's `pauseAt` is not documented to survive a navigation, and a paused clock the page replaced would run the boot in real time again. Fix, no assertion touched: `pauseAt` now runs straight after `goto` (before `durationOf`), and the hero's start is checked from the published progress (mode `pending` and the hero already final, or more than `MAX_START_OFFSET_MS` = 200 ms in); a late start reloads the page on the still-installed clock, up to 5 attempts, then throws a clear error. The return value (hero duration) and every caller are unchanged; the moments each spec reads are the same because `advanceTo`, `heroAt` and `untilFrames` already measure from the published progress, and the 200 ms ceiling leaves every spec's earliest sampled moment (about 500 ms) untouched. `startClocked` in tests/e2e/support/runtime.ts is unchanged (it never pauses; specs that call it pause on their own) and `openClocked` in controls.ts already pauses straight after `goto`. No test was weakened, removed or skipped, and no limit was loosened. |
+
+No obsolete or redundant removal this session.
+
+## Notes for the reviewer
+
+- The writer had no shell; every selector and timing comes from reading `src/runtime/layer.ts`, `scheduler.ts`, `triggers.ts`, `main.ts`, `layer-timing.ts`, `CommandDock.ts`, `BuildWindow.ts`, `PendingOutline.ts`, `src/styles/build-layer.css`, `build-pending.css`, `src/layouts/Base.astro` and `src/sections/projects.build.ts`.
+- AC-1 3.2 s: `offset + t(closing) + t(done)` where `offset` is the hero clock already run when the clock was paused (published progress times the duration, at most 200 ms by `startPaused`) and `t` is the stepped clock time of `untilFrames` (20 ms frames). Expected total about 3100 plus up to 37 ms of frame quantization and 16 ms of rounding, against the 3200 ms limit.
+- AC-2 boundary: About's top is placed 24 px either side of 75 % of the 800 px viewport (rootMargin `-25%` bottom). The "scrolled up and down" tests place About 24 px past the line so the section after it (a whole About height lower) does not trigger.
+- AC-11: the relay card is `cards[0]` of the Projects timeline (asserted by its call); the sample is 60 ms after the second card starts (live after 150 ms), so the relay card is created and the third and fourth are hidden; the click is a real `page.mouse.click` followed by `waitForURL`, which works under the fake clock like the window bar clicks of controls-skip.spec.ts.
+- AC-15 bound: a MutationObserver installed by an init script (after the clock's own) records `performance.now()` when `data-build-mode` becomes `pending` and when it is removed; the difference must be at most 3050 ms. `pauseAt(1500)` after `goto` has the same precondition as runtime-fallbacks.spec.ts:39 (under 1.5 s of real time since install).
+- layout-invariance compares with a JavaScript-disabled page, not the reduced-motion page of the earlier specs; the reference list includes `.sp-stack` groups and excludes the nav (it slides in). The "after the build" moment uses Shift + Esc (all sections final, dock `done`), not a full 1x walk.
+- axe-build-matrix: each cell is its own page; the build is frozen with the hidden-tab trick of effects-axe.spec.ts. The boot cell asserts one `.sp-boot` before the freeze; the done cell asserts the dock state `done`.
+- mobile-build: the tap uses a `hasTouch` context (no `isMobile`, so the layout viewport stays 375 px); the sticky check scrolls instantly and runs one clock frame, reading `.sp-window-chrome` against the 64 px nav, and requires Projects to be taller than the viewport.
+- Prettier: run `pnpm exec prettier --write` on the four new specs and tests/e2e/support/layer.ts; a few long lines (template-literal titles, `test.use` in axe-build-matrix) were hand-wrapped only as far as known.
+
+## Formatting Outcome
+
+- Outcome: formatted (by the /relay-write-test command layer, Phase A.4)
+- Discovery source: package.json scripts.format (formatter_cmd `npm run format --`)
+- Command run: `pnpm exec prettier --write` on the 5 touched files (tests/e2e/behavior-gaps.spec.ts, layout-invariance.spec.ts, axe-build-matrix.spec.ts, mobile-build.spec.ts, support/layer.ts) in the worktree, exit 0 (scoped; scripts.format is `prettier --write .`)
+
+## Revision 1
+
+Triggered by the test-reviewer verdict CHANGES_REQUESTED on `R-GREEN-LEGITIMATE` (test-after, attempt 2). AC outcomes and the lifecycle ledger above are preserved verbatim; this section is appended.
+
+- tests/e2e/behavior-gaps.spec.ts (AC-2, "About starts when its top crosses 75 % ..."): the assertion `expect(l.windows).toBe(0)` taken when the dock log `Reading about.md...` shows was wrong. The window opens at the same instant the log appears (compiler `commandEnd` and layer-timing `commandEnterAt` are the same expression), and PRD AC-2 does not require zero windows then. It is replaced with `windows <= 1` and, when one window exists, `file === 'about.md'`. The 75 % boundary assertions (24 px either side of the line) and the never-two-windows loop are unchanged. Not a weakening: the dropped property was never in the AC, and the new check is the AC's own about.md window requirement at that moment.
+- tests/e2e/support/layer.ts:startPaused (ledger row above, still EXISTING_TEST_UPDATED): simplified to the pause-right-after-goto fix. The reload-retry loop, the late-start check, `MAX_START_OFFSET_MS` and `START_ATTEMPTS` are removed. The reviewer's note was right that the retry was unreachable in practice: once `pauseAt(60000)` ran, the clock is paused at 60000, a second `pauseAt` to the same time on a reloaded page cannot rewind it, so the retry would throw rather than recover, and a reload on a paused clock yields no later hero. The return value (hero duration) and all callers are unchanged. The ledger's justification for the original flake cause still holds; its sentence describing the retry/ceiling is superseded by this revision. Note: the writer had no shell and could not grep for other importers of `MAX_START_OFFSET_MS`; the reviewer's `tsc`/lint run will surface any.
+- Not executed (no shell): run prettier on the two touched files and the e2e suite.
+
+- Revision 1 (command layer): `pnpm exec prettier --write tests/e2e/behavior-gaps.spec.ts tests/e2e/support/layer.ts` in the worktree, exit 0 (scoped).
+
+## Revision 2 (post-PR CI fix)
+
+Triggered by the post-PR CI failure on PR fabiombarreto/site-pro#2 (GitHub Actions, Linux, run 42618444698, job e2e), reported as `R-GREEN-LEGITIMATE` (test-after). AC outcomes and the earlier ledger rows are preserved verbatim; the ledger row below is appended.
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-absent.spec.ts:"writes only opacity, clip-path and pointer-events on page elements and animates only transform, opacity and clip-path, with every overlay in the aria-hidden layer" | Driving AC: PRD AC-4 (build-layer elements animate only transform, opacity or clip-path) and docs/02 "The final layout never moves". The test collected keyframe properties from every `document.getAnimations()` on the page, including page chrome. The Stage 2 `.sp-nav` transition (`background-color 200ms, border-color 200ms`, NavBar.css) starts when `data-js` is set and ran on real time, so on CI's faster runner a CSSTransition on `backgroundColor` and `borderBottomColor` overlapped the first sample (:174) and failed on every retry; it passed locally on Windows. The nav is not a build target and the build CSS declares no transition. Fix: the animated-property list is now collected only from animations whose effect target is inside `[data-build-layer]` or inside `main`, with a comment saying why page chrome outside both is out of scope. Not a weakening: the allowed property set is unchanged (`backgroundColor` and `borderBottomColor` were not added), and the inline-style allow-list, the overlays-in-the-aria-hidden-layer check and the non-vacuity checks (moments > 50, overlays > 0) are untouched. The dropped input is a page-chrome transition that AC-4 and docs/02 do not cover. |
+
+- Not executed (no shell): the command layer must run prettier on tests/e2e/effects-absent.spec.ts and the e2e suite.
+
+## Status
+
+*Approved: 2026-11-09*
+*Status: APPROVED*

@@ -231,6 +231,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 
 ---
 
+## [2026-11-09] Stage 3 approved: the runtime is the base for Stage 4
+
+**Context:** Stage 3 exit criteria (docs/07-roadmap-and-decisions.md): every scenario in docs/02-experience.md#behavior-rules covered by an E2E test; merged in PR #2.
+**Decision:** The runtime (scheduler, boot terminal, dock, build windows, element effects except `image-resolve`, controls, deep links, the focus rule, reduced motion, the saved speed) and the base build scripts for the five sections are approved. Stage 4 builds on the Stage 3 base scripts, adding `image-resolve`, the real assets and per-section tuning, and the final layout still never moves. The `Shift + Esc` check on real Chrome for Windows stays open.
+**Reason:** Approved by the owner on 2026-11-09, with all nine CI jobs passing on the merged branch.
+**Areas affected:** build, navigation, visual-design, content
+
+---
+
 <!-- Template for future entries:
 
 ## [YYYY-MM-DD] Title of the decision

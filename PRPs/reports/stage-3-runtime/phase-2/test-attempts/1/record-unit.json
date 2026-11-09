@@ -1,0 +1,20 @@
+{
+  "run_id": "5fe991e7-ed7d-492f-b8ed-fdedc1f5ddb3",
+  "attempt": 1,
+  "tier": "unit",
+  "framework": "vitest",
+  "outcome": "PASSED",
+  "duration_ms": 4356,
+  "counts": {
+    "passed": 347,
+    "failed": 0,
+    "skipped": 0,
+    "total": 347
+  },
+  "failures": [],
+  "coverage": null,
+  "artifacts": {
+    "junit_xml": "C:\\repos\\site-pro\\PRPs\\reports\\stage-3-runtime\\attempts\\1\\junit-unit.xml"
+  },
+  "generated_at": "2026-11-08T17:45:01.249Z"
+}

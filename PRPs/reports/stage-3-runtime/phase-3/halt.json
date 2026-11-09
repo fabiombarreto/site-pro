@@ -1,0 +1,31 @@
+{
+  "outcome": "PLAN_VALIDATION_DEFECT",
+  "plan_validation_defect": {
+    "level": 3,
+    "command": "Scenario D: await runUntil(page, (s) => s.states[2] === 'building' && s.p * tl.duration >= cards[0].start + 400, 90000, 'first card window command', 20); followed by the check that .sp-window-cmd equals the truncated cards[0].call",
+    "observed": "FAIL: window command is the call cut to 29 characters with an ellipsis: proje (the bar already shows card 1, which starts at card0.start + 330)",
+    "prd_refs": [
+      "plan AC-A2 (traces to PRD AC-20: each project card starts 120 ms before the previous card ends)",
+      "plan AC-A7 (traces to PRD AC-1 and AC-20: window command cut to at most 29 characters)"
+    ],
+    "reason": "The sample moment +400 ms is after card 1 starts (+330 ms pitch from the plan's own pacing), so the command bar shows card 1. Sampling at +320 ms passes, including the truncation, pointer-event and hit-test checks."
+  },
+  "attempt": 1,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "verdict": "IMPLEMENTATION_COMPLETE",
+      "levels": {
+        "l1": "PASS",
+        "l2": "PASS",
+        "l3": "FAIL (scenario D only)"
+      }
+    }
+  ],
+  "claim_check": {
+    "command_in_plan": "yes, ## Validation Commands line 711",
+    "observed_from_this_attempt": "yes (validation_outputs level_3)",
+    "prd_refs": "both cite plan ACs whose own text names the PRD AC (AC-A2 → PRD AC-20; AC-A7 → PRD AC-1, AC-20), accepted transitively as in phase 1",
+    "other_levels": "level_1 PASS, level_2 PASS"
+  }
+}

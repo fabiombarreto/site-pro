@@ -1,0 +1,1514 @@
+diff --git a/docs/02-experience.md b/docs/02-experience.md
+index c24c66f..3d48ad6 100644
+--- a/docs/02-experience.md
++++ b/docs/02-experience.md
+@@ -116,7 +116,7 @@ On mobile, the links move into a `☰` menu.
+ | **Collapsed** | A small round `❯_` button at the bottom right. It opens the Command Palette (and, in v1.1, the interactive dock) |
+ | **Reduced motion** | `✔ Ready · motion reduced   ▶ Play build` |
+ 
+-Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. Toasts (such as `warn  Window closed. Building anyway...`) appear just above the dock.
++Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. Replay and Play build always play the show at normal speed from the boot. Toasts (such as `warn  Window closed. Building anyway...`) appear just above the dock.
+ 
+ ### Build window
+ 
+@@ -330,6 +330,8 @@ Planned commands: `Go to <section>`, `Open project: <name>`, `Run all`, `Replay
+ 
+ Section shortcuts such as `Ctrl + 1…5` were dropped: browsers use them to switch tabs.
+ 
++Shift + Esc on Windows Chrome: Chrome lists `Shift + Esc` as its Task Manager shortcut, so the page may never receive it. The E2E test proves only the page handler; the real-browser check is pending the owner. If Chrome swallows it, the Stage 5 palette's Run all is the keyboard path.
++
+ ### Project pages
+ 
+ Decided (**D5**): internal pages. Clicking a card opens `/projects/<slug>`. The dock types a quick `open("relay");` and the card grows into the page header (a view transition). The page itself is a modern article: cover, summary, metadata, the story and links (wireframe in [03](03-design-system.md#project-page)). The back button returns to the grid at the same position. Cards also carry a direct `repo ↗` shortcut.
+diff --git a/docs/04-animations.md b/docs/04-animations.md
+index 5daa56d..4f59700 100644
+--- a/docs/04-animations.md
++++ b/docs/04-animations.md
+@@ -162,6 +162,8 @@ To be evaluated in the design prototype:
+ | **Replay** | Dock (when done), footer, palette | Scrolls to the top, hides every section and builds the site again |
+ | **Play build** | Dock, only with reduced motion | Plays the build at 1× because the visitor asked for it |
+ 
++Idle timers. The `scroll ↓` hint pulses after 4 s idle, a skip holds its created text for 1.5 s, and the done state collapses into `❯_` after 4 s. They run on one frame subscription that is active only while no section is building.
++
+ ## Reduced motion
+ 
+ With `prefers-reduced-motion: reduce` (or `∞` speed):
+diff --git a/docs/06-architecture.md b/docs/06-architecture.md
+index 6ca68e3..27babef 100644
+--- a/docs/06-architecture.md
++++ b/docs/06-architecture.md
+@@ -127,6 +127,10 @@ site-pro/
+ - Window bodies let clicks through (`pointer-events: none`), so elements are usable as soon as they exist. Only the title bar and the command bar catch clicks, to skip.
+ - Pending content is hidden with `opacity` and `clip-path`, never with `display` or `visibility`, so it stays in the accessibility tree and keeps its layout.
+ 
++### Dock accessibility
++
++The dock is a `role="group"` named "Site build". Its status text, log and hint are aria-hidden. Its controls are persistent real buttons toggled with `hidden`, so focus survives a state change: "Skip this section's build", "Build speed: 1x. Switch to 2x" (and its two siblings), "Replay the build", "Play the build animation" and "Show build status". Every other layer child (boot terminal, windows, outlines, effects) is aria-hidden. Phase 4 modules: `controls-timing` (pure constants and mappings), `keys`, `focus-rule`, `resize`, `api` and the `FooterBuild` factory.
++
+ ## Accessibility
+ 
+ - Semantic HTML: `<header>` with the `<nav>`, `<main>` with one `<section>` per section, `<footer>`; one `<h1>` (the hero headline, which includes the name) and one `<h2>` per section.
+diff --git a/docs/api-reference.md b/docs/api-reference.md
+index 926cba6..01f314a 100644
+--- a/docs/api-reference.md
++++ b/docs/api-reference.md
+@@ -35,6 +35,10 @@ Defined in docs/05-content.md and validated at build time with Astro Content Col
+ 
+ The runtime's internal TypeScript API (program, scheduler, effects registry, stores) is designed in docs/06-architecture.md and documented here once Stage 3 implements it.
+ 
++### Controls API (Stage 3 Phase 4)
++
++`Controls` from `src/runtime/api.ts`: `skip`, `runAll`, `setSpeed`, `cycleSpeed`, `replay`, `play`. `getControls()` returns `null` on pages without the runtime. The stores `currentSection`, `progress`, `status`, `speed` and `queue` are re-exported for Stage 5.
++
+ ### Build data contract (Stage 3 Phase 1)
+ 
+-Each home-page `<section>` carries `data-build`, the JSON of a compiled `Timeline` (`v`, `section`, `file`, `command`, `commandEnd`, `windowEnd`, `buildStart`, `steps[]` with `call`, `target`, `effect`, `start`, `end`, `createdAt`, `duration`). Step targets resolve to `data-build-target` elements in the section. `<html>` reflects runtime state: `data-build-mode` (`pending` or `instant`), `data-build-speed` (`1`, `2`, `inf`), `data-build-started`, `data-build-status` (`idle`, `building`, `done`, `instant`, `failed`), `data-build-section` and `data-build-progress`; sections carry `data-build-state`. Speed persists in `localStorage` key `sp-speed`. Source: `src/runtime/types.ts`, `src/stores/build.ts`.
++Each home-page `<section>` carries `data-build`, the JSON of a compiled `Timeline` (`v`, `section`, `file`, `command`, `commandEnd`, `windowEnd`, `buildStart`, `steps[]` with `call`, `target`, `effect`, `start`, `end`, `createdAt`, `duration`). Step targets resolve to `data-build-target` elements in the section. `<html>` reflects runtime state: `data-build-mode` (`pending` or `instant`), `data-build-speed` (`1`, `2`, `inf`), `data-build-started`, `data-build-status` (`idle`, `building`, `done`, `instant`, `failed`), `data-build-section`, `data-build-progress` and `data-build-queue` (`<n>/<total>` while turbo is catching up, absent otherwise); sections carry `data-build-state`. Speed persists in `localStorage` key `sp-speed`. Source: `src/runtime/types.ts`, `src/stores/build.ts`.
+diff --git a/docs/context/architecture.md b/docs/context/architecture.md
+index 13b0941..ab6d712 100644
+--- a/docs/context/architecture.md
++++ b/docs/context/architecture.md
+@@ -1,6 +1,6 @@
+ # Architecture
+ 
+-State on 2026-11-06: Stage 2 (foundation) is merged: the Astro project, the static page, tokens, fonts, content collections and CI exist (PR #1). Stage 3 Phase 1 adds the runtime core (compiler, scheduler, triggers, stores, `nanostores` dependency); Phase 2 adds the build layer (overlay components and `layer.ts`); Phase 3 adds the element effects and the base scripts; controls and persistence are not built yet. The stack comes from the approved documents (06, 07, 08) and the Claude Design artifacts; items that only exist as a plan are marked *(planned)*.
++State on 2026-11-06: Stage 2 (foundation) is merged: the Astro project, the static page, tokens, fonts, content collections and CI exist (PR #1). Stage 3 Phase 1 adds the runtime core (compiler, scheduler, triggers, stores, `nanostores` dependency); Phase 2 adds the build layer (overlay components and `layer.ts`); Phase 3 adds the element effects and the base scripts; Phase 4 adds the controls and speed persistence. The stack comes from the approved documents (06, 07, 08) and the Claude Design artifacts; items that only exist as a plan are marked *(planned)*.
+ 
+ ## Stack (decided)
+ 
+@@ -40,11 +40,11 @@ Two visual registers never mix: **the page** (modern, readable) and **the build
+ | `tests/` | Playwright E2E, visual and accessibility tests |
+ | `src/content/` | profile, projects/, stack.json |
+ | `src/components/page/` | React page components (NavBar, Button, ProjectCard, StackGroup, Footer, CommandPalette…). `Footer` has an opt-in `buildSlot` prop that renders an empty reserved line (`data-footer-build`) for the build summary; `index.astro` enables it |
+-| `src/components/build/` | Build-layer components as TypeScript DOM factories, not React (BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor for v1.1). Stage 3 Phase 2 built `dom.ts`, `tokenize.ts`, `Cursor`, `LogLine`, `CommandLine`, `BootTerminal`, `CommandDock`, `BuildWindow` and `PendingOutline`; Phase 3 adds `SelectionBox`, `Skeleton` and `TextOverlay` (the selection box with handles and label, the skeleton blocks, and the caret and scramble glyphs). Styled by `src/styles/build-layer.css` |
++| `src/components/build/` | Build-layer components as TypeScript DOM factories, not React (BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor for v1.1). Stage 3 Phase 2 built `dom.ts`, `tokenize.ts`, `Cursor`, `LogLine`, `CommandLine`, `BootTerminal`, `CommandDock`, `BuildWindow` and `PendingOutline`; Phase 4 adds `FooterBuild` (fills the reserved footer slot); Phase 3 adds `SelectionBox`, `Skeleton` and `TextOverlay` (the selection box with handles and label, the skeleton blocks, and the caret and scramble glyphs). Styled by `src/styles/build-layer.css` |
+ | `src/sections/` | Astro sections (Hero, About, Projects, Stack, Contact), each with its build script (`<section>.build.ts`, a step list compiled at build time and serialized into the section's `data-build` attribute; steps name `data-build-target` elements, wrapped in `.sp-build-wrap` where needed); `pacing.ts` (`pacedSteps` turns prototype v2 start offsets into step `gap`/`overlap` values and a final settle); the five base scripts use prototype v2's commands and pacing; `profile-links.ts` resolves the GitHub and LinkedIn URLs from the profile entry. Stage 2 Phase 5 composes them in `src/pages/index.astro` with `src/styles/home.css` |
+ | `src/scripts/` | Small client modules loaded from `Base.astro`: `theme-toggle`, and `nav.ts` (toggles `is-scrolled` on `.sp-nav` and closes the mobile menu popover when one of its links is clicked). `build-mode.ts` holds `SPEED_STORAGE_KEY` (`sp-speed`), `WATCHDOG_MS`, `parseSpeed` and `resolveMode`; the inline head script in `Base.astro` (rendered only when the page passes `build`) mirrors the two helpers |
+-| `src/runtime/` | Stage 3 Phase 1 (runtime core): `types.ts` (effects, section states, `BuildScript`, `Timeline`), `compiler.ts` (`compileScript` turns a section's step list into an absolute millisecond timeline; `serializeTimeline`), `clock.ts` (real and manual clocks), `scheduler.ts` (section queue, turbo, speed, hidden-tab handling), `triggers.ts` (`IntersectionObserver` per section) and `main.ts` (entry loaded by `index.astro`; reflects state on `<html>` data attributes and reveals the page if anything throws). Phase 2 adds `layer.ts` (the overlay: boot terminal, dock, build windows, pending outlines, driven by scheduler state) and `layer-timing.ts` (overlay timing and easing). Windows are placed by writing `left`/`top`/`width`/`height` on the absolutely positioned overlay, on placement and resize only, never per frame (a transformed window root would break the sticky bars); per-frame animation stays `transform`/`opacity` only. Phase 3 adds the effects registry: `effect-timing.ts` (pure, DOM-free: effect durations, seeded randomness, the phase of every effect as a function of the step's local time, the dock typing schedule, `truncateCall` that cuts window commands to 29 characters with `…`), `effect-dom.ts` (measurement plus the only writes an effect may make on a page element: the `data-build-fx` attribute and inline `opacity`/`clip-path`) and `effects.ts` (`createEffects`, runners for `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger` and `build-card`, driven by scheduler state and ticks). Effects reveal the real page elements in place with `clip-path` and `opacity`; the caret, scramble glyphs, selection boxes and skeletons live only in the overlay. `pop` and `stagger` use an inset `clip-path` with overshoot plus opacity, not a scale, because a transform on a page element would change measured boxes. `EFFECT_DURATION_MS` moved from `compiler.ts` to `effect-timing.ts` (re-exported). Controls come in a later phase |
+-| `src/stores/` | nanostores shared by the runtime and the islands; `build.ts` holds `currentSection`, `progress`, `status` and `speed` atoms |
++| `src/runtime/` | Stage 3 Phase 1 (runtime core): `types.ts` (effects, section states, `BuildScript`, `Timeline`), `compiler.ts` (`compileScript` turns a section's step list into an absolute millisecond timeline; `serializeTimeline`), `clock.ts` (real and manual clocks), `scheduler.ts` (section queue, turbo, speed, hidden-tab handling), `triggers.ts` (`IntersectionObserver` per section) and `main.ts` (entry loaded by `index.astro`; reflects state on `<html>` data attributes and reveals the page if anything throws). Phase 2 adds `layer.ts` (the overlay: boot terminal, dock, build windows, pending outlines, driven by scheduler state) and `layer-timing.ts` (overlay timing and easing). Windows are placed by writing `left`/`top`/`width`/`height` on the absolutely positioned overlay, on placement and resize only, never per frame (a transformed window root would break the sticky bars); per-frame animation stays `transform`/`opacity` only. Phase 3 adds the effects registry: `effect-timing.ts` (pure, DOM-free: effect durations, seeded randomness, the phase of every effect as a function of the step's local time, the dock typing schedule, `truncateCall` that cuts window commands to 29 characters with `…`), `effect-dom.ts` (measurement plus the only writes an effect may make on a page element: the `data-build-fx` attribute and inline `opacity`/`clip-path`) and `effects.ts` (`createEffects`, runners for `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger` and `build-card`, driven by scheduler state and ticks). Effects reveal the real page elements in place with `clip-path` and `opacity`; the caret, scramble glyphs, selection boxes and skeletons live only in the overlay. `pop` and `stagger` use an inset `clip-path` with overshoot plus opacity, not a scale, because a transform on a page element would change measured boxes. `EFFECT_DURATION_MS` moved from `compiler.ts` to `effect-timing.ts` (re-exported). Phase 4 adds `controls-timing.ts` (pure idle constants, speed cycle, key mapping), `keys.ts`, `focus-rule.ts`, `resize.ts`, `api.ts` (the `Controls` object and store re-exports for Stage 5) and the scheduler's `skip`/`runAll`/`finishThrough`/`onQueue`; `main.ts` becomes a rebuildable show |
++| `src/stores/` | nanostores shared by the runtime and the islands; `build.ts` holds `currentSection`, `progress`, `status`, `speed` and `queue` atoms |
+ | `src/styles/` | tokens.css, themes, base.css; `build-pending.css` hides not-yet-built sections (`opacity: 0`) only while `<html data-build-mode="pending">`; `build-layer.css` styles the build layer (overlay only, including the `sp-build-fx` effects layer); a second rule hides elements marked `data-build-fx="hidden"` (`opacity: 0`, no pointer events) while pending, and sections in `building` or `closing` are no longer hidden as a whole; its roots (`.sp-build-layer`, `.sp-build-fx`) clip horizontal overflow with `overflow-x: clip` (vertical stays visible, and `clip` does not create a scroll container) so no overlay piece can widen the document |
+ | `src/strings.ts` | Interface copy, centralized |
+ | `src/pages/` | index, projects/[slug], 404 |
+diff --git a/docs/decisions.md b/docs/decisions.md
+index 82757f0..a48da9b 100644
+--- a/docs/decisions.md
++++ b/docs/decisions.md
+@@ -213,6 +213,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
+ 
+ ---
+ 
++## [2026-11-08] Stage 3 Phase 4 controls and navigation
++
++**Context:** After Phase 3 the build plays but the visitor cannot take over: no skip, no speed control, no replay, no keyboard rules. Phase 4 of the Stage 3 PRD assigns these controls and the behavior rules to the runtime.
++**Decision:** The dock leaves the aria-hidden layer as a `role="group"` named "Site build" with real buttons, while its status text, log and hint stay aria-hidden and every other layer child is aria-hidden. The scheduler gains `skip`, `runAll`, `finishThrough` and a `queued n/5` status callback (the PRD assigns these to Phase 4; turbo and timing rules are unchanged). `Esc` skips only the active section and yields to an open popover or dialog; `Shift + Esc` runs all. A skip shows `✔ <Section> Section created. (<t>s)` for 1.5 s before the dock returns to idle. The scroll hint pulses after 4 s idle and a scroll restarts that count. The done state lasts 4 s, then collapses into `❯_`, and a reopened done state collapses again after 4 s. Replay and Play build always play the show at normal speed from the boot: when the dock is in a ready state (reduced motion or a saved ∞) they switch the speed to 1× and save it, and a Replay from a finished 1× or 2× build keeps that speed. The controls API lives in `src/runtime/api.ts`. The footer summary is filled by the runtime with the same seconds as the dock. A blocked `localStorage` is swallowed when saving the speed, as the theme toggle does. The `Shift + Esc` status is unverified until the owner checks real Chrome on Windows.
++**Reason:** The PRD requires every behavior rule to hold and the controls to be keyboard and screen reader reachable; real buttons are the only accessible option, and a rebuildable show keeps Replay free of reset logic.
++**Areas affected:** build, navigation, visual-design
++
++---
++
+ <!-- Template for future entries:
+ 
+ ## [YYYY-MM-DD] Title of the decision
+diff --git a/docs/domain/areas/build.md b/docs/domain/areas/build.md
+index 18501e2..4296dc7 100644
+--- a/docs/domain/areas/build.md
++++ b/docs/domain/areas/build.md
+@@ -25,7 +25,7 @@ The self-building show: boot terminal, command dock, build windows, element effe
+ | B17 | No JavaScript: the final page renders statically; no dock, no windows |
+ | B18 | The build pauses while the tab is hidden and resumes on return |
+ | B19 | Speed cycles `1× → 2× → ∞`, multiplies every timing and is saved in the browser |
+-| B20 | Replay scrolls to the top, hides every section and builds again |
++| B20 | Replay scrolls to the top, hides every section and builds again. Replay and Play build always play the show at normal speed from the boot. |
+ | B21 | Budgets: hero ≤ 3.2 s from load (headline readable ≈ 1.7 s, ≤ 2.0 s); other sections ≤ 2.5 s from trigger |
+ | B22 | On-screen commands come from the build scripts and must match the real public source (technical authenticity) |
+ | B23 | Every element is **created**, not faded in: `select → skeleton → content` |
+@@ -56,6 +56,7 @@ Interactive dock (D7), multi-cursor agents (D8), keyboard sound, element counter
+ ## Open Questions
+ 
+ - ~~Final turbo multiplier inside the 5–10× range (the prototype uses 5×) [INFERRED - VALIDATE].~~ Answered by the Stage 3 PRD (2026-11-08): ×5.
+-- Whether Chrome on Windows and Linux lets the page receive `Shift + Esc`, which Chrome lists as its Task Manager shortcut; checked in Stage 3 Phase 4.
++- Whether Chrome on Windows and Linux lets the page receive `Shift + Esc`, which Chrome lists as its Task Manager shortcut; the handler exists (Stage 3 Phase 4), the real-browser check is pending the owner (docs/02-experience.md).
++- ~~Skip, Run all, focus and resize behavior.~~ Settled in Phase 4: `Esc` skips the active section, `Shift + Esc` runs all, focus finishes the focused section and every one before it, only a width change counts as a resize.
+ - Whether the "unstyled → styled" joke effect ships in v1 (listed as optional in docs/04-animations.md); decided in Stage 4.
+ - Whether the rare `warn  Coffee level low` boot easter egg ships.
+diff --git a/src/components/build/BuildWindow.ts b/src/components/build/BuildWindow.ts
+index ec57d88..7949e01 100644
+--- a/src/components/build/BuildWindow.ts
++++ b/src/components/build/BuildWindow.ts
+@@ -18,7 +18,11 @@ export interface BuildWindow {
+   setState(state: WindowState): void;
+ }
+ 
+-export function createBuildWindow(file: string, section: string): BuildWindow {
++export function createBuildWindow(
++  file: string,
++  section: string,
++  onSkip?: () => void,
++): BuildWindow {
+   const el = h('div', 'sp-window', {
+     'aria-hidden': 'true',
+     'data-section': section,
+@@ -37,6 +41,10 @@ export function createBuildWindow(file: string, section: string): BuildWindow {
+   const cmd = h('div', 'sp-window-cmd');
+   const line = createCommandLine();
+   cmd.append(line.el);
++  if (onSkip) {
++    bar.addEventListener('click', onSkip);
++    cmd.addEventListener('click', onSkip);
++  }
+   chrome.append(bar, cmd);
+   frame.append(body, chrome);
+   el.append(frame);
+diff --git a/src/components/build/CommandDock.ts b/src/components/build/CommandDock.ts
+index c3d3466..5363567 100644
+--- a/src/components/build/CommandDock.ts
++++ b/src/components/build/CommandDock.ts
+@@ -1,3 +1,4 @@
++import type { Speed } from '../../scripts/build-mode';
+ import { buildStrings } from '../../strings';
+ import { createCommandLine } from './CommandLine';
+ import { createCursor } from './Cursor';
+@@ -14,6 +15,8 @@ export type DockState =
+   | 'reduced'
+   | 'collapsed';
+ 
++export type DockAction = 'skip' | 'speed' | 'replay' | 'play' | 'expand';
++
+ export interface CommandDock {
+   el: HTMLDivElement;
+   setState(state: DockState): void;
+@@ -21,22 +24,75 @@ export interface CommandDock {
+   setLog(text: string | null): void;
+   setBuilding(name: string, spinnerFrame: number): void;
+   setCreated(text: string): void;
+-  setIdle(done: number, total: number): void;
++  setIdle(done: number, total: number, withHint?: boolean): void;
+   setDone(text: string): void;
++  setSpeed(speed: Speed): void;
++  setQueued(text: string): void;
++  setPulse(on: boolean): void;
+   setOpacity(value: number): void;
+   getRect(): DOMRect;
+ }
+ 
+-export function createCommandDock(): CommandDock {
++const VISIBLE: Record<DockState, DockAction[]> = {
++  hidden: [],
++  typing: ['skip', 'speed'],
++  building: ['skip', 'speed'],
++  created: ['speed'],
++  idle: ['speed'],
++  done: ['replay'],
++  reduced: ['play'],
++  collapsed: ['expand'],
++};
++
++export function createCommandDock(options: {
++  speed: Speed;
++  onAction(action: DockAction): void;
++}): CommandDock {
+   const el = h('div', 'sp-dock', {
+-    'aria-hidden': 'true',
++    role: 'group',
++    'aria-label': buildStrings.groupLabel,
+     'data-state': 'hidden',
+   });
+-  const log = h('div', 'sp-dock-log');
++  const log = h('div', 'sp-dock-log', { 'aria-hidden': 'true' });
+   const pill = h('div', 'sp-dock-pill');
+-  const status = h('div', 'sp-dock-status');
+-  const hint = h('span', 'sp-dock-hint');
+-  pill.append(status, hint);
++  const status = h('div', 'sp-dock-status', { 'aria-hidden': 'true' });
++  const hint = h('span', 'sp-dock-hint', { 'aria-hidden': 'true' });
++  const controls = h('div', 'sp-dock-controls');
++
++  const makeButton = (
++    action: DockAction,
++    label: string,
++    name: string,
++    extra = '',
++  ) => {
++    const button = h('button', `sp-dock-btn${extra}`, {
++      type: 'button',
++      'data-dock-action': action,
++      'aria-label': name,
++    });
++    button.textContent = label;
++    button.addEventListener('click', () => options.onAction(action));
++    button.hidden = true;
++    controls.append(button);
++    return button;
++  };
++  const buttons: Record<DockAction, HTMLButtonElement> = {
++    skip: makeButton('skip', buildStrings.skip, buildStrings.skipLabel),
++    speed: makeButton(
++      'speed',
++      buildStrings.speedGlyph(options.speed),
++      buildStrings.speedLabel(options.speed),
++    ),
++    replay: makeButton('replay', buildStrings.replay, buildStrings.replayLabel),
++    play: makeButton('play', buildStrings.play, buildStrings.playLabel),
++    expand: makeButton(
++      'expand',
++      buildStrings.collapsedGlyph,
++      buildStrings.expandLabel,
++      ' sp-dock-fab',
++    ),
++  };
++  pill.append(status, hint, controls);
+   el.append(log, pill);
+ 
+   const logLine = createLogLine('info', '');
+@@ -55,6 +111,9 @@ export function createCommandDock(): CommandDock {
+   let lastLog: string | null = null;
+   let lastOpacity = '';
+   let idleKey = '';
++  let lastPulse = false;
++  let lastGlyph = buildStrings.speedGlyph(options.speed);
++  let lastLabel = buildStrings.speedLabel(options.speed);
+ 
+   const show = (next: string, nodes: Node[], hintText = '') => {
+     if (mode !== next) {
+@@ -64,6 +123,23 @@ export function createCommandDock(): CommandDock {
+     if (hint.textContent !== hintText) hint.textContent = hintText;
+   };
+ 
++  const syncButtons = (next: DockState) => {
++    const visible = VISIBLE[next];
++    for (const [action, button] of Object.entries(buttons)) {
++      button.hidden = !visible.includes(action as DockAction);
++    }
++    const active = document.activeElement;
++    if (
++      active instanceof HTMLButtonElement &&
++      active.hidden &&
++      el.contains(active)
++    ) {
++      Object.values(buttons)
++        .find((b) => !b.hidden)
++        ?.focus();
++    }
++  };
++
+   return {
+     el,
+     setState(next) {
+@@ -76,12 +152,11 @@ export function createCommandDock(): CommandDock {
+         status.replaceChildren(text, createCursor());
+         hint.textContent = '';
+       } else if (next === 'collapsed') {
+-        const fab = h('span', 'sp-dock-fab');
+-        fab.textContent = buildStrings.collapsedGlyph;
+         mode = 'collapsed';
+-        status.replaceChildren(fab);
++        status.replaceChildren();
+         hint.textContent = '';
+       }
++      syncButtons(next);
+     },
+     setCommand(value, chars, cursor) {
+       show('command', [prompt(), command.el]);
+@@ -106,19 +181,45 @@ export function createCommandDock(): CommandDock {
+       show('text', [text]);
+       if (text.textContent !== value) text.textContent = value;
+     },
+-    setIdle(done, total) {
+-      const key = `${done}/${total}`;
++    setIdle(done, total, withHint = true) {
++      const key = `${done}/${total}/${withHint}`;
+       if (mode !== 'idle' || key !== idleKey) {
+         idleKey = key;
+         idle.textContent = buildStrings.idleCount(done, total);
+         mode = '';
+-        show('idle', [idle, prompt(), createCursor()], buildStrings.scrollHint);
++        show(
++          'idle',
++          [idle, prompt(), createCursor()],
++          withHint ? buildStrings.scrollHint : '',
++        );
+       }
+     },
+     setDone(value) {
+       show('text', [text]);
+       if (text.textContent !== value) text.textContent = value;
+     },
++    setSpeed(next) {
++      const glyph = buildStrings.speedGlyph(next);
++      const label = buildStrings.speedLabel(next);
++      if (glyph !== lastGlyph) {
++        lastGlyph = glyph;
++        buttons.speed.textContent = glyph;
++      }
++      if (label !== lastLabel) {
++        lastLabel = label;
++        buttons.speed.setAttribute('aria-label', label);
++      }
++    },
++    setQueued(value) {
++      show('text', [text]);
++      if (text.textContent !== value) text.textContent = value;
++    },
++    setPulse(on) {
++      if (on === lastPulse) return;
++      lastPulse = on;
++      if (on) hint.setAttribute('data-pulse', '');
++      else hint.removeAttribute('data-pulse');
++    },
+     setOpacity(value) {
+       const next = String(value);
+       if (next === lastOpacity) return;
+diff --git a/src/components/build/FooterBuild.ts b/src/components/build/FooterBuild.ts
+new file mode 100644
+index 0000000..94e78ef
+--- /dev/null
++++ b/src/components/build/FooterBuild.ts
+@@ -0,0 +1,32 @@
++import { buildStrings } from '../../strings';
++import { h } from './dom';
++
++export interface FooterBuild {
++  setSummary(seconds: string | null): void;
++  clear(): void;
++}
++
++export function createFooterBuild(
++  slot: HTMLElement,
++  onReplay: () => void,
++): FooterBuild {
++  return {
++    setSummary(seconds) {
++      const nodes: Node[] = [];
++      if (seconds !== null) {
++        nodes.push(document.createTextNode(buildStrings.footerBuilt(seconds)));
++      }
++      const button = h('button', 'sp-footer-replay', {
++        type: 'button',
++        'aria-label': buildStrings.replayLabel,
++      });
++      button.textContent = buildStrings.replay;
++      button.addEventListener('click', onReplay);
++      nodes.push(button);
++      slot.replaceChildren(...nodes);
++    },
++    clear() {
++      slot.replaceChildren();
++    },
++  };
++}
+diff --git a/src/components/page/Footer.css b/src/components/page/Footer.css
+index 3e42dac..3a139e2 100644
+--- a/src/components/page/Footer.css
++++ b/src/components/page/Footer.css
+@@ -27,6 +27,21 @@
+   min-height: calc(var(--text-sm) * 1.5);
+ }
+ 
++.sp-footer-replay {
++  appearance: none;
++  background: none;
++  border: 0;
++  padding: 0;
++  font: inherit;
++  color: var(--fg);
++  text-decoration: underline;
++  cursor: pointer;
++}
++
++.sp-footer-replay:hover {
++  color: var(--accent-fg);
++}
++
+ /* Side padding: 32px, 16px under 768px. */
+ @media (max-width: 767px) {
+   .sp-footer-inner {
+diff --git a/src/runtime/api.ts b/src/runtime/api.ts
+new file mode 100644
+index 0000000..928b341
+--- /dev/null
++++ b/src/runtime/api.ts
+@@ -0,0 +1,28 @@
++import type { Speed } from '../scripts/build-mode';
++
++export interface Controls {
++  skip(): void;
++  runAll(): void;
++  setSpeed(speed: Speed): void;
++  cycleSpeed(): void;
++  replay(): void;
++  play(): void;
++}
++
++let controls: Controls | null = null;
++
++export function getControls(): Controls | null {
++  return controls;
++}
++
++export function setControls(next: Controls | null): void {
++  controls = next;
++}
++
++export {
++  currentSection,
++  progress,
++  queue,
++  speed,
++  status,
++} from '../stores/build';
+diff --git a/src/runtime/controls-timing.ts b/src/runtime/controls-timing.ts
+new file mode 100644
+index 0000000..ee1952b
+--- /dev/null
++++ b/src/runtime/controls-timing.ts
+@@ -0,0 +1,57 @@
++import type { Speed } from '../scripts/build-mode';
++
++export const HINT_IDLE_MS = 4000;
++export const DONE_COLLAPSE_MS = 4000;
++export const SKIP_HOLD_MS = 1500;
++
++export function nextSpeed(speed: Speed): Speed {
++  if (speed === '1') return '2';
++  if (speed === '2') return 'inf';
++  return '1';
++}
++
++export function hintPulsing(idleMs: number): boolean {
++  return idleMs >= HINT_IDLE_MS;
++}
++
++export function doneCollapsed(doneMs: number): boolean {
++  return doneMs >= DONE_COLLAPSE_MS;
++}
++
++export function skipHeld(holdMs: number): boolean {
++  return holdMs < SKIP_HOLD_MS;
++}
++
++export function queuePosition(
++  activeIndex: number,
++  nextQueued: boolean,
++): number | null {
++  return nextQueued ? activeIndex + 1 : null;
++}
++
++export function isWidthChange(
++  previousWidth: number,
++  nextWidth: number,
++): boolean {
++  return previousWidth !== nextWidth;
++}
++
++export function keyAction(
++  event: {
++    key: string;
++    shiftKey: boolean;
++    ctrlKey: boolean;
++    metaKey: boolean;
++    altKey: boolean;
++    repeat: boolean;
++  },
++  popoverOpen: boolean,
++): 'skip' | 'runAll' | null {
++  if (event.key !== 'Escape') return null;
++  if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) {
++    return null;
++  }
++  if (event.shiftKey) return 'runAll';
++  if (popoverOpen) return null;
++  return 'skip';
++}
+diff --git a/src/runtime/focus-rule.ts b/src/runtime/focus-rule.ts
+new file mode 100644
+index 0000000..b208d05
+--- /dev/null
++++ b/src/runtime/focus-rule.ts
+@@ -0,0 +1,29 @@
++import type { SectionId } from './types';
++
++export function observeFocus(options: {
++  sections: HTMLElement[];
++  heroId: SectionId;
++  finishThrough(id: SectionId): void;
++}): () => void {
++  const { sections, heroId, finishThrough } = options;
++  const hero = sections.find((s) => s.id === heroId);
++  const onFocusIn = (event: FocusEvent) => {
++    const target = event.target;
++    if (!(target instanceof Element)) return;
++    const section = sections.find((s) => s.contains(target));
++    if (section) {
++      finishThrough(section.id as SectionId);
++      return;
++    }
++    const state = hero?.getAttribute('data-build-state');
++    if (state === 'done' || state === 'skipped') return;
++    if (
++      target.closest('.sp-nav') !== null ||
++      target === document.getElementById('main')
++    ) {
++      finishThrough(heroId);
++    }
++  };
++  document.addEventListener('focusin', onFocusIn);
++  return () => document.removeEventListener('focusin', onFocusIn);
++}
+diff --git a/src/runtime/keys.ts b/src/runtime/keys.ts
+new file mode 100644
+index 0000000..b08ae71
+--- /dev/null
++++ b/src/runtime/keys.ts
+@@ -0,0 +1,25 @@
++import { keyAction } from './controls-timing';
++
++function isPopoverOpen(): boolean {
++  try {
++    return document.querySelector(':popover-open, dialog[open]') !== null;
++  } catch {
++    // A browser without :popover-open throws a SyntaxError for the selector.
++    return document.querySelector('dialog[open]') !== null;
++  }
++}
++
++export function bindKeys(actions: {
++  skip(): void;
++  runAll(): void;
++}): () => void {
++  // Capture phase: an open popover is still open when this runs, before the
++  // browser processes its close request. Never prevents the native Esc.
++  const onKeyDown = (event: KeyboardEvent) => {
++    const action = keyAction(event, isPopoverOpen());
++    if (action === 'skip') actions.skip();
++    else if (action === 'runAll') actions.runAll();
++  };
++  document.addEventListener('keydown', onKeyDown, true);
++  return () => document.removeEventListener('keydown', onKeyDown, true);
++}
+diff --git a/src/runtime/layer.ts b/src/runtime/layer.ts
+index 4383ab9..1f046e7 100644
+--- a/src/runtime/layer.ts
++++ b/src/runtime/layer.ts
+@@ -1,8 +1,13 @@
+ import { createBootTerminal } from '../components/build/BootTerminal';
+ import { createBuildWindow } from '../components/build/BuildWindow';
+ import { createCommandDock } from '../components/build/CommandDock';
++import type { DockAction } from '../components/build/CommandDock';
++import { createFooterBuild } from '../components/build/FooterBuild';
+ import { createPendingOutline } from '../components/build/PendingOutline';
++import type { Speed } from '../scripts/build-mode';
+ import { buildStrings } from '../strings';
++import type { Clock } from './clock';
++import { doneCollapsed, hintPulsing, skipHeld } from './controls-timing';
+ import {
+   BOOT_NAV_AT_MS,
+   bootLogCount,
+@@ -24,9 +29,29 @@ export interface BuildLayer {
+   onState(id: SectionId, state: SectionState): void;
+   onTick(id: SectionId, t: number, dt: number): void;
+   onAllDone(): void;
++  setSpeed(speed: Speed): void;
++  setQueue(position: number | null, total: number): void;
+   destroy(): void;
+ }
+ 
++export interface LayerOptions {
++  sections: HTMLElement[];
++  timelines: Timeline[];
++  clock: Clock;
++  speed: Speed;
++  actions: {
++    skip(): void;
++    cycleSpeed(): void;
++    replay(): void;
++    play(): void;
++  };
++  ready?: 'reduced' | 'instant';
++}
++
++type Ui = 'none' | 'hint' | 'hold' | 'collapse';
++
++const RUNNING: SectionState[] = ['command', 'window', 'building', 'closing'];
++
+ interface Box {
+   x: number;
+   y: number;
+@@ -49,23 +74,56 @@ interface Slot {
+   counted: boolean;
+ }
+ 
+-export function createBuildLayer(options: {
+-  sections: HTMLElement[];
+-  timelines: Timeline[];
+-}): BuildLayer {
+-  const { sections, timelines } = options;
++export function createBuildLayer(options: LayerOptions): BuildLayer {
++  const { sections, timelines, actions } = options;
+   const root = document.createElement('div');
+   root.className = 'sp-build-layer';
+   root.setAttribute('data-build-layer', '');
+-  root.setAttribute('aria-hidden', 'true');
+   const page = document.querySelector('.sp-page');
+   if (page) page.after(root);
+   else document.body.append(root);
+ 
+   const html = document.documentElement;
+   const nav = document.querySelector<HTMLElement>('.sp-nav');
+-  const dock = createCommandDock();
++  let lastDoneText = '';
++  const dock = createCommandDock({
++    speed: options.speed,
++    onAction(action: DockAction) {
++      if (action === 'skip') actions.skip();
++      else if (action === 'speed') actions.cycleSpeed();
++      else if (action === 'replay') actions.replay();
++      else if (action === 'play') actions.play();
++      else reopen();
++    },
++  });
+   root.append(dock.el);
++  const footerSlot = document.querySelector<HTMLElement>('[data-footer-build]');
++  const footer = footerSlot
++    ? createFooterBuild(footerSlot, actions.replay)
++    : null;
++
++  if (options.ready) {
++    dock.setOpacity(1);
++    if (options.ready === 'reduced') {
++      dock.setState('reduced');
++    } else {
++      dock.setState('idle');
++      dock.setIdle(timelines.length, timelines.length, false);
++    }
++    footer?.setSummary(null);
++    return {
++      root,
++      onState() {},
++      onTick() {},
++      onAllDone() {},
++      setSpeed: dock.setSpeed,
++      setQueue() {},
++      destroy() {
++        footer?.clear();
++        root.remove();
++      },
++    };
++  }
+ 
+   const slots = new Map<SectionId, Slot>();
+   timelines.forEach((timeline, i) => {
+@@ -95,6 +153,59 @@ export function createBuildLayer(options: {
+   let navState: 'hidden' | 'sliding' | 'in' = 'hidden';
+   let navProgress = -1;
+   let destroyed = false;
++  let queueText: string | null = null;
++  let startedId: SectionId | null = null;
++  let uiMode: Ui = 'none';
++  let uiMs = 0;
++  let lastUiNow = 0;
++  let cancelUi: (() => void) | null = null;
++
++  function reopen() {
++    dock.setState('done');
++    dock.setDone(lastDoneText);
++    armUi('collapse');
++  }
++
++  function onUiFrame(now: number) {
++    const dt = Math.min(Math.max(now - lastUiNow, 0), 50);
++    lastUiNow = now;
++    if (document.visibilityState === 'hidden') return;
++    uiMs += dt;
++    if (uiMode === 'hint') {
++      dock.setPulse(hintPulsing(uiMs));
++    } else if (uiMode === 'hold') {
++      if (!skipHeld(uiMs)) {
++        dock.setState('idle');
++        dock.setIdle(doneCount, timelines.length);
++        armUi('hint');
++      }
++    } else if (uiMode === 'collapse') {
++      if (doneCollapsed(uiMs)) {
++        dock.setState('collapsed');
++        armUi('none');
++      }
++    }
++  }
++
++  function armUi(mode: Ui) {
++    uiMode = mode;
++    uiMs = 0;
++    dock.setPulse(false);
++    if (mode === 'none') {
++      cancelUi?.();
++      cancelUi = null;
++    } else if (!cancelUi) {
++      lastUiNow = options.clock.now();
++      cancelUi = options.clock.onFrame(onUiFrame);
++    }
++  }
++
++  const onScroll = () => {
++    if (uiMode !== 'hint') return;
++    uiMs = 0;
++    dock.setPulse(false);
++  };
++  window.addEventListener('scroll', onScroll, { passive: true });
+ 
+   const boxOf = (el: HTMLElement): Box => {
+     const r = el.getBoundingClientRect();
+@@ -128,7 +239,11 @@ export function createBuildLayer(options: {
+ 
+   const ensureWindow = (slot: Slot): Win => {
+     if (slot.win) return slot.win;
+-    const win = createBuildWindow(slot.timeline.file, slot.timeline.section);
++    const win = createBuildWindow(
++      slot.timeline.file,
++      slot.timeline.section,
++      actions.skip,
++    );
+     slot.win = win;
+     root.append(win.el);
+     const box = boxOf(slot.section);
+@@ -168,7 +283,7 @@ export function createBuildLayer(options: {
+ 
+   const fileName = (file: string) => file.replace(/\.[^.]+$/, '');
+ 
+-  const finishSlot = (slot: Slot) => {
++  const finishSlot = (slot: Slot, wasRunning: boolean, skipped: boolean) => {
+     slot.win?.el.remove();
+     slot.win = null;
+     slot.outline?.el.remove();
+@@ -179,10 +294,22 @@ export function createBuildLayer(options: {
+       slot.counted = true;
+       doneCount++;
+     }
+-    dock.setState('idle');
+     dock.setLog(null);
+     dock.setOpacity(1);
++    if (wasRunning && skipped) {
++      dock.setState('created');
++      dock.setCreated(
++        buildStrings.created(
++          buildStrings.sectionLabels[slot.timeline.section],
++          formatSeconds(slot.elapsed),
++        ),
++      );
++      armUi('hold');
++      return;
++    }
++    dock.setState('idle');
+     dock.setIdle(doneCount, timelines.length);
++    armUi('hint');
+   };
+ 
+   return {
+@@ -194,6 +321,10 @@ export function createBuildLayer(options: {
+       const previous = slot.state;
+       slot.state = state;
+       slot.outline?.setVisible(state === 'pending' || state === 'queued');
++      if (state === 'command') {
++        startedId = id;
++        armUi('none');
++      }
+       if (state === 'command' && id === heroId && !boot && !bootDone) {
+         boot = createBootTerminal();
+         root.append(boot.el);
+@@ -213,7 +344,9 @@ export function createBuildLayer(options: {
+           ),
+         );
+       }
+-      if (state === 'done' || state === 'skipped') finishSlot(slot);
++      if (state === 'done' || state === 'skipped') {
++        finishSlot(slot, RUNNING.includes(previous), state === 'skipped');
++      }
+     },
+     onTick(id, t, dt) {
+       if (destroyed) return;
+@@ -240,15 +373,21 @@ export function createBuildLayer(options: {
+             if (!foldRect) foldRect = dock.getRect();
+             boot.setFold(fold, foldRect);
+             dock.setState('building');
+-            dock.setBuilding(fileName(tl.file), spinnerFrame(loopMs));
++            if (queueText !== null) dock.setQueued(queueText);
++            else dock.setBuilding(fileName(tl.file), spinnerFrame(loopMs));
+             dock.setOpacity(fold);
+             if (fold >= 1) removeBoot();
+           }
+         } else if (t >= tl.windowEnd && slot.state !== 'closing') {
+-          dock.setBuilding(fileName(tl.file), spinnerFrame(loopMs));
++          if (queueText !== null) dock.setQueued(queueText);
++          else dock.setBuilding(fileName(tl.file), spinnerFrame(loopMs));
+         }
+       } else if (slot.state !== 'closing') {
+-        if (t < tl.windowEnd) {
++        if (queueText !== null) {
++          dock.setState('building');
++          dock.setLog(null);
++          dock.setQueued(queueText);
++        } else if (t < tl.windowEnd) {
+           dock.setState('typing');
+           dock.setCommand(tl.command, typedChars(t, tl.command), true);
+           dock.setLog(t >= enterAt ? buildStrings.readingFile(tl.file) : null);
+@@ -284,13 +423,38 @@ export function createBuildLayer(options: {
+       if (destroyed) return;
+       let total = 0;
+       for (const slot of slots.values()) total += slot.elapsed;
++      const seconds = formatSeconds(total, 1);
++      lastDoneText = buildStrings.complete(timelines.length, seconds);
+       dock.setState('done');
+-      dock.setDone(
+-        buildStrings.complete(timelines.length, formatSeconds(total, 1)),
+-      );
++      dock.setDone(lastDoneText);
++      armUi('collapse');
++      footer?.setSummary(seconds);
++    },
++    setSpeed(next) {
++      dock.setSpeed(next);
++    },
++    setQueue(position, total) {
++      queueText =
++        position === null ? null : buildStrings.queued(position, total);
++      // Render at once so the dock never shows one frame of stale typing; the
++      // hero's dock stays hidden until its boot folds into it.
++      if (
++        queueText !== null &&
++        startedId !== null &&
++        startedId !== heroId &&
++        slots.get(startedId)?.state !== 'closing'
++      ) {
++        dock.setState('building');
++        dock.setLog(null);
++        dock.setQueued(queueText);
++      }
+     },
+     destroy() {
+       destroyed = true;
++      cancelUi?.();
++      cancelUi = null;
++      window.removeEventListener('scroll', onScroll);
++      footer?.clear();
+       observer.disconnect();
+       root.remove();
+       if (nav) {
+diff --git a/src/runtime/main.ts b/src/runtime/main.ts
+index 1a2c2ef..c83d29a 100644
+--- a/src/runtime/main.ts
++++ b/src/runtime/main.ts
+@@ -1,26 +1,64 @@
+-import { parseSpeed } from '../scripts/build-mode';
+-import { currentSection, progress, speed, status } from '../stores/build';
++import { parseSpeed, persistSpeed } from '../scripts/build-mode';
++import type { Speed } from '../scripts/build-mode';
++import {
++  currentSection,
++  progress,
++  queue,
++  speed,
++  status,
++} from '../stores/build';
++import { setControls } from './api';
++import type { Controls } from './api';
+ import { realClock } from './clock';
++import type { Clock } from './clock';
++import { nextSpeed } from './controls-timing';
+ import { createEffects } from './effects';
++import { observeFocus } from './focus-rule';
++import { bindKeys } from './keys';
+ import { createBuildLayer } from './layer';
++import type { BuildLayer } from './layer';
++import { observeWidth } from './resize';
+ import { createScheduler } from './scheduler';
++import type { Scheduler } from './scheduler';
+ import { observeSections } from './triggers';
+ import type { SectionId, Timeline } from './types';
+ 
+ const IDS: SectionId[] = ['top', 'about', 'projects', 'stack', 'contact'];
+ 
+ const root = document.documentElement;
+-let cancelFrame: (() => void) | null = null;
+-let stopObserver: (() => void) | null = null;
+-let destroyLayer: (() => void) | null = null;
+-let destroyEffects: (() => void) | null = null;
+ const sections: HTMLElement[] = [];
++const cancels = new Set<() => void>();
++let timelines: Timeline[] = [];
++let layer: BuildLayer | null = null;
++let effects: ReturnType<typeof createEffects> | null = null;
++let scheduler: Scheduler | null = null;
++let stopObserver: (() => void) | null = null;
++let unbindFocus: (() => void) | null = null;
++let unbindWidth: (() => void) | null = null;
++let unbindKeys: (() => void) | null = null;
++let ready = false;
+ 
+-function reveal(): void {
+-  cancelFrame?.();
++function endShow(): void {
++  for (const cancel of [...cancels]) cancel();
++  cancels.clear();
++  scheduler?.destroy();
+   stopObserver?.();
+-  destroyEffects?.();
+-  destroyLayer?.();
++  unbindFocus?.();
++  unbindWidth?.();
++  effects?.destroy();
++  layer?.destroy();
++  scheduler = null;
++  stopObserver = null;
++  unbindFocus = null;
++  unbindWidth = null;
++  effects = null;
++  layer = null;
++}
++
++function reveal(): void {
++  unbindKeys?.();
++  unbindKeys = null;
++  endShow();
+   for (const s of sections) s.setAttribute('data-build-state', 'done');
+   root.removeAttribute('data-build-mode');
+   status.set('failed');
+@@ -37,13 +75,133 @@ function guard<A extends unknown[]>(fn: (...args: A) => void) {
+   };
+ }
+ 
++const clock: Clock = {
++  now: realClock.now,
++  onFrame(cb) {
++    const stop = realClock.onFrame(guard(cb));
++    const cancel = () => {
++      cancels.delete(cancel);
++      stop();
++    };
++    cancels.add(cancel);
++    return cancel;
++  },
++};
++
++const controls: Controls = {
++  skip: () => scheduler?.skip(),
++  runAll: () => scheduler?.runAll(),
++  setSpeed(next) {
++    speed.set(next);
++    persistSpeed(next);
++    scheduler?.setSpeed(next);
++  },
++  cycleSpeed() {
++    controls.setSpeed(nextSpeed(speed.get()));
++  },
++  replay() {
++    replayShow();
++  },
++  play() {
++    replayShow();
++  },
++};
++
++function replayShow(): void {
++  const current = speed.get();
++  // Replay and Play build always play at normal speed from the boot.
++  const startSpeed: Speed = ready || current === 'inf' ? '1' : current;
++  if (startSpeed !== current) persistSpeed(startSpeed);
++  beginShow(startSpeed, { scrollTop: true });
++}
++
++const actions = {
++  skip: guard(() => controls.skip()),
++  cycleSpeed: guard(() => controls.cycleSpeed()),
++  replay: guard(() => controls.replay()),
++  play: guard(() => controls.play()),
++};
++
++function beginShow(startSpeed: Speed, options: { scrollTop: boolean }): void {
++  endShow();
++  ready = false;
++  for (const s of sections) s.setAttribute('data-build-state', 'pending');
++  root.setAttribute('data-build-mode', 'pending');
++  status.set('idle');
++  progress.set(0);
++  currentSection.set(null);
++  queue.set(null);
++  speed.set(startSpeed);
++  // base.css sets no scroll-behavior, so this jump is instant.
++  if (options.scrollTop) window.scrollTo(0, 0);
++
++  const showLayer = createBuildLayer({
++    sections,
++    timelines,
++    clock,
++    speed: startSpeed,
++    actions,
++  });
++  layer = showLayer;
++  const showEffects = createEffects({
++    sections,
++    timelines,
++    root: showLayer.root,
++  });
++  effects = showEffects;
++  const byId = new Map(sections.map((s) => [s.id, s]));
++  const showScheduler = createScheduler({
++    clock,
++    timelines,
++    speed: startSpeed,
++    host: {
++      onState: guard((id, state) => {
++        showEffects.onState(id, state);
++        byId.get(id)?.setAttribute('data-build-state', state);
++        showLayer.onState(id, state);
++        if (state !== 'pending' && status.get() !== 'building') {
++          status.set('building');
++        }
++      }),
++      onProgress: guard((section, fraction) => {
++        currentSection.set(section);
++        progress.set(fraction);
++      }),
++      onIdle: guard(() => status.set('idle')),
++      onAllDone: guard(() => {
++        showLayer.onAllDone();
++        status.set('done');
++        root.removeAttribute('data-build-mode');
++      }),
++      onTick: guard((id, t, dt) => {
++        showEffects.onTick(id, t);
++        showLayer.onTick(id, t, dt);
++      }),
++      onQueue: guard((position, total) => {
++        queue.set(position === null ? null : { position, total });
++        showLayer.setQueue(position, total);
++      }),
++      isHidden: () => document.visibilityState === 'hidden',
++    },
++  });
++  scheduler = showScheduler;
++  stopObserver = observeSections(sections, guard(showScheduler.trigger));
++  unbindFocus = observeFocus({
++    sections,
++    heroId: 'top',
++    finishThrough: guard(showScheduler.finishThrough),
++  });
++  unbindWidth = observeWidth(guard(showScheduler.skip));
++  root.setAttribute('data-build-started', '');
++}
++
+ function start(): void {
+   for (const id of IDS) {
+     const el = document.getElementById(id);
+     if (!el) throw new Error(`section #${id} is missing`);
+     sections.push(el);
+   }
+-  const timelines = sections.map(
++  timelines = sections.map(
+     (s) => JSON.parse(s.dataset.build ?? '') as Timeline,
+   );
+   const startSpeed = parseSpeed(root.dataset.buildSpeed);
+@@ -58,7 +216,20 @@ function start(): void {
+     root.setAttribute('data-build-progress', String(v)),
+   );
+   status.subscribe((v) => root.setAttribute('data-build-status', v));
+-  speed.subscribe((v) => root.setAttribute('data-build-speed', v));
++  speed.subscribe((v) => {
++    root.setAttribute('data-build-speed', v);
++    layer?.setSpeed(v);
++  });
++  queue.subscribe((v) => {
++    if (v === null) root.removeAttribute('data-build-queue');
++    else root.setAttribute('data-build-queue', `${v.position}/${v.total}`);
++  });
++
++  setControls(controls);
++  unbindKeys = bindKeys({
++    skip: guard(() => controls.skip()),
++    runAll: guard(() => controls.runAll()),
++  });
+ 
+   if (root.dataset.buildMode === 'instant') {
+     for (const s of sections) s.setAttribute('data-build-state', 'done');
+@@ -67,53 +238,21 @@ function start(): void {
+     // data-build-mode stays "instant": the pending CSS never matches it, and
+     // AC-A5 has <html> carry the resolved mode.
+     root.setAttribute('data-build-started', '');
++    ready = true;
++    layer = createBuildLayer({
++      sections,
++      timelines,
++      clock,
++      speed: startSpeed,
++      actions,
++      ready: matchMedia('(prefers-reduced-motion: reduce)').matches
++        ? 'reduced'
++        : 'instant',
++    });
+     return;
+   }
+ 
+-  const layer = createBuildLayer({ sections, timelines });
+-  destroyLayer = layer.destroy;
+-  const effects = createEffects({ sections, timelines, root: layer.root });
+-  destroyEffects = effects.destroy;
+-  const byId = new Map(sections.map((s) => [s.id, s]));
+-  const scheduler = createScheduler({
+-    clock: {
+-      now: realClock.now,
+-      onFrame(cb) {
+-        const cancel = realClock.onFrame(guard(cb));
+-        cancelFrame = cancel;
+-        return cancel;
+-      },
+-    },
+-    timelines,
+-    speed: startSpeed,
+-    host: {
+-      onState: guard((id, state) => {
+-        effects.onState(id, state);
+-        byId.get(id)?.setAttribute('data-build-state', state);
+-        layer.onState(id, state);
+-        if (state !== 'pending' && status.get() !== 'building') {
+-          status.set('building');
+-        }
+-      }),
+-      onProgress: guard((section, fraction) => {
+-        currentSection.set(section);
+-        progress.set(fraction);
+-      }),
+-      onIdle: guard(() => status.set('idle')),
+-      onAllDone: guard(() => {
+-        layer.onAllDone();
+-        status.set('done');
+-        root.removeAttribute('data-build-mode');
+-      }),
+-      onTick: guard((id, t, dt) => {
+-        effects.onTick(id, t);
+-        layer.onTick(id, t, dt);
+-      }),
+-      isHidden: () => document.visibilityState === 'hidden',
+-    },
+-  });
+-  stopObserver = observeSections(sections, guard(scheduler.trigger));
+-  root.setAttribute('data-build-started', '');
++  beginShow(startSpeed, { scrollTop: false });
+ }
+ 
+ guard(start)();
+diff --git a/src/runtime/resize.ts b/src/runtime/resize.ts
+new file mode 100644
+index 0000000..fb2c313
+--- /dev/null
++++ b/src/runtime/resize.ts
+@@ -0,0 +1,13 @@
++import { isWidthChange } from './controls-timing';
++
++export function observeWidth(onChange: () => void): () => void {
++  let previous = window.innerWidth;
++  const onResize = () => {
++    const next = window.innerWidth;
++    if (!isWidthChange(previous, next)) return;
++    previous = next;
++    onChange();
++  };
++  window.addEventListener('resize', onResize);
++  return () => window.removeEventListener('resize', onResize);
++}
+diff --git a/src/runtime/scheduler.ts b/src/runtime/scheduler.ts
+index e1bde27..c7dd5d2 100644
+--- a/src/runtime/scheduler.ts
++++ b/src/runtime/scheduler.ts
+@@ -12,6 +12,7 @@ export interface SchedulerHost {
+   onAllDone(): void;
+   isHidden(): boolean;
+   onTick?(id: SectionId, t: number, dt: number): void;
++  onQueue?(position: number | null, total: number): void;
+ }
+ 
+ export interface SchedulerOptions {
+@@ -25,6 +26,9 @@ export interface Scheduler {
+   trigger(id: SectionId): void;
+   finish(id: SectionId): void;
+   setSpeed(speed: Speed): void;
++  skip(): void;
++  runAll(): void;
++  finishThrough(id: SectionId): void;
+   destroy(): void;
+ }
+ 
+@@ -57,6 +61,7 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+   let lastNow = 0;
+   let lastPublished = '';
+   let allDoneFired = false;
++  let lastQueue = 'null';
+ 
+   const indexOf = (id: SectionId) =>
+     entries.findIndex((e) => e.timeline.section === id);
+@@ -89,6 +94,16 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+     }
+   };
+ 
++  const publishQueue = () => {
++    const position =
++      active >= 0 && entries[active + 1]?.state === 'queued'
++        ? active + 1
++        : null;
++    if (String(position) === lastQueue) return;
++    lastQueue = String(position);
++    host.onQueue?.(position, entries.length);
++  };
++
+   const startNext = () => {
+     const next = entries.findIndex((e) => e.state === 'queued');
+     if (next === -1) {
+@@ -97,6 +112,7 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+       publish(null, 0);
+       host.onIdle();
+       checkAllDone();
++      publishQueue();
+       return;
+     }
+     active = next;
+@@ -109,6 +125,7 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+       lastNow = clock.now();
+       unsubscribe = clock.onFrame(onFrame);
+     }
++    publishQueue();
+   };
+ 
+   const complete = (entry: Entry) => {
+@@ -141,17 +158,18 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+     host.onTick?.(entry.timeline.section, entry.t, dt);
+   }
+ 
+-  const finishUpTo = (index: number) => {
++  const finishUpTo = (index: number, final: 'done' | 'skipped' = 'done') => {
+     for (let i = 0; i <= index; i++) {
+       const entry = entries[i];
+       if (!isFinished(entry)) {
+         const wasActive = i === active;
+-        setState(entry, 'done');
++        setState(entry, final);
+         if (wasActive) active = -1;
+       }
+     }
+     if (active === -1) startNext();
+     else checkAllDone();
++    publishQueue();
+   };
+ 
+   return {
+@@ -166,6 +184,7 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+         if (entries[i].state === 'pending') setState(entries[i], 'queued');
+       }
+       if (active === -1) startNext();
++      publishQueue();
+     },
+     finish(id) {
+       const index = indexOf(id);
+@@ -178,15 +197,40 @@ export function createScheduler(options: SchedulerOptions): Scheduler {
+       } else {
+         checkAllDone();
+       }
++      publishQueue();
+     },
+     setSpeed(next) {
+       speed = next;
+-      if (next !== 'inf') return;
++      if (next !== 'inf') {
++        publishQueue();
++        return;
++      }
+       let last = active;
+       entries.forEach((e, i) => {
+         if (e.state === 'queued') last = Math.max(last, i);
+       });
+       if (last >= 0) finishUpTo(last);
++      publishQueue();
++    },
++    skip() {
++      if (active === -1) return;
++      const entry = entries[active];
++      setState(entry, 'skipped');
++      active = -1;
++      startNext();
++      publishQueue();
++    },
++    runAll() {
++      if (entries.every(isFinished)) return;
++      finishUpTo(entries.length - 1, 'skipped');
++      publishQueue();
++    },
++    finishThrough(id) {
++      const index = indexOf(id);
++      if (index === -1) return;
++      if (entries.slice(0, index + 1).every(isFinished)) return;
++      finishUpTo(index, 'skipped');
++      publishQueue();
+     },
+     destroy() {
+       stop();
+diff --git a/src/scripts/build-mode.ts b/src/scripts/build-mode.ts
+index 49d820e..5c927a5 100644
+--- a/src/scripts/build-mode.ts
++++ b/src/scripts/build-mode.ts
+@@ -12,3 +12,11 @@ export function parseSpeed(raw: string | null | undefined): Speed {
+ export function resolveMode(reducedMotion: boolean, speed: Speed): BuildMode {
+   return reducedMotion || speed === 'inf' ? 'instant' : 'pending';
+ }
++
++export function persistSpeed(next: Speed): void {
++  try {
++    localStorage.setItem(SPEED_STORAGE_KEY, next);
++  } catch {
++    // Storage may be blocked; the in-page speed still changes.
++  }
++}
+diff --git a/src/stores/build.ts b/src/stores/build.ts
+index 1a22940..f9fc731 100644
+--- a/src/stores/build.ts
++++ b/src/stores/build.ts
+@@ -8,3 +8,4 @@ export const currentSection = atom<SectionId | null>(null);
+ export const progress = atom<number>(0);
+ export const status = atom<BuildStatus>('idle');
+ export const speed = atom<Speed>('1');
++export const queue = atom<{ position: number; total: number } | null>(null);
+diff --git a/src/strings.ts b/src/strings.ts
+index f3619e7..4439577 100644
+--- a/src/strings.ts
++++ b/src/strings.ts
+@@ -1,3 +1,5 @@
++import type { Speed } from './scripts/build-mode';
++
+ export const strings = {
+   skipLink: 'Skip to content',
+   hero: {
+@@ -61,6 +63,24 @@ export const strings = {
+ } as const;
+ 
+ export const buildStrings = {
++  skip: '» Skip',
++  skipLabel: "Skip this section's build",
++  replay: '↻ Replay',
++  replayLabel: 'Replay the build',
++  play: '▶ Play build',
++  playLabel: 'Play the build animation',
++  expandLabel: 'Show build status',
++  groupLabel: 'Site build',
++  queued: (position: number, total: number) => `queued ${position}/${total}`,
++  footerBuilt: (seconds: string) => `Built live in ${seconds}s · `,
++  speedGlyph: (speed: Speed) =>
++    speed === 'inf' ? '∞' : speed === '2' ? '2×' : '1×',
++  speedLabel: (speed: Speed) =>
++    speed === 'inf'
++      ? 'Build speed: instant. Switch to 1x'
++      : speed === '2'
++        ? 'Build speed: 2x. Switch to instant'
++        : 'Build speed: 1x. Switch to 2x',
+   initializing: 'Initializing application...',
+   openingFile: (file: string) => `Opening ${file}...`,
+   readingFile: (file: string) => `Reading ${file}...`,
+diff --git a/src/styles/build-layer.css b/src/styles/build-layer.css
+index 414d1c7..3b4c1f1 100644
+--- a/src/styles/build-layer.css
++++ b/src/styles/build-layer.css
+@@ -181,6 +181,68 @@
+   white-space: nowrap;
+ }
+ 
++.sp-dock-controls {
++  display: flex;
++  align-items: center;
++  gap: var(--space-2);
++  pointer-events: auto;
++}
++
++.sp-dock-btn {
++  appearance: none;
++  background: transparent;
++  border: 0;
++  padding: var(--space-1) var(--space-2);
++  border-radius: var(--radius-full);
++  font-family: var(--font-mono);
++  font-size: var(--mono-xs);
++  color: var(--fg-muted);
++  cursor: pointer;
++  white-space: nowrap;
++  pointer-events: auto;
++}
++
++.sp-dock-btn:hover {
++  color: var(--fg);
++}
++
++.sp-dock-btn[hidden] {
++  display: none;
++}
++
++.sp-dock[data-state='collapsed'] {
++  left: auto;
++  right: max(var(--space-6), env(safe-area-inset-right));
++  margin-inline: 0;
++  width: var(--dock-height);
++}
++
++.sp-dock[data-state='collapsed'] .sp-dock-pill {
++  padding: 0;
++  justify-content: center;
++}
++
++.sp-dock[data-state='collapsed'] .sp-dock-status,
++.sp-dock[data-state='collapsed'] .sp-dock-hint {
++  display: none;
++}
++
++.sp-dock-hint[data-pulse] {
++  animation: sp-hint-pulse 1.6s ease-in-out infinite;
++}
++
++@keyframes sp-hint-pulse {
++  0% {
++    opacity: 1;
++  }
++  50% {
++    opacity: 0.4;
++  }
++  100% {
++    opacity: 1;
++  }
++}
++
+ .sp-dock-log {
+   position: absolute;
+   bottom: 100%;
+@@ -197,6 +259,9 @@
+   border-radius: var(--radius-full);
+   font-family: var(--font-mono);
+   color: var(--fg);
++  pointer-events: auto;
++  background: transparent;
++  border: 0;
+ }
+ 
+ /* Build window */
+@@ -407,6 +472,10 @@
+   .sp-skel-block::after {
+     animation: none;
+   }
++
++  .sp-dock-hint[data-pulse] {
++    animation: none;
++  }
+ }
+ 
+ @media (prefers-reduced-transparency: reduce) {
+@@ -436,4 +505,8 @@
+   .sp-dock-log {
+     display: none;
+   }
++
++  .sp-dock-btn[data-dock-action='speed'] {
++    display: none;
++  }
+ }

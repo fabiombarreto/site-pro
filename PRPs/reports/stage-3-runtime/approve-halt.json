@@ -1,0 +1,18 @@
+{
+  "pr": 2,
+  "merge_commit": "b4271cb13cbf07fdd59804cde14c7ea4553bee7e",
+  "merged_at": "2026-11-09T19:18:17Z",
+  "steps_attempted": ["worktree_remove", "branch_delete_local", "branch_delete_remote", "worktree_prune"],
+  "steps_succeeded": ["branch_delete_local", "worktree_prune"],
+  "step_failed": "worktree_remove",
+  "error": "worktree_remove: git deregistered the worktree but failed to delete 'C:/repos/site-pro/.worktrees/stage-3-runtime': Directory not empty. A leftover `astro preview --host 127.0.0.1 --port 4399` (pnpm-native PID 34156 -> cmd PID 35624 -> node PID 33876, started 2026-11-09 09:56 by a test agent of this run) holds files under its node_modules. Stopping it was refused by the session's permission classifier. branch_delete_remote: `git push origin --delete feature/stage-3-runtime` was refused by the session's permission classifier (Git Destructive); the remote branch still exists and is fully merged into main.",
+  "manual_recovery_steps": [
+    "Check: git worktree list",
+    "Check: git branch --list feature/stage-3-runtime",
+    "Check: git ls-remote --heads origin feature/stage-3-runtime",
+    "Stop the leftover preview: taskkill /PID 34156 /T /F",
+    "Delete the leftover folder (no longer a registered worktree, gitignored): Remove-Item -Recurse -Force C:\\repos\\site-pro\\.worktrees\\stage-3-runtime",
+    "If remote branch still present: git push origin --delete feature/stage-3-runtime",
+    "If stale worktree refs: git worktree prune"
+  ]
+}

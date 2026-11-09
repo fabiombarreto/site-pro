@@ -1,0 +1,36 @@
+{
+  "attempt": 1,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [
+    "docs/02-experience.md",
+    "docs/04-animations.md",
+    "docs/06-architecture.md",
+    "docs/api-reference.md",
+    "docs/context/architecture.md",
+    "docs/decisions.md",
+    "docs/domain/areas/build.md",
+    "src/components/build/BuildWindow.ts",
+    "src/components/build/CommandDock.ts",
+    "src/components/build/FooterBuild.ts",
+    "src/components/page/Footer.css",
+    "src/runtime/api.ts",
+    "src/runtime/controls-timing.ts",
+    "src/runtime/focus-rule.ts",
+    "src/runtime/keys.ts",
+    "src/runtime/layer.ts",
+    "src/runtime/main.ts",
+    "src/runtime/resize.ts",
+    "src/runtime/scheduler.ts",
+    "src/scripts/build-mode.ts",
+    "src/stores/build.ts",
+    "src/strings.ts",
+    "src/styles/build-layer.css"
+  ],
+  "validation": {
+    "level_1": "PASS",
+    "level_2": "PASS",
+    "level_3": "PASS"
+  },
+  "validation_notes": "L1 lint, format:check, astro check 0/0/0, check:tokens, check:privacy; L2 vitest 390/390, build, check:budgets (runtime 12.1/18, critical 12.8/20, CSS 7.4/25 KB); L3 scenarios A-E PASS on preview() :4399 — A, C and D run as parts split at the plan check boundaries because the full blocks hit a bash heredoc parse error (shell tool), check code unchanged. Implementer fixed a one-frame stale dock text on turbo queue change (layer.ts setQueue). pnpm test:e2e not run per the plan; Stage 2/3 specs that assume an aria-hidden dock are expected to need the test pair.",
+  "base_commit": "f113eca29c153c411974e96619213a2e709f42b9"
+}

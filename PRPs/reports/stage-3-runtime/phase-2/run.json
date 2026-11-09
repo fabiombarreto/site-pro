@@ -1,0 +1,35 @@
+{
+  "run_id": "5fe991e7-ed7d-492f-b8ed-fdedc1f5ddb3",
+  "feature": "stage-3-runtime",
+  "started_at": "2026-11-08T17:43:37Z",
+  "ended_at": "2026-11-08T17:45:17Z",
+  "elapsed_ms": 124665,
+  "max_test_retries": 3,
+  "max_test_minutes": 30,
+  "attempts": [
+    {
+      "n": 1,
+      "verdict": "GREEN",
+      "record": "attempts/1/record.json",
+      "archived_record": "phase-2/test-attempts/1/record.json"
+    }
+  ],
+  "outcome": "GREEN",
+  "phase": 2,
+  "time_breakdown": {
+    "attempt_1_suite_ms": 124665
+  },
+  "tdd_mode": false,
+  "secrets_redacted": {
+    "count": 0,
+    "categories": {
+      "env_names": 0,
+      "url_values": 0,
+      "regex_matches": 0
+    }
+  },
+  "totals": {
+    "unit": "347/347",
+    "e2e": "184/184"
+  }
+}

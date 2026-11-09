@@ -1,0 +1,70 @@
+✓ Lockfile passes supply-chain policies (verified 2d ago)
+Lockfile is up to date, resolution step is skipped
+Update available! 12.16.1 → 12.18.0.
+Changelog: https://pnpm.io/v/12.18.0
+To update, run: Invoke-WebRequest https://get.pnpm.io/install.ps1 -UseBasicParsing | Invoke-Expression
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: C:\Users\Fabio\AppData\Local\pnpm\store\v11
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 94, reused 94, downloaded 0, added 83
+Progress: resolved 153, reused 153, downloaded 0, added 142
+Progress: resolved 198, reused 198, downloaded 0, added 187
+Progress: resolved 238, reused 238, downloaded 0, added 227
+Progress: resolved 323, reused 323, downloaded 0, added 312
+Progress: resolved 368, reused 368, downloaded 0, added 357
+Progress: resolved 397, reused 397, downloaded 0, added 386
+Progress: resolved 445, reused 445, downloaded 0, added 434
+Progress: resolved 497, reused 497, downloaded 0, added 486
+Progress: resolved 532, reused 532, downloaded 0, added 521
+Progress: resolved 555, reused 555, downloaded 0, added 544
+Progress: resolved 591, reused 591, downloaded 0, added 580
+Progress: resolved 603, reused 603, downloaded 0, added 592
+Progress: resolved 628, reused 628, downloaded 0, added 617
+Progress: resolved 667, reused 667, downloaded 0, added 657
+Progress: resolved 701, reused 701, downloaded 0, added 692
+Progress: resolved 734, reused 734, downloaded 0, added 724
+Progress: resolved 769, reused 769, downloaded 0, added 758
+Progress: resolved 799, reused 799, downloaded 0, added 789
+Progress: resolved 849, reused 849, downloaded 0, added 837
+Progress: resolved 883, reused 883, downloaded 0, added 875
+Progress: resolved 886, reused 886, downloaded 0, added 883
+Progress: resolved 893, reused 893, downloaded 0, added 893
+Packages: +893
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 893, reused 893, downloaded 0, added 893, done
+.../sharp@0.34.5/node_modules/sharp install$ node install/check.js || npm run build
+.../esbuild@0.27.7/node_modules/esbuild postinstall$ node install.js
+.../esbuild@0.27.7/node_modules/esbuild postinstall: Done
+.../sharp@0.34.5/node_modules/sharp install: Done
+
+dependencies:
++ @astrojs/react 7.1.2
++ astro 6.4.8
++ react 19.3.1
++ react-dom 19.3.1
+
+devDependencies:
++ @astrojs/check 0.9.12
++ @axe-core/playwright 4.14.0
++ @eslint/js 9.39.5
++ @fontsource-variable/geist 5.3.0
++ @fontsource-variable/jetbrains-mono 5.3.0
++ @lhci/cli 0.16.0
++ @playwright/test 1.64.1
++ @types/node 26.6.6
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ eslint 9.39.5
++ eslint-plugin-astro 1.7.0
++ eslint-plugin-jsx-a11y 6.10.2
++ eslint-plugin-react 7.37.5
++ eslint-plugin-react-hooks 7.1.1
++ globals 17.14.0
++ prettier 3.9.10
++ prettier-plugin-astro 1.1.2
++ typescript 6.0.3
++ typescript-eslint 8.72.1
++ vitest 5.1.0
+
+Done in 33.4s using pnpm v12.16.1

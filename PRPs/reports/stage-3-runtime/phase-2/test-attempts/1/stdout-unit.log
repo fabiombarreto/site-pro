@@ -1,0 +1,38 @@
+
+ RUN  v5.1.0 C:/repos/site-pro/.worktrees/stage-3-runtime
+
+ ✓ tests/unit/content-copy.test.ts (21 tests) 60ms
+ ✓ tests/unit/design-tokens.test.ts (29 tests) 188ms
+stderr | tests/unit/home-href.test.ts > NavBar homeHref > prefixes the brand and the four section links with "/" when set
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+ ✓ tests/unit/verify-build-targets.test.ts (4 tests) 31ms
+stderr | tests/unit/page-navigation.test.ts > NavBar > is a header with the brand linking to the top of the page
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+ ✓ tests/unit/home-href.test.ts (7 tests) 47ms
+ ✓ tests/unit/page-styles.test.ts (36 tests) 39ms
+ ✓ tests/unit/page-navigation.test.ts (11 tests) 66ms
+ ✓ tests/unit/content-schemas.test.ts (25 tests) 32ms
+ ✓ tests/unit/page-content-components.test.ts (22 tests) 37ms
+ ✓ tests/unit/theme-helpers.test.ts (10 tests) 25ms
+ ✓ tests/unit/page-primitives.test.ts (31 tests) 122ms
+ ✓ tests/unit/runtime-scheduler.test.ts (15 tests) 27ms
+ ✓ tests/unit/build-layer-components.test.ts (13 tests) 27ms
+ ✓ tests/unit/runtime-scheduler-tick.test.ts (4 tests) 13ms
+ ✓ tests/unit/scaffold-config.test.ts (21 tests) 21ms
+ ✓ tests/unit/runtime-layer-timing.test.ts (16 tests) 13ms
+ ✓ tests/unit/runtime-compiler.test.ts (21 tests) 16ms
+ ✓ tests/unit/runtime-budget.test.ts (5 tests) 1017ms
+ ✓ tests/unit/runtime-mode-clock.test.ts (19 tests) 9ms
+ ✓ tests/unit/quality-gates.test.ts (37 tests) 2565ms
+
+ Test Files  19 passed (19)
+      Tests  347 passed (347)
+   Start at  14:44:08
+   Duration  2.99s (tests 62%, import 23%, transform 11%, worker 3%)
+
+    Isolate  19 workers spawned · ~403ms startup each (spawn + environment, per file)
+             at least ~293ms faster with isolate: false — reuses workers across files instead of one per file
+
+JUNIT report written to C:/repos/site-pro/PRPs/reports/stage-3-runtime/attempts/1/junit-unit.xml
