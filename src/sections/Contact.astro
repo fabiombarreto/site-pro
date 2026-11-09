@@ -2,7 +2,9 @@
 import type { CollectionEntry } from 'astro:content';
 import { Button } from '../components/page/Button';
 import { SectionHeading } from '../components/page/SectionHeading';
+import { compileScript, serializeTimeline } from '../runtime/compiler';
 import { strings } from '../strings';
+import { contactBuild } from './contact.build';
 import { profileLinks } from './profile-links';
 
 interface Props {
@@ -12,22 +14,26 @@ interface Props {
 const { profile } = Astro.props;
 const links = profileLinks(profile);
 if (!profile.location) throw new Error('profile.location is missing');
+const timeline = compileScript(contactBuild(profile));
 ---
 
 <section
   id="contact"
   aria-labelledby="contact-title"
   class="sp-section sp-contact"
+  data-build={serializeTimeline(timeline)}
 >
   <div class="sp-section-inner">
-    <SectionHeading
-      id="contact-title"
-      eyebrow={strings.sections.contact.eyebrow}
-      title={strings.sections.contact.title}
-      lead={strings.sections.contact.lead}
-    />
+    <div class="sp-build-wrap" data-build-target="heading">
+      <SectionHeading
+        id="contact-title"
+        eyebrow={strings.sections.contact.eyebrow}
+        title={strings.sections.contact.title}
+        lead={strings.sections.contact.lead}
+      />
+    </div>
     <div class="sp-contact-row">
-      <div class="sp-actions">
+      <div class="sp-actions" data-build-target="links">
         <Button variant="primary" icon="github" href={links.github} external>
           {strings.buttons.github}
         </Button>
@@ -40,7 +46,9 @@ if (!profile.location) throw new Error('profile.location is missing');
           {strings.buttons.linkedin}
         </Button>
       </div>
-      <p class="sp-contact-location mono-sm">{profile.location}</p>
+      <p class="sp-contact-location mono-sm" data-build-target="location">
+        {profile.location}
+      </p>
     </div>
   </div>
 </section>

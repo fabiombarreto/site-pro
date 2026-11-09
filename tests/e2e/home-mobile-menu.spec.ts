@@ -2,6 +2,7 @@
 // Also covers the sticky nav states of the same plan (AC-A7).
 import { expect, test } from '@playwright/test';
 import { NAV_LINKS, PHONE, PROFILE, popoverOpen } from './support/home';
+import { useInstantBuild } from './support/runtime';
 
 const OPEN = 'Open the menu';
 
@@ -129,6 +130,9 @@ test.describe('sticky nav', () => {
   test('is sticky, 64px tall, transparent at the top and translucent once scrolled', async ({
     page,
   }) => {
+    // Stage 3 phase 2: on a default real-clock visit the nav slides in with the build,
+    // so the final sticky page is measured in instant mode (the nav is in at once).
+    await useInstantBuild(page);
     await page.goto('/');
     const nav = page.getByRole('banner');
     await expect(nav).toHaveCSS('position', 'sticky');

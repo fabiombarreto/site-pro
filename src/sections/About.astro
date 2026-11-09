@@ -2,7 +2,9 @@
 import type { CollectionEntry } from 'astro:content';
 import { Button } from '../components/page/Button';
 import { SectionHeading } from '../components/page/SectionHeading';
+import { compileScript, serializeTimeline } from '../runtime/compiler';
 import { strings } from '../strings';
+import { aboutBuild } from './about.build';
 import { profileLinks } from './profile-links';
 
 interface Props {
@@ -12,20 +14,30 @@ interface Props {
 const { profile } = Astro.props;
 const links = profileLinks(profile);
 const paragraphs = profile.bio.split('\n\n');
+const timeline = compileScript(aboutBuild(profile));
 ---
 
-<section id="about" aria-labelledby="about-title" class="sp-section">
+<section
+  id="about"
+  aria-labelledby="about-title"
+  class="sp-section"
+  data-build={serializeTimeline(timeline)}
+>
   <div class="sp-section-inner">
-    <SectionHeading
-      id="about-title"
-      eyebrow={strings.sections.about.eyebrow}
-      title={strings.sections.about.title}
-    />
+    <div class="sp-build-wrap" data-build-target="heading">
+      <SectionHeading
+        id="about-title"
+        eyebrow={strings.sections.about.eyebrow}
+        title={strings.sections.about.title}
+      />
+    </div>
     <div class="sp-about-body">
       {paragraphs.map((p) => (
-        <p class="text-lg">{p}</p>
+        <p class="text-lg" data-build-target="text">
+          {p}
+        </p>
       ))}
-      <div class="sp-actions">
+      <div class="sp-actions" data-build-target="links">
         <Button variant="secondary" icon="github" href={links.github} external>
           {strings.buttons.github}
         </Button>

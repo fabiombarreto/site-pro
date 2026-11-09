@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 // AC-10: gzip size budgets measured on what the pages actually load.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { posix, resolve } from 'node:path';
+import { posix, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
 const JS_TOTAL_KB = 90;
+const JS_RUNTIME_KB = 18;
 const JS_CRITICAL_KB = 20;
 const CSS_TOTAL_KB = 25;
 
@@ -33,8 +34,11 @@ function parsePage(html) {
       !/\btype\s*=\s*["']module["']/i.test(m[1]) &&
       !/\b(async|defer)\b/i.test(m[1]);
     const critical = headEnd !== -1 && m.index < headEnd;
-    if (src) page.scripts.push({ src, critical: critical && blocking });
-    else if (m[2].trim()) page.inlineJs.push({ body: m[2], critical });
+    const module = /\btype\s*=\s*["']module["']/i.test(m[1]);
+    if (src) page.scripts.push({ src, critical: critical && blocking, module });
+    else if (m[2].trim()) {
+      page.inlineJs.push({ body: m[2], critical, module });
+    }
   }
   for (const m of html.matchAll(/<link\b[^>]*>/gi)) {
     if (/\brel\s*=\s*["']?stylesheet/i.test(m[0])) {
@@ -46,6 +50,19 @@ function parsePage(html) {
     if (m[1].trim()) page.inlineCss.push(m[1]);
   }
   return page;
+}
+
+// Specifiers of static imports, re-exports and dynamic imports in a JS file.
+function importSpecifiers(text) {
+  const found = [];
+  const patterns = [
+    /\b(?:import|export)\s*(?:[\w$*{},\s]*?\bfrom\s*)?["']([^"']+)["']/g,
+    /\bimport\(\s*["']([^"']+)["']\s*\)/g,
+  ];
+  for (const re of patterns) {
+    for (const m of text.matchAll(re)) found.push(m[1]);
+  }
+  return found;
 }
 
 export function measureBudgets(distDir) {
@@ -76,22 +93,50 @@ export function measureBudgets(distDir) {
     return abs;
   };
 
+  // Every JS file reachable from `entry` through relative or root-absolute
+  // `.js` imports, entry included.
+  const reach = (entry, seen) => {
+    const stack = [entry];
+    while (stack.length > 0) {
+      const abs = stack.pop();
+      if (seen.has(abs)) continue;
+      seen.add(abs);
+      const from = relative(distDir, abs).replace(/\\/g, '/');
+      for (const spec of importSpecifiers(readFileSync(abs, 'utf8'))) {
+        if (!/^(?:\.{1,2}\/|\/(?!\/))/.test(spec)) continue;
+        const path = spec.split(/[?#]/)[0];
+        if (!path.endsWith('.js')) continue;
+        const rel = path.startsWith('/')
+          ? path.slice(1)
+          : posix.join(posix.dirname(from), path);
+        const next = resolve(distDir, rel);
+        if (!existsSync(next)) continue;
+        referenced.add(rel);
+        stack.push(next);
+      }
+    }
+  };
+
+  const infos = [];
   for (const rel of htmlFiles) {
     const page = parsePage(readFileSync(resolve(distDir, rel), 'utf8'));
+    const info = { rel, page, reached: new Set(), entries: [], critical: 0 };
+    infos.push(info);
     let critical = page.inlineJs
       .filter((s) => s.critical)
       .reduce((sum, s) => sum + gz(s.body), 0);
     for (const s of page.scripts) {
       const abs = resolveAsset(s.src, rel);
       if (!abs) continue;
-      jsFiles.add(abs);
+      reach(abs, info.reached);
+      if (s.module) info.entries.push(abs);
       if (s.critical) critical += gz(readFileSync(abs));
     }
     for (const href of page.styles) {
       const abs = resolveAsset(href, rel);
       if (abs) cssFiles.add(abs);
     }
-    maxCritical = Math.max(maxCritical, critical);
+    info.critical = critical;
     maxInlineJs = Math.max(
       maxInlineJs,
       page.inlineJs.reduce((sum, s) => sum + gz(s.body), 0),
@@ -102,10 +147,40 @@ export function measureBudgets(distDir) {
     );
   }
 
+  for (const { reached } of infos) {
+    for (const abs of reached) jsFiles.add(abs);
+  }
+
+  // The runtime is what only the home page loads: its module entries, their
+  // imports and its own inline module bodies.
+  let runtimeBytes = 0;
+  const home = infos.find((i) => i.rel === 'index.html');
+  if (home) {
+    const others = infos.filter((i) => i !== home);
+    const otherFiles = new Set(others.flatMap((i) => [...i.reached]));
+    const otherBodies = new Set(
+      others.flatMap((i) => i.page.inlineJs.map((s) => s.body)),
+    );
+    for (const abs of home.reached) {
+      if (!otherFiles.has(abs)) runtimeBytes += gz(readFileSync(abs));
+    }
+    for (const abs of home.entries) {
+      if (!otherFiles.has(abs)) home.critical += gz(readFileSync(abs));
+    }
+    for (const s of home.page.inlineJs) {
+      if (s.module && !otherBodies.has(s.body)) {
+        runtimeBytes += gz(s.body);
+        if (!s.critical) home.critical += gz(s.body);
+      }
+    }
+  }
+  for (const info of infos) maxCritical = Math.max(maxCritical, info.critical);
+
   const sizeOf = (set) =>
     [...set].reduce((sum, abs) => sum + gz(readFileSync(abs)), 0);
   const jsTotal = kb(sizeOf(jsFiles) + maxInlineJs);
   const jsCritical = kb(maxCritical);
+  const jsRuntime = kb(runtimeBytes);
   const cssTotal = kb(sizeOf(cssFiles) + maxInlineCss);
 
   const assets = files.filter((f) => /\.(js|css)$/.test(f));
@@ -122,6 +197,11 @@ export function measureBudgets(distDir) {
       `JS total ${jsTotal.toFixed(1)} KB exceeds ${JS_TOTAL_KB} KB`,
     );
   }
+  if (jsRuntime > JS_RUNTIME_KB) {
+    problems.push(
+      `JS runtime ${jsRuntime.toFixed(1)} KB exceeds ${JS_RUNTIME_KB} KB`,
+    );
+  }
   if (jsCritical > JS_CRITICAL_KB) {
     problems.push(
       `JS critical ${jsCritical.toFixed(1)} KB exceeds ${JS_CRITICAL_KB} KB`,
@@ -136,6 +216,7 @@ export function measureBudgets(distDir) {
   return {
     jsTotal,
     jsCritical,
+    jsRuntime,
     cssTotal,
     distWideJs: distWide('.js'),
     distWideCss: distWide('.css'),
@@ -149,6 +230,9 @@ function main() {
   const distDir = resolve(flag === -1 ? 'dist' : process.argv[flag + 1]);
   const r = measureBudgets(distDir);
   console.log(`JS total ${r.jsTotal.toFixed(1)} / ${JS_TOTAL_KB} KB gzip`);
+  console.log(
+    `JS runtime ${r.jsRuntime.toFixed(1)} / ${JS_RUNTIME_KB} KB gzip`,
+  );
   console.log(
     `JS critical ${r.jsCritical.toFixed(1)} / ${JS_CRITICAL_KB} KB gzip`,
   );
@@ -164,4 +248,9 @@ function main() {
   console.log('PASS: budgets within limits');
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  main();
+}

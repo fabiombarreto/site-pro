@@ -24,6 +24,34 @@ The project is scaffolded (Stage 2 Phase 1): the commands below are real and mat
 | Privacy check | `pnpm check:privacy` (needs `pnpm build`) |
 | Size budgets | `pnpm check:budgets` (needs `pnpm build`) |
 
+`pnpm build` also verifies the build scripts: every `data-build` step on the home page must name a `data-build-target` present in the HTML, otherwise the build fails (`scripts/verify-build-targets.mjs`).
+
+### Running Lighthouse locally
+
+Lighthouse CI needs `pnpm build` and a Chrome binary; the CI job points `CHROME_PATH` at Playwright's Chromium. Do the same locally.
+
+In PowerShell:
+
+```powershell
+pnpm build
+$env:CHROME_PATH = (node -p "require('@playwright/test').chromium.executablePath()")
+pnpm lighthouse
+```
+
+In bash:
+
+```bash
+pnpm build
+export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePath()")"
+pnpm lighthouse
+```
+
+If that path does not exist, run `pnpm exec playwright install chromium` first. If lhci still cannot start Chrome (for example "No Chrome installations found" on Windows), the CI `lighthouse` job is authoritative and the pull request records that Lighthouse was not run locally. Lighthouse covers `/` with the build running (the real runtime on the real clock) and `/projects/relay/`, median of 3 runs, every category >= 0.95 and CLS <= 0.01 (`lighthouserc.json`).
+
+### Running the E2E suite
+
+Build first, then run `pnpm test:e2e`. The suite drives the animated page on a fake clock; the conventions (reusing the preview on 127.0.0.1:4321, `page.clock`, sampling error, axe setup) are in docs/context/testing.md, "Test conventions for animated pages".
+
 ## Continuous integration
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pushes to `main`, with nine separately reported jobs: `lint`, `check`, `unit`, `build`, `e2e`, `tokens`, `privacy`, `budgets` and `lighthouse`. Deploys are done by Cloudflare Workers Builds, not by CI.

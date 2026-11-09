@@ -116,7 +116,7 @@ On mobile, the links move into a `☰` menu.
 | **Collapsed** | A small round `❯_` button at the bottom right. It opens the Command Palette (and, in v1.1, the interactive dock) |
 | **Reduced motion** | `✔ Ready · motion reduced   ▶ Play build` |
 
-Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. Toasts (such as `warn  Window closed. Building anyway...`) appear just above the dock.
+Clicking the speed cycles through `1×`, `2×` and `∞` (instant). The choice is saved in the browser. The speed button's accessible name repeats what it shows: `Build speed: 1×. Switch to 2×`, `Build speed: 2×. Switch to instant`, `Build speed: ∞ (instant). Switch to 1×`. Replay and Play build always play the show at normal speed from the boot. Toasts (such as `warn  Window closed. Building anyway...`) appear just above the dock.
 
 ### Build window
 
@@ -293,8 +293,8 @@ dock     ✓ 3/5 sections   ❯ █                   ← 7. waiting for the nex
 | **Trigger** | The next section build starts when the top of that section crosses ~75% of the viewport height. Without scrolling, the dock waits at `❯ █`, like a terminal waiting for input. |
 | **Scroll hint** | If the visitor stays still for ~4 s after the hero, the `scroll ↓` hint in the dock pulses gently. |
 | **Order** | Sections are always built in order, one at a time. Inside a section, element steps may overlap. |
-| **Reserved space** | Each section takes its final height from the start, so the page scrolls normally and nothing shifts. Before its build, a section's content is laid out but invisible, and a faint dashed outline with the window name (`projects.tsx`) marks the area. |
-| **The final layout never moves** | Windows, cursors and selection boxes are overlays. Elements animate in place, using only transform, opacity and clip-path. |
+| **Reserved space** | Each section takes its final height from the start, so the page scrolls normally and nothing shifts. Before its build, a section's content is laid out but invisible, and a faint dashed outline with the window name (`projects.tsx`) marks the area. The footer's build-summary slot is reserved the same way: it takes the free width of the footer row, so the summary and Replay appear without moving any box. |
+| **The final layout never moves** | Windows, cursors and selection boxes are overlays. Elements animate in place, using only transform, opacity and clip-path. No overlay piece may widen the page: the build layer clips horizontal overflow, so the page never scrolls sideways while building. |
 | **Fast scrolling (turbo)** | If the visitor scrolls past sections that have not been built, they are queued and built accelerated (5×, the pace approved in prototype v2) until they catch up with what is on screen. |
 | **Never hijack scrolling** | The runtime never moves the page on its own, except when the visitor asks: a click in the nav or the palette, a deep link, or Replay. |
 | **Skip** | `Esc`, the `» Skip` button in the dock, or a click on the window's title bar or command bar finishes the current section immediately. While the mobile menu is open, `Esc` only closes the menu. |
@@ -329,6 +329,8 @@ Planned commands: `Go to <section>`, `Open project: <name>`, `Run all`, `Replay 
 | `?` | Show the shortcut list |
 
 Section shortcuts such as `Ctrl + 1…5` were dropped: browsers use them to switch tabs.
+
+Shift + Esc on Windows Chrome: Chrome lists `Shift + Esc` as its Task Manager shortcut, so the page may never receive it. The E2E test proves only the page handler; the real-browser check is pending the owner. If Chrome swallows it, the Stage 5 palette's Run all is the keyboard path.
 
 ### Project pages
 

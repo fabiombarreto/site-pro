@@ -1,9 +1,11 @@
 // PRPs/prds/stage-2-foundation.prd.md AC-12 No build layer and no build animation (phase 5 plan: AC-A5)
 import { expect, test, type Page } from '@playwright/test';
 import { normalize } from './support/home';
+import { runUntil, startClocked } from './support/runtime';
 
-const BUILD_LAYER =
-  '.sp-boot, .sp-dock, .sp-dock-fab, .sp-window, .sp-select, .sp-skel';
+// Stage 3 phase 4 (PRD AC-13, AC-14, AC-17): instant mode keeps a ready dock, so the dock is not a
+// build-layer leftover; the boot, windows, selection boxes, skeletons and outlines still are.
+const BUILD_LAYER = '.sp-boot, .sp-window, .sp-select, .sp-skel, .sp-outline';
 
 const mainText = (page: Page): Promise<string> =>
   page.locator('main').evaluate((el) => el.textContent ?? '');
@@ -11,12 +13,37 @@ const mainText = (page: Page): Promise<string> =>
 test.describe('after the page has loaded and idled for 2 s', () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test('has no boot terminal, dock, window, selection box or skeleton', async ({
-    page,
+  test('has no boot terminal, dock, window, outline, selection box or skeleton in instant mode', async ({
+    browser,
   }) => {
+    const context = await browser.newContext({
+      viewport: { width: 1280, height: 800 },
+    });
+    await context.addInitScript(() =>
+      window.localStorage.setItem('sp-speed', 'inf'),
+    );
+    const page = await context.newPage();
     await page.goto('/');
     await page.waitForTimeout(2000);
     await expect(page.locator(BUILD_LAYER)).toHaveCount(0);
+    // The only build-layer piece left is the ready dock (PRD AC-13: "✓ 5/5 sections").
+    await expect(page.locator('.sp-dock')).toHaveCount(1);
+    await context.close();
+  });
+
+  test('keeps only the dock once the hero is built: no boot terminal, window, selection box or skeleton, and no visible expand button', async ({
+    page,
+  }) => {
+    test.setTimeout(60_000);
+    await startClocked(page);
+    await page.clock.pauseAt(60000);
+    await runUntil(page, (s) => s.states[0] === 'done', 30000, 'hero done');
+    await expect(page.locator('.sp-dock')).toHaveCount(1);
+    await expect(
+      page.locator('.sp-boot, .sp-window, .sp-select, .sp-skel'),
+    ).toHaveCount(0);
+    // The collapsed-dock button now exists as a persistent node, hidden until the dock collapses.
+    await expect(page.locator('.sp-dock-fab:visible')).toHaveCount(0);
   });
 
   test('renders the same main text as the no-JS page', async ({
@@ -98,11 +125,23 @@ test.describe('after the page has loaded and idled for 2 s', () => {
 });
 
 test.describe('the served HTML', () => {
-  test('carries no build-layer markup or pending state', async ({
+  test('carries no build-layer markup and no pending runtime state', async ({
     request,
   }) => {
     const html = await (await request.get('/')).text();
-    expect(html).not.toMatch(/\bsp-(boot|dock|dock-fab|window|select|skel)\b/);
-    expect(html).not.toContain('data-build');
+    // Stage 3 phase 2: the layer's stylesheet names these classes and may be inlined,
+    // so the markup check ignores <style> blocks.
+    const markup = html.replace(/<style\b[\s\S]*?<\/style>/g, '');
+    expect(markup).not.toMatch(
+      /\bsp-(boot|dock|dock-fab|window|select|skel)\b/,
+    );
+    expect(markup).not.toContain('data-build-layer');
+    // Stage 3: the compiled build scripts are serialized into the sections on
+    // purpose, but the pending state exists only once the head script runs.
+    expect(html).toMatch(/<section\b[^>]*\sdata-build="/);
+    expect(html).not.toMatch(
+      /<html\b[^>]*\sdata-build-(mode|speed|status|started)\b/,
+    );
+    expect(html).not.toMatch(/<[a-z][^>]*\sdata-build-state=/);
   });
 });

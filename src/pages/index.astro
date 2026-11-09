@@ -11,6 +11,8 @@ import Projects from '../sections/Projects.astro';
 import Stack from '../sections/Stack.astro';
 import { profileLinks } from '../sections/profile-links';
 import '../styles/home.css';
+import '../styles/build-pending.css';
+import '../styles/build-layer.css';
 
 const profileEntry = await getEntry('profile', 'profile');
 const stackEntry = await getEntry('stack', 'stack');
@@ -28,7 +30,7 @@ const title = `${profile.headline.replace(/\.$/, '')} - ${profile.role}`;
 const description = profile.subtitle;
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} build>
   <div class="sp-page">
     <Backdrop glows={DEFAULT_GLOWS} />
     <div class="sp-page-content">
@@ -40,7 +42,10 @@ const description = profile.subtitle;
         <Stack stack={stackEntry.data} />
         <Contact profile={profile} />
       </main>
-      <Footer sourceHref={sourceHref} owner={profile.name} />
+      <Footer sourceHref={sourceHref} owner={profile.name} buildSlot />
     </div>
   </div>
+  <script>
+    import '../runtime/main';
+  </script>
 </Base>

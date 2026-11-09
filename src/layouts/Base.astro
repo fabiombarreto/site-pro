@@ -2,15 +2,17 @@
 import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/base.css';
+import { SPEED_STORAGE_KEY, WATCHDOG_MS } from '../scripts/build-mode';
 import { THEME_STORAGE_KEY } from '../scripts/theme';
 import { strings } from '../strings';
 
 interface Props {
   title: string;
   description: string;
+  build?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, build = false } = Astro.props;
 ---
 
 <html lang="en" data-theme="midnight">
@@ -31,6 +33,39 @@ const { title, description } = Astro.props;
           theme === 'daylight' ? 'light' : 'dark';
       })();
     </script>
+    {build && <script
+      is:inline
+      define:vars={{ speedKey: SPEED_STORAGE_KEY, watchdogMs: WATCHDOG_MS }}
+    >
+      // Keep in sync with parseSpeed and resolveMode in src/scripts/build-mode.ts.
+      (function () {
+        const root = document.documentElement;
+        let speed = '1';
+        try {
+          const raw = localStorage.getItem(speedKey);
+          if (raw === '2' || raw === 'inf') speed = raw;
+        } catch {
+          // Storage may be blocked; keep the default speed.
+        }
+        const reduced = window.matchMedia(
+          '(prefers-reduced-motion: reduce)',
+        ).matches;
+        const mode = reduced || speed === 'inf' ? 'instant' : 'pending';
+        root.setAttribute('data-build-speed', speed);
+        root.setAttribute('data-build-mode', mode);
+        if (mode === 'pending') {
+          setTimeout(function () {
+            if (
+              !root.hasAttribute('data-build-started') &&
+              root.getAttribute('data-build-mode') === 'pending'
+            ) {
+              root.removeAttribute('data-build-mode');
+              root.setAttribute('data-build-status', 'failed');
+            }
+          }, watchdogMs);
+        }
+      })();
+    </script>}
     <link
       rel="preload"
       href="/fonts/geist-latin-wght-normal.woff2"

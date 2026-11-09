@@ -162,6 +162,8 @@ To be evaluated in the design prototype:
 | **Replay** | Dock (when done), footer, palette | Scrolls to the top, hides every section and builds the site again |
 | **Play build** | Dock, only with reduced motion | Plays the build at 1× because the visitor asked for it |
 
+Idle timers. The `scroll ↓` hint pulses after 4 s idle, a skip holds its created text for 1.5 s, and the done state collapses into `❯_` after 4 s. They run on one frame subscription that is active only while no section is building.
+
 ## Reduced motion
 
 With `prefers-reduced-motion: reduce` (or `∞` speed):
@@ -178,7 +180,7 @@ With `prefers-reduced-motion: reduce` (or `∞` speed):
 
 - A single `requestAnimationFrame` loop for the whole runtime, instead of dozens of `setInterval`s.
 - `IntersectionObserver` for the triggers, instead of listening to scroll events.
-- Windows are positioned from each section's box and kept in place with `ResizeObserver`; they move with `transform` only.
+- Windows are positioned from each section's box and kept in place with `ResizeObserver`; they are placed by writing `left`/`top`/`width`/`height` on the absolutely positioned overlay, on placement and resize only (never per frame), because a transformed window root would break the sticky bars. Per-frame animation uses `transform` and `opacity` only.
 - Typing writes into a line with reserved width, so it never triggers layout recalculation.
 - Blur is applied only while a build-layer surface is visible, and removed when the window closes.
 - Execution pauses while `document.visibilityState === "hidden"`.

@@ -204,6 +204,33 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 
 ---
 
+## [2026-11-08] Build layer clips horizontal overflow
+
+**Context:** A selection box drawn at the 375 px viewport edge made `scrollWidth` 377 against `clientWidth` 375 during the hero build, so the page scrolled sideways.
+**Decision:** The build layer's overlay roots clip the horizontal axis with `overflow-x: clip` and keep the vertical axis visible; fixed pieces such as the dock and boot terminal are unaffected; insetting individual handles was rejected.
+**Reason:** Protects "the final layout never moves" for every present and future overlay piece; `clip` over `hidden` so the layer is not a scroll container and sticky window bars keep working; supported by the last two versions of every target browser.
+**Areas affected:** build, visual-design
+
+---
+
+## [2026-11-08] Stage 3 Phase 4 controls and navigation
+
+**Context:** After Phase 3 the build plays but the visitor cannot take over: no skip, no speed control, no replay, no keyboard rules. Phase 4 of the Stage 3 PRD assigns these controls and the behavior rules to the runtime.
+**Decision:** The dock leaves the aria-hidden layer as a `role="group"` named "Site build" with real buttons, while its status text, log and hint stay aria-hidden and every other layer child is aria-hidden. The scheduler gains `skip`, `runAll`, `finishThrough` and a `queued n/5` status callback (the PRD assigns these to Phase 4; turbo and timing rules are unchanged). `Esc` skips only the active section and yields to an open popover or dialog; `Shift + Esc` runs all. A skip shows `✔ <Section> Section created. (<t>s)` for 1.5 s before the dock returns to idle. The scroll hint pulses after 4 s idle and a scroll restarts that count. The done state lasts 4 s, then collapses into `❯_`, and a reopened done state collapses again after 4 s. Replay and Play build always play the show at normal speed from the boot: when the dock is in a ready state (reduced motion or a saved ∞) they switch the speed to 1× and save it, and a Replay from a finished 1× or 2× build keeps that speed. The controls API lives in `src/runtime/api.ts`. The footer summary is filled by the runtime with the same seconds as the dock. A blocked `localStorage` is swallowed when saving the speed, as the theme toggle does. The `Shift + Esc` status is unverified until the owner checks real Chrome on Windows.
+**Reason:** The PRD requires every behavior rule to hold and the controls to be keyboard and screen reader reachable; real buttons are the only accessible option, and a rebuildable show keeps Replay free of reset logic.
+**Areas affected:** build, navigation, visual-design
+
+---
+
+## [2026-11-08] Footer slot reserves its width and the speed button name contains its glyph
+
+**Context:** The Stage 3 Phase 4 test-after review found two defects: the footer build-summary slot moved boxes when it filled, up to 176.6 px, against PRD AC-4 and AC-17; and axe reported `label-content-name-mismatch` on the dock speed button, against AC-18, because its visible `1×`, `2×`, `∞` was not part of its name `Build speed: 1x. Switch to 2x`.
+**Decision:** The footer slot takes the free width of the footer row so its box no longer depends on its content, with the same look as Stage 2 while empty. The three speed button names change to `Build speed: 1×. Switch to 2×`, `Build speed: 2×. Switch to instant` and `Build speed: ∞ (instant). Switch to 1×`, keeping the PRD AC-13 structure (state, then next state). This wording change is owner-visible and the glyphs are unchanged.
+**Reason:** The final layout never moves; WCAG 2.5.3 Label in Name lets speech-input users say what they see; a fixed width would guess the summary length and fail on mobile; the PRD quotes the names as examples, so the structure is kept and only the characters change.
+**Areas affected:** build, visual-design
+
+---
+
 <!-- Template for future entries:
 
 ## [YYYY-MM-DD] Title of the decision

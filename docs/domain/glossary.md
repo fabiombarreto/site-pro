@@ -7,7 +7,7 @@ Terms used across the docs, the Design System and (later) the code. Sources: doc
 | **Owner** | The person the site presents (Fabio Barreto). The only author of content |
 | **Visitor** | Anyone viewing the site: developers first, then the open source community, organizers, recruiters and non-technical readers |
 | **The page** | The final, readable site (sections, nav, footer). What stays on screen. Modern register |
-| **Build layer** | Everything that exists only while the site builds itself: boot terminal, dock, build windows, selection boxes, skeletons, (v1.1) agent cursors. Overlay only, `aria-hidden`. Code register |
+| **Build layer** | Everything that exists only while the site builds itself: boot terminal, dock, build windows, selection boxes, skeletons, (v1.1) agent cursors. Overlay only, `aria-hidden` (except the dock's real control buttons). Code register |
 | **Build** | The whole show: the site rebuilding itself in front of the visitor, section by section |
 | **Section** | One part of the page: Hero, About, Projects, Stack, Contact (v1). Post-v1: Experience, Articles and talks |
 | **Section build** | One section's run through the lifecycle: dock command → log → window → element commands → confirmation → window fades |

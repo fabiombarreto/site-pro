@@ -3,30 +3,36 @@ import type { CollectionEntry } from 'astro:content';
 import { ProjectCard } from '../components/page/ProjectCard';
 import { SectionHeading } from '../components/page/SectionHeading';
 import { resolveAssetUrl } from '../components/page/resolve-asset';
+import { compileScript, serializeTimeline } from '../runtime/compiler';
 import { strings } from '../strings';
+import { projectsBuild } from './projects.build';
 
 interface Props {
   projects: CollectionEntry<'projects'>[];
 }
 
 const { projects } = Astro.props;
+const timeline = compileScript(projectsBuild(projects));
 ---
 
 <section
   id="projects"
   aria-labelledby="projects-title"
   class="sp-section sp-projects"
+  data-build={serializeTimeline(timeline)}
 >
   <div class="sp-section-inner is-loose">
-    <SectionHeading
-      id="projects-title"
-      eyebrow={strings.sections.projects.eyebrow}
-      title={strings.sections.projects.title}
-      lead={strings.sections.projects.lead}
-    />
+    <div class="sp-build-wrap" data-build-target="heading">
+      <SectionHeading
+        id="projects-title"
+        eyebrow={strings.sections.projects.eyebrow}
+        title={strings.sections.projects.title}
+        lead={strings.sections.projects.lead}
+      />
+    </div>
     <div class="sp-projects-grid">
       {projects.map(({ id, data }) => (
-        <div class="sp-projects-cell">
+        <div class="sp-projects-cell" data-build-target={`card-${id}`}>
           <ProjectCard
             title={data.title}
             slug={id}

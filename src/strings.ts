@@ -1,3 +1,5 @@
+import type { Speed } from './scripts/build-mode';
+
 export const strings = {
   skipLink: 'Skip to content',
   hero: {
@@ -57,5 +59,46 @@ export const strings = {
   footer: {
     source: 'Source',
     year: '2026',
+  },
+} as const;
+
+export const buildStrings = {
+  skip: '» Skip',
+  skipLabel: "Skip this section's build",
+  replay: '↻ Replay',
+  replayLabel: 'Replay the build',
+  play: '▶ Play build',
+  playLabel: 'Play the build animation',
+  expandLabel: 'Show build status',
+  groupLabel: 'Site build',
+  queued: (position: number, total: number) => `queued ${position}/${total}`,
+  footerBuilt: (seconds: string) => `Built live in ${seconds}s · `,
+  speedGlyph: (speed: Speed) =>
+    speed === 'inf' ? '∞' : speed === '2' ? '2×' : '1×',
+  speedLabel: (speed: Speed) =>
+    speed === 'inf'
+      ? 'Build speed: ∞ (instant). Switch to 1×'
+      : speed === '2'
+        ? 'Build speed: 2×. Switch to instant'
+        : 'Build speed: 1×. Switch to 2×',
+  initializing: 'Initializing application...',
+  openingFile: (file: string) => `Opening ${file}...`,
+  readingFile: (file: string) => `Reading ${file}...`,
+  building: (name: string) => `Building ${name}…`,
+  created: (label: string, seconds: string) =>
+    `✔ ${label} Section created. (${seconds}s)`,
+  idleCount: (done: number, total: number) => `✓ ${done}/${total} sections`,
+  scrollHint: 'scroll ↓',
+  complete: (total: number, seconds: string) =>
+    `✔ Build complete: ${total} sections in ${seconds}s`,
+  reducedReady: '✔ Ready · motion reduced',
+  prompt: '❯',
+  collapsedGlyph: '❯_',
+  sectionLabels: {
+    top: 'Hero',
+    about: 'About',
+    projects: 'Projects',
+    stack: 'Stack',
+    contact: 'Contact',
   },
 } as const;

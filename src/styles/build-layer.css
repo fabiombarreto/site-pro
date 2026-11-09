@@ -1,0 +1,512 @@
+/* The overlay never widens the document (B26): clip, not hidden, so the layer is not a scroll container (sticky window bars keep working) and the vertical axis stays visible. Fixed pieces (dock, boot) are unaffected. */
+.sp-build-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* Shared chrome pieces */
+.sp-dots {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sp-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--border-strong);
+}
+
+.sp-prompt {
+  color: var(--fg-muted);
+  margin-right: var(--space-2);
+}
+
+.sp-cmdline,
+.sp-log,
+.sp-dock-text {
+  font-family: var(--font-mono);
+  font-size: var(--mono-sm);
+  color: var(--fg);
+  white-space: pre;
+}
+
+.sp-tok-object {
+  color: var(--fg);
+}
+
+.sp-tok-function {
+  color: var(--syn-function);
+}
+
+.sp-tok-string {
+  color: var(--syn-string);
+}
+
+.sp-tok-number {
+  color: var(--syn-number);
+}
+
+.sp-tok-comment {
+  color: var(--syn-comment);
+}
+
+.sp-tok-punct {
+  color: var(--syn-punct);
+}
+
+.sp-log {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sp-log[data-level='info'] .sp-log-glyph {
+  color: var(--log-info);
+}
+
+.sp-log[data-level='success'] .sp-log-glyph {
+  color: var(--log-success);
+}
+
+.sp-log[data-level='warn'] .sp-log-glyph {
+  color: var(--log-warn);
+}
+
+.sp-log[data-level='error'] .sp-log-glyph {
+  color: var(--log-error);
+}
+
+.sp-cursor {
+  color: var(--fg);
+  animation: sp-cursor-blink 1.06s steps(1) infinite;
+}
+
+@keyframes sp-cursor-blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Boot terminal */
+.sp-boot {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: var(--space-32);
+  width: min(var(--dock-width), calc(100vw - var(--space-8)));
+  box-sizing: border-box;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--mono-sm);
+  background: var(--bg-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-dock);
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.sp-boot[data-hidden],
+.sp-outline[data-hidden] {
+  opacity: 0;
+}
+
+.sp-boot-body {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Dock */
+.sp-dock {
+  position: fixed;
+  bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  height: var(--dock-height);
+  width: min(var(--dock-width), calc(100vw - var(--space-8)));
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.sp-dock[data-state='hidden'] {
+  opacity: 0;
+}
+
+.sp-dock-pill {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+  background: var(--bg-overlay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-dock);
+}
+
+.sp-dock:not([data-state='hidden']) .sp-dock-pill {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.sp-dock-status {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sp-dock-hint {
+  font-family: var(--font-mono);
+  font-size: var(--mono-xs);
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+.sp-dock-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: auto;
+}
+
+.sp-dock-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: var(--mono-xs);
+  color: var(--fg-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.sp-dock-btn:hover {
+  color: var(--fg);
+}
+
+.sp-dock-btn[hidden] {
+  display: none;
+}
+
+.sp-dock[data-state='collapsed'] {
+  left: auto;
+  right: max(var(--space-6), env(safe-area-inset-right));
+  margin-inline: 0;
+  width: var(--dock-height);
+}
+
+.sp-dock[data-state='collapsed'] .sp-dock-pill {
+  padding: 0;
+  justify-content: center;
+}
+
+.sp-dock[data-state='collapsed'] .sp-dock-status,
+.sp-dock[data-state='collapsed'] .sp-dock-hint {
+  display: none;
+}
+
+.sp-dock-hint[data-pulse] {
+  animation: sp-hint-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes sp-hint-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.sp-dock-log {
+  position: absolute;
+  bottom: 100%;
+  left: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.sp-dock-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--dock-height);
+  height: var(--dock-height);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  color: var(--fg);
+  pointer-events: auto;
+  background: transparent;
+  border: 0;
+}
+
+/* Build window */
+.sp-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.sp-window-frame {
+  position: absolute;
+  inset: 0;
+  box-shadow: var(--shadow-window);
+  pointer-events: none;
+}
+
+.sp-window-body {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: var(--space-6) var(--space-6);
+}
+
+.sp-window-chrome {
+  position: sticky;
+  top: var(--nav-height);
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.sp-window-bar,
+.sp-window-cmd {
+  box-sizing: border-box;
+  height: var(--window-bar);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  background: var(--bg-overlay);
+  border-bottom: 1px solid var(--border);
+  pointer-events: auto;
+}
+
+.sp-window-file {
+  font-family: var(--font-mono);
+  font-size: var(--mono-xs);
+  color: var(--fg-muted);
+}
+
+/* Pending outline */
+.sp-outline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.sp-outline-box {
+  position: absolute;
+  inset: var(--space-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+}
+
+.sp-outline-label {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--mono-xs);
+  color: var(--fg-muted);
+}
+
+/* Element effects */
+.sp-build-fx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  pointer-events: none;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.sp-select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--build-select);
+  background: var(--accent-glow);
+  pointer-events: none;
+}
+
+.sp-select-handle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--build-select);
+}
+
+.sp-select-handle:nth-child(1) {
+  top: -3px;
+  left: -3px;
+}
+
+.sp-select-handle:nth-child(2) {
+  top: -3px;
+  right: -3px;
+}
+
+.sp-select-handle:nth-child(3) {
+  bottom: -3px;
+  left: -3px;
+}
+
+.sp-select-handle:nth-child(4) {
+  bottom: -3px;
+  right: -3px;
+}
+
+.sp-select-label {
+  position: absolute;
+  bottom: 100%;
+  left: -1px;
+  padding: 0 var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--mono-xs);
+  white-space: nowrap;
+  background: var(--build-select);
+  color: var(--on-accent);
+}
+
+.sp-skel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.sp-skel-block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background: var(--build-skeleton);
+  border-radius: var(--radius-sm);
+}
+
+.sp-skel-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--build-shine),
+    transparent
+  );
+  animation: sp-skel-shimmer 1.4s linear infinite;
+}
+
+@keyframes sp-skel-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.sp-text-fx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.sp-caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  background: var(--accent-fg);
+  pointer-events: none;
+}
+
+.sp-scramble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: pre;
+  color: var(--accent-fg);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-cursor {
+    animation: none;
+  }
+
+  .sp-skel-block::after {
+    animation: none;
+  }
+
+  .sp-dock-hint[data-pulse] {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .sp-boot,
+  .sp-dock:not([data-state='hidden']) .sp-dock-pill,
+  .sp-window-chrome {
+    background: var(--bg-raised);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .sp-boot,
+  .sp-dock:not([data-state='hidden']) .sp-dock-pill,
+  .sp-window-chrome {
+    background: var(--bg-raised);
+  }
+}
+
+/* Compact: one command bar, status-only dock */
+@media (max-width: 767px) {
+  .sp-window-bar,
+  .sp-dock-hint,
+  .sp-dock-log {
+    display: none;
+  }
+
+  .sp-dock-btn[data-dock-action='speed'] {
+    display: none;
+  }
+}

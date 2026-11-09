@@ -3,7 +3,9 @@ import type { CollectionEntry } from 'astro:content';
 import { Button } from '../components/page/Button';
 import { Photo } from '../components/page/Photo';
 import { resolveAssetUrl } from '../components/page/resolve-asset';
+import { compileScript, serializeTimeline } from '../runtime/compiler';
 import { strings } from '../strings';
+import { heroBuild } from './hero.build';
 import { profileLinks } from './profile-links';
 
 interface Props {
@@ -16,21 +18,31 @@ const photoUrl = resolveAssetUrl(profile.photo);
 if (!photoUrl) throw new Error('profile.photo does not resolve to an asset');
 const [first = '', ...rest] = profile.headline.split(' ');
 const remainder = rest.join(' ');
+const timeline = compileScript(heroBuild(profile));
 ---
 
-<section id="top" aria-label={strings.hero.ariaLabel} class="sp-hero">
+<section
+  id="top"
+  aria-label={strings.hero.ariaLabel}
+  class="sp-hero"
+  data-build={serializeTimeline(timeline)}
+>
   <div class="sp-hero-inner">
-    <h1 class="banner sp-hero-name">
+    <h1 class="banner sp-hero-name" data-build-target="title">
       {first} <br />
       {remainder}
     </h1>
-    <div class="sp-hero-photo">
+    <div class="sp-hero-photo" data-build-target="photo">
       <Photo src={photoUrl} alt={profile.name} />
     </div>
-    <p class="sp-hero-role text-2xl">{profile.role}</p>
+    <p class="sp-hero-role text-2xl" data-build-target="role">
+      {profile.role}
+    </p>
     <div class="sp-hero-copy">
-      <p class="text-lg">{profile.subtitle}</p>
-      <div class="sp-hero-actions">
+      <p class="text-lg" data-build-target="intro">
+        {profile.subtitle}
+      </p>
+      <div class="sp-hero-actions" data-build-target="links">
         <Button variant="primary" href="#projects" iconEnd="arrowDown">
           {strings.hero.seeMyWork}
         </Button>
