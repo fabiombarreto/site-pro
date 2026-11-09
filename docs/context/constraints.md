@@ -35,7 +35,7 @@ Never publish on the site or in the public repository: phone number, email addre
 
 ## Accessibility
 
-WCAG 2.2 AA in both themes; every text pair ≥ 4.5:1 (the background glows are capped so `--fg-muted` keeps 4.8:1); the build layer is `aria-hidden`; typing is never announced letter by letter; visible focus everywhere; a "Skip to content" link; `prefers-reduced-motion` respected.
+WCAG 2.2 AA in both themes; every text pair ≥ 4.5:1 (the background glows are capped so `--fg-muted` keeps 4.8:1); the build layer is `aria-hidden`, except the dock's real buttons (a `role="group"` named "Site build"; its status text, log and hint stay `aria-hidden`); typing is never announced letter by letter; visible focus everywhere; a "Skip to content" link; `prefers-reduced-motion` respected.
 
 ## Behavior that must hold (docs/02-experience.md, "Behavior rules")
 

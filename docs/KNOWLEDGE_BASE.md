@@ -24,8 +24,8 @@ Index of detailed documentation for site-pro. One line per file; open the file f
 ## Architecture & Development
 
 → docs/architecture.md — developer overview: page-load steps, moving parts, where to change what
-→ docs/development.md — prerequisites, commands, docs-first workflow, adding sections and projects
-→ docs/api-reference.md — no HTTP API; routes, content schemas and visitor controls
+→ docs/development.md — prerequisites, commands, running Lighthouse and the E2E suite locally, docs-first workflow, adding sections and projects
+→ docs/api-reference.md — no HTTP API; routes, content schemas, visitor controls and the runtime TypeScript API (controls, stores, types, compiler, clock)
 → docs/troubleshooting.md — Claude Design pitfalls and runtime pitfalls from the design
 
 ## AI Governance
@@ -41,7 +41,7 @@ Index of detailed documentation for site-pro. One line per file; open the file f
 → docs/context/integrations.md — GitHub, LinkedIn, Cloudflare Workers, CI, analytics (open), fonts, Claude Design
 → docs/context/constraints.md — scope, privacy, versions, performance budgets, accessibility, behavior rules
 → docs/context/methodology.md — methodology declaration: test-after (TDD off), Vitest and Playwright declared, docs sync on, Figma track off
-→ docs/context/testing.md — mandatory test guardrail; Vitest and Playwright suites with run commands (empty until the test pair authors tests)
+→ docs/context/testing.md — mandatory test guardrail; Vitest and Playwright suites with run commands, quality gates, Stage 3 behavior rule coverage map and test conventions for animated pages
 
 ## Domain
 

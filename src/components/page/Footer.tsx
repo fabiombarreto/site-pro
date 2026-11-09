@@ -6,12 +6,14 @@ import { strings } from '../../strings';
 interface FooterProps {
   sourceHref: string;
   owner: string;
+  buildSlot?: boolean;
   className?: string;
 }
 
 export function Footer({
   sourceHref,
   owner,
+  buildSlot = false,
   className,
 }: FooterProps): React.JSX.Element {
   return (
@@ -23,6 +25,9 @@ export function Footer({
           </TextLink>
           <span>{`© ${strings.footer.year} ${owner}`}</span>
         </p>
+        {buildSlot && (
+          <p className="sp-footer-build text-sm" data-footer-build="" />
+        )}
       </div>
     </footer>
   );

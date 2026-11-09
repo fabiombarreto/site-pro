@@ -1,0 +1,18 @@
+html[data-build-mode='pending']
+  main
+  > section[data-build]:not([data-build-state='done']):not(
+    [data-build-state='skipped']
+  ):not([data-build-state='building']):not([data-build-state='closing']) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+html[data-build-mode='pending'] [data-build-fx='hidden'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+html[data-build-mode='pending']:not([data-build-nav]) .sp-nav {
+  opacity: 0;
+  transform: translateY(-100%);
+}

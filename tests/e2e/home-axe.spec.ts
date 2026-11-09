@@ -2,6 +2,7 @@
 // `/` in both themes at 1280x800, 800x1024 and 375x812, and at 375x812 with the mobile menu open.
 import { expect, test } from '@playwright/test';
 import { expectNoAxeViolations, PHONE, TABLET } from './support/home';
+import { useInstantBuild } from './support/runtime';
 
 const VIEWPORTS = [
   { name: '1280x800', size: { width: 1280, height: 800 } },
@@ -14,6 +15,9 @@ const THEMES = ['midnight', 'daylight'] as const;
 for (const theme of THEMES) {
   test.describe(`${theme} theme`, () => {
     test.beforeEach(async ({ page }) => {
+      // Stage 3: audit the final page, not a section caught mid-build at
+      // opacity 0. A saved infinity speed renders it at once.
+      await useInstantBuild(page);
       await page.addInitScript((value) => {
         if (value === 'daylight') localStorage.setItem('sp-theme', value);
       }, theme);

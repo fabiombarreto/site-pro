@@ -2,25 +2,37 @@
 import type { CollectionEntry } from 'astro:content';
 import { SectionHeading } from '../components/page/SectionHeading';
 import { StackGroup } from '../components/page/StackGroup';
+import { compileScript, serializeTimeline } from '../runtime/compiler';
 import { strings } from '../strings';
+import { stackBuild } from './stack.build';
 
 interface Props {
   stack: CollectionEntry<'stack'>['data'];
 }
 
 const { stack } = Astro.props;
+const timeline = compileScript(stackBuild(stack));
 ---
 
-<section id="stack" aria-labelledby="stack-title" class="sp-section">
+<section
+  id="stack"
+  aria-labelledby="stack-title"
+  class="sp-section"
+  data-build={serializeTimeline(timeline)}
+>
   <div class="sp-section-inner is-loose">
-    <SectionHeading
-      id="stack-title"
-      eyebrow={strings.sections.stack.eyebrow}
-      title={strings.sections.stack.title}
-    />
+    <div class="sp-build-wrap" data-build-target="heading">
+      <SectionHeading
+        id="stack-title"
+        eyebrow={strings.sections.stack.eyebrow}
+        title={strings.sections.stack.title}
+      />
+    </div>
     <div class="sp-stack-grid">
-      {stack.groups.map((group) => (
-        <StackGroup name={group.name} items={group.items} />
+      {stack.groups.map((group, index) => (
+        <div class="sp-build-wrap" data-build-target={`group-${index}`}>
+          <StackGroup name={group.name} items={group.items} />
+        </div>
       ))}
     </div>
   </div>

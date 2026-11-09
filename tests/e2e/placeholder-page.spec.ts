@@ -5,6 +5,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { useInstantBuild } from './support/runtime';
 
 const count = (haystack: string, re: RegExp): number =>
   (haystack.match(re) ?? []).length;
@@ -47,6 +48,11 @@ test.describe('static HTML of /', () => {
   });
 
   test('has no axe violations', async ({ page }) => {
+    // Stage 3 phase 3: on a default real-clock visit the hero targets are hidden, clipped or
+    // mid-pop while axe runs, so the timing of the scan decides what it sees. A saved infinity
+    // speed renders the final page at once; axe during the build is asserted at fixed moments
+    // in effects-axe.spec.ts.
+    await useInstantBuild(page);
     await page.goto('/');
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])

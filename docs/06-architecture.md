@@ -127,6 +127,10 @@ site-pro/
 - Window bodies let clicks through (`pointer-events: none`), so elements are usable as soon as they exist. Only the title bar and the command bar catch clicks, to skip.
 - Pending content is hidden with `opacity` and `clip-path`, never with `display` or `visibility`, so it stays in the accessibility tree and keeps its layout.
 
+### Dock accessibility
+
+The dock is a `role="group"` named "Site build". Its status text, log and hint are aria-hidden. Its controls are persistent real buttons toggled with `hidden`, so focus survives a state change: "Skip this section's build", "Build speed: 1×. Switch to 2×" (and its two siblings, which also repeat the visible glyph), "Replay the build", "Play the build animation" and "Show build status". Every other layer child (boot terminal, windows, outlines, effects) is aria-hidden. Phase 4 modules: `controls-timing` (pure constants and mappings), `keys`, `focus-rule`, `resize`, `api` and the `FooterBuild` factory.
+
 ## Accessibility
 
 - Semantic HTML: `<header>` with the `<nav>`, `<main>` with one `<section>` per section, `<footer>`; one `<h1>` (the hero headline, which includes the name) and one `<h2>` per section.
