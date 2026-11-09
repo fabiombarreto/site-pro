@@ -132,8 +132,21 @@ test('writes only opacity, clip-path and pointer-events on page elements and ani
         }
       }
       const props = new Set<string>();
+      // Scope: only animations whose target is in the build layer or inside main (the build
+      // targets and their descendants). PRD AC-4 and docs/02 ("The final layout never moves")
+      // restrict the build's element effects. Page chrome outside main and the layer, such as the
+      // nav's Stage 2 background-color and border-color transition (a CSSTransition that starts
+      // when `data-js` is set and runs on real time), is not a build effect, so including it made
+      // this check depend on timing and machine speed.
+      const main = document.querySelector('main');
       for (const a of document.getAnimations()) {
         const effect = a.effect as KeyframeEffect | null;
+        const target = effect?.target ?? null;
+        if (!target) continue;
+        const inScope =
+          target.closest('[data-build-layer]') !== null ||
+          (main !== null && main.contains(target));
+        if (!inScope) continue;
         for (const kf of effect?.getKeyframes() ?? []) {
           for (const key of Object.keys(kf)) props.add(key);
         }
