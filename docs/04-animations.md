@@ -30,7 +30,7 @@ Sample script (illustrative format, not final code):
 
 Benefits: every section shares the same rhythm and grammar, and controls such as skip, run all, speed and replay work on any section without section-specific code. The commands shown on screen come from this script, so they match the site's real source.
 
-**Authoring and compiling** (Stage 3 PRD). A script is written as a sequence of steps. Each effect's duration comes from its content (a headline types for 28 ms per character after its 150 ms selection), and `gap` or `overlap` shifts the next step. At build time the sequence is compiled into an absolute timeline in milliseconds at 1× and serialized into the section's `data-*` attributes; the runtime only plays that timeline. A longer title moves every later step automatically, and tests can freeze any moment of it.
+**Authoring and compiling** (Stage 3 PRD). A script is written as a sequence of steps. Each effect's duration comes from its content (a headline types for 28 ms per character after its 150 ms selection), and `gap` or `overlap` shifts the next step. At build time the sequence is compiled into an absolute timeline in milliseconds at 1× and serialized into the section's `data-*` attributes; the runtime only plays that timeline. A longer title moves every later step automatically, and tests can freeze any moment of it. Each script also declares its dock log (Stage 4 PRD), so values such as the project count in `Fetching projects... 4 found` come from the content.
 
 The runtime is plain TypeScript, independent of React: it manipulates the DOM directly and publishes its state for the rest of the page (see [06 · How React is used](06-architecture.md#how-react-is-used)).
 
@@ -62,21 +62,21 @@ pending ──► queued ──► command ──► window ──► building �
 | Enter (commits the line) | 80 ms | The line gets its full highlighting |
 | Gap between logs | 100 ms | Logs appear at once, with no fade, like in a terminal |
 | Boot terminal → dock | 300 ms | Only once, when the hero window opens |
-| Window opening | 280 ms | Out of the dock |
+| Window opening | 280 ms | Out of the dock. In sections after the hero the window may open at Enter, while the log is shown, to fit the budget (Stage 4 PRD) |
 | Window command typing, per character | 12 ms | Windows type fast; at most 350 ms per command, long arguments are cut with `…` |
 | Selection box | 150 ms | Dragged from the top-left corner to the element's size |
 | Skeleton | ≥ 150 ms | Until the content is ready |
 | Headline typing, per character | 28 ms | |
 | Decode | 350 ms | |
 | Lines resolving | 40 ms per line | |
-| Image resolving | 700 ms | |
+| Image resolving | 700 ms | The hero photo's dissolve, after its selection box and skeleton (a 1,000 ms step); covers resolve inside their card's duration |
 | Pop (buttons, chips, tags) | 180 ms | |
 | Gap between siblings (stagger) | 90 ms | |
-| Card build | ≈ 450 ms per card, 120 ms overlap | |
+| Card build | ≈ 300–350 ms per card, 120 ms overlap | Never more than two cards building at once (Stage 4 PRD; was ≈ 450 ms) |
 | Window closing | 300 ms | |
 | Cursor | 530 ms on / 530 ms off | A common terminal default |
 | **Budget: hero** | **≤ 3.2 s** | From load to the complete hero, boot included |
-| **Budget: other sections** | **≤ 2.5 s** | From trigger to usable content |
+| **Budget: other sections** | **≤ 2.5 s** | From trigger to usable content, measured at the `✔ <Section> Section created.` line (Stage 4 PRD) |
 
 ### Boot timeline (hero)
 
@@ -125,10 +125,10 @@ idle                                    █   dock: ❯ █
 | `type-text` | Headlines and titles | Characters typed with a thin caret in `--accent-fg`. The block cursor (`█`) stays in the build layer: at banner size it would cover the photo. | 28 ms/char |
 | `decode` | Short labels (role, badges) | Letters scramble through random characters (`!<>-_\/[]{}=+*^?#`) and settle from left to right. | 350 ms |
 | `resolve-lines` | Paragraphs | Skeleton bars give way to text, one line at a time. | 40 ms/line |
-| `image-resolve` | Hero photo, project covers | The hero photo starts as ASCII art (generated at build time from the photo itself) and dissolves, with dithering, into the real photo (D12). Covers resolve from a blurred version. | 700 ms |
+| `image-resolve` | Hero photo, project covers | The hero photo starts as ASCII art (generated at build time from the photo itself) and dissolves, with dithering, into the real photo (D12): after the selection box and skeleton, the ASCII fills the photo's box in the build layer and its characters vanish in a 4×4 Bayer order while the real photo rises from a low, non-zero opacity to full. Covers resolve from a blurred version: a tiny blurred cover generated at build time and inlined in the HTML shows over the cover and fades out as the real cover appears. Only `opacity` and `clip-path` change on the page; no animated mask or filter (Stage 4 PRD). | 700 ms (hero dissolve); inside the card for covers |
 | `pop` | Buttons, chips, tags | Scale from 0.9 to 1 with a slight overshoot, right after the selection box. | 180 ms |
 | `stagger` | Groups, lists | Children appear in sequence. | 90 ms between items |
-| `build-card` | Project cards | `select` → `skeleton` → cover `image-resolve` → title `type-text` → summary `resolve-lines` → tags `pop`. | ≈ 450 ms |
+| `build-card` | Project cards | `select` → `skeleton` → cover `image-resolve` → title `type-text` → summary `resolve-lines` → tags `pop`. A card without a cover keeps its dot-grid placeholder, with no blur phase. | ≈ 300–350 ms |
 
 ### Optional effects
 
@@ -137,7 +137,7 @@ To be evaluated in the design prototype:
 | Effect | Description |
 |---|---|
 | **Multi-cursor agents** (decision **D8**: v1.1) | 2 to 4 labeled pointers (`agent-1`, `agent-2`…) build different elements at the same time, in the hero and in Projects. The window's command bar shows one line per active agent, and the dock shows `3 agents`. It is the most direct tribute to the reel's swarm. Desktop only. Tested in the prototype and moved to v1.1. |
-| **Unstyled → styled** | An element first appears as raw browser-default HTML (serif text, a blue underlined link), and then its CSS lands. Used in one spot only, such as the hero buttons, as a joke for developers. |
+| **Unstyled → styled** | An element first appears as raw browser-default HTML (serif text, a blue underlined link), and then its CSS lands. Used in one spot only, such as the hero buttons, as a joke for developers. Moved to v1.1 (Stage 4 PRD, 2026-11-10). |
 | **Element counter** | The dock shows `23/48 elements` while building, like the reel's layer count. |
 | **Keyboard sound** | Very subtle key clicks while typing. **Off by default**. A v2 candidate. |
 

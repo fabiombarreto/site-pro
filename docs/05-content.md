@@ -29,7 +29,7 @@ Content lives in the repository as Markdown/JSON files validated at build time. 
 | `headline` | text | The hero headline, typed during the build (e.g. "Fabio Barreto."). It is the page's `<h1>` |
 | `role` | text | "Software Engineer" |
 | `subtitle` | text | The hero intro: one or two sentences on what you build |
-| `photo` | image | Full body, standing, 9:16, at least 1200 × 2133 px. Cut out (a PNG with a transparent background) or on a plain background so it can be cut out. Good contrast helps the ASCII version used during the build (D12, D20) |
+| `photo` | image | Full body, standing, 9:16, at least 1200 × 2133 px. Cut out (a PNG with a transparent background) or on a plain background so it can be cut out. Good contrast helps the ASCII version used during the build (D12, D20). A file in `src/assets` referenced as an Astro image; strip EXIF, XMP and GPS metadata before committing (`pnpm check:privacy` fails otherwise) |
 | `location` | text | Optional: country and time zone only, such as "Brazil (UTC-3)" |
 | `bio` | Markdown | The About section text, **under 100 words**: an introduction, not a résumé |
 | `links` | list | `{ label, url, icon }`: GitHub, LinkedIn, X/Bluesky, dev.to, YouTube… |
@@ -45,7 +45,7 @@ Only personal projects appear on the site; client work stays in the CV and on Li
 |---|---|---|
 | `title` | text | Short |
 | `summary` | text | **≤ 140 characters**, shown on the card |
-| `cover` | image | 16:9, ≥ 1280 px |
+| `cover` | image | 16:9, ≥ 1280 px. Optional: a project without one shows the dot-grid placeholder. Same file and metadata rules as `photo` |
 | `tags` | list | 2 to 4 technologies |
 | `links` | object | `repo`, `demo`, `article` (all optional) |
 | `year` | text | `2026` or a range such as `2020–2022` |
@@ -96,7 +96,7 @@ Only personal projects appear on the site; client work stays in the CV and on Li
 | Section | Dock command | Dock log | Window | Window commands | Completion |
 |---|---|---|---|---|---|
 | Hero | `startSite();` | `Initializing application...` · `Opening hero.tsx...` | `hero.tsx` | `hero.title("…")` · `hero.role("…")` · `hero.photo("…")` · `hero.intro("…")` · `hero.links([…])` | `✔ Hero Section created.` |
-| About | `renderAbout();` | `Reading about.md...` | `about.md` | `about.heading("…")` · `about.text(3)` · `about.links([…])` | `✔ About Section created.` |
+| About | `renderAbout();` | `Reading about.md...` | `about.md` | `about.heading("…")` · `about.text("…")` · `about.links([…])` | `✔ About Section created.` |
 | Projects | `renderProjects();` | `Fetching projects... 4 found` | `projects.tsx` | `projects.heading("…")` · `projects.card("slug")` | `✔ Projects Section created.` |
 | Stack | `renderStack();` | `Resolving dependencies...` | `stack.json` | `stack.heading("…")` · `stack.group("languages")` | `✔ Stack Section created.` |
 | Contact | `renderContact();` | `Opening channels...` | `contact.tsx` | `contact.heading("…")` · `contact.links([…])` · `contact.location("…")` | `✔ Contact Section created.` |
@@ -109,7 +109,9 @@ Only personal projects appear on the site; client work stays in the CV and on Li
 
 Every completion line also shows the build time, such as `(2.31s)`.
 
-Possible easter eggs: a rare `warn  Coffee level low` during the boot, or `warn  Window closed. Building anyway...` when someone clicks the first dot of a build window.
+Arguments and logs come from the content (B22, Stage 4 PRD): `hero.photo("…")` names the photo file, `hero.intro("12+ years shipping…")` and `about.text("I'm a full-stack software…")` quote the first words of the text, `hero.links(["GitHub", "LinkedIn"])` lists the link labels, `projects.card("<slug>")` comes once per project and the `4 found` count comes from the projects collection. Each build script declares its dock log. On screen, window commands are cut to 29 characters with `…`.
+
+Possible easter eggs (Stage 5): a rare `warn  Coffee level low` during the boot, or `warn  Window closed. Building anyway...` when someone clicks the first dot of a build window.
 
 ---
 
@@ -133,5 +135,7 @@ All in English.
 - [ ] A cover image for each project (16:9, at least 1280 px), replacing the placeholders: from Projects on, the covers carry the page's visual continuity (D20)
 - [x] About section bio
 - [x] Stack list
-- [ ] Project page text for each project (D5)
+- [ ] Project page text for each project (D5): drafted in [09](09-content-draft.md#project-pages-draft-awaiting-approval) for the owner's approval (Stage 4)
 - [ ] Domain
+
+Swapping in the real photo or a cover changes no code: the responsive, ASCII and blurred versions are regenerated at build time (Stage 4 PRD).

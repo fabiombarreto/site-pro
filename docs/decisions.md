@@ -240,6 +240,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 
 ---
 
+## [2026-11-10] Stage 4 PRD approved: final section builds, image-resolve and budgets
+
+**Context:** Stage 4 · Sections and effects needed its scope settled on top of the Stage 3 runtime (PRPs/prds/stage-4-sections-effects.prd.md): the real assets were not in the repository, the base scripts missed their budgets (Projects ≈ 3.4 s against 2.5 s), and the dock showed `Reading <file>...` in every section.
+**Decision:** Stage 4 ships with the placeholder photo and no covers; it builds the image pipeline (Astro `image()` fields, `astro:assets` + `sharp`, responsive AVIF/WebP, the photo eager with `fetchpriority="high"`, covers lazy) and the real files become a content-only swap re-checked by CI. A build-time ASCII version of the photo (about 48 columns, ramp `@%#*+=-:. `, transparent pixels as spaces) and a tiny blurred version of each cover are generated with the images and live only as build-layer data. `image-resolve` for the hero: select → skeleton → the ASCII fills the photo's box in the overlay and vanishes in a 4×4 Bayer order over 700 ms while the photo rises from a low, non-zero opacity; for covers: the inlined blurred version fades out in the overlay as the real cover appears, inside the card. No animated `mask-image` or `filter`. Budgets keep their values: the hero is final with its window gone ≤ 3.2 s from load, and every other section reaches its `✔ <Section> Section created.` line ≤ 2.5 s after its trigger; to fit, cards last about 300–350 ms with a 120 ms overlap (never more than two at once) and sections after the hero may open their window at Enter. Window commands and dock logs come from the content, with each build script declaring its dock log. In `src/runtime/`, the scheduler and controls (scheduler, clock, triggers, focus-rule, resize, keys, controls-timing, main, api) stay frozen except recorded bug fixes; the effects files, an optional `log` field through types.ts and compiler.ts, and layer.ts may change. Committed images carry no EXIF, XMP or GPS metadata. The unstyled → styled effect moves to v1.1 and `warn  Coffee level low` to the Stage 5 easter eggs. Project page bodies are drafted in docs/09-content-draft.md and approved by the owner before they reach the content files.
+**Reason:** Approved by the owner on 2026-11-10: the launch is not blocked on content the owner provides later, the documented budgets and the one-element-at-a-time grammar behind D8 are kept, and effects stay on `opacity` and `clip-path` with no new browser dependency.
+**Areas affected:** build, content, visual-design
+
+---
+
 <!-- Template for future entries:
 
 ## [YYYY-MM-DD] Title of the decision

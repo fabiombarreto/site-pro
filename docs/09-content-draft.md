@@ -73,6 +73,97 @@ Only personal projects. Four cards in a **2 × 2 grid** (one column on mobile); 
 - **Praesto Sum:** why one user, why Cloudflare Workers, and installing it as an app.
 - **site-pro:** how the site builds itself: the build runtime, build windows, the design system, the stack and the decisions in these docs, with a link to the repository.
 
+## Project pages (draft, awaiting approval)
+
+> **Status:** draft · 2026-11-10 · written from the detail page material above and the writing rules, for the owner's approval (Stage 4 PRD). Once approved, each block is copied as is into the body of `src/content/projects/<slug>.md`, and the page title, summary, tags and links stay in the front matter.
+> **Needs the owner:** lines in `[brackets]` hold facts the material does not give; the "What I learned" line for relay and the opening line for AI Track Record put words in the owner's mouth and need a yes or a rewrite. No number appears beyond those in the material (270 review runs, December 2026, React 19).
+
+### relay
+
+```markdown
+The repository is a fork of Wirasm/prp. relay is the plugin I built inside it.
+
+## The problem
+
+Getting an AI agent from an idea to a pull request takes more than one prompt. It needs a spec to work from, a plan someone checked, and a clear signal that the work is done.
+
+## How it works
+
+relay is a Claude Code plugin that takes a feature through the same stages every time:
+
+1. An interactive PRD, written with me in a short Q&A.
+2. A plan, then a plan review.
+3. The implementation, then a code review.
+4. A test run with an auto-correction loop that has a budget.
+
+Every stage has a writer agent and a reviewer agent, and nothing moves on until the reviewer approves. Changes wait in an isolated worktree until I merge them. A validation suite checks the plugin itself.
+
+This site is built with relay, one stage at a time.
+
+## What I learned
+
+I audited 270 review runs. The failure feedback was computed on every run but never used, so each retry started from scratch. Now I check that the next step actually reads what the last one produced.
+```
+
+### AI Track Record
+
+```markdown
+## The question
+
+Which AI coding workflows actually work? I want an answer I can measure and rerun.
+
+## The method
+
+AI Track Record is a local-first benchmark. It gives the same task to different models and prompt versions, and tests the agent never sees grade the result. Every run records its cost, time and quality.
+
+## Status
+
+It's in planning. I plan to publish the first results in December 2026.
+```
+
+### Praesto Sum
+
+```markdown
+## What it is
+
+Praesto Sum is a personal assistant for one user. It puts tasks and Google Calendar in one app you install.
+
+## Why one user
+
+[Owner to write: why it's built for one user.]
+
+## Why Cloudflare Workers
+
+[Owner to write: why it runs on Cloudflare Workers.]
+
+## Installing it
+
+[Owner to write: how it installs as an app, and on which devices.]
+
+It's built with TypeScript and React 19, runs on Cloudflare Workers and is still in development.
+```
+
+### site-pro
+
+```markdown
+## The idea
+
+This site builds itself while you watch. A typed command opens a build window, the window creates the section one element at a time, then steps aside and leaves a normal, readable page.
+
+## How it works
+
+- Astro renders the whole page to HTML at build time, with React components rendered to static HTML. Without JavaScript you get the finished page.
+- A small runtime in plain TypeScript plays the build. Each section has a build script, compiled at build time into a timeline, and one animation loop plays it.
+- The build happens on a layer above the page, so the page never moves. Screen readers skip that layer, and reduced motion turns it off.
+- You're always in control: Esc skips a section, and the dock at the bottom has Skip, speed and Replay.
+
+## How I built it
+
+I designed it in Claude Design and wrote every decision down before any code. Each stage then went through relay, my Claude Code plugin, from PRD to pull request, with tests for every behavior rule.
+
+The code is on GitHub under the MIT license.
+```
+
 ## Stack
 
 A grouped list of technologies, without a frequency meter.

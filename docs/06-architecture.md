@@ -32,9 +32,9 @@ A **static, presentation-only** website: no login, no accounts, no backend, no A
 | Shared state | **nanostores** (+ `@nanostores/react`) | The approach Astro recommends for sharing state between islands. The runtime writes; islands read |
 | Content | Astro Content Collections, with schemas validating the fields from [05](05-content.md) | A content mistake breaks the build, not the site |
 | Syntax highlighting | Shiki (built into Astro) for static snippets; a minimal tokenizer of our own for typed commands | — |
-| Images | Astro image optimization (AVIF/WebP, responsive sizes) | — |
+| Images | Astro image optimization (`astro:assets` with `sharp`; `photo` and `cover` are `image()` content fields; AVIF/WebP, responsive sizes) | Stage 4 PRD. A tiny blurred version of each cover is generated with the images and inlined for the build effect |
 | Page transitions | Astro view transitions | The card grows into the project page header |
-| ASCII art | A build script that turns the hero photo into ASCII (resizes it and maps each pixel's brightness to `@%#*+=-:. `) for its build effect (D12) | Generated once at build time, at no cost in the browser |
+| ASCII art | A build script that turns the hero photo into ASCII (resizes it and maps each pixel's brightness to `@%#*+=-:. `) for its build effect (D12) | Generated once at build time, at no cost in the browser. About 48 columns, transparent pixels as spaces, serialized as data on the photo's build target (never page text) and drawn only in the build layer (Stage 4 PRD) |
 | Share image (OG) | Generated at build time (e.g. Satori), in the site's look | — |
 
 ### Why Astro + React
@@ -160,8 +160,8 @@ The dock is a `role="group"` named "Site build". Its status text, log and hint a
 | Total JS | ≤ 90 KB gzip after idle (React + islands), loaded off the critical path |
 | CSS | ≤ 25 KB gzip |
 | Fonts | Geist (D18) as one variable WOFF2 and JetBrains Mono in 1–2 files, Latin subsets, self-hosted; both preloaded, since the boot types in mono and the headline is in sans |
-| Images | Responsive AVIF/WebP; lazy-loaded except the hero photo |
-| LCP | The hero headline is typed by ~1.7 s and the photo is complete by ~2.4 s ([04](04-animations.md#boot-timeline-hero)); the photo loads with priority |
+| Images | Responsive AVIF/WebP with intrinsic dimensions; lazy-loaded except the hero photo, which loads eagerly with `fetchpriority="high"`; no metadata in committed or served images |
+| LCP | The hero headline is typed by ~1.8 s; the photo starts showing (at a low, non-zero opacity under its ASCII version) by ~1.9 s and is complete by ~2.6 s ([04](04-animations.md#boot-timeline-hero), Stage 4 PRD); the photo loads with priority; LCP ≤ 2.5 s is asserted in Lighthouse CI |
 | CLS | ≈ 0, thanks to reserved space and an overlay-only build layer |
 | Blur | Only on build-layer surfaces, the scrolled nav and the palette, and only while they are visible |
 

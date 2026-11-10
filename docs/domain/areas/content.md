@@ -22,6 +22,8 @@ What the site says and how content is modeled. Sources: docs/05-content.md (mode
 | C14 | Page copy is plain English for anyone; code-flavored text only in the build layer and small labels |
 | C15 | relay's card or page must say the repository is a fork of Wirasm/prp and relay is the plugin built inside it |
 | C16 | Personal content (text, photo, images) is all rights reserved; the code is MIT (D16) |
+| C17 | Committed images carry no EXIF, XMP or GPS metadata (a photo's GPS would reveal the city, C4); `pnpm check:privacy` fails otherwise (Stage 4 PRD) |
+| C18 | `profile.photo` and `projects.cover` are image files in `src/assets` referenced as Astro images; swapping one changes no code, and the responsive, ASCII and blurred versions are regenerated at build time (Stage 4 PRD) |
 
 ## Approved content (docs/09-content-draft.md)
 
@@ -32,7 +34,7 @@ What the site says and how content is modeled. Sources: docs/05-content.md (mode
 
 ## Pending before launch
 
-Real full-body photo, project covers, project page text for each project, domain (D15). Placeholders: `photo-placeholder-body.svg` (900 × 1600) and dot-grid covers from the Design System.
+Real full-body photo, project covers, project page text for each project, domain (D15). Placeholders: `photo-placeholder-body.svg` (900 × 1600) and dot-grid covers from the Design System. Stage 4 ships with the placeholders; the project page text is drafted in docs/09-content-draft.md for the owner's approval.
 
 ## Open Questions
 

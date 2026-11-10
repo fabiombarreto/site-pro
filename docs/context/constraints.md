@@ -31,7 +31,7 @@ Never publish on the site or in the public repository: phone number, email addre
 | CSS | ≤ 25 KB gzip |
 | Runtime + effects | ≤ 18 KB gzip |
 | Hero build | ≤ 3.2 s from load (headline readable by ~1.7 s) |
-| Other sections | ≤ 2.5 s from trigger to usable content |
+| Other sections | ≤ 2.5 s from trigger to usable content (the `✔ <Section> Section created.` line, Stage 4 PRD) |
 
 ## Accessibility
 
