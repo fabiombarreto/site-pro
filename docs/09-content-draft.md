@@ -1,6 +1,6 @@
 # 09 · Content draft
 
-> **Status:** ✅ approved · 2026-11-03 · a placeholder stands in for the photo until it arrives (2026-11-04)
+> **Status:** ✅ approved · 2026-11-03 · a placeholder stands in for the photo until it arrives (2026-11-04) · project page text approved (2026-11-10)
 > **Source:** the owner's career-ops profile (`cv.md`, `config/profile.yml`, `modes/_profile.md`, `voice-dna.md`), the owner's answers in review, and the public GitHub repositories of `fabiombarreto`.
 > Structure follows [05 · Content](05-content.md).
 
@@ -73,10 +73,10 @@ Only personal projects. Four cards in a **2 × 2 grid** (one column on mobile); 
 - **Praesto Sum:** why one user, why Cloudflare Workers, and installing it as an app.
 - **site-pro:** how the site builds itself: the build runtime, build windows, the design system, the stack and the decisions in these docs, with a link to the repository.
 
-## Project pages (draft, awaiting approval)
+## Project pages
 
-> **Status:** draft · 2026-11-10 · written from the detail page material above and the writing rules, for the owner's approval (Stage 4 PRD). Once approved, each block is copied as is into the body of `src/content/projects/<slug>.md`, and the page title, summary, tags and links stay in the front matter.
-> **Needs the owner:** lines in `[brackets]` hold facts the material does not give; the "What I learned" line for relay and the opening line for AI Track Record put words in the owner's mouth and need a yes or a rewrite. No number appears beyond those in the material (270 review runs, December 2026, React 19).
+> **Status:** ✅ approved · 2026-11-10 · written from the detail page material above and the writing rules, and approved by the owner (Stage 4 PRD). Each block is copied as is into the body of `src/content/projects/<slug>.md`; the page title, summary, tags and links stay in the front matter.
+> **Sources:** relay's "What I learned" follows the relay repository's decision record of 2026-07-30 (the audit of 270 review runs). Praesto Sum's reasons come from its public README and its ADR-0003 (Cloudflare D1 behind Workers, chosen for zero cost and nothing to operate) and ADR-0004 (one installable PWA). No number appears beyond those in the material (270 review runs, December 2026, React 19).
 
 ### relay
 
@@ -102,7 +102,7 @@ This site is built with relay, one stage at a time.
 
 ## What I learned
 
-I audited 270 review runs. The failure feedback was computed on every run but never used, so each retry started from scratch. Now I check that the next step actually reads what the last one produced.
+I audited 270 review runs. Each reviewer's feedback was passed along to the next attempt, but no writer agent ever read it, so every retry started from scratch. Now each writer reads the feedback and fixes only what failed. The lesson I keep: check that the next step actually reads what the last one produced.
 ```
 
 ### AI Track Record
@@ -114,11 +114,11 @@ Which AI coding workflows actually work? I want an answer I can measure and reru
 
 ## The method
 
-AI Track Record is a local-first benchmark. It gives the same task to different models and prompt versions, and tests the agent never sees grade the result. Every run records its cost, time and quality.
+AI Track Record is a local-first benchmark. It gives the same task to different models and prompt versions. Tests the agent never sees grade each result, and every run records its cost, time and quality.
 
 ## Status
 
-It's in planning. I plan to publish the first results in December 2026.
+It's still in planning. The first public results are due in December 2026.
 ```
 
 ### Praesto Sum
@@ -130,17 +130,17 @@ Praesto Sum is a personal assistant for one user. It puts tasks and Google Calen
 
 ## Why one user
 
-[Owner to write: why it's built for one user.]
+I built it for myself, to keep tasks and calendar in one place instead of a handful of apps that never talk to each other. One user keeps it small enough for one person to maintain: no accounts, no sign-up, one token protecting the whole API.
 
 ## Why Cloudflare Workers
 
-[Owner to write: why it runs on Cloudflare Workers.]
+I wanted it to cost nothing and need no upkeep: no server at home, no monthly bill, nothing to patch. One Worker on Cloudflare's free plan serves the app, the API and the scheduled jobs, and the data lives in D1, Cloudflare's database.
 
 ## Installing it
 
-[Owner to write: how it installs as an app, and on which devices.]
+It's a PWA, so there's no app store. On my phone it sits on the home screen, and on my PC it opens in its own window. One codebase serves both.
 
-It's built with TypeScript and React 19, runs on Cloudflare Workers and is still in development.
+It's built with TypeScript and React 19 and still in development. Tasks and Google Calendar events already show up side by side; reminders and push notifications come next.
 ```
 
 ### site-pro

@@ -7,7 +7,7 @@ import { Footer } from '../../components/page/Footer';
 import { NavBar } from '../../components/page/NavBar';
 import { ProjectHeader } from '../../components/page/ProjectHeader';
 import { Prose } from '../../components/page/Prose';
-import { resolveAssetUrl } from '../../components/page/resolve-asset';
+import { COVER_SIZES, COVER_WIDTHS, imageSource } from '../../images/pipeline';
 import { loadSiteChrome, pageTitle } from '../../sections/site-chrome';
 import '../../styles/subpages.css';
 
@@ -25,6 +25,9 @@ interface Props {
 const { entry } = Astro.props;
 const { data } = entry;
 const { profile, links, sourceHref } = await loadSiteChrome();
+const cover = data.cover
+  ? await imageSource(data.cover, { widths: COVER_WIDTHS, sizes: COVER_SIZES })
+  : undefined;
 const hasBody = Boolean(entry.body?.trim());
 const Content = hasBody ? (await render(entry)).Content : undefined;
 ---
@@ -47,7 +50,7 @@ const Content = hasBody ? (await render(entry)).Content : undefined;
           status={data.status}
           tags={data.tags}
           repo={data.links.repo}
-          cover={resolveAssetUrl(data.cover)}
+          cover={cover}
         />
         {Content && (
           <Prose>

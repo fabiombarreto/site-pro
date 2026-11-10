@@ -6,6 +6,7 @@ export const EFFECTS = [
   'resolve-lines',
   'pop',
   'stagger',
+  'image-resolve',
   'build-card',
 ] as const;
 
@@ -46,6 +47,7 @@ export interface Timeline {
   section: SectionId;
   file: string;
   command: string;
+  log?: string;
   commandEnd: number;
   windowEnd: number;
   buildStart: number;
@@ -58,6 +60,7 @@ export interface BuildScript {
   section: SectionId;
   file: string;
   command: string;
+  log?: string;
   steps: BuildStep[];
   settle?: number;
   timing?: Partial<Pick<Timeline, 'commandEnd' | 'windowEnd' | 'buildStart'>>;

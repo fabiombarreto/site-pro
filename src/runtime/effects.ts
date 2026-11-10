@@ -1,3 +1,5 @@
+import { createAsciiOverlay } from '../components/build/AsciiOverlay';
+import { createBlurCover } from '../components/build/BlurCover';
 import { createSelectionBox } from '../components/build/SelectionBox';
 import { createSkeleton } from '../components/build/Skeleton';
 import { createTextOverlay } from '../components/build/TextOverlay';
@@ -19,14 +21,18 @@ import {
 } from './effect-dom';
 import {
   LINE_MS,
+  RESOLVE_REVEAL_MS,
   SELECT_MS,
   TYPE_CHAR_MS,
+  asciiGeometry,
   cardPhases,
   decodeGlyphs,
   decodeSettled,
+  ditherAscii,
+  dissolveStep,
   hashSeed,
   popInset,
-  popProgress,
+  photoOpacity,
   resolveLinesAt,
   staggerChildProgress,
   typeCharsAt,
@@ -272,8 +278,9 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
     const sel = selection(ctx);
     const parts = ctx.targets.flatMap((t) => {
       const kids = [...t.children] as HTMLElement[];
-      return (kids.length > 0 ? kids : [t]).map((el) => ({
+      return (kids.length > 0 ? kids : [t]).map((el, index) => ({
         el,
+        index,
         radius: radiusOf(el),
       }));
     });
@@ -282,8 +289,9 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
       render(l) {
         sel.update(l, ctx.duration - FADE_MS, ctx.duration);
         if (l < SELECT_MS) return;
-        const p = popProgress(l);
-        for (const part of parts) poof(part.el, p, part.radius);
+        for (const part of parts) {
+          poof(part.el, staggerChildProgress(l, part.index), part.radius);
+        }
         if (!started) {
           started = true;
           for (const t of ctx.targets) live(t);
@@ -325,6 +333,46 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
     };
   },
 
+  'image-resolve'(ctx) {
+    const sel = selection(ctx);
+    const skel = createSkeleton(ctx.targets.map(docRect));
+    skel.setOpacity(0);
+    const target = ctx.targets[0];
+    const img = target?.querySelector<HTMLElement>('img') ?? null;
+    const ascii = target?.getAttribute('data-build-ascii') ?? '';
+    const piece = ascii ? createAsciiOverlay() : null;
+    if (target && piece) {
+      const box = docRect(target);
+      piece.setPlacement(box, asciiGeometry(ascii, box));
+      piece.setOpacity(0);
+      ctx.fx.append(piece.el);
+    }
+    ctx.fx.append(skel.el);
+    const reveal = RESOLVE_REVEAL_MS;
+    let shown = false;
+    return {
+      render(l) {
+        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
+        skel.setOpacity(l < SELECT_MS || l >= reveal ? 0 : 1);
+        if (l < reveal) return;
+        if (!shown) {
+          shown = true;
+          if (img) setStyle(img, 'opacity', String(photoOpacity(l)));
+          for (const t of ctx.targets) live(t);
+          piece?.setOpacity(1);
+        }
+        piece?.setText(ditherAscii(ascii, dissolveStep(l)));
+        if (img) setStyle(img, 'opacity', String(photoOpacity(l)));
+      },
+      destroy() {
+        sel.destroy();
+        skel.el.remove();
+        piece?.el.remove();
+        if (img) clear(img);
+      },
+    };
+  },
+
   'build-card'(ctx) {
     const sel = selection(ctx);
     const skel = createSkeleton(ctx.targets.map(docRect));
@@ -338,15 +386,27 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
       const tags = [...q('.sp-card-tags > *'), ...q('.sp-card-foot')].map(
         (el) => ({ el, radius: radiusOf(el) }),
       );
-      return { cell, titles, summary, tags };
+      const frame = cell.querySelector<HTMLElement>('.sp-card-cover');
+      const img = cell.querySelector<HTMLElement>('.sp-card-cover img');
+      const blur = cell.getAttribute('data-build-blur');
+      return {
+        cell,
+        titles,
+        summary,
+        tags,
+        frame,
+        img,
+        blur,
+        piece: null as ReturnType<typeof createBlurCover> | null,
+      };
     });
     let covered = false;
     return {
       render(l) {
         const phase = cardPhases(l);
-        sel.update(l, 300, 450);
+        sel.update(l, 200, 300);
         skel.setOpacity(phase.skeleton ? 1 : 0);
-        if (!phase.cover) return;
+        if (!phase.coverStarted) return;
         if (!covered) {
           covered = true;
           for (const c of cells) {
@@ -354,10 +414,21 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
               setStyle(m.el, 'clip-path', HIDDEN_CLIP);
             }
             for (const part of c.tags) poof(part.el, 0, part.radius);
+            if (c.blur && c.img && c.frame) {
+              c.piece = createBlurCover(c.blur);
+              c.piece.setPlacement(docRect(c.frame));
+              ctx.fx.append(c.piece.el);
+              setStyle(c.img, 'opacity', '0');
+            }
             live(c.cell);
           }
         }
         for (const c of cells) {
+          if (c.piece && c.img) {
+            const p = Math.round(phase.cover * 100) / 100;
+            c.piece.setOpacity(1 - p);
+            setStyle(c.img, 'opacity', String(p));
+          }
           for (const m of c.titles) {
             const shown = Math.floor(phase.title * m.total);
             setStyle(m.el, 'clip-path', revealPolygon(m.lines, shown, m.total));
@@ -383,6 +454,8 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
         for (const c of cells) {
           for (const m of [...c.titles, ...c.summary]) clear(m.el);
           for (const part of c.tags) clear(part.el);
+          c.piece?.el.remove();
+          if (c.img) clear(c.img);
         }
       },
     };

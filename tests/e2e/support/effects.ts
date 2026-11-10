@@ -16,7 +16,7 @@ import {
 } from './runtime';
 
 export const EFFECT_ARTIFACTS =
-  '[data-build-fx], [data-build-fx-layer], .sp-build-fx, .sp-select, .sp-skel, .sp-caret, .sp-scramble';
+  '[data-build-fx], [data-build-fx-layer], .sp-build-fx, .sp-select, .sp-skel, .sp-caret, .sp-scramble, .sp-ascii, .sp-blur-cover';
 
 // The characters a scrambled glyph may use (docs/04-animations.md decode effect).
 export const SCRAMBLE_GLYPHS = '!<>-_\\/[]{}=+*^?#';
@@ -114,6 +114,8 @@ export interface TargetFx {
   // elements (the buttons), not their wrapper.
   childClips: string[];
   opacity: string;
+  // Computed opacity of the target's own <img> (the hero photo), or '' when it has none.
+  imgOpacity: string;
   pointerEvents: string;
 }
 
@@ -139,7 +141,9 @@ export const heroFrame = (page: Page): Promise<HeroFrame> =>
     const read = (name: string) => {
       const el = target(name);
       const style = getComputedStyle(el);
+      const img = el.querySelector('img');
       return {
+        imgOpacity: img ? getComputedStyle(img).opacity : '',
         fx: el.getAttribute('data-build-fx'),
         clip: el.style.clipPath,
         childClips: [...el.children].map(

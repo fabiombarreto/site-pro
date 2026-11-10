@@ -1,7 +1,9 @@
 import type { CollectionEntry } from 'astro:content';
 import type { BuildScript } from '../runtime/types';
-import { strings } from '../strings';
-import { pacedSteps } from './pacing';
+import { buildStrings, strings } from '../strings';
+import { openAtEnter, pacedSteps } from './pacing';
+
+const COMMAND = 'renderProjects();';
 
 export function projectsBuild(
   projects: CollectionEntry<'projects'>[],
@@ -22,15 +24,17 @@ export function projectsBuild(
           target: `card-${id}`,
           effect: 'build-card' as const,
         },
-        pitch: index === 0 ? 450 : 330,
+        pitch: index === 0 ? 280 : 180,
       })),
     ],
-    1990,
+    1180,
   );
   return {
     section: 'projects',
     file: 'projects.tsx',
-    command: 'renderProjects();',
+    command: COMMAND,
+    log: buildStrings.fetchingProjects(projects.length),
+    timing: openAtEnter(COMMAND),
     steps,
     settle,
   };

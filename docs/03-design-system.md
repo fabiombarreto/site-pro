@@ -224,6 +224,8 @@ React components are rendered to static HTML at build time, and only hydrated wh
 | `BuildWindow` | The overlay around a section: title bar, command bar, body frame | opening, building, closing |
 | `SelectionBox` | Border, corner handles and a label (`h1`, `card`, `img 800×800`) | drawing, active, fading |
 | `Skeleton` | A block with an optional dimension label and a shimmer | — |
+| `AsciiOverlay` | `aria-hidden` `<pre>` that holds the dithered ASCII over the hero photo (`image-resolve`) | — |
+| `BlurCover` | `aria-hidden` blurred cover image over a project cover, fading out as the real cover rises (`build-card`) | — |
 | `AgentCursor` | Pointer with a name label (D8, v1.1) | moving, idle |
 | `SkipButton`, `SpeedToggle`, `ReplayButton`, `PlayBuildButton` | Dock controls | visible only in the states that need them |
 

@@ -42,7 +42,7 @@ File naming, import order and folder-per-component rules for `src/` are not full
 - Plain helpers are lowercase `.ts` files in the same folder (`cx.ts`, `resolve-asset.ts`, kebab-case when two words).
 - Styles are plain `.css` files imported by the component, named after the component (`NavBar.css`) or the family that shares them (`Actions.css` for Button and TextLink, `Labels.css`), using `sp-` classes.
 - In a component file, the CSS import comes first, then sibling components, then types and helpers.
-- Small reusable assets used by components live in `src/assets/` and are resolved through `resolveAssetUrl`.
+- Small reusable assets used by components live in `src/assets/` and are resolved through `resolveAssetUrl`. Content images (`profile.photo`, project `cover`) are `image()` content fields pointing into `src/assets/` and go through `src/images/pipeline.ts` (`imageSource`) instead.
 
 ## Styling
 

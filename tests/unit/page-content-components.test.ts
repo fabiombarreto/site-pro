@@ -11,7 +11,63 @@ import { Footer } from '../../src/components/page/Footer';
 import { Photo } from '../../src/components/page/Photo';
 import { ProjectCard } from '../../src/components/page/ProjectCard';
 import { ProjectHeader } from '../../src/components/page/ProjectHeader';
-import { resolveAssetUrl } from '../../src/components/page/resolve-asset';
+import type { ImageSource } from '../../src/components/page/image-source';
+
+// Stage 4 Phase 1 (PRD AC-5): the components take pipeline image objects, not URLs.
+const svgPhoto: ImageSource = { src: '/p.svg', width: 900, height: 1600 };
+const rasterPhoto: ImageSource = {
+  src: '/_astro/photo.abc123.png',
+  width: 540,
+  height: 960,
+  sizes: '(min-width: 1024px) 540px, (min-width: 768px) 428px, 270px',
+  sources: [
+    {
+      type: 'image/avif',
+      srcset: '/_astro/photo-270.avif 270w, /_astro/photo-540.avif 540w',
+    },
+    {
+      type: 'image/webp',
+      srcset: '/_astro/photo-270.webp 270w, /_astro/photo-540.webp 540w',
+    },
+  ],
+};
+// A cover without responsive sources (an SVG passes through as it is).
+const plainCover: ImageSource = {
+  src: '/_astro/relay.svg',
+  width: 960,
+  height: 540,
+};
+const rasterCover: ImageSource = {
+  src: '/_astro/relay.abc123.png',
+  width: 960,
+  height: 540,
+  sizes: '(min-width: 768px) 50vw, 100vw',
+  sources: [
+    {
+      type: 'image/avif',
+      srcset: '/_astro/relay-480.avif 480w, /_astro/relay-960.avif 960w',
+    },
+    {
+      type: 'image/webp',
+      srcset: '/_astro/relay-480.webp 480w, /_astro/relay-960.webp 960w',
+    },
+  ],
+};
+
+const imgTag = (html: string): string => {
+  const tag = html.match(/<img\b[^>]*>/);
+  expect(tag, 'an <img> is rendered').not.toBeNull();
+  return tag![0];
+};
+
+// An attribute value of one tag; the name is matched case-insensitively
+// because React writes `srcSet` in camel case.
+const attr = (tag: string, name: string): string | undefined =>
+  new RegExp(`\\s${name}="([^"]*)"`, 'i').exec(tag)?.[1];
+
+// The <source> elements of a picture, in document order.
+const sourceTags = (html: string): string[] =>
+  html.match(/<source\b[^>]*>/g) ?? [];
 
 const repo = 'https://github.com/fabiombarreto/PRPs-agentic-eng';
 const project = {
@@ -24,10 +80,10 @@ const project = {
   status: 'active',
 } as const;
 
-const card = (extra: { repo?: string; cover?: string } = {}): string =>
+const card = (extra: { repo?: string; cover?: ImageSource } = {}): string =>
   renderToStaticMarkup(createElement(ProjectCard, { ...project, ...extra }));
 const header = (
-  extra: { repo?: string; cover?: string; backHref?: string } = {},
+  extra: { repo?: string; cover?: ImageSource; backHref?: string } = {},
 ): string =>
   renderToStaticMarkup(createElement(ProjectHeader, { ...project, ...extra }));
 
@@ -57,38 +113,33 @@ describe('placeholder photo asset', () => {
   });
 });
 
-describe('resolveAssetUrl', () => {
-  it('resolves the profile photo path as stored, without a leading slash', () => {
-    const url = resolveAssetUrl('src/assets/photo-placeholder-body.svg');
-    expect(url).toMatch(/photo-placeholder-body[\w.-]*\.svg|^data:image\/svg/);
-  });
-
-  it('resolves the same asset with or without the leading slash', () => {
-    expect(resolveAssetUrl('/src/assets/photo-placeholder-body.svg')).toBe(
-      resolveAssetUrl('src/assets/photo-placeholder-body.svg'),
-    );
-  });
-
-  it('returns undefined for a missing path or no path', () => {
-    expect(resolveAssetUrl('src/assets/does-not-exist.svg')).toBeUndefined();
-    expect(resolveAssetUrl(undefined)).toBeUndefined();
-    expect(resolveAssetUrl('')).toBeUndefined();
-  });
-});
-
 describe('Photo', () => {
-  it('renders the cutout built state with explicit 900 x 1600 attributes', () => {
-    const html = renderToStaticMarkup(createElement(Photo, { src: '/p.svg' }));
-    expect(html).toMatch(/<div class="sp-photo is-cutout is-built">/);
-    expect(html).toMatch(
-      /<img class="sp-photo-img" src="\/p\.svg" alt="" width="900" height="1600"\s*\/?>/,
+  it('renders the cutout built state with the intrinsic dimensions of the image', () => {
+    const html = renderToStaticMarkup(
+      createElement(Photo, { image: svgPhoto }),
     );
+    expect(html).toMatch(/<div class="sp-photo is-cutout is-built">/);
+    const img = imgTag(html);
+    expect(img).toContain('class="sp-photo-img"');
+    expect(img).toContain('src="/p.svg"');
+    expect(img).toContain('alt=""');
+    expect(img).toContain('width="900"');
+    expect(img).toContain('height="1600"');
     expect(html).not.toContain('style=');
+  });
+
+  it('takes the intrinsic dimensions from the image, not from a constant', () => {
+    const img = imgTag(
+      renderToStaticMarkup(createElement(Photo, { image: rasterPhoto })),
+    );
+    expect(img).toContain('width="540"');
+    expect(img).toContain('height="960"');
+    expect(img).not.toContain('width="900"');
   });
 
   it('passes the requested height only as the --photo-h custom property', () => {
     const html = renderToStaticMarkup(
-      createElement(Photo, { src: '/p.svg', height: 480 }),
+      createElement(Photo, { image: svgPhoto, height: 480 }),
     );
     expect(html).toContain('style="--photo-h:480px"');
     expect(html).not.toMatch(/(?:^|[\s;"])(?:width|height):/);
@@ -96,10 +147,59 @@ describe('Photo', () => {
 
   it('adds the glow class and a described alt text when asked', () => {
     const html = renderToStaticMarkup(
-      createElement(Photo, { src: '/p.svg', alt: 'Portrait', glow: true }),
+      createElement(Photo, { image: svgPhoto, alt: 'Portrait', glow: true }),
     );
     expect(html).toContain('class="sp-photo is-cutout is-built has-glow"');
     expect(html).toContain('alt="Portrait"');
+  });
+
+  it('serves the hero photo eager with high fetch priority, never lazy, when it has priority', () => {
+    const img = imgTag(
+      renderToStaticMarkup(
+        createElement(Photo, { image: rasterPhoto, priority: true }),
+      ),
+    );
+    expect(img).toContain('loading="eager"');
+    expect(img).toContain('fetchpriority="high"');
+    expect(img).not.toContain('loading="lazy"');
+  });
+
+  it('loads a photo without priority lazily and without a fetch priority', () => {
+    const img = imgTag(
+      renderToStaticMarkup(createElement(Photo, { image: rasterPhoto })),
+    );
+    expect(img).toContain('loading="lazy"');
+    expect(img).not.toContain('fetchpriority');
+  });
+
+  it('offers AVIF then WebP candidates in a picture for a raster source', () => {
+    const html = renderToStaticMarkup(
+      createElement(Photo, { image: rasterPhoto, priority: true }),
+    );
+    expect(html).toMatch(/<div class="sp-photo[^"]*"><picture>/);
+    const sources = sourceTags(html);
+    expect(sources).toHaveLength(2);
+    expect(attr(sources[0] ?? '', 'type')).toBe('image/avif');
+    expect(attr(sources[0] ?? '', 'srcset')).toBe(
+      '/_astro/photo-270.avif 270w, /_astro/photo-540.avif 540w',
+    );
+    expect(attr(sources[1] ?? '', 'type')).toBe('image/webp');
+    expect(attr(sources[1] ?? '', 'srcset')).toBe(
+      '/_astro/photo-270.webp 270w, /_astro/photo-540.webp 540w',
+    );
+    for (const source of sources) {
+      expect(attr(source, 'sizes')).toBe(rasterPhoto.sizes);
+    }
+    expect(html.indexOf('<img')).toBeGreaterThan(html.lastIndexOf('<source'));
+  });
+
+  it('serves an SVG photo as it is, without a picture or sources', () => {
+    const html = renderToStaticMarkup(
+      createElement(Photo, { image: svgPhoto, priority: true }),
+    );
+    expect(html).not.toContain('<picture');
+    expect(html).not.toContain('<source');
+    expect(imgTag(html)).toContain('src="/p.svg"');
   });
 });
 
@@ -143,10 +243,33 @@ describe('ProjectCard', () => {
     expect(html).not.toContain('<img');
   });
 
-  it('shows the given cover as a decorative image instead', () => {
-    const html = card({ cover: '/_astro/relay.png' });
-    expect(html).toMatch(/<img src="\/_astro\/relay\.png" alt=""\s*\/?>/);
+  it('shows the given cover as a decorative lazy image with intrinsic dimensions instead', () => {
+    const html = card({ cover: plainCover });
+    const img = imgTag(html);
+    expect(attr(img, 'src')).toBe('/_astro/relay.svg');
+    expect(attr(img, 'alt')).toBe('');
+    expect(attr(img, 'width')).toBe('960');
+    expect(attr(img, 'height')).toBe('540');
+    expect(attr(img, 'loading')).toBe('lazy');
     expect(html).not.toContain('sp-cover-ph');
+    expect(html).not.toContain('<picture');
+  });
+
+  it('offers AVIF then WebP candidates for a raster cover', () => {
+    const html = card({ cover: rasterCover });
+    expect(html).toMatch(/<div class="sp-card-cover"><picture>/);
+    const sources = sourceTags(html);
+    expect(sources.map((s) => attr(s, 'type'))).toEqual([
+      'image/avif',
+      'image/webp',
+    ]);
+    expect(attr(sources[0] ?? '', 'srcset')).toBe(
+      '/_astro/relay-480.avif 480w, /_astro/relay-960.avif 960w',
+    );
+    for (const source of sources) {
+      expect(attr(source, 'sizes')).toBe('(min-width: 768px) 50vw, 100vw');
+    }
+    expect(attr(imgTag(html), 'loading')).toBe('lazy');
   });
 
   it('contains one link to the project and no email, form or handler', () => {
@@ -197,9 +320,24 @@ describe('ProjectHeader', () => {
     expect(header()).toContain(
       '<div class="sp-project-cover"><div class="sp-cover-ph" aria-hidden="true"><span class="mono-sm">relay</span></div></div>',
     );
-    const withCover = header({ cover: '/_astro/relay.png' });
-    expect(withCover).toMatch(/<img src="\/_astro\/relay\.png" alt=""\s*\/?>/);
+    const withCover = header({ cover: plainCover });
+    const img = imgTag(withCover);
+    expect(attr(img, 'src')).toBe('/_astro/relay.svg');
+    expect(attr(img, 'alt')).toBe('');
+    expect(attr(img, 'width')).toBe('960');
+    expect(attr(img, 'height')).toBe('540');
+    expect(attr(img, 'loading')).toBe('lazy');
     expect(withCover).not.toContain('sp-cover-ph');
+  });
+
+  it('offers AVIF then WebP candidates for a raster cover', () => {
+    const html = header({ cover: rasterCover });
+    expect(html).toMatch(/<div class="sp-project-cover"><picture>/);
+    expect(sourceTags(html).map((s) => attr(s, 'type'))).toEqual([
+      'image/avif',
+      'image/webp',
+    ]);
+    expect(attr(imgTag(html), 'loading')).toBe('lazy');
   });
 });
 

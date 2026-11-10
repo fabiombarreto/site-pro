@@ -12,6 +12,7 @@ import {
   BOOT_NAV_AT_MS,
   bootLogCount,
   commandEnterAt,
+  dockLogEnd,
   foldProgress,
   formatSeconds,
   navSlideProgress,
@@ -387,10 +388,12 @@ export function createBuildLayer(options: LayerOptions): BuildLayer {
           dock.setState('building');
           dock.setLog(null);
           dock.setQueued(queueText);
-        } else if (t < tl.windowEnd) {
+        } else if (t < dockLogEnd(tl.windowEnd, enterAt)) {
           dock.setState('typing');
           dock.setCommand(tl.command, typedChars(t, tl.command), true);
-          dock.setLog(t >= enterAt ? buildStrings.readingFile(tl.file) : null);
+          dock.setLog(
+            t >= enterAt ? (tl.log ?? buildStrings.readingFile(tl.file)) : null,
+          );
         } else {
           dock.setState('building');
           dock.setLog(null);

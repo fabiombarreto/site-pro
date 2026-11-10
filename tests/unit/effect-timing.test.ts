@@ -57,8 +57,15 @@ describe('effect durations', () => {
     expect(D.stagger(step({ count: 0 }))).toBe(330);
   });
 
-  it('builds a project card in 450 ms', () => {
-    expect(D['build-card'](step({}))).toBe(450);
+  it('staggers the buttons of a pop group 90 ms apart (330 ms plus 90 ms per further child)', () => {
+    expect(D.pop(step({ count: 1 }))).toBe(330);
+    expect(D.pop(step({ count: 2 }))).toBe(420);
+    expect(D.pop(step({ count: 3 }))).toBe(510);
+    expect(D.pop(step({ count: 0 }))).toBe(330);
+  });
+
+  it('builds a project card in 300 ms', () => {
+    expect(D['build-card'](step({}))).toBe(300);
   });
 
   it('names what is missing instead of guessing a duration', () => {
@@ -294,16 +301,33 @@ describe('resolve-lines, pop, stagger and card phases', () => {
     expect(cardPhases(0).select).toBe(0);
     expect(cardPhases(150).select).toBe(1);
     expect(cardPhases(100).skeleton).toBe(false);
-    expect(cardPhases(200).skeleton).toBe(true);
-    expect(cardPhases(250).skeleton).toBe(false);
-    expect(cardPhases(200).cover).toBe(false);
-    expect(cardPhases(250).cover).toBe(true);
-    expect(cardPhases(250).title).toBe(0);
-    expect(cardPhases(400).title).toBe(1);
-    expect(cardPhases(300).summary).toBe(0);
-    expect(cardPhases(420).summary).toBe(1);
-    expect(cardPhases(360).tags).toBe(0);
-    expect(cardPhases(449).tags).toBeLessThan(1);
-    expect(cardPhases(450).tags).toBe(1);
+    expect(cardPhases(170).skeleton).toBe(true);
+    expect(cardPhases(190).skeleton).toBe(false);
+    // The cover phase is a 0 to 1 progress (190-270 ms); coverStarted carries the old boolean gate.
+    expect(cardPhases(170).coverStarted).toBe(false);
+    expect(cardPhases(189).coverStarted).toBe(false);
+    expect(cardPhases(190).coverStarted).toBe(true);
+    expect(cardPhases(299).coverStarted).toBe(true);
+    expect(cardPhases(170).cover).toBe(0);
+    expect(cardPhases(190).cover).toBe(0);
+    expect(cardPhases(230).cover).toBeCloseTo(0.5, 9);
+    expect(cardPhases(270).cover).toBe(1);
+    expect(cardPhases(300).cover).toBe(1);
+    expect(cardPhases(190).title).toBe(0);
+    expect(cardPhases(270).title).toBe(1);
+    expect(cardPhases(210).summary).toBe(0);
+    expect(cardPhases(285).summary).toBe(1);
+    expect(cardPhases(240).tags).toBe(0);
+    expect(cardPhases(299).tags).toBeLessThan(1);
+    expect(cardPhases(300).tags).toBe(1);
+  });
+
+  it('pops each button of a group at its own time, one after another', () => {
+    // Child i starts 90 ms after child i-1: three buttons are done at 150 + 180 + 2 x 90 = 510 ms.
+    expect(staggerChildProgress(510, 2)).toBe(1);
+    expect(staggerChildProgress(509, 2)).toBeLessThan(1);
+    expect(staggerChildProgress(150 + 180, 0)).toBe(1);
+    expect(staggerChildProgress(150 + 2 * 90, 2)).toBe(0);
+    expect(staggerChildProgress(150 + 2 * 90 + 90, 2)).toBeCloseTo(0.5, 9);
   });
 });

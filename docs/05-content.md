@@ -135,7 +135,7 @@ All in English.
 - [ ] A cover image for each project (16:9, at least 1280 px), replacing the placeholders: from Projects on, the covers carry the page's visual continuity (D20)
 - [x] About section bio
 - [x] Stack list
-- [ ] Project page text for each project (D5): drafted in [09](09-content-draft.md#project-pages-draft-awaiting-approval) for the owner's approval (Stage 4)
+- [x] Project page text for each project (D5): approved in [09](09-content-draft.md#project-pages) on 2026-11-10 (Stage 4)
 - [ ] Domain
 
 Swapping in the real photo or a cover changes no code: the responsive, ASCII and blurred versions are regenerated at build time (Stage 4 PRD).

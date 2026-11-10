@@ -1,8 +1,10 @@
 import './Photo.css';
 import { cx } from './cx';
+import type { ImageSource } from './image-source';
 
 interface PhotoProps {
-  src: string;
+  image: ImageSource;
+  priority?: boolean;
   alt?: string;
   height?: number;
   glow?: boolean;
@@ -10,7 +12,8 @@ interface PhotoProps {
 }
 
 export function Photo({
-  src,
+  image,
+  priority = false,
   alt = '',
   height,
   glow = false,
@@ -27,15 +30,34 @@ export function Photo({
     height === undefined
       ? undefined
       : ({ '--photo-h': `${height}px` } as React.CSSProperties);
+  const img = (
+    <img
+      className="sp-photo-img"
+      src={image.src}
+      alt={alt}
+      width={image.width}
+      height={image.height}
+      loading={priority ? 'eager' : 'lazy'}
+      {...(priority ? { fetchpriority: 'high' } : {})}
+    />
+  );
   return (
     <div className={classes} style={style}>
-      <img
-        className="sp-photo-img"
-        src={src}
-        alt={alt}
-        width={900}
-        height={1600}
-      />
+      {image.sources && image.sources.length > 0 ? (
+        <picture>
+          {image.sources.map((source) => (
+            <source
+              key={source.type}
+              type={source.type}
+              srcSet={source.srcset}
+              sizes={image.sizes}
+            />
+          ))}
+          {img}
+        </picture>
+      ) : (
+        img
+      )}
     </div>
   );
 }

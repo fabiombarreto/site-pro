@@ -73,9 +73,12 @@ The axe matrix (the boot, mid-hero, mid-projects and done moments, in both theme
 Each gate is its own CI job and exits non-zero on a violation.
 
 - `pnpm check:tokens` (CI job `tokens`, AC-9): no color or `box-shadow` literal in `src/` outside `src/styles/tokens.css` and `src/assets/`.
-- `pnpm check:privacy` (CI job `privacy`, AC-8): privacy rules over `dist/`; run `pnpm build` first.
-- `pnpm check:budgets` (CI job `budgets`, AC-10): gzip budgets over `dist/` (JS total 90 KB, JS before first paint 20 KB, runtime 18 KB, CSS 25 KB; the runtime is the JS only the home page loads, followed through its module imports); run `pnpm build` first. Measured on 2026-11-08 (Stage 3 Phase 5): JS total 13.9 KB, runtime 12.1 KB, critical 12.8 KB, CSS 7.4 KB gzip.
-- `pnpm lighthouse` (CI job `lighthouse`, AC-10): Lighthouse CI per `lighthouserc.json`, median of 3 runs on `/` and `/projects/relay/`, every category >= 0.95 and CLS <= 0.01. It needs `pnpm build` and Chrome; locally set `CHROME_PATH=$(node -p "require('@playwright/test').chromium.executablePath()")`. Local Windows recipe: docs/development.md.
+- `pnpm check:privacy` (CI job `privacy`, AC-8): privacy rules over `dist/`; run `pnpm build` first. It also fails on any raster image in `src/assets` carrying EXIF or XMP metadata (GPS lives in EXIF) and on SVGs with XMP/RDF or `exif:` markup (`--assets <dir>` overrides the folder).
+- `pnpm check:budgets` (CI job `budgets`, AC-10): gzip budgets over `dist/` (JS total 90 KB, JS before first paint 20 KB, runtime 18 KB, CSS 25 KB; the runtime is the JS only the home page loads, followed through its module imports); run `pnpm build` first. Measured in Stage 4 Phase 5: JS total 14.7 KB, runtime 12.8 KB, critical 13.5 KB, CSS 7.5 KB gzip.
+- `pnpm lighthouse` (CI job `lighthouse`, AC-10): Lighthouse CI per `lighthouserc.json`, median of 3 runs on `/` and `/projects/relay/`, every category >= 0.95, CLS <= 0.01 and LCP <= 2.5 s. It needs `pnpm build` and Chrome; locally set `CHROME_PATH=$(node -p "require('@playwright/test').chromium.executablePath()")`. Local Windows recipe: docs/development.md.
+- `pnpm check:frozen` (CI job `check`, Stage 4 AC-14): the nine frozen `src/runtime/` files (scheduler, clock, triggers, focus-rule, resize, keys, controls-timing, main, api) against `b4271cb`; a recorded bug-fix exception needs its docs/decisions.md entry.
+
+The owner rhythm review is tracked in docs/stage-4-rhythm-review.md and is not an automated gate.
 
 ## Behavior rule coverage (Stage 3)
 
@@ -102,7 +105,9 @@ The 18 rules of the "Behavior rules" section of docs/02-experience.md map to PRD
 | **No JavaScript** | AC-15 | `tests/e2e/runtime-fallbacks.spec.ts` (no JS, aborted runtime, throwing runtime; the aborted-runtime test reveals the page after 1.5 s paused plus 3 s run of clock time), `tests/e2e/build-layer-absent.spec.ts`, `tests/e2e/effects-absent.spec.ts`, `tests/unit/runtime-mode-clock.test.ts` (the watchdog constant is 3 s) | `tests/e2e/behavior-gaps.spec.ts` (an explicit 3 s end-to-end bound) |
 | **Background tab** | AC-16 | `tests/e2e/runtime-build-order.spec.ts`, `tests/unit/runtime-scheduler.test.ts`, `tests/unit/runtime-scheduler-tick.test.ts` | - |
 
-### Other acceptance criteria
+### Other acceptance criteria (Stage 3 numbering)
+
+The AC numbers in this section are Stage 3's. Stage 4's AC-1 to AC-14 are mapped in "Stage 4 AC-to-spec mapping" below.
 
 - **AC-1** (hero build): `tests/e2e/effects-scripts.spec.ts`, `tests/e2e/effects-hero.spec.ts`, `tests/e2e/build-layer-show.spec.ts` and `tests/unit/runtime-pacing.test.ts` cover the order, the 2.0 s headline, the compiled duration of at most 3200 ms and the idle dock. The first-paint pending state and the clock-measured 3.2 s are gaps closed by `tests/e2e/behavior-gaps.spec.ts`.
 - **AC-17** (done state and Replay): `tests/e2e/controls-done-replay.spec.ts` and `tests/e2e/controls-speed.spec.ts`.
@@ -112,6 +117,27 @@ The 18 rules of the "Behavior rules" section of docs/02-experience.md map to PRD
 - **AC-21** (mobile build layer): `tests/e2e/build-layer-layout.spec.ts` covers the compact bar and the dock width and inset at 375x812; the mobile tap and the sticky bars of tall sections are closed by `tests/e2e/mobile-build.spec.ts`.
 
 The Stage 2 spec `tests/e2e/home-no-build-layer.spec.ts` was rewritten in Phase 4 for the real build layer (not weakened).
+
+## Stage 4 AC-to-spec mapping
+
+The AC numbers below are those of `PRPs/prds/stage-4-sections-effects.prd.md` and differ from the Stage 3 numbers above. "Covered by" lists specs that exist today and cite the Stage 4 AC in their header; "Gap closed by" lists specs the test pair authors after code review, and `-` means no gap.
+
+| AC | Covered by | Gap closed by |
+|---|---|---|
+| **AC-1** Hero photo from ASCII | `tests/e2e/image-resolve-hero.spec.ts`, `tests/unit/image-resolve-timing.test.ts`, `tests/unit/image-resolve-contract.test.ts`, `tests/unit/hero-photo-command.test.ts` | - |
+| **AC-2** ASCII generated at build time | `tests/unit/image-ascii.test.ts`, `tests/e2e/image-delivery.spec.ts` | - (a missing or unreadable photo already fails the build naming the file in `tests/unit/image-ascii.test.ts`) |
+| **AC-3** Covers resolve from blur | `tests/unit/image-blur.test.ts`, `tests/unit/image-resolve-timing.test.ts`, `tests/e2e/image-delivery.spec.ts` (no cover, no blur data) | `tests/e2e/cover-resolve.spec.ts` (a test-side fixture cover through the real runtime, via `tests/e2e/support/cover-fixture.ts`, and the no-cover card) |
+| **AC-4** Swapping in the real assets | `tests/unit/privacy-image-metadata.test.ts` | `tests/e2e/asset-swap-invariance.spec.ts` (photo, cover and both swapped at 1280x800 and 375x812, no-JS and built page) |
+| **AC-5** Image delivery | `tests/e2e/image-delivery.spec.ts` | - |
+| **AC-6** Section budgets | `tests/e2e/section-dock-logs.spec.ts`, `tests/unit/runtime-pacing.test.ts`, `tests/unit/hero-photo-command.test.ts`, `tests/unit/section-call-args.test.ts` | `tests/e2e/section-budgets.spec.ts` (the clock-measured 2.0 s, 3.2 s and 2.5 s marks) |
+| **AC-7** Every section with its docs/04 effects | `tests/e2e/section-dock-logs.spec.ts` (window opens at Enter), `tests/unit/section-call-args.test.ts` | `tests/e2e/section-budgets.spec.ts` (card overlap from card start times, at most two cards building, button and chip spacing) |
+| **AC-8** Commands and logs from the content | `tests/e2e/section-dock-logs.spec.ts`, `tests/unit/section-call-args.test.ts` | - |
+| **AC-9** Layout and accessibility during the new effects | `tests/e2e/image-resolve-hero.spec.ts` (ASCII in the `aria-hidden` overlay), `tests/unit/image-resolve-contract.test.ts` | `tests/e2e/image-effects-matrix.spec.ts` (axe and layout mid dissolve, mid cover resolve and after the build, both themes, 1280x800 and 375x812; at the cover moment the fading build-layer selection label inside the `aria-hidden` overlay is excluded from axe by name) |
+| **AC-10** Instant paths leave nothing behind | `tests/e2e/image-resolve-hero.spec.ts` | `tests/e2e/cover-resolve.spec.ts` (skip, run all, dock skip, window bar, focus, infinity, width change mid cover, reduced motion, saved infinity, no JS) |
+| **AC-11** Mobile | `tests/e2e/image-resolve-hero.spec.ts`, `tests/unit/image-resolve-timing.test.ts` | - |
+| **AC-12** Budgets and Lighthouse | `tests/unit/image-resolve-contract.test.ts` (the runtime never imports the image generators), `tests/unit/runtime-budget.test.ts`, `tests/unit/quality-gates.test.ts`, `tests/e2e/quality-gates.spec.ts`; Lighthouse medians only in the CI `lighthouse` job | `tests/unit/quality-gates.test.ts` updated for the LCP assertion (2500, median) |
+| **AC-13** Project pages | `tests/e2e/project-pages.spec.ts`, `tests/unit/content-copy.test.ts`, `tests/e2e/subpages-axe.spec.ts` (axe on the four project pages in both themes) | - |
+| **AC-14** Scheduler unchanged | `pnpm check:frozen` (CI job `check`) | `tests/unit/check-frozen-runtime.test.ts`; the Stage 3 behavior-rule specs above keep passing |
 
 ### Test conventions for animated pages
 

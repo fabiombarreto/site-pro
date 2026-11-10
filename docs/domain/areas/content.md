@@ -31,10 +31,11 @@ What the site says and how content is modeled. Sources: docs/05-content.md (mode
 - Projects (2 × 2): relay (active), AI Track Record (planning), Praesto Sum (in development), site-pro (in development).
 - Stack groups: languages, frontend, backend, data, cloud, ai.
 - Contact: `Let's talk.` with GitHub, LinkedIn and `Brazil (UTC-3)`.
+- Project pages: one Markdown body per project (relay, AI Track Record, Praesto Sum, site-pro), approved on 2026-11-10 and copied as is into `src/content/projects/<slug>.md`.
 
 ## Pending before launch
 
-Real full-body photo, project covers, project page text for each project, domain (D15). Placeholders: `photo-placeholder-body.svg` (900 × 1600) and dot-grid covers from the Design System. Stage 4 ships with the placeholders; the project page text is drafted in docs/09-content-draft.md for the owner's approval.
+Real full-body photo, project covers, domain (D15). Placeholders: `photo-placeholder-body.svg` (900 × 1600) and dot-grid covers from the Design System. Stage 4 ships with the placeholders. The project page text for each project was approved on 2026-11-10 (docs/09-content-draft.md, "Project pages").
 
 ## Open Questions
 

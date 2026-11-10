@@ -55,8 +55,15 @@ test.describe('compiled build scripts in the served HTML', () => {
           step.start,
         );
       }
-      expect(t.commandEnd).toBeLessThan(t.windowEnd);
+      // Sections after the hero open their window at Enter (windowEnd equals commandEnd).
+      expect(t.commandEnd).toBeLessThanOrEqual(t.windowEnd);
       expect(t.windowEnd).toBeLessThan(t.buildStart);
+      if (t.section === 'top') {
+        expect(t.commandEnd).toBeLessThan(t.windowEnd);
+      } else {
+        expect(t.windowEnd).toBe(t.commandEnd);
+        expect(t.buildStart - t.windowEnd).toBe(280);
+      }
       expect(t.createdAt).toBeGreaterThanOrEqual(
         t.steps[t.steps.length - 1]?.end ?? Infinity,
       );

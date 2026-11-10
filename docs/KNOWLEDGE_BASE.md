@@ -27,6 +27,7 @@ Index of detailed documentation for site-pro. One line per file; open the file f
 → docs/development.md — prerequisites, commands, running Lighthouse and the E2E suite locally, docs-first workflow, adding sections and projects
 → docs/api-reference.md — no HTTP API; routes, content schemas, visitor controls and the runtime TypeScript API (controls, stores, types, compiler, clock)
 → docs/troubleshooting.md — Claude Design pitfalls and runtime pitfalls from the design
+→ docs/stage-4-rhythm-review.md — Stage 4 owner hand-off: rhythm review items (ASCII color, photo start opacity, LCP) on the preview; awaiting owner review
 
 ## AI Governance
 

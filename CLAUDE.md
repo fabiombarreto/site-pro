@@ -12,7 +12,7 @@ site-pro is a personal, static, presentation-only portfolio for the developer co
 
 ## Essential commands
 
-Scaffolded in Stage 2 Phase 1: `pnpm install`, `pnpm dev`, `pnpm build`, `pnpm check` (astro check), `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm test:e2e`, `pnpm check:tokens`, `pnpm check:privacy`, `pnpm check:budgets`, `pnpm lighthouse`. Details: docs/development.md.
+Scaffolded in Stage 2 Phase 1: `pnpm install`, `pnpm dev`, `pnpm build`, `pnpm check` (astro check), `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm test:e2e`, `pnpm check:tokens`, `pnpm check:privacy`, `pnpm check:budgets`, `pnpm check:frozen` (Stage 4, needs git history), `pnpm lighthouse`. Details: docs/development.md.
 
 ## Key patterns
 

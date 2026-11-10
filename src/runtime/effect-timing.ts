@@ -11,15 +11,33 @@ export const DECODE_MS = 350;
 export const LINE_MS = 40;
 export const POP_MS = 180;
 export const STAGGER_GAP_MS = 90;
-export const CARD_MS = 450;
+export const CARD_MS = 300;
 export const SCRAMBLE_FRAME_MS = 40;
 export const WINDOW_CALL_MAX = 29;
+// image-resolve: select (150) + skeleton (150), then the 700 ms dissolve.
+export const DISSOLVE_MS = 700;
+export const DISSOLVE_STEPS = 16;
+// The photo rises from this non-zero opacity (a hidden image is not counted
+// as the largest paint); one tunable constant.
+export const PHOTO_START_OPACITY = 0.12;
+// Monospace advance in em; mirrors the build-time ASCII cell aspect, which
+// the runtime must not import (it pulls in sharp).
+export const ASCII_ADVANCE = 0.6;
+export const BAYER_4X4: readonly (readonly number[])[] = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+];
 export const SCRAMBLE_GLYPHS = '!<>-_\\/[]{}=+*^?#';
 
 const DOCK_START_MS = 250;
 const DOCK_CHAR_MS = 40;
 const DOCK_JITTER_MS = 10;
 const DOCK_PAUSE_MS = 100;
+
+// End of the select and skeleton phases of image-resolve (ms).
+export const RESOLVE_REVEAL_MS = 300;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
@@ -42,11 +60,13 @@ export const EFFECT_DURATION_MS: Record<
     s.count === undefined
       ? 'needs count'
       : SELECT_MS + SKELETON_BARS_MS + s.count * LINE_MS,
-  pop: () => SELECT_MS + POP_MS,
+  pop: (s) =>
+    SELECT_MS + POP_MS + Math.max((s.count ?? 1) - 1, 0) * STAGGER_GAP_MS,
   stagger: (s) =>
     s.count === undefined
       ? 'needs count'
       : SELECT_MS + POP_MS + Math.max(s.count - 1, 0) * STAGGER_GAP_MS,
+  'image-resolve': () => RESOLVE_REVEAL_MS + DISSOLVE_MS,
   'build-card': () => CARD_MS,
 };
 
@@ -171,17 +191,69 @@ export function staggerChildProgress(localMs: number, index: number): number {
 export function cardPhases(localMs: number): {
   select: number;
   skeleton: boolean;
-  cover: boolean;
+  cover: number;
+  coverStarted: boolean;
   title: number;
   summary: number;
   tags: number;
 } {
   return {
     select: ramp(localMs, 0, 150),
-    skeleton: localMs >= 150 && localMs < 250,
-    cover: localMs >= 250,
-    title: ramp(localMs, 250, 400),
-    summary: ramp(localMs, 300, 420),
-    tags: ramp(localMs, 360, 450),
+    skeleton: localMs >= 150 && localMs < 190,
+    cover: ramp(localMs, 190, 270),
+    coverStarted: localMs >= 190,
+    title: ramp(localMs, 190, 270),
+    summary: ramp(localMs, 210, 285),
+    tags: ramp(localMs, 240, 300),
+  };
+}
+
+export function dissolveProgress(localMs: number): number {
+  return ramp(localMs, RESOLVE_REVEAL_MS, RESOLVE_REVEAL_MS + DISSOLVE_MS);
+}
+
+export function dissolveStep(localMs: number): number {
+  return Math.floor(DISSOLVE_STEPS * dissolveProgress(localMs));
+}
+
+export function photoOpacity(localMs: number): number {
+  const value =
+    PHOTO_START_OPACITY + (1 - PHOTO_START_OPACITY) * dissolveProgress(localMs);
+  return Math.round(value * 100) / 100;
+}
+
+export function ditherAscii(ascii: string, step: number): string {
+  if (step <= 0) return ascii;
+  let out = '';
+  let x = 0;
+  let y = 0;
+  for (const ch of ascii) {
+    if (ch === '\n') {
+      out += ch;
+      x = 0;
+      y++;
+      continue;
+    }
+    out += BAYER_4X4[y % 4][x % 4] < step ? ' ' : ch;
+    x++;
+  }
+  return out;
+}
+
+export function asciiGeometry(
+  ascii: string,
+  box: { width: number; height: number },
+): { cols: number; rows: number; fontSize: number; lineHeight: number } {
+  if (ascii.length === 0)
+    return { cols: 0, rows: 0, fontSize: 0, lineHeight: 0 };
+  const lines = ascii.split('\n');
+  const cols = Math.max(...lines.map((line) => line.length));
+  const rows = lines.length;
+  if (cols === 0) return { cols: 0, rows, fontSize: 0, lineHeight: 0 };
+  return {
+    cols,
+    rows,
+    fontSize: box.width / (cols * ASCII_ADVANCE),
+    lineHeight: box.height / rows,
   };
 }

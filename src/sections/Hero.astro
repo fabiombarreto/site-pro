@@ -2,7 +2,13 @@
 import type { CollectionEntry } from 'astro:content';
 import { Button } from '../components/page/Button';
 import { Photo } from '../components/page/Photo';
-import { resolveAssetUrl } from '../components/page/resolve-asset';
+import {
+  PHOTO_SIZES,
+  asciiForAsset,
+  imageSource,
+  photoWidths,
+  sourcePathFor,
+} from '../images/pipeline';
 import { compileScript, serializeTimeline } from '../runtime/compiler';
 import { strings } from '../strings';
 import { heroBuild } from './hero.build';
@@ -14,11 +20,15 @@ interface Props {
 
 const { profile } = Astro.props;
 const links = profileLinks(profile);
-const photoUrl = resolveAssetUrl(profile.photo);
-if (!photoUrl) throw new Error('profile.photo does not resolve to an asset');
+const photo = await imageSource(profile.photo, {
+  widths: photoWidths(profile.photo),
+  sizes: PHOTO_SIZES,
+});
+const ascii = await asciiForAsset(profile.photo);
 const [first = '', ...rest] = profile.headline.split(' ');
 const remainder = rest.join(' ');
-const timeline = compileScript(heroBuild(profile));
+const photoName = sourcePathFor(profile.photo).split(/[\\/]/).pop();
+const timeline = compileScript(heroBuild(profile, photoName));
 ---
 
 <section
@@ -32,8 +42,12 @@ const timeline = compileScript(heroBuild(profile));
       {first} <br />
       {remainder}
     </h1>
-    <div class="sp-hero-photo" data-build-target="photo">
-      <Photo src={photoUrl} alt={profile.name} />
+    <div
+      class="sp-hero-photo"
+      data-build-target="photo"
+      data-build-ascii={ascii}
+    >
+      <Photo image={photo} alt={profile.name} priority />
     </div>
     <p class="sp-hero-role text-2xl" data-build-target="role">
       {profile.role}

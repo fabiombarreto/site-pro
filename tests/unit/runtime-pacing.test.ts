@@ -102,25 +102,45 @@ describe('base scripts compiled against the content', () => {
     expect(t.steps.map((s) => s.call)).toEqual([
       `hero.title(${q}Fabio Barreto.${q})`,
       `hero.role(${q}Senior Software Engineer${q})`,
-      'hero.photo(…)',
-      'hero.intro(…)',
-      'hero.links([…])',
+      // The content holds the photo as a bare path string here, so the typed file name falls back to an ellipsis.
+      `hero.photo(${q}…${q})`,
+      `hero.intro(${q}12+ years shipping…${q})`,
+      `hero.links([${q}GitHub${q}, ${q}LinkedIn${q}])`,
     ]);
     expect(t.steps.map((s) => s.effect)).toEqual([
       'type-text',
       'decode',
-      'skeleton',
+      'image-resolve',
       'resolve-lines',
       'pop',
     ]);
-    [1300, 1500, 1600, 1900, 2200].forEach((ms, i) =>
+    // Phase 3 tuning: starts 1300/1500/1600/1850/2080 (was 1900/2200 for the last two).
+    [1300, 1500, 1600, 1850, 2080].forEach((ms, i) =>
       expect(Math.abs((t.steps[i]?.start ?? 0) - ms)).toBeLessThanOrEqual(50),
     );
     expect(t.steps[0]?.end ?? Infinity).toBeLessThanOrEqual(2000);
     expect(t.commandEnd).toBe(730);
     expect(t.buildStart).toBe(1300);
+    // The 1000 ms photo step runs 1600-2600; the hero is created at 2650 and done at 3150.
+    expect(t.steps[2]?.start).toBe(1600);
+    expect(t.steps[2]?.end).toBe(2600);
+    expect(t.createdAt).toBe(2650);
     expect(t.createdAt).toBeGreaterThanOrEqual(t.steps[4]?.end ?? Infinity);
+    expect(t.duration).toBe(3150);
     expect(t.duration).toBeLessThanOrEqual(3200);
+  });
+
+  it('pops the three hero buttons one after another, 510 ms in all', () => {
+    const t = compileScript(heroBuild(profile));
+    const links = t.steps[4];
+    expect((links?.end ?? 0) - (links?.start ?? 0)).toBe(
+      330 + 90 * (profile.links.length + 1 - 1),
+    );
+    expect((links?.end ?? 0) - (links?.start ?? 0)).toBe(510);
+  });
+
+  it('gives the hero no dock log (it keeps its boot logs)', () => {
+    expect(compileScript(heroBuild(profile)).log).toBeUndefined();
   });
 
   it('types the headline for 150 ms plus 28 ms per character taken from the content', () => {
@@ -132,22 +152,27 @@ describe('base scripts compiled against the content', () => {
     expect((title?.end ?? 0) - (title?.start ?? 0)).toBe(150 + 13 * 28);
   });
 
-  it('builds About with prototype v2 offsets 0, 250 and 850', () => {
+  it('builds About with offsets 0, 250 and 750, opening its window at Enter', () => {
     const t = compileScript(aboutBuild(profile));
     expect(t.steps.map((s) => s.call)).toEqual([
       `about.heading(${q}About me${q})`,
-      'about.text(…)',
-      'about.links([…])',
+      `about.text(${q}I'm a full-stack software…${q})`,
+      `about.links([${q}GitHub${q}, ${q}LinkedIn${q}])`,
     ]);
-    [0, 250, 850].forEach((ms, i) =>
+    [0, 250, 750].forEach((ms, i) =>
       expect(Math.abs((offsets(t)[i] ?? 0) - ms)).toBeLessThanOrEqual(60),
     );
-    expect(Math.abs(t.createdAt - t.buildStart - 1150)).toBeLessThanOrEqual(
-      200,
-    );
+    expect(t.createdAt - t.buildStart).toBe(1230);
+    expect(t.commandEnd).toBe(890);
+    expect(t.windowEnd).toBe(t.commandEnd);
+    expect(t.buildStart).toBe(t.commandEnd + 280);
+    expect(t.log).toBe('Reading about.md...');
+    // Two buttons pop one after another: 330 + 90 ms.
+    const links = t.steps[2];
+    expect((links?.end ?? 0) - (links?.start ?? 0)).toBe(420);
   });
 
-  it('builds Projects with one card per project, cards 330 ms apart and each 120 ms before the previous ends', () => {
+  it('builds Projects with one card per project, 300 ms each, 180 ms apart and 120 ms before the previous ends', () => {
     const t = compileScript(projectsBuild(projects));
     expect(t.steps.map((s) => s.call)).toEqual([
       `projects.heading(${q}Selected work${q})`,
@@ -155,14 +180,25 @@ describe('base scripts compiled against the content', () => {
     ]);
     expect(t.steps.slice(1).every((s) => s.effect === 'build-card')).toBe(true);
     const cards = t.steps.slice(1);
-    expect(Math.abs((offsets(t)[1] ?? 0) - 450)).toBeLessThanOrEqual(60);
+    expect(Math.abs((offsets(t)[1] ?? 0) - 280)).toBeLessThanOrEqual(60);
+    cards.forEach((card) => expect(card.end - card.start).toBe(300));
     cards.slice(1).forEach((card, i) => {
       expect(card.start).toBe((cards[i]?.end ?? 0) - 120);
-      expect(card.start - (cards[i]?.start ?? 0)).toBe(330);
+      expect(card.start - (cards[i]?.start ?? 0)).toBe(180);
     });
-    expect(Math.abs(t.createdAt - t.buildStart - 1990)).toBeLessThanOrEqual(
-      200,
-    );
+    expect(t.createdAt - t.buildStart).toBe(1180);
+    expect(t.windowEnd).toBe(t.commandEnd);
+    expect(t.buildStart).toBe(t.commandEnd + 280);
+    expect(t.log).toBe('Fetching projects... 4 found');
+  });
+
+  it('never has more than two cards building at once', () => {
+    const t = compileScript(projectsBuild(projects));
+    const cards = t.steps.slice(1);
+    for (let ms = t.buildStart; ms <= t.createdAt; ms++) {
+      const active = cards.filter((c) => c.start <= ms && ms < c.end).length;
+      expect(active).toBeLessThanOrEqual(2);
+    }
   });
 
   it('adds a card step for a project added to the content', () => {
@@ -170,9 +206,10 @@ describe('base scripts compiled against the content', () => {
     const t = compileScript(projectsBuild(more));
     expect(t.steps.at(-1)?.call).toBe(`projects.card(${q}extra${q})`);
     expect(t.steps.at(-1)?.target).toBe('card-extra');
+    expect(t.log).toBe('Fetching projects... 5 found');
   });
 
-  it('builds Stack with one staggered group per content group, the first at 400 ms and the rest 150 ms apart', () => {
+  it('builds Stack with one staggered group per content group, the first at 320 ms and the rest 100 ms apart', () => {
     const t = compileScript(stackBuild(stack));
     expect(t.steps.map((s) => s.call)).toEqual([
       `stack.heading(${q}What I work with${q})`,
@@ -182,7 +219,7 @@ describe('base scripts compiled against the content', () => {
     expect(groups.every((s) => s.effect === 'stagger')).toBe(true);
     groups.forEach((_, i) =>
       expect(
-        Math.abs((offsets(t)[i + 1] ?? 0) - (400 + i * 150)),
+        Math.abs((offsets(t)[i + 1] ?? 0) - (320 + i * 100)),
       ).toBeLessThanOrEqual(60),
     );
     // A group of n chips staggers for 330 ms plus 90 ms per further chip.
@@ -191,23 +228,65 @@ describe('base scripts compiled against the content', () => {
         330 + 90 * ((stack.groups[i]?.items.length ?? 1) - 1),
       ),
     );
-    expect(Math.abs(t.createdAt - t.buildStart - 1350)).toBeLessThanOrEqual(
-      200,
-    );
+    expect(t.createdAt - t.buildStart).toBe(1270);
+    expect(t.windowEnd).toBe(t.commandEnd);
+    expect(t.buildStart).toBe(t.commandEnd + 280);
+    expect(t.log).toBe('Resolving dependencies...');
   });
 
-  it('builds Contact with offsets 0, 450 and 650', () => {
+  it('builds Contact with offsets 0, 350 and 580, the location last', () => {
     const t = compileScript(contactBuild(profile));
     expect(t.steps.map((s) => s.call)).toEqual([
       `contact.heading(${q}Let's talk.${q})`,
-      'contact.links([…])',
-      'contact.location(…)',
+      `contact.links([${q}GitHub${q}, ${q}LinkedIn${q}])`,
+      `contact.location(${q}Brazil (UTC-3)${q})`,
     ]);
-    [0, 450, 650].forEach((ms, i) =>
+    [0, 350, 580].forEach((ms, i) =>
       expect(Math.abs((offsets(t)[i] ?? 0) - ms)).toBeLessThanOrEqual(60),
     );
-    expect(Math.abs(t.createdAt - t.buildStart - 1100)).toBeLessThanOrEqual(
-      200,
+    // The location chip ends at 1122 ms, so the 60 ms minimum settle lands
+    // created at 1182 ms (just past the 1180 ms budget).
+    expect(t.createdAt - t.buildStart).toBe(1182);
+    expect(t.commandEnd).toBe(970);
+    expect(t.windowEnd).toBe(t.commandEnd);
+    expect(t.buildStart).toBe(t.commandEnd + 280);
+    expect(t.log).toBe('Opening channels...');
+    const links = t.steps[1];
+    expect((links?.end ?? 0) - (links?.start ?? 0)).toBe(420);
+  });
+
+  it('creates each section within its budget on the committed content', () => {
+    const hero = compileScript(heroBuild(profile));
+    expect(hero.steps[0]?.end ?? Infinity).toBeLessThanOrEqual(2000);
+    expect(hero.duration).toBeLessThanOrEqual(3200);
+    for (const script of [
+      aboutBuild(profile),
+      projectsBuild(projects),
+      stackBuild(stack),
+      contactBuild(profile),
+    ]) {
+      const t = compileScript(script);
+      expect(t.createdAt, t.section).toBeLessThanOrEqual(2500);
+    }
+  });
+
+  it('follows modified content in the window commands', () => {
+    const t = compileScript(
+      heroBuild({ ...profile, subtitle: 'Building reliable tools for teams.' }),
+    );
+    expect(t.steps[3]?.call).toBe(
+      `hero.intro(${q}Building reliable tools…${q})`,
+    );
+    const c = compileScript(
+      contactBuild({ ...profile, location: 'Elsewhere' }),
+    );
+    expect(c.steps[2]?.call).toBe(`contact.location(${q}Elsewhere${q})`);
+  });
+
+  it('types the hero photo as the file name it is given, never a hashed one', () => {
+    const t = compileScript(heroBuild(profile, 'photo-placeholder-body.svg'));
+    expect(t.steps[2]?.call).toBe(
+      `hero.photo(${q}photo-placeholder-body.svg${q})`,
     );
   });
 

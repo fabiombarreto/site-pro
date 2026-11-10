@@ -2,7 +2,12 @@
 import type { CollectionEntry } from 'astro:content';
 import { ProjectCard } from '../components/page/ProjectCard';
 import { SectionHeading } from '../components/page/SectionHeading';
-import { resolveAssetUrl } from '../components/page/resolve-asset';
+import {
+  COVER_SIZES,
+  COVER_WIDTHS,
+  blurForAsset,
+  imageSource,
+} from '../images/pipeline';
 import { compileScript, serializeTimeline } from '../runtime/compiler';
 import { strings } from '../strings';
 import { projectsBuild } from './projects.build';
@@ -12,6 +17,16 @@ interface Props {
 }
 
 const { projects } = Astro.props;
+const covers = await Promise.all(
+  projects.map(async ({ data }) => {
+    if (!data.cover) return { cover: undefined, blur: undefined };
+    const [cover, blur] = await Promise.all([
+      imageSource(data.cover, { widths: COVER_WIDTHS, sizes: COVER_SIZES }),
+      blurForAsset(data.cover),
+    ]);
+    return { cover, blur };
+  }),
+);
 const timeline = compileScript(projectsBuild(projects));
 ---
 
@@ -31,8 +46,12 @@ const timeline = compileScript(projectsBuild(projects));
       />
     </div>
     <div class="sp-projects-grid">
-      {projects.map(({ id, data }) => (
-        <div class="sp-projects-cell" data-build-target={`card-${id}`}>
+      {projects.map(({ id, data }, i) => (
+        <div
+          class="sp-projects-cell"
+          data-build-target={`card-${id}`}
+          data-build-blur={covers[i]?.blur}
+        >
           <ProjectCard
             title={data.title}
             slug={id}
@@ -41,7 +60,7 @@ const timeline = compileScript(projectsBuild(projects));
             tags={data.tags}
             status={data.status}
             repo={data.links.repo}
-            cover={resolveAssetUrl(data.cover)}
+            cover={covers[i]?.cover}
           />
         </div>
       ))}

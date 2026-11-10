@@ -23,6 +23,7 @@ export interface TimelineJson {
   section: string;
   file: string;
   command: string;
+  log?: string;
   commandEnd: number;
   windowEnd: number;
   buildStart: number;

@@ -47,6 +47,8 @@ test('lets a created card take clicks while the next ones are hidden and ignore 
   expect(expected.startsWith(typed)).toBe(true);
 
   // Second card: its 31-character call is shown cut to 29 characters with an ellipsis before the closing quote.
+  // Cards start 180 ms apart, so the next card takes over the window after 180 ms (15 characters at 12 ms each):
+  // sample 80 ms before it, where at least 5 characters of the call are typed (100 ms - 16 ms error = 84 ms).
   await advanceTo(
     page,
     'projects',
@@ -57,10 +59,11 @@ test('lets a created card take clicks while the next ones are hidden and ignore 
   const cutSecond = cut(cards[1]?.call ?? '');
   expect(cutSecond.length).toBeLessThanOrEqual(29);
   expect(cutSecond).toContain('…');
-  expect(typedSecond.length).toBeGreaterThanOrEqual(15);
+  expect(typedSecond.length).toBeGreaterThanOrEqual(5);
   expect(cutSecond.startsWith(typedSecond)).toBe(true);
 
-  // Third card selecting: the second card is created, the third and fourth are not.
+  // Third card selecting (a card goes live 190 ms after its start): the second card is live, the third and
+  // fourth are not.
   await advanceTo(
     page,
     'projects',

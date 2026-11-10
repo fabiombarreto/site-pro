@@ -95,14 +95,16 @@ describe('reduced motion', () => {
 
   it('stops the card lift and the cover zoom', () => {
     const block = reducedMotionBlock('ProjectCard.css');
+    // Stage 4 Phase 1: the cover is an img (possibly inside a picture) or the
+    // placeholder, so the rules name both instead of `> *`.
     expect(block).toMatch(
-      /\.sp-card,\s*\.sp-card-cover > \*\s*\{[^}]*transition:\s*none;/,
+      /\.sp-card,\s*\.sp-card-cover img,\s*\.sp-card-cover > \.sp-cover-ph\s*\{[^}]*transition:\s*none;/,
     );
     expect(block).toMatch(
       /\.sp-card\.is-link:hover,\s*\.sp-card\.is-link:focus-within\s*\{[^}]*transform:\s*none;/,
     );
     expect(block).toMatch(
-      /\.sp-card\.is-link:hover \.sp-card-cover > \*\s*\{[^}]*transform:\s*none;/,
+      /\.sp-card\.is-link:hover \.sp-card-cover img,\s*\.sp-card\.is-link:hover \.sp-card-cover > \.sp-cover-ph\s*\{[^}]*transform:\s*none;/,
     );
   });
 
@@ -112,7 +114,19 @@ describe('reduced motion', () => {
       /\.sp-card\.is-link:hover,\s*\.sp-card\.is-link:focus-within\s*\{[^}]*transform:\s*translateY\(-3px\);[^}]*border-color:\s*var\(--accent\);/,
     );
     expect(text).toMatch(
-      /\.sp-card-cover > \*\s*\{[^}]*transform:\s*scale\(1\.03\);/,
+      /\.sp-card\.is-link:hover \.sp-card-cover img,\s*\.sp-card\.is-link:hover \.sp-card-cover > \.sp-cover-ph\s*\{[^}]*transform:\s*scale\(1\.03\);/,
+    );
+  });
+
+  it('keeps a picture wrapper from changing the photo, card cover or project cover box', () => {
+    expect(css('Photo.css')).toMatch(
+      /\.sp-photo > picture\s*\{[^}]*display:\s*contents;/,
+    );
+    expect(css('ProjectCard.css')).toMatch(
+      /\.sp-card-cover picture\s*\{[^}]*display:\s*contents;/,
+    );
+    expect(css('ProjectHeader.css')).toMatch(
+      /\.sp-project-cover picture\s*\{[^}]*display:\s*contents;/,
     );
   });
 });

@@ -2,7 +2,10 @@
 // The schemas reject the docs/05 limit violations naming the field, and the
 // approved content (profile, stack, four projects) satisfies them.
 // Invalid fixtures live here under tests/, never in src/content/.
-import { readdirSync, readFileSync } from 'node:fs';
+// Stage 4 Phase 1 (PRD AC-4): `photo` and `cover` are image() fields, so the profile and project
+// schemas are factories that Astro calls with a context. The tests give them the same seam Astro
+// does: an image() that validates the metadata object Astro resolves (src, width, height, format).
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'astro/zod';
 import { describe, expect, it } from 'vitest';
@@ -12,10 +15,35 @@ import {
   SUMMARY_MAX_LENGTH,
   TAGS_MAX,
   TAGS_MIN,
-  profileSchema,
-  projectSchema,
+  profileSchema as profileSchemaFactory,
+  projectSchema as projectSchemaFactory,
   stackSchema,
 } from '../../src/content-schemas';
+
+const imageMetadata = z.object({
+  src: z.string(),
+  width: z.number(),
+  height: z.number(),
+  format: z.string(),
+});
+const schemaContext = {
+  image: () => imageMetadata,
+} as unknown as Parameters<typeof profileSchemaFactory>[0];
+const profileSchema = profileSchemaFactory(schemaContext);
+const projectSchema = projectSchemaFactory(schemaContext);
+
+const photoMetadata = {
+  src: '/@fs/src/assets/sample.svg',
+  width: 900,
+  height: 1600,
+  format: 'svg',
+};
+const coverMetadata = {
+  src: '/@fs/src/assets/sample-cover.png',
+  width: 1280,
+  height: 720,
+  format: 'png',
+};
 
 const contentDir = resolve(process.cwd(), 'src/content');
 const projectsDir = resolve(contentDir, 'projects');
@@ -48,7 +76,7 @@ const validProfile = {
   headline: 'Sample.',
   role: 'Engineer',
   subtitle: 'Builds things.',
-  photo: 'src/assets/sample.svg',
+  photo: photoMetadata,
   bio: words(BIO_WORD_LIMIT - 1),
   links: [
     { label: 'GitHub', url: 'https://github.com/sample', icon: 'github' },
@@ -166,6 +194,16 @@ describe('project schema limits', () => {
     const result = projectSchema.safeParse({ ...validProject, slug: 'sample' });
     expect(result.success).toBe(false);
   });
+
+  it('keeps the cover optional and passes a given cover image through', () => {
+    expect(failedFields(projectSchema, validProject)).toEqual([]);
+    const result = projectSchema.safeParse({
+      ...validProject,
+      cover: coverMetadata,
+    });
+    expect(result.success).toBe(true);
+    expect(result.success && result.data.cover).toEqual(coverMetadata);
+  });
 });
 
 describe('profile schema limits', () => {
@@ -202,6 +240,14 @@ describe('profile schema limits', () => {
       ['links'],
     );
   });
+
+  it('requires a photo and passes the resolved image through', () => {
+    const withoutPhoto: Partial<typeof validProfile> = { ...validProfile };
+    delete withoutPhoto.photo;
+    expect(failedFields(profileSchema, withoutPhoto)).toEqual(['photo']);
+    const result = profileSchema.safeParse(validProfile);
+    expect(result.success && result.data.photo).toEqual(photoMetadata);
+  });
 });
 
 describe('stack schema', () => {
@@ -217,8 +263,18 @@ describe('stack schema', () => {
 
 describe('approved content validates', () => {
   it('validates the profile entry', () => {
-    const profile = readJson('profile.json').profile;
-    expect(failedFields(profileSchema, profile)).toEqual([]);
+    // The committed `photo` is a path that Astro's image() resolves to metadata; the stand-in
+    // image() receives that metadata here, and the path itself is checked on its own below.
+    const profile = readJson('profile.json').profile as Record<string, unknown>;
+    expect(
+      failedFields(profileSchema, { ...profile, photo: photoMetadata }),
+    ).toEqual([]);
+  });
+
+  it('references a profile photo that exists in src/assets, relative to profile.json', () => {
+    const profile = readJson('profile.json').profile as { photo: string };
+    expect(profile.photo).toMatch(/^\.\.\/assets\//);
+    expect(existsSync(resolve(contentDir, profile.photo))).toBe(true);
   });
 
   it('validates the stack entry', () => {

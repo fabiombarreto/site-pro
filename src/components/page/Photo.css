@@ -20,6 +20,15 @@
   z-index: 1;
 }
 
+.sp-photo > picture {
+  display: contents;
+}
+
+.sp-photo > picture > .sp-photo-img {
+  position: relative;
+  z-index: 1;
+}
+
 .sp-photo-img {
   display: block;
   width: 100%;

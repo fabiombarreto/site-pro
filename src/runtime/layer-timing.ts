@@ -11,6 +11,8 @@ export const NAV_SLIDE_MS = 300;
 export const FOLD_MS = 300;
 export const WINDOW_CLOSE_MS = 300;
 export const SPINNER_FRAME_MS = 80;
+export const DOCK_LOG_HOLD_MS = 100;
+export const WINDOW_OPEN_MS = 280;
 
 type WindowTimes = Pick<Timeline, 'windowEnd' | 'buildStart' | 'createdAt'>;
 
@@ -32,6 +34,10 @@ export function commandChars(t: number, length: number): number {
 
 export function commandEnterAt(length: number): number {
   return COMMAND_START_MS + length * COMMAND_CHAR_MS + COMMAND_ENTER_MS;
+}
+
+export function dockLogEnd(windowEnd: number, enterAt: number): number {
+  return Math.max(windowEnd, enterAt + DOCK_LOG_HOLD_MS);
 }
 
 export function bootLogCount(t: number, enterAt: number): number {
