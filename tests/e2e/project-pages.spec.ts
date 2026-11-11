@@ -13,6 +13,31 @@ const REPOS: Record<string, string> = {
 const FORK_NOTE =
   'The repository is a fork of Wirasm/prp. relay is the plugin I built inside it.';
 
+// Approved docs/09 "Project pages" text: the section headings and one sentence per page.
+const BODY: Record<string, { headings: string[]; sentence: string }> = {
+  relay: {
+    headings: ['The problem', 'How it works', 'What I learned'],
+    sentence: 'I audited 270 review runs.',
+  },
+  'ai-track-record': {
+    headings: ['The question', 'The method', 'Status'],
+    sentence: 'The first public results are due in December 2026.',
+  },
+  'praesto-sum': {
+    headings: [
+      'What it is',
+      'Why one user',
+      'Why Cloudflare Workers',
+      'Installing it',
+    ],
+    sentence: 'Praesto Sum is a personal assistant for one user.',
+  },
+  'site-pro': {
+    headings: ['The idea', 'How it works', 'How I built it'],
+    sentence: 'This site builds itself while you watch.',
+  },
+};
+
 test.use({ viewport: { width: 1280, height: 800 } });
 
 test.describe('every project card link resolves (AC-2)', () => {
@@ -87,20 +112,29 @@ for (const project of PROJECTS) {
       await expect(main.locator('.sp-cover-ph span')).toHaveText(project.slug);
     });
 
+    // PRPs/prds/stage-4-sections-effects.prd.md AC-13 Project pages (phase 4 plan: AC-A1, AC-A2, AC-A4)
+    test('renders the approved body in one prose block beneath the h1', async ({
+      page,
+    }) => {
+      await page.goto(`/projects/${project.slug}`);
+      const prose = page.locator('main .sp-prose');
+      await expect(prose).toHaveCount(1);
+      await expect(prose.locator('h2')).toHaveText(
+        BODY[project.slug]?.headings ?? [],
+      );
+      await expect(prose.locator('h1')).toHaveCount(0);
+      await expect(prose).toContainText(BODY[project.slug]?.sentence ?? '');
+    });
+
     if (project.slug === 'relay') {
-      test('renders the fork note inside the prose body', async ({ page }) => {
-        await page.goto('/projects/relay');
-        const prose = page.locator('main .sp-prose');
-        await expect(prose).toHaveCount(1);
-        await expect(prose).toContainText(FORK_NOTE);
-      });
-    } else {
-      test('renders no body: no prose element and no fork note', async ({
+      test('states the fork of Wirasm/prp inside the prose body', async ({
         page,
       }) => {
-        await page.goto(`/projects/${project.slug}`);
-        await expect(page.locator('main .sp-prose')).toHaveCount(0);
-        expect(html).not.toMatch(/class="[^"]*\bsp-prose\b/);
+        await page.goto('/projects/relay');
+        await expect(page.locator('main .sp-prose')).toContainText(FORK_NOTE);
+      });
+    } else {
+      test('does not carry the relay fork note', () => {
         expect(textOf(html)).not.toContain('fork of Wirasm/prp');
       });
     }

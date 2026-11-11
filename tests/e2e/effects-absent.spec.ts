@@ -153,7 +153,7 @@ test('writes only opacity, clip-path and pointer-events on page elements and ani
       }
       const overlays = [
         ...document.querySelectorAll(
-          '.sp-select, .sp-skel, .sp-caret, .sp-scramble',
+          '.sp-select, .sp-skel, .sp-caret, .sp-scramble, .sp-ascii, .sp-blur-cover',
         ),
       ];
       const outside = overlays.filter(
@@ -202,12 +202,12 @@ test('serves no effect markup on the home page, the 404 or the project pages', a
     const html = await (await request.get(path)).text();
     const markup = html.replace(/<style\b[\s\S]*?<\/style>/g, '');
     expect(markup, path).not.toMatch(
-      /\b(sp-build-fx|sp-select|sp-skel|sp-caret|sp-scramble|data-build-fx)\b/,
+      /\b(sp-build-fx|sp-select|sp-skel|sp-caret|sp-scramble|sp-ascii|sp-blur-cover|data-build-fx)\b/,
     );
   }
   // The project pages load none of the build CSS either, so the whole document (styles included) is clean.
   const project = await (await request.get('/projects/relay/')).text();
   expect(project).not.toMatch(
-    /\b(sp-build-fx|sp-select|sp-skel|sp-caret|sp-scramble|data-build-fx)\b/,
+    /\b(sp-build-fx|sp-select|sp-skel|sp-caret|sp-scramble|sp-ascii|sp-blur-cover|data-build-fx)\b/,
   );
 });

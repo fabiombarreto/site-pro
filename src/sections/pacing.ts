@@ -1,4 +1,5 @@
 import { EFFECT_DURATION_MS } from '../runtime/effect-timing';
+import { WINDOW_OPEN_MS, commandEnterAt } from '../runtime/layer-timing';
 import type { BuildStep } from '../runtime/types';
 
 export interface PacedEntry {
@@ -32,4 +33,19 @@ export function pacedSteps(
     previousEnd = start + length;
   }
   return { steps, settle: Math.max(minSettle, createdRel - previousEnd) };
+}
+
+// Sections after the hero open their window at Enter: the window opens while
+// the dock still shows its log.
+export function openAtEnter(command: string): {
+  commandEnd: number;
+  windowEnd: number;
+  buildStart: number;
+} {
+  const commandEnd = commandEnterAt(command.length);
+  return {
+    commandEnd,
+    windowEnd: commandEnd,
+    buildStart: commandEnd + WINDOW_OPEN_MS,
+  };
 }

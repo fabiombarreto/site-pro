@@ -62,7 +62,7 @@ pending ──► queued ──► command ──► window ──► building �
 | Enter (commits the line) | 80 ms | The line gets its full highlighting |
 | Gap between logs | 100 ms | Logs appear at once, with no fade, like in a terminal |
 | Boot terminal → dock | 300 ms | Only once, when the hero window opens |
-| Window opening | 280 ms | Out of the dock. In sections after the hero the window may open at Enter, while the log is shown, to fit the budget (Stage 4 PRD) |
+| Window opening | 280 ms | Out of the dock. Sections after the hero open their window at Enter and the dock keeps its log for 100 ms. (Stage 4 PRD, to fit the budget) |
 | Window command typing, per character | 12 ms | Windows type fast; at most 350 ms per command, long arguments are cut with `…` |
 | Selection box | 150 ms | Dragged from the top-left corner to the element's size |
 | Skeleton | ≥ 150 ms | Until the content is ready |
@@ -70,7 +70,7 @@ pending ──► queued ──► command ──► window ──► building �
 | Decode | 350 ms | |
 | Lines resolving | 40 ms per line | |
 | Image resolving | 700 ms | The hero photo's dissolve, after its selection box and skeleton (a 1,000 ms step); covers resolve inside their card's duration |
-| Pop (buttons, chips, tags) | 180 ms | |
+| Pop (buttons, chips, tags) | 180 ms | Siblings pop 90 ms apart |
 | Gap between siblings (stagger) | 90 ms | |
 | Card build | ≈ 300–350 ms per card, 120 ms overlap | Never more than two cards building at once (Stage 4 PRD; was ≈ 450 ms) |
 | Window closing | 300 ms | |
@@ -125,10 +125,10 @@ idle                                    █   dock: ❯ █
 | `type-text` | Headlines and titles | Characters typed with a thin caret in `--accent-fg`. The block cursor (`█`) stays in the build layer: at banner size it would cover the photo. | 28 ms/char |
 | `decode` | Short labels (role, badges) | Letters scramble through random characters (`!<>-_\/[]{}=+*^?#`) and settle from left to right. | 350 ms |
 | `resolve-lines` | Paragraphs | Skeleton bars give way to text, one line at a time. | 40 ms/line |
-| `image-resolve` | Hero photo, project covers | The hero photo starts as ASCII art (generated at build time from the photo itself) and dissolves, with dithering, into the real photo (D12): after the selection box and skeleton, the ASCII fills the photo's box in the build layer and its characters vanish in a 4×4 Bayer order while the real photo rises from a low, non-zero opacity to full. Covers resolve from a blurred version: a tiny blurred cover generated at build time and inlined in the HTML shows over the cover and fades out as the real cover appears. Only `opacity` and `clip-path` change on the page; no animated mask or filter (Stage 4 PRD). | 700 ms (hero dissolve); inside the card for covers |
-| `pop` | Buttons, chips, tags | Scale from 0.9 to 1 with a slight overshoot, right after the selection box. | 180 ms |
+| `image-resolve` | Hero photo, project covers | The hero photo starts as ASCII art (generated at build time from the photo itself) and dissolves, with dithering, into the real photo (D12): after the selection box and skeleton, the ASCII fills the photo's box in the build layer and its characters vanish in a 4×4 Bayer order while the real photo rises from a low, non-zero opacity to full. Covers resolve from a blurred version: a tiny blurred cover generated at build time and inlined in the HTML shows over the cover and fades out as the real cover appears. Only `opacity` and `clip-path` change on the page; no animated mask or filter (Stage 4 PRD). | 1,000 ms hero step: 300 ms select and skeleton, then a 700 ms dissolve in 16 Bayer steps; covers resolve inside the card (cover opacity ramp 190–270 ms of the card) |
+| `pop` | Buttons, chips, tags | Scale from 0.9 to 1 with a slight overshoot, right after the selection box. A group of buttons pops one after another, 90 ms apart. | 180 ms |
 | `stagger` | Groups, lists | Children appear in sequence. | 90 ms between items |
-| `build-card` | Project cards | `select` → `skeleton` → cover `image-resolve` → title `type-text` → summary `resolve-lines` → tags `pop`. A card without a cover keeps its dot-grid placeholder, with no blur phase. | ≈ 300–350 ms |
+| `build-card` | Project cards | `select` → `skeleton` → cover `image-resolve` → title `type-text` → summary `resolve-lines` → tags `pop`. The blurred cover fades out while the real cover rises, over the cover opacity ramp 190–270 ms of the card. The card lasts 300 ms: select box drawn over 150 ms, skeleton 150–190 ms, cover and title 190–270 ms, summary 210–285 ms, tags 240–300 ms. A card without a cover keeps its dot-grid placeholder, with no blur phase. | 300 ms |
 
 ### Optional effects
 

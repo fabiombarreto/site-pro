@@ -7,6 +7,7 @@ import {
   bootLogCount,
   commandChars,
   commandEnterAt,
+  dockLogEnd,
   easeOut,
   foldProgress,
   formatSeconds,
@@ -48,6 +49,21 @@ describe('boot logs', () => {
 
   it('never shows more than two logs', () => {
     expect(bootLogCount(60000, 810)).toBe(2);
+  });
+});
+
+// PRPs/prds/stage-4-sections-effects.prd.md AC-6/AC-7 the dock keeps its log 100 ms after Enter when the window
+// opens at Enter (phase 3 plan: AC-A8)
+describe('dock log hold', () => {
+  it('keeps the log until 100 ms after Enter when the window opens at Enter', () => {
+    expect(dockLogEnd(890, 890)).toBe(990);
+    expect(dockLogEnd(970, 970)).toBe(1070);
+  });
+
+  it('leaves a window that opens later than that as it was', () => {
+    // The default phases open the window 100 ms after Enter, and the hero's override 270 ms after.
+    expect(dockLogEnd(990, 890)).toBe(990);
+    expect(dockLogEnd(1000, 730)).toBe(1000);
   });
 });
 

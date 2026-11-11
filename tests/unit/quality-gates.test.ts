@@ -281,6 +281,14 @@ describe('Lighthouse CI configuration (AC-10)', () => {
     ]);
   });
 
+  // PRPs/prds/stage-4-sections-effects.prd.md AC-12 (phase 5 plan: AC-A2)
+  it('requires a median LCP of at most 2500 ms as an error', () => {
+    expect(ci.assert.assertions['largest-contentful-paint']).toEqual([
+      'error',
+      { maxNumericValue: 2500, aggregationMethod: 'median' },
+    ]);
+  });
+
   it('keeps results on the filesystem, never uploaded', () => {
     expect(ci.upload.target).toBe('filesystem');
   });
@@ -310,6 +318,29 @@ describe('CI shape for the quality gates (AC-11)', () => {
     expect(pkg.scripts['check:privacy']).toBe('node scripts/check-privacy.mjs');
     expect(pkg.scripts['check:budgets']).toBe('node scripts/check-budgets.mjs');
     expect(pkg.scripts.lighthouse).toBe('lhci autorun');
+  });
+
+  // PRPs/prds/stage-4-sections-effects.prd.md AC-14 (phase 5 plan: AC-A3)
+  it('runs the scheduler diff check in the check job with full history and keeps nine jobs', () => {
+    const jobs = text.slice(text.indexOf('\njobs:'));
+    const names = [...jobs.matchAll(/^ {2}([a-z0-9_-]+):\s*$/gm)].map(
+      (m) => m[1],
+    );
+    expect(names).toEqual([
+      'lint',
+      'check',
+      'unit',
+      'build',
+      'e2e',
+      'tokens',
+      'privacy',
+      'budgets',
+      'lighthouse',
+    ]);
+    const start = text.indexOf('\n  check:');
+    const block = text.slice(start + 1, text.indexOf('\n  unit:'));
+    expect(block).toContain('fetch-depth: 0');
+    expect(block).toContain('- run: pnpm check:frozen');
   });
 
   it('fails the e2e command when no spec runs', () => {

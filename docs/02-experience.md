@@ -178,7 +178,7 @@ The terminal folds into the **command dock** at the bottom, and the `hero.tsx` w
 |---|---|
 | `hero.title("Fabio Barreto.")` | The headline, typed letter by letter in giant banner type, on two lines |
 | `hero.role("Senior Software Engineer")` | The role, decoded from scrambled characters |
-| `hero.photo("fabio.png")` | A skeleton with its dimensions, then the full-body cut-out photo, emerging from an ASCII version of itself (D12), in front of the name. Its selection box runs past the bottom of the window, into About's place |
+| `hero.photo("<photo file name>")` | A skeleton with its dimensions, then the full-body cut-out photo, emerging from an ASCII version of itself (D12), in front of the name. Its selection box runs past the bottom of the window, into About's place |
 | `hero.intro("12+ years shipping…")` | Skeleton lines that resolve into the intro text |
 | `hero.links(["GitHub", "LinkedIn"])` | The buttons, popping in one after the other |
 

@@ -249,6 +249,33 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
 
 ---
 
+## [2026-11-10] Stage 4 Phase 3 · Section tuning
+
+**Context:** After Phases 1 and 2 the scripts still carried prototype v2 timings and placeholder text, and About, Projects, Stack and Contact missed the 2.5 s budget.
+**Decision:** Sections after the hero open their window at Enter, and the dock keeps its log for 100 ms. `pop` staggers its children 90 ms apart. Cards last 300 ms with a 120 ms overlap and retimed phases (skeleton 150–190 ms, cover and title 190–270 ms, summary 210–285 ms, tags 240–300 ms). A build script may declare an optional dock `log`, carried through the compiler into the timeline. Every window command argument and dock log comes from the content, and the hero command types the photo's original file name, never the hashed one. The first card starts while the heading is still typing (a budget lever). The scheduler and the other frozen runtime files are untouched.
+**Reason:** Meets the hero ≤ 3.2 s and other sections ≤ 2.5 s budgets with the levers the runtime already has, keeps one element at a time and never more than two cards at once (D8), and keeps commands authentic (B22). The rhythm is open to the owner's review on the preview.
+**Areas affected:** build, content, visual-design
+
+---
+
+## [2026-11-10] Project page text approved
+
+**Context:** Phase 4 of the Stage 4 PRD (project pages) waited on the owner's approval of the four project page bodies drafted in docs/09-content-draft.md, including three Praesto Sum sections the material did not cover.
+**Decision:** The four bodies in docs/09-content-draft.md "Project pages" are approved and are copied as is into `src/content/projects/<slug>.md`. relay's "What I learned" states the audit finding as recorded in the relay repository (feedback passed along but read by no writer agent, so retries started from scratch). AI Track Record keeps its opening question, with two wording fixes. Praesto Sum's "Why one user", "Why Cloudflare Workers" and "Installing it" come from its public README and its ADR-0003 and ADR-0004. No number beyond the material is claimed.
+**Reason:** Approved by the owner on 2026-11-10; every fact is traceable to an approved doc or the owner's public repositories, and the copy follows the writing rules in docs/09.
+**Areas affected:** content
+
+---
+
+## [2026-11-10] Stage 4 Phase 5 quality gates
+
+**Context:** Stage 4 targets needed enforcement in CI and a review path for what a machine cannot judge: Lighthouse asserted no LCP, nothing verified that the scheduler and controls files still match the Stage 3 merge, and the rhythm of the build is the owner's call.
+**Decision:** (1) Lighthouse CI gains `largest-contentful-paint` with `maxNumericValue` 2500 and median aggregation over the existing 3 runs; no other threshold changes, and a miss goes to the owner as numbers, never as a relaxed threshold. (2) The scheduler diff check `scripts/check-frozen-runtime.mjs` (`pnpm check:frozen`) compares the nine frozen files (scheduler, clock, triggers, focus-rule, resize, keys, controls-timing, main, api) against `b4271cb`. It runs inside the existing `check` CI job with full history (`fetch-depth: 0`), so the job count stays nine and branch protection is unchanged; a git failure (unknown base, shallow clone) fails loudly. A bug-fix exception needs its own docs/decisions.md entry before its file is added to the script exception list. (3) The owner rhythm review is a human hand-off in docs/stage-4-rhythm-review.md and stays "awaiting owner review" until the owner approves on the preview.
+**Reason:** Every Stage 4 target stays enforced by something that can fail, thresholds are not weakened to pass, and a human approval is never claimed by the pipeline.
+**Areas affected:** build, visual-design
+
+---
+
 <!-- Template for future entries:
 
 ## [YYYY-MM-DD] Title of the decision

@@ -6,6 +6,7 @@ import { Tag } from './Tag';
 import { TextLink } from './TextLink';
 import { cx } from './cx';
 import { strings } from '../../strings';
+import type { ImageSource } from './image-source';
 
 interface ProjectCardProps {
   title: string;
@@ -15,7 +16,7 @@ interface ProjectCardProps {
   tags: readonly string[];
   status: ProjectStatus;
   repo?: string;
-  cover?: string;
+  cover?: ImageSource;
   className?: string;
 }
 
@@ -30,10 +31,38 @@ export function ProjectCard({
   cover,
   className,
 }: ProjectCardProps): React.JSX.Element {
+  const coverImg = cover ? (
+    <img
+      src={cover.src}
+      width={cover.width}
+      height={cover.height}
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+  ) : null;
   return (
     <article className={cx('sp-card', 'is-link', className)}>
       <div className="sp-card-cover">
-        {cover ? <img src={cover} alt="" /> : <CoverPlaceholder label={slug} />}
+        {cover ? (
+          cover.sources && cover.sources.length > 0 ? (
+            <picture>
+              {cover.sources.map((source) => (
+                <source
+                  key={source.type}
+                  type={source.type}
+                  srcSet={source.srcset}
+                  sizes={cover.sizes}
+                />
+              ))}
+              {coverImg}
+            </picture>
+          ) : (
+            coverImg
+          )
+        ) : (
+          <CoverPlaceholder label={slug} />
+        )}
       </div>
       <div className="sp-card-body">
         <div className="sp-card-head">

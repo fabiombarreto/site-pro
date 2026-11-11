@@ -1,7 +1,9 @@
 import type { CollectionEntry } from 'astro:content';
 import type { BuildScript } from '../runtime/types';
-import { strings } from '../strings';
-import { pacedSteps } from './pacing';
+import { buildStrings, strings } from '../strings';
+import { openAtEnter, pacedSteps } from './pacing';
+
+const COMMAND = 'renderStack();';
 
 type StackData = CollectionEntry<'stack'>['data'];
 
@@ -23,15 +25,17 @@ export function stackBuild(stack: StackData): BuildScript {
           effect: 'stagger' as const,
           count: group.items.length,
         },
-        pitch: index === 0 ? 400 : 150,
+        pitch: index === 0 ? 320 : 100,
       })),
     ],
-    1350,
+    1270,
   );
   return {
     section: 'stack',
     file: 'stack.tsx',
-    command: 'renderStack();',
+    command: COMMAND,
+    log: buildStrings.resolvingDependencies,
+    timing: openAtEnter(COMMAND),
     steps,
     settle,
   };

@@ -95,7 +95,7 @@ site-pro/
    ├─ content/                ← profile, projects/, stack.json
    ├─ components/
    │  ├─ page/                ← React: NavBar, Button, Tag, ProjectCard, StackGroup, Footer, CommandPalette…
-   │  └─ build/               ← TypeScript DOM factories (not React): BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor (v1.1)
+   │  └─ build/               ← TypeScript DOM factories (not React): BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AsciiOverlay, BlurCover, AgentCursor (v1.1)
    ├─ sections/               ← Astro: Hero, About, Projects, Stack, Contact (each with its build script)
    ├─ runtime/                ← scheduler, effects, triggers, overlays, controls (framework-agnostic TS)
    ├─ stores/                 ← nanostores shared by the runtime and the islands

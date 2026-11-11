@@ -55,6 +55,32 @@ describe('phase timing', () => {
     expect(t.createdAt).toBe((t.steps[0]?.end ?? 0) + 1000);
   });
 
+  // PRPs/prds/stage-4-sections-effects.prd.md AC-8 per-section dock logs carried by the build script
+  // (phase 3 plan: AC-A2)
+  it('carries a declared dock log into the timeline and serializes it', () => {
+    const t = compileScript(script([pop('a')], { log: 'Reading about.md...' }));
+    expect(t.log).toBe('Reading about.md...');
+    expect(JSON.parse(serializeTimeline(t)).log).toBe('Reading about.md...');
+  });
+
+  it('leaves the timeline without a log when the script declares none', () => {
+    const t = compileScript(script([pop('a')]));
+    expect(t.log).toBeUndefined();
+    expect(JSON.parse(serializeTimeline(t))).not.toHaveProperty('log');
+  });
+
+  it.each(['<', '>'])('rejects a log containing %s', (ch) => {
+    expect(() =>
+      compileScript(script([pop('a')], { log: `Reading${ch}...` })),
+    ).toThrow('log must not contain < or >');
+  });
+
+  it('staggers a pop group of n buttons for 330 ms plus 90 ms per further button', () => {
+    const t = compileScript(script([pop('a', { count: 3 })]));
+    const step = t.steps[0];
+    expect((step?.end ?? 0) - (step?.start ?? 0)).toBe(510);
+  });
+
   it('carries the section, file and command into the timeline', () => {
     const t = compileScript(script([pop('a')]));
     expect(t).toMatchObject({

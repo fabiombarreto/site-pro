@@ -49,6 +49,11 @@ export function compileScript(script: BuildScript): Timeline {
       `build script "${script.section}": command must not contain < or >`,
     );
   }
+  if (script.log !== undefined && /[<>]/.test(script.log)) {
+    throw new Error(
+      `build script "${script.section}": log must not contain < or >`,
+    );
+  }
   const commandEnd =
     script.timing?.commandEnd ??
     COMMAND_START_MS +
@@ -82,6 +87,7 @@ export function compileScript(script: BuildScript): Timeline {
     section: script.section,
     file: script.file,
     command: script.command,
+    ...(script.log === undefined ? {} : { log: script.log }),
     commandEnd,
     windowEnd,
     buildStart,

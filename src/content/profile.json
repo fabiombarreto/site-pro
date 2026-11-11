@@ -4,7 +4,7 @@
     "headline": "Fabio Barreto.",
     "role": "Senior Software Engineer",
     "subtitle": "12+ years shipping full-stack apps with React, Python and Java. Now building AI-assisted dev workflows.",
-    "photo": "src/assets/photo-placeholder-body.svg",
+    "photo": "../assets/photo-placeholder-body.svg",
     "location": "Brazil (UTC-3)",
     "bio": "I'm a full-stack software engineer, and I've been studying programming and software development since 2008.\n\nRight now I'm building my own projects and exploring what AI can do in real applications, while I work on a postgraduate program in Software Engineering with AI.\n\nTake a look at my projects below, or find me on GitHub and LinkedIn.",
     "links": [

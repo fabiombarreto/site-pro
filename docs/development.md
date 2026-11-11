@@ -21,8 +21,9 @@ The project is scaffolded (Stage 2 Phase 1): the commands below are real and mat
 | Production build | `pnpm build` · `pnpm preview` |
 | Lighthouse | `pnpm lighthouse` (Lighthouse CI; needs `pnpm build` and `CHROME_PATH`) |
 | Token check | `pnpm check:tokens` |
-| Privacy check | `pnpm check:privacy` (needs `pnpm build`) |
+| Privacy check | `pnpm check:privacy` (needs `pnpm build`; also scans the source images in `src/assets` for EXIF and XMP metadata; `--dist <dir>` and `--assets <dir>` override the two scanned folders) |
 | Size budgets | `pnpm check:budgets` (needs `pnpm build`) |
+| Frozen runtime | `pnpm check:frozen` (the nine scheduler and controls files in `src/runtime/` against `b4271cb`; needs git history) |
 
 `pnpm build` also verifies the build scripts: every `data-build` step on the home page must name a `data-build-target` present in the HTML, otherwise the build fails (`scripts/verify-build-targets.mjs`).
 
@@ -46,7 +47,7 @@ export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePa
 pnpm lighthouse
 ```
 
-If that path does not exist, run `pnpm exec playwright install chromium` first. If lhci still cannot start Chrome (for example "No Chrome installations found" on Windows), the CI `lighthouse` job is authoritative and the pull request records that Lighthouse was not run locally. Lighthouse covers `/` with the build running (the real runtime on the real clock) and `/projects/relay/`, median of 3 runs, every category >= 0.95 and CLS <= 0.01 (`lighthouserc.json`).
+If that path does not exist, run `pnpm exec playwright install chromium` first. If lhci still cannot start Chrome (for example "No Chrome installations found" on Windows), the CI `lighthouse` job is authoritative and the pull request records that Lighthouse was not run locally. Lighthouse covers `/` with the build running (the real runtime on the real clock) and `/projects/relay/`, median of 3 runs, every category >= 0.95, CLS <= 0.01 and LCP <= 2.5 s (`lighthouserc.json`).
 
 ### Running the E2E suite
 
@@ -54,7 +55,7 @@ Build first, then run `pnpm test:e2e`. The suite drives the animated page on a f
 
 ## Continuous integration
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pushes to `main`, with nine separately reported jobs: `lint`, `check`, `unit`, `build`, `e2e`, `tokens`, `privacy`, `budgets` and `lighthouse`. Deploys are done by Cloudflare Workers Builds, not by CI.
+GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pushes to `main`, with nine separately reported jobs: `lint`, `check`, `unit`, `build`, `e2e`, `tokens`, `privacy`, `budgets` and `lighthouse`. The `check` job also runs `pnpm check:frozen` (with full git history), so the job count stays nine. Deploys are done by Cloudflare Workers Builds, not by CI.
 
 Playwright screenshot baselines (a PRD Should; gate versus advisory is still open) must be generated in CI's Linux environment, so they are a follow-up and not part of the nine jobs.
 
@@ -84,3 +85,14 @@ The relay pipeline (`/relay-prd` → `/relay-plan` → `/relay-implement` → `/
 ## Adding a project
 
 Add one Markdown file under `src/content/projects/` with the fields in docs/05-content.md (the file name is the slug; `title`, `summary` ≤ 140 chars, `cover` 16:9, 2–4 `tags`, `status`, `order`…). Only personal projects; follow the voice rules in docs/09-content-draft.md.
+
+## Replacing the photo and covers
+
+The real photo and the project covers are a content-only swap: no code changes (docs/05-content.md, docs/06-architecture.md).
+
+1. Prepare the file to its spec: the photo is a full-body 9:16 cut-out (a PNG with a transparent background, at least 1200 x 2133 px); each cover is 16:9 (at least 1280 px wide). Strip EXIF, XMP and GPS metadata before the file enters the repository.
+2. Put the file in `src/assets`.
+3. Reference it from the content: the `photo` field of `src/content/profile.json`, or the `cover` field of the project file in `src/content/projects/`, using the same relative path form the current content uses (for example `../assets/photo-placeholder-body.svg`).
+4. Run `pnpm check:privacy` (fails naming any image with metadata), `pnpm build` (regenerates the responsive AVIF/WebP versions, the ASCII version and the blurred covers; a missing or unreadable file fails the build naming it), `pnpm test`, `pnpm test:e2e`, `pnpm check:budgets` and `pnpm lighthouse`.
+5. Open the preview and re-run the review items in docs/stage-4-rhythm-review.md (the ASCII color, `PHOTO_START_OPACITY`, LCP).
+6. What CI re-checks: the `privacy` job on `src/assets`, the `budgets` job, the `lighthouse` job (including LCP), the `e2e` job (layout invariance and axe) and the frozen runtime check in the `check` job.

@@ -84,6 +84,9 @@ export const buildStrings = {
   initializing: 'Initializing application...',
   openingFile: (file: string) => `Opening ${file}...`,
   readingFile: (file: string) => `Reading ${file}...`,
+  fetchingProjects: (count: number) => `Fetching projects... ${count} found`,
+  resolvingDependencies: 'Resolving dependencies...',
+  openingChannels: 'Opening channels...',
   building: (name: string) => `Building ${name}…`,
   created: (label: string, seconds: string) =>
     `✔ ${label} Section created. (${seconds}s)`,

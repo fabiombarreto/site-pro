@@ -1,12 +1,16 @@
 import type { CollectionEntry } from 'astro:content';
 import { estimateLines } from '../runtime/effect-timing';
 import type { BuildScript } from '../runtime/types';
-import { strings } from '../strings';
-import { pacedSteps } from './pacing';
+import { buildStrings, strings } from '../strings';
+import { excerpt, labelList } from './call-args';
+import { openAtEnter, pacedSteps } from './pacing';
 
 type ProfileData = CollectionEntry<'profile'>['data'];
 
+const COMMAND = 'renderAbout();';
+
 export function aboutBuild(profile: ProfileData): BuildScript {
+  const labels = profile.links.map((l) => l.label);
   const { steps, settle } = pacedSteps(
     [
       {
@@ -19,7 +23,7 @@ export function aboutBuild(profile: ProfileData): BuildScript {
       },
       {
         step: {
-          call: 'about.text(…)',
+          call: `about.text("${excerpt(profile.bio)}")`,
           target: 'text',
           effect: 'resolve-lines',
           count: estimateLines(profile.bio, 80),
@@ -27,16 +31,23 @@ export function aboutBuild(profile: ProfileData): BuildScript {
         pitch: 250,
       },
       {
-        step: { call: 'about.links([…])', target: 'links', effect: 'pop' },
-        pitch: 600,
+        step: {
+          call: `about.links(${labelList(labels)})`,
+          target: 'links',
+          effect: 'pop',
+          count: profile.links.length,
+        },
+        pitch: 500,
       },
     ],
-    1150,
+    1230,
   );
   return {
     section: 'about',
     file: 'about.md',
-    command: 'renderAbout();',
+    command: COMMAND,
+    log: buildStrings.readingFile('about.md'),
+    timing: openAtEnter(COMMAND),
     steps,
     settle,
   };

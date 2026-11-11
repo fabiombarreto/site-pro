@@ -12,3 +12,15 @@ featured: true
 order: 2
 status: planning
 ---
+
+## The question
+
+Which AI coding workflows actually work? I want an answer I can measure and rerun.
+
+## The method
+
+AI Track Record is a local-first benchmark. It gives the same task to different models and prompt versions. Tests the agent never sees grade each result, and every run records its cost, time and quality.
+
+## Status
+
+It's still in planning. The first public results are due in December 2026.

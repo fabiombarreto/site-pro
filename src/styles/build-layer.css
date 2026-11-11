@@ -464,6 +464,34 @@
   pointer-events: none;
 }
 
+.sp-ascii {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  overflow: clip;
+  white-space: pre;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  color: var(--accent-fg);
+}
+
+.sp-blur-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.sp-blur-cover > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sp-cursor {
     animation: none;

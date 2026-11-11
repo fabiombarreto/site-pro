@@ -152,22 +152,73 @@ describe('approved project copy', () => {
     },
   );
 
-  it('gives relay the fork note as its body', () => {
-    const body = readNormalized('src/content/projects/relay.md')
+  // PRPs/prds/stage-4-sections-effects.prd.md AC-13 Project pages
+  // (phase 4 plan: AC-A1 to AC-A3): the body is the approved docs/09 text.
+  const bodyOf = (id: string): string =>
+    readNormalized(`src/content/projects/${id}.md`)
       .split('\n---\n')
       .slice(1)
-      .join('\n---\n');
-    expect(body.trim()).toBe(
+      .join('\n---\n')
+      .trim();
+
+  const approvedBlock = (heading: string): string => {
+    const section = (
+      readNormalized('docs/09-content-draft.md').split(
+        '\n## Project pages\n',
+      )[1] ?? ''
+    ).split('\n## Stack\n')[0];
+    const part = section?.split(`\n### ${heading}\n`)[1] ?? '';
+    const match = /```markdown\n([\s\S]*?)\n```/.exec(part);
+    if (!match) throw new Error(`no approved block for ${heading}`);
+    return (match[1] ?? '').trim();
+  };
+
+  const bodies = [
+    { id: 'relay', heading: 'relay' },
+    { id: 'ai-track-record', heading: 'AI Track Record' },
+    { id: 'praesto-sum', heading: 'Praesto Sum' },
+    { id: 'site-pro', heading: 'site-pro' },
+  ];
+
+  it.each(bodies)(
+    '$id body is the approved docs/09 text, copied as is',
+    ({ id, heading }) => {
+      const approvedText = approvedBlock(heading);
+      expect(approvedText.length).toBeGreaterThan(200);
+      expect(bodyOf(id)).toBe(approvedText);
+    },
+  );
+
+  it.each([
+    ['relay', ['The problem', 'How it works', 'What I learned']],
+    ['ai-track-record', ['The question', 'The method', 'Status']],
+    [
+      'praesto-sum',
+      ['What it is', 'Why one user', 'Why Cloudflare Workers', 'Installing it'],
+    ],
+    ['site-pro', ['The idea', 'How it works', 'How I built it']],
+  ] as const)('%s body carries its approved sections', (id, headings) => {
+    const found = [...bodyOf(id).matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+    expect(found).toEqual([...headings]);
+    expect(bodyOf(id)).not.toMatch(/^# /m);
+  });
+
+  it('states in the relay body that it is a fork of Wirasm/prp and that relay is the plugin built inside it', () => {
+    expect(bodyOf('relay').split('\n')[0]).toBe(
       'The repository is a fork of Wirasm/prp. relay is the plugin I built inside it.',
     );
   });
 
-  it.each(['ai-track-record', 'praesto-sum', 'site-pro'])(
-    'leaves the %s body empty',
-    (id) => {
-      const text = readNormalized(`src/content/projects/${id}.md`);
-      const afterFrontmatter = text.split('\n---\n').slice(1).join('\n---\n');
-      expect(afterFrontmatter.trim()).toBe('');
+  it.each(bodies)(
+    '$id body has no link, address, em dash or unapproved number',
+    ({ id }) => {
+      const body = bodyOf(id);
+      expect(body).not.toMatch(/https?:\/\/|@|—/);
+      const numbers =
+        body
+          .replace(/^\d+\. /gm, '')
+          .match(/(?<![A-Za-z0-9_])\d+(?![A-Za-z0-9_])/g) ?? [];
+      for (const n of numbers) expect(['270', '2026', '19']).toContain(n);
     },
   );
 });

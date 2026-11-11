@@ -7,6 +7,7 @@ import type { ProjectStatus } from './StatusBadge';
 import { Tag } from './Tag';
 import { TextLink } from './TextLink';
 import { strings } from '../../strings';
+import type { ImageSource } from './image-source';
 
 interface ProjectHeaderProps {
   title: string;
@@ -16,7 +17,7 @@ interface ProjectHeaderProps {
   status: ProjectStatus;
   tags: readonly string[];
   repo?: string;
-  cover?: string;
+  cover?: ImageSource;
   backHref?: string;
 }
 
@@ -31,6 +32,16 @@ export function ProjectHeader({
   cover,
   backHref = '/#projects',
 }: ProjectHeaderProps): React.JSX.Element {
+  const coverImg = cover ? (
+    <img
+      src={cover.src}
+      width={cover.width}
+      height={cover.height}
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+  ) : null;
   return (
     <header className="sp-project-header">
       <TextLink className="sp-back text-sm" href={backHref}>
@@ -53,7 +64,25 @@ export function ProjectHeader({
         )}
       </div>
       <div className="sp-project-cover">
-        {cover ? <img src={cover} alt="" /> : <CoverPlaceholder label={slug} />}
+        {cover ? (
+          cover.sources && cover.sources.length > 0 ? (
+            <picture>
+              {cover.sources.map((source) => (
+                <source
+                  key={source.type}
+                  type={source.type}
+                  srcSet={source.srcset}
+                  sizes={cover.sizes}
+                />
+              ))}
+              {coverImg}
+            </picture>
+          ) : (
+            coverImg
+          )
+        ) : (
+          <CoverPlaceholder label={slug} />
+        )}
       </div>
     </header>
   );
