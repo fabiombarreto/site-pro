@@ -1,0 +1,20 @@
+{
+  "run_id": "717b41f9-8287-4700-907e-8fd83d6cfa0b",
+  "attempt": 1,
+  "tier": "e2e",
+  "framework": "playwright",
+  "outcome": "PASSED",
+  "duration_ms": 767720,
+  "counts": {
+    "passed": 299,
+    "failed": 0,
+    "skipped": 0,
+    "total": 299
+  },
+  "failures": [],
+  "coverage": null,
+  "artifacts": {
+    "junit_xml": "C:\\repos\\site-pro\\PRPs\\reports\\stage-4-sections-effects\\attempts\\1\\junit.xml"
+  },
+  "generated_at": "2026-11-10T14:45:49.424Z"
+}

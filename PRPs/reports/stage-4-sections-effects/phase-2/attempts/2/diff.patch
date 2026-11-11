@@ -1,0 +1,441 @@
+diff --git a/src/components/build/AsciiOverlay.ts b/src/components/build/AsciiOverlay.ts
+new file mode 100644
+index 0000000..d461007
+--- /dev/null
++++ b/src/components/build/AsciiOverlay.ts
+@@ -0,0 +1,47 @@
++import { h } from './dom';
++
++interface Rect {
++  x: number;
++  y: number;
++  width: number;
++  height: number;
++}
++
++interface Geometry {
++  fontSize: number;
++  lineHeight: number;
++}
++
++export interface AsciiOverlay {
++  el: HTMLPreElement;
++  setPlacement(rect: Rect, geometry: Geometry): void;
++  setText(text: string): void;
++  setOpacity(value: number): void;
++}
++
++export function createAsciiOverlay(): AsciiOverlay {
++  const el = h('pre', 'sp-ascii', { 'aria-hidden': 'true' });
++  let lastText: string | null = null;
++  let lastOpacity = -1;
++
++  return {
++    el,
++    setPlacement(rect, geometry) {
++      el.style.transform = `translate3d(${rect.x}px, ${rect.y}px, 0)`;
++      el.style.width = `${rect.width}px`;
++      el.style.height = `${rect.height}px`;
++      el.style.fontSize = `${geometry.fontSize}px`;
++      el.style.lineHeight = `${geometry.lineHeight}px`;
++    },
++    setText(text) {
++      if (text === lastText) return;
++      lastText = text;
++      el.textContent = text;
++    },
++    setOpacity(value) {
++      if (value === lastOpacity) return;
++      lastOpacity = value;
++      el.style.opacity = String(value);
++    },
++  };
++}
+diff --git a/src/components/build/BlurCover.ts b/src/components/build/BlurCover.ts
+new file mode 100644
+index 0000000..0e09ec8
+--- /dev/null
++++ b/src/components/build/BlurCover.ts
+@@ -0,0 +1,40 @@
++import { h } from './dom';
++
++interface Rect {
++  x: number;
++  y: number;
++  width: number;
++  height: number;
++}
++
++export interface BlurCover {
++  el: HTMLDivElement;
++  setPlacement(rect: Rect): void;
++  setOpacity(value: number): void;
++}
++
++export function createBlurCover(src: string): BlurCover {
++  const el = h('div', 'sp-blur-cover', { 'aria-hidden': 'true' });
++  const img = h('img', undefined, {
++    alt: '',
++    'aria-hidden': 'true',
++    decoding: 'async',
++  });
++  img.src = src;
++  el.append(img);
++  let lastOpacity = -1;
++
++  return {
++    el,
++    setPlacement(rect) {
++      el.style.transform = `translate3d(${rect.x}px, ${rect.y}px, 0)`;
++      el.style.width = `${rect.width}px`;
++      el.style.height = `${rect.height}px`;
++    },
++    setOpacity(value) {
++      if (value === lastOpacity) return;
++      lastOpacity = value;
++      el.style.opacity = String(value);
++    },
++  };
++}
+diff --git a/src/runtime/effect-timing.ts b/src/runtime/effect-timing.ts
+index f44bfeb..90ecc0d 100644
+--- a/src/runtime/effect-timing.ts
++++ b/src/runtime/effect-timing.ts
+@@ -14,6 +14,21 @@ export const STAGGER_GAP_MS = 90;
+ export const CARD_MS = 450;
+ export const SCRAMBLE_FRAME_MS = 40;
+ export const WINDOW_CALL_MAX = 29;
++// image-resolve: select (150) + skeleton (150), then the 700 ms dissolve.
++export const DISSOLVE_MS = 700;
++export const DISSOLVE_STEPS = 16;
++// The photo rises from this non-zero opacity (a hidden image is not counted
++// as the largest paint); one tunable constant.
++export const PHOTO_START_OPACITY = 0.12;
++// Monospace advance in em; mirrors the build-time ASCII cell aspect, which
++// the runtime must not import (it pulls in sharp).
++export const ASCII_ADVANCE = 0.6;
++export const BAYER_4X4: readonly (readonly number[])[] = [
++  [0, 8, 2, 10],
++  [12, 4, 14, 6],
++  [3, 11, 1, 9],
++  [15, 7, 13, 5],
++];
+ export const SCRAMBLE_GLYPHS = '!<>-_\\/[]{}=+*^?#';
+ 
+ const DOCK_START_MS = 250;
+@@ -21,6 +36,9 @@ const DOCK_CHAR_MS = 40;
+ const DOCK_JITTER_MS = 10;
+ const DOCK_PAUSE_MS = 100;
+ 
++// End of the select and skeleton phases of image-resolve (ms).
++export const RESOLVE_REVEAL_MS = 300;
++
+ const clamp = (value: number, min: number, max: number) =>
+   Math.min(Math.max(value, min), max);
+ 
+@@ -47,6 +65,7 @@ export const EFFECT_DURATION_MS: Record<
+     s.count === undefined
+       ? 'needs count'
+       : SELECT_MS + POP_MS + Math.max(s.count - 1, 0) * STAGGER_GAP_MS,
++  'image-resolve': () => RESOLVE_REVEAL_MS + DISSOLVE_MS,
+   'build-card': () => CARD_MS,
+ };
+ 
+@@ -171,7 +190,8 @@ export function staggerChildProgress(localMs: number, index: number): number {
+ export function cardPhases(localMs: number): {
+   select: number;
+   skeleton: boolean;
+-  cover: boolean;
++  cover: number;
++  coverStarted: boolean;
+   title: number;
+   summary: number;
+   tags: number;
+@@ -179,9 +199,60 @@ export function cardPhases(localMs: number): {
+   return {
+     select: ramp(localMs, 0, 150),
+     skeleton: localMs >= 150 && localMs < 250,
+-    cover: localMs >= 250,
++    cover: ramp(localMs, 250, 400),
++    coverStarted: localMs >= 250,
+     title: ramp(localMs, 250, 400),
+     summary: ramp(localMs, 300, 420),
+     tags: ramp(localMs, 360, 450),
+   };
+ }
++
++export function dissolveProgress(localMs: number): number {
++  return ramp(localMs, RESOLVE_REVEAL_MS, RESOLVE_REVEAL_MS + DISSOLVE_MS);
++}
++
++export function dissolveStep(localMs: number): number {
++  return Math.floor(DISSOLVE_STEPS * dissolveProgress(localMs));
++}
++
++export function photoOpacity(localMs: number): number {
++  const value =
++    PHOTO_START_OPACITY + (1 - PHOTO_START_OPACITY) * dissolveProgress(localMs);
++  return Math.round(value * 100) / 100;
++}
++
++export function ditherAscii(ascii: string, step: number): string {
++  if (step <= 0) return ascii;
++  let out = '';
++  let x = 0;
++  let y = 0;
++  for (const ch of ascii) {
++    if (ch === '\n') {
++      out += ch;
++      x = 0;
++      y++;
++      continue;
++    }
++    out += BAYER_4X4[y % 4][x % 4] < step ? ' ' : ch;
++    x++;
++  }
++  return out;
++}
++
++export function asciiGeometry(
++  ascii: string,
++  box: { width: number; height: number },
++): { cols: number; rows: number; fontSize: number; lineHeight: number } {
++  if (ascii.length === 0)
++    return { cols: 0, rows: 0, fontSize: 0, lineHeight: 0 };
++  const lines = ascii.split('\n');
++  const cols = Math.max(...lines.map((line) => line.length));
++  const rows = lines.length;
++  if (cols === 0) return { cols: 0, rows, fontSize: 0, lineHeight: 0 };
++  return {
++    cols,
++    rows,
++    fontSize: box.width / (cols * ASCII_ADVANCE),
++    lineHeight: box.height / rows,
++  };
++}
+diff --git a/src/runtime/effects.ts b/src/runtime/effects.ts
+index 98419c9..95dea4a 100644
+--- a/src/runtime/effects.ts
++++ b/src/runtime/effects.ts
+@@ -1,3 +1,5 @@
++import { createAsciiOverlay } from '../components/build/AsciiOverlay';
++import { createBlurCover } from '../components/build/BlurCover';
+ import { createSelectionBox } from '../components/build/SelectionBox';
+ import { createSkeleton } from '../components/build/Skeleton';
+ import { createTextOverlay } from '../components/build/TextOverlay';
+@@ -19,13 +21,18 @@ import {
+ } from './effect-dom';
+ import {
+   LINE_MS,
++  RESOLVE_REVEAL_MS,
+   SELECT_MS,
+   TYPE_CHAR_MS,
++  asciiGeometry,
+   cardPhases,
+   decodeGlyphs,
+   decodeSettled,
++  ditherAscii,
++  dissolveStep,
+   hashSeed,
+   popInset,
++  photoOpacity,
+   popProgress,
+   resolveLinesAt,
+   staggerChildProgress,
+@@ -325,6 +332,46 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+     };
+   },
+ 
++  'image-resolve'(ctx) {
++    const sel = selection(ctx);
++    const skel = createSkeleton(ctx.targets.map(docRect));
++    skel.setOpacity(0);
++    const target = ctx.targets[0];
++    const img = target?.querySelector<HTMLElement>('img') ?? null;
++    const ascii = target?.getAttribute('data-build-ascii') ?? '';
++    const piece = ascii ? createAsciiOverlay() : null;
++    if (target && piece) {
++      const box = docRect(target);
++      piece.setPlacement(box, asciiGeometry(ascii, box));
++      piece.setOpacity(0);
++      ctx.fx.append(piece.el);
++    }
++    ctx.fx.append(skel.el);
++    const reveal = RESOLVE_REVEAL_MS;
++    let shown = false;
++    return {
++      render(l) {
++        sel.update(l, ctx.duration - FADE_MS, ctx.duration);
++        skel.setOpacity(l < SELECT_MS || l >= reveal ? 0 : 1);
++        if (l < reveal) return;
++        if (!shown) {
++          shown = true;
++          if (img) setStyle(img, 'opacity', String(photoOpacity(l)));
++          for (const t of ctx.targets) live(t);
++          piece?.setOpacity(1);
++        }
++        piece?.setText(ditherAscii(ascii, dissolveStep(l)));
++        if (img) setStyle(img, 'opacity', String(photoOpacity(l)));
++      },
++      destroy() {
++        sel.destroy();
++        skel.el.remove();
++        piece?.el.remove();
++        if (img) clear(img);
++      },
++    };
++  },
++
+   'build-card'(ctx) {
+     const sel = selection(ctx);
+     const skel = createSkeleton(ctx.targets.map(docRect));
+@@ -338,7 +385,19 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+       const tags = [...q('.sp-card-tags > *'), ...q('.sp-card-foot')].map(
+         (el) => ({ el, radius: radiusOf(el) }),
+       );
+-      return { cell, titles, summary, tags };
++      const frame = cell.querySelector<HTMLElement>('.sp-card-cover');
++      const img = cell.querySelector<HTMLElement>('.sp-card-cover img');
++      const blur = cell.getAttribute('data-build-blur');
++      return {
++        cell,
++        titles,
++        summary,
++        tags,
++        frame,
++        img,
++        blur,
++        piece: null as ReturnType<typeof createBlurCover> | null,
++      };
+     });
+     let covered = false;
+     return {
+@@ -346,7 +405,7 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+         const phase = cardPhases(l);
+         sel.update(l, 300, 450);
+         skel.setOpacity(phase.skeleton ? 1 : 0);
+-        if (!phase.cover) return;
++        if (!phase.coverStarted) return;
+         if (!covered) {
+           covered = true;
+           for (const c of cells) {
+@@ -354,10 +413,21 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+               setStyle(m.el, 'clip-path', HIDDEN_CLIP);
+             }
+             for (const part of c.tags) poof(part.el, 0, part.radius);
++            if (c.blur && c.img && c.frame) {
++              c.piece = createBlurCover(c.blur);
++              c.piece.setPlacement(docRect(c.frame));
++              ctx.fx.append(c.piece.el);
++              setStyle(c.img, 'opacity', '0');
++            }
+             live(c.cell);
+           }
+         }
+         for (const c of cells) {
++          if (c.piece && c.img) {
++            const p = Math.round(phase.cover * 100) / 100;
++            c.piece.setOpacity(1 - p);
++            setStyle(c.img, 'opacity', String(p));
++          }
+           for (const m of c.titles) {
+             const shown = Math.floor(phase.title * m.total);
+             setStyle(m.el, 'clip-path', revealPolygon(m.lines, shown, m.total));
+@@ -383,6 +453,8 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+         for (const c of cells) {
+           for (const m of [...c.titles, ...c.summary]) clear(m.el);
+           for (const part of c.tags) clear(part.el);
++          c.piece?.el.remove();
++          if (c.img) clear(c.img);
+         }
+       },
+     };
+diff --git a/src/runtime/types.ts b/src/runtime/types.ts
+index 171da69..52373dd 100644
+--- a/src/runtime/types.ts
++++ b/src/runtime/types.ts
+@@ -6,6 +6,7 @@ export const EFFECTS = [
+   'resolve-lines',
+   'pop',
+   'stagger',
++  'image-resolve',
+   'build-card',
+ ] as const;
+ 
+diff --git a/src/sections/hero.build.ts b/src/sections/hero.build.ts
+index 4291e30..3e7c2a0 100644
+--- a/src/sections/hero.build.ts
++++ b/src/sections/hero.build.ts
+@@ -5,6 +5,20 @@ import { pacedSteps } from './pacing';
+ 
+ type ProfileData = CollectionEntry<'profile'>['data'];
+ 
++// The photo's source file name, for the typed command; stubs without a path
++// fall back to an ellipsis so the script never throws.
++function photoFileName(photo: unknown): string {
++  const meta = photo as { fsPath?: unknown; src?: unknown } | null;
++  const raw =
++    typeof meta?.fsPath === 'string'
++      ? meta.fsPath
++      : typeof meta?.src === 'string'
++        ? meta.src
++        : '';
++  const name = raw.split(/[?#]/)[0].split(/[\\/]/).pop() ?? '';
++  return name.length > 0 ? name : '…';
++}
++
+ export function heroBuild(profile: ProfileData): BuildScript {
+   const { steps, settle } = pacedSteps(
+     [
+@@ -26,7 +40,11 @@ export function heroBuild(profile: ProfileData): BuildScript {
+         pitch: 200,
+       },
+       {
+-        step: { call: 'hero.photo(…)', target: 'photo', effect: 'skeleton' },
++        step: {
++          call: `hero.photo("${photoFileName(profile.photo)}")`,
++          target: 'photo',
++          effect: 'image-resolve',
++        },
+         pitch: 100,
+       },
+       {
+diff --git a/src/styles/build-layer.css b/src/styles/build-layer.css
+index 3b4c1f1..fc71c66 100644
+--- a/src/styles/build-layer.css
++++ b/src/styles/build-layer.css
+@@ -464,6 +464,34 @@
+   pointer-events: none;
+ }
+ 
++.sp-ascii {
++  position: absolute;
++  top: 0;
++  left: 0;
++  margin: 0;
++  padding: 0;
++  overflow: clip;
++  white-space: pre;
++  pointer-events: none;
++  font-family: var(--font-mono);
++  color: var(--accent-fg);
++}
++
++.sp-blur-cover {
++  position: absolute;
++  top: 0;
++  left: 0;
++  overflow: clip;
++  pointer-events: none;
++}
++
++.sp-blur-cover > img {
++  display: block;
++  width: 100%;
++  height: 100%;
++  object-fit: cover;
++}
++
+ @media (prefers-reduced-motion: reduce) {
+   .sp-cursor {
+     animation: none;

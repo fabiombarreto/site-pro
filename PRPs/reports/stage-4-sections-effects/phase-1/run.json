@@ -1,0 +1,40 @@
+{
+  "run_id": "840b0294-24dc-4145-8d48-fc7154ac121f",
+  "feature": "stage-4-sections-effects",
+  "started_at": "2026-11-10T14:00:25Z",
+  "ended_at": "2026-11-10T14:03:26Z",
+  "elapsed_ms": 180692,
+  "max_test_retries": 3,
+  "max_test_minutes": 30,
+  "attempts": [
+    {
+      "n": 1,
+      "verdict": "GREEN",
+      "record": "attempts/1/record.json",
+      "record_e2e": "attempts/1/record-e2e.json",
+      "implementer_diff": null
+    }
+  ],
+  "outcome": "GREEN",
+  "phase": 1,
+  "time_breakdown": {
+    "attempt_1_suite_ms": 180692,
+    "attempt_1_correction_ms": 0,
+    "note": "wall clock measured by the command; the agent estimated 420000 ms from summed record durations"
+  },
+  "tdd_mode": false,
+  "tiers": {
+    "check": "pnpm check 0 errors",
+    "unit": "vitest 26 files, 451/451 passed",
+    "build": "pnpm build ok",
+    "e2e": "playwright 285/285 passed"
+  },
+  "secrets_redacted": {
+    "count": 0,
+    "categories": {
+      "env_names": 0,
+      "url_values": 0,
+      "regex_matches": 0
+    }
+  }
+}

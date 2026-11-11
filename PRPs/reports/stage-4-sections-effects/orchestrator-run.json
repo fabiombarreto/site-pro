@@ -1,0 +1,707 @@
+{
+  "feature": "stage-4-sections-effects",
+  "prd_path": "C:/repos/site-pro/PRPs/prds/stage-4-sections-effects.prd.md",
+  "started_at": "2026-11-10T13:23:00Z",
+  "started_at_note": "approximate: the run began just before the phase 1 plan-writer dispatch",
+  "ended_at": "2026-11-10T19:40:36Z",
+  "max_plan_review_retries": 2,
+  "max_tdd_review_retries": 2,
+  "max_orchestrator_minutes": 240,
+  "lane_selection": {
+    "mode": "serial",
+    "reason": "lane_runtime_safe: false in docs/context/methodology.md"
+  },
+  "scope_note": "Session 1 drove phases 1-3 and paused before Phase 4 (unapproved docs/09 text). Session 2 resumes at row 4 after the owner approved the text, then row 5.",
+  "phases": [
+    {
+      "phase": 1,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-1-image-pipeline-and-derivatives.plan.md",
+      "note": "9 tasks, AC-A1..A9 (PRD AC-2, 3, 4, 5, 12); row 1 back-filled to in-progress"
+    },
+    {
+      "phase": 1,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-1-image-pipeline-and-derivatives.plan.md",
+      "plan_review_attempts": 1,
+      "note": "R1-R8 + R-COH pass; 1 advisory R-COH-OTHER-INTERNAL-CONTRADICTION (PHOTO_WIDTHS helper not defined in task 4), passed to the implementer"
+    },
+    {
+      "phase": 1,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-4-sections-effects/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "new worktree on feature/stage-4-sections-effects from origin/main c08c9b8; settings.json copied; bootstrap pnpm install OK in 32 s (run under a 120 s timeout instead of 60 s)"
+    },
+    {
+      "phase": 1,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 1,
+      "stage": "implement_preflight",
+      "outcome": "formatted",
+      "note": "P5: npm run format -- <59 test files>; scripts.format is prettier --write . so it ran repo-wide and only rewrote line endings; git diff against base empty"
+    },
+    {
+      "phase": 1,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "18 files; code-review R1-R8 + R-COH pass; R-L1 waived by the reviewer: pnpm check fails only on 22 type errors in tests/unit/content-schemas.test.ts and page-content-components.test.ts (stale, test-pair follow-up); build, e2e 278, budgets, lighthouse pass"
+    },
+    {
+      "phase": 1,
+      "stage": "visual",
+      "outcome": "SKIPPED",
+      "note": "figma_track: false"
+    },
+    {
+      "phase": 1,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "note": "4 docs edited in the worktree (architecture.md, development.md, testing.md, conventions.md); deferred question on listing responsive widths in docs/06 (default no); manifest archived at phase-1/docs-update.md"
+    },
+    {
+      "phase": 1,
+      "stage": "d8",
+      "outcome": "APPLIED",
+      "note": "plan IMPLEMENTED and moved to PRPs/plans/completed/; PRD row 1 in-progress -> implemented"
+    },
+    {
+      "phase": 1,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-4-sections-effects/test-suite.diff",
+      "tdd_review_attempts": 0,
+      "note": "SUITE_DRAFT_WRITTEN: 4 new test files, 3 updated, 3 resolveAssetUrl tests retired via the ledger; reviewer rubric all pass; manifest flipped APPROVED and archived at phase-1/test-suite.diff"
+    },
+    {
+      "phase": 1,
+      "stage": "test",
+      "outcome": "GREEN",
+      "note": "attempt 1: pnpm check 0 errors, vitest 451/451, build ok, playwright 285/285; run.json archived at phase-1/run.json, attempt artifacts copied to phase-1/test-attempts/1"
+    },
+    {
+      "phase": 1,
+      "stage": "test_review",
+      "outcome": "APPROVED",
+      "note": "post-green: 7 files analyzed, no concerns; 3 OBSOLETE_TEST_REMOVED accepted via the ledger"
+    },
+    {
+      "phase": 1,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested"
+    },
+    {
+      "phase": 1,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete"
+    },
+    {
+      "phase": 1,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "b26a51b61344db25309101f31dec08847f9e815b"
+    },
+    {
+      "phase": 1,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-4-sections-effects-phase-1-image-pipeline-and-derivatives.plan.md",
+      "timestamp": "2026-11-10T14:04:19Z"
+    },
+    {
+      "phase": 2,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-2-image-resolve.plan.md",
+      "note": "6 tasks, AC-A1..A7 (PRD AC-1, 3, 6, 9, 10, 11, 12, 14); grounded in the worktree (phase 1 code uncommitted there); row 2 back-filled to in-progress"
+    },
+    {
+      "phase": 2,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-2-image-resolve.plan.md",
+      "plan_review_attempts": 1,
+      "note": "R1-R8 + R-COH pass, no advisories"
+    },
+    {
+      "phase": 2,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-4-sections-effects/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 2,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 2,
+      "stage": "implement_preflight",
+      "outcome": "formatted",
+      "note": "63 test files; no content change against the phase 1 tree"
+    },
+    {
+      "phase": 2,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 2,
+      "note": "attempt 1 CHANGES_REQUESTED (R-SEM, R-COH-TASK-CONTRADICTION: runner reveal 450 ms vs RESOLVE_REVEAL_MS 300); attempt 2 APPROVED after the runner shared the exported RESOLVE_REVEAL_MS; 7 files; runtime 12.8/18 KB"
+    },
+    {
+      "phase": 2,
+      "stage": "visual",
+      "outcome": "SKIPPED",
+      "note": "figma_track: false"
+    },
+    {
+      "phase": 2,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "note": "4 docs edited (04, 03, 06, context/architecture); deferred question: docs/02 still lists hero.photo(…); manifest archived at phase-2/docs-update.md"
+    },
+    {
+      "phase": 2,
+      "stage": "d8",
+      "outcome": "APPLIED",
+      "note": "plan IMPLEMENTED and moved to completed/; PRD row 2 in-progress -> implemented"
+    },
+    {
+      "phase": 2,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-4-sections-effects/test-suite.diff",
+      "tdd_review_attempts": 0,
+      "note": "4 new test files, 6 updated, none deleted; vitest 494; manifest archived at phase-2/test-suite.diff"
+    },
+    {
+      "phase": 2,
+      "stage": "test",
+      "outcome": "GREEN",
+      "note": "attempt 1: check 0 errors, vitest 494, build ok, playwright 299/299; archived at phase-2/run.json and phase-2/test-attempts/1"
+    },
+    {
+      "phase": 2,
+      "stage": "test_review",
+      "outcome": "APPROVED",
+      "note": "post-green against the phase 1 tree: 6 modified test files, no weakening"
+    },
+    {
+      "phase": 2,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested"
+    },
+    {
+      "phase": 2,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete"
+    },
+    {
+      "phase": 2,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "5aa983a671bc7685bac435059f6ba24747a098ab"
+    },
+    {
+      "phase": 2,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-4-sections-effects-phase-2-image-resolve.plan.md",
+      "timestamp": "2026-11-10T14:47:00Z"
+    },
+    {
+      "phase": 3,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-3-section-tuning.plan.md",
+      "note": "9 tasks, AC-A1..A8; projected created lines: hero 2.65 s (done 3.15), about 2.40, projects 2.47, stack 2.44, contact 2.43; row 3 back-filled to in-progress"
+    },
+    {
+      "phase": 3,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-3-section-tuning.plan.md",
+      "plan_review_attempts": 1,
+      "note": "R1-R8 + R-COH pass, no advisories; reviewer re-derived the projected timings"
+    },
+    {
+      "phase": 3,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-4-sections-effects/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 3,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 3,
+      "stage": "implement_preflight",
+      "outcome": "formatted",
+      "note": "no content change against the phase 2 tree"
+    },
+    {
+      "phase": 3,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "20 files; compiled created lines: hero 2650 (done 3150 from load), about 2400, projects 2470, stack 2440, contact 2432; R-L3 passed under the plan carve-out: 3 extra e2e tests (effects-hero.spec.ts:97, :168, effects-pointer.spec.ts:23) fail only on old timing pins, confirmed stale by the reviewer"
+    },
+    {
+      "phase": 3,
+      "stage": "visual",
+      "outcome": "SKIPPED",
+      "note": "figma_track: false"
+    },
+    {
+      "phase": 3,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "note": "1 edit (build.md timings line); the implementer had already updated docs 02, 04, decisions.md, context/architecture.md, build.md per Task 1; manifest archived at phase-3/docs-update.md"
+    },
+    {
+      "phase": 3,
+      "stage": "d8",
+      "outcome": "APPLIED",
+      "note": "plan IMPLEMENTED and moved to completed/; PRD row 3 in-progress -> implemented"
+    },
+    {
+      "phase": 3,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-4-sections-effects/test-suite.diff",
+      "tdd_review_attempts": 0,
+      "note": "2 new test files, 11 updated (base-timing pins updated on purpose), none deleted; second-card typed-prefix floor lowered 15 -> 5 chars (180 ms card spacing), full cut still pinned in unit tests; vitest 521, e2e 304; archived at phase-3/test-suite.diff"
+    },
+    {
+      "phase": 3,
+      "stage": "test",
+      "outcome": "GREEN",
+      "note": "attempt 1: check 0 errors, vitest 521, build ok, playwright 304/304; archived at phase-3/run.json and phase-3/test-attempts/1"
+    },
+    {
+      "phase": 3,
+      "stage": "test_review",
+      "outcome": "APPROVED",
+      "note": "post-green against the phase 2 tree: 12 files, no weakening; ledger-authorized retimes"
+    },
+    {
+      "phase": 3,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested"
+    },
+    {
+      "phase": 3,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete"
+    },
+    {
+      "phase": 3,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "18f5e4b8a0f5102e8d7b9ed1664614722b66d3a6"
+    },
+    {
+      "phase": 3,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-4-sections-effects-phase-3-section-tuning.plan.md",
+      "timestamp": "2026-11-10T15:31:08Z"
+    },
+    {
+      "phase": 4,
+      "stage": "owner_input_snapshot",
+      "outcome": "RECORDED",
+      "tree": "8886a291c61d63467fec05dbfe33240bf10c46d9",
+      "note": "Between sessions the owner approved the docs/09 project page text; the approval edits (docs/09, 05, README v3.8, decisions.md entry, domain/areas/content.md) were applied in the worktree at the owner's request. Snapshot taken with git add -A + git write-tree (no commit) so Phase 4 is reviewed against a base that already holds the owner input; it differs from phase_diff_bases[3] only in those 5 docs files. Supplied as Phase 4 diff base instead of phase_diff_bases[3]."
+    },
+    {
+      "phase": 4,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-4-project-page-text.plan.md",
+      "note": "5 tasks, AC-A1..A5 (PRD AC-13), phase_type docs; row 4 back-filled to in-progress; the writer grounded by direct reads and dispatched no research subagents (recorded in the plan Notes); heads-up: tests/unit/content-copy.test.ts:155-172 pin the old bodies and go stale (test pair updates them)"
+    },
+    {
+      "phase": 4,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-4-project-page-text.plan.md",
+      "plan_review_attempts": 1,
+      "note": "18 rubric rows pass, 0 advisories; R-COH-VALIDATE-FRAMEWORK-MISMATCH exempt via phase_type docs"
+    },
+    {
+      "phase": 4,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-4-sections-effects/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A): registered on refs/heads/feature/stage-4-sections-effects"
+    },
+    {
+      "phase": 4,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 4,
+      "stage": "implement_preflight",
+      "outcome": "formatted",
+      "note": "no content change against the Phase 4 base tree 8886a291; record at phase-4/preflight-formatting.json"
+    },
+    {
+      "phase": 4,
+      "stage": "implement",
+      "outcome": "PLAN_VALIDATION_DEFECT",
+      "attempts": 1,
+      "note": "attempt 1 copied the four bodies byte-faithfully (L1 PASS, L3 PASS, L2 body-equality PASS); the plan L2 number check flags D1 in the approved Praesto Sum text; claim checked and accepted; halt.json at phase-4/halt.json"
+    },
+    {
+      "phase": 4,
+      "stage": "plan_repair",
+      "outcome": "STARTED",
+      "defect": "Level 2: the node -e number check with allowed=new Set([\"270\",\"2026\",\"19\"]) reports FAIL: number 1 in praesto-sum (D1)"
+    },
+    {
+      "phase": 4,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-4-project-page-text.plan.md",
+      "note": "plan repair (targeted revision): only the Level 2 number regex changed to (?<![A-Za-z0-9_])d+(?![A-Za-z0-9_]) plus the DRAFT trailer; orchestrator re-ran the corrected command: PASS on the real bodies, FAIL on an injected \"3 users\" in a scratch copy"
+    },
+    {
+      "phase": 4,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-4-project-page-text.plan.md",
+      "plan_review_attempts": 1,
+      "note": "re-approval after the plan repair; only ## Validation Commands hash changed; 0 advisories"
+    },
+    {
+      "phase": 4,
+      "stage": "plan_repair",
+      "outcome": "APPROVED"
+    },
+    {
+      "phase": 4,
+      "stage": "implement_preflight",
+      "outcome": "formatted",
+      "note": "fresh /relay-implement invocation after plan repair; no content change beyond the four project bodies already in the tree; attempt 1 of the first invocation archived at phase-4/attempts/1-before-plan-repair"
+    },
+    {
+      "phase": 4,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "fresh invocation after the plan repair: targeted revision, no edits; L1-L3 PASS; code review APPROVED (13 rows, R-COH-SEMANTIC-DEGRADED recorded as a degraded pass); 4 files, +68"
+    },
+    {
+      "phase": 4,
+      "stage": "visual",
+      "outcome": "SKIPPED",
+      "note": "figma_track: false"
+    },
+    {
+      "phase": 4,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "note": "0 edits (docs already reflect the approval); manifest archived at phase-4/docs-update.md; docs-review.jsonl line 4"
+    },
+    {
+      "phase": 4,
+      "stage": "d8",
+      "outcome": "APPLIED",
+      "note": "plan IMPLEMENTED and moved to completed/; PRD row 4 in-progress -> implemented"
+    },
+    {
+      "phase": 4,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-4-sections-effects/test-suite.diff",
+      "tdd_review_attempts": 0,
+      "note": "0 new, 2 updated (content-copy.test.ts, project-pages.spec.ts), 0 deleted; 3 EXISTING_TEST_UPDATED ledger rows citing AC-13; bodies now asserted against the docs/09 blocks parsed at test time; reviewer GREEN check: vitest content-copy 30, playwright project-pages 25; archived at phase-4/test-suite.diff"
+    },
+    {
+      "phase": 4,
+      "stage": "test",
+      "outcome": "GREEN",
+      "note": "attempt 1: check 0 errors, vitest 530, build ok, playwright 308/308; run.json archived at phase-4/run.json"
+    },
+    {
+      "phase": 4,
+      "stage": "test_review",
+      "outcome": "APPROVED",
+      "note": "post-green against the Phase 4 start tree: 2 files, no weakening, 3 ledger-authorized replacements"
+    },
+    {
+      "phase": 4,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested"
+    },
+    {
+      "phase": 4,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete"
+    },
+    {
+      "phase": 4,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "e2acfcb51162a1402b1d416a2cb7d4058f72a2b9"
+    },
+    {
+      "phase": 4,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-4-sections-effects-phase-4-project-page-text.plan.md",
+      "timestamp": "2026-11-10T18:38:07Z"
+    },
+    {
+      "phase": 5,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-5-quality-gates.plan.md",
+      "note": "7 tasks (decisions entry, rhythm-review hand-off doc, testing.md mapping, swap procedure, scripts/check-frozen-runtime.mjs, LCP median assertion, check:frozen in the check CI job); AC-A1..A6; phase_type feature; row 5 back-filled; research-codebase + research-web dispatched"
+    },
+    {
+      "phase": 5,
+      "stage": "plan",
+      "outcome": "CHANGES_REQUESTED",
+      "plan_review_attempts": 1,
+      "failing": [
+        "R-COH-VALIDATE-PATTERN-UNGROUNDED"
+      ],
+      "note": "Task 7 VALIDATE grep ^  [a-z]+:$ cannot match the e2e job key, counts 8 of 9 jobs"
+    },
+    {
+      "phase": 5,
+      "stage": "plan",
+      "outcome": "DRAFT_WRITTEN",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-5-quality-gates.plan.md",
+      "note": "targeted revision: Task 7 VALIDATE now counts 2-space keys inside the jobs: block with awk (orchestrator check: 9 on the current ci.yml)"
+    },
+    {
+      "phase": 5,
+      "stage": "plan",
+      "outcome": "APPROVED",
+      "plan_path": "PRPs/plans/stage-4-sections-effects-phase-5-quality-gates.plan.md",
+      "plan_review_attempts": 2,
+      "note": "ratchet active; only Step-by-Step Tasks changed; 18 rows pass, 0 advisories"
+    },
+    {
+      "phase": 5,
+      "stage": "worktree",
+      "outcome": "CREATED",
+      "repo": null,
+      "worktree_path": "C:/repos/site-pro/.worktrees/stage-4-sections-effects/",
+      "worktree_attempted": true,
+      "worktree_succeeded": true,
+      "fallback_reason": null,
+      "note": "idempotent re-use (P3 Case A)"
+    },
+    {
+      "phase": 5,
+      "stage": "tdd",
+      "outcome": "deferred_to_test_after"
+    },
+    {
+      "phase": 5,
+      "stage": "implement_preflight",
+      "outcome": "formatted",
+      "note": "no content change against the Phase 5 base tree e2acfcb5"
+    },
+    {
+      "phase": 5,
+      "stage": "implement",
+      "outcome": "APPROVED",
+      "attempts": 1,
+      "note": "8 files (+193/-5): check-frozen-runtime.mjs, rhythm-review hand-off (pending owner), testing.md AC map, swap procedure, LCP median <= 2500 assertion, check:frozen in the check CI job (still 9 jobs); reviewer re-ran vitest 530, e2e 308, budgets, privacy, frozen; R-L2 caveat: the plan no-test-file-changed command diffs against HEAD and is a plan-side defect, diff vs base has 0 test files; R-COH-SEMANTIC-DEGRADED degraded pass"
+    },
+    {
+      "phase": 5,
+      "stage": "visual",
+      "outcome": "SKIPPED",
+      "note": "figma_track: false"
+    },
+    {
+      "phase": 5,
+      "stage": "docs_sync",
+      "outcome": "APPROVED",
+      "note": "3 edits (CLAUDE.md command list, KNOWLEDGE_BASE index entry, README v3.9); manifest archived at phase-5/docs-update.md; docs-review.jsonl line 5"
+    },
+    {
+      "phase": 5,
+      "stage": "d8",
+      "outcome": "APPLIED",
+      "note": "plan IMPLEMENTED and moved to completed/; PRD row 5 in-progress -> implemented"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "tdd_review_attempts": 1,
+      "failing": [
+        "R-GREEN-LEGITIMATE"
+      ],
+      "note": "vitest 59/59; playwright 29 passed, 17 failed: asset-swap-invariance cover swaps (12, main text differs because the no-cover placeholder label leaves), image-effects-matrix mid cover resolve (4, axe color-contrast on the fading build-layer .sp-select-label inside the aria-hidden overlay), section-budgets maxBuilding 3 (1, probe counts the heading selection); orchestrator collected the exact failure messages for the writer (no shell)"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "tdd_review_attempts": 2,
+      "failing": [
+        "R-GREEN-LEGITIMATE"
+      ],
+      "note": "vitest 59/59; playwright 37 passed, 9 failed: matrix blanket no-fading-label assertion regressed the 4 mid photo dissolve cells; mid cover resolve reach times out (the heading label fades through the whole first-card cover resolve); section-budgets overlap measured 40 ms after excluding fading boxes (floor 80). AC-4 fix judged legitimate. Last retry before FAILED_TDD_REVIEW_BUDGET_EXCEEDED"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "CHANGES_REQUESTED",
+      "tdd_review_attempts": 3,
+      "failing": [
+        "R-GREEN-LEGITIMATE"
+      ],
+      "note": "review 3: vitest 59/59; build ok; scoped playwright 45 passed, 1 failed (section-budgets overlap 10 ms); all 12 matrix cells pass with the scoped fading-label exclusion (judged legitimate), cover-resolve and asset-swap pass; full test:e2e not run"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "HALT:FAILED_TDD_REVIEW_BUDGET_EXCEEDED"
+    },
+    {
+      "phase": 5,
+      "stage": "test_after",
+      "outcome": "APPROVED",
+      "suite_path": "PRPs/reports/stage-4-sections-effects/test-suite.diff",
+      "tdd_review_attempts": 4,
+      "note": "manual recovery after the halt: the orchestrating session hand-edited only the section-budgets card start probe (Revision 3: card start = cell leaves data-build-fx=hidden at the fixed 190 ms cover start), owner-approved; test-reviewer review 4 APPROVED: vitest 59/59, scoped e2e 46/46, full test:e2e 354/354; 6 new files + 1 additive update; archived at phase-5/test-suite.diff"
+    },
+    {
+      "phase": 5,
+      "stage": "test",
+      "outcome": "GREEN",
+      "note": "attempt 1: check 0 errors, vitest 552, build ok, playwright 354/354, frozen/budgets/privacy pass; run.json archived at phase-5/run.json"
+    },
+    {
+      "phase": 5,
+      "stage": "test_review",
+      "outcome": "APPROVED",
+      "note": "post-green against the Phase 5 start tree: 6 files, no removals, no skips, no deletions"
+    },
+    {
+      "phase": 5,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "tested"
+    },
+    {
+      "phase": 5,
+      "stage": "row_status_flip",
+      "outcome": "APPLIED",
+      "to": "complete"
+    },
+    {
+      "phase": 5,
+      "stage": "snapshot",
+      "outcome": "RECORDED",
+      "tree": "0917099048b398ac54ff6a792bd3c47e87a80441"
+    },
+    {
+      "phase": 5,
+      "status": "complete",
+      "plan_path": "PRPs/plans/completed/stage-4-sections-effects-phase-5-quality-gates.plan.md",
+      "timestamp": "2026-11-10T19:40:36Z"
+    }
+  ],
+  "outcome": "ALL_PHASES_COMPLETE",
+  "phases_completed": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "worktree_attempted": true,
+  "worktree_succeeded": true,
+  "fallback_reason": null,
+  "phase_diff_bases": {
+    "1": "b26a51b61344db25309101f31dec08847f9e815b",
+    "2": "5aa983a671bc7685bac435059f6ba24747a098ab",
+    "3": "18f5e4b8a0f5102e8d7b9ed1664614722b66d3a6",
+    "4": "e2acfcb51162a1402b1d416a2cb7d4058f72a2b9",
+    "5": "0917099048b398ac54ff6a792bd3c47e87a80441"
+  },
+  "suite_diff_bases": {},
+  "plan_validation_repairs": {
+    "4": 1
+  },
+  "lane_durations_ms": {},
+  "total_duration_ms": 12806860,
+  "deviations": [],
+  "sessions": [
+    {
+      "started_at": "2026-11-10T13:23:00Z",
+      "ended_at": "2026-11-10T15:31:17Z",
+      "outcome": "PAUSED_BEFORE_PHASE_4",
+      "phases_completed": [
+        1,
+        2,
+        3
+      ],
+      "pause_reason": "Phase 4 (Project page text) is the next actionable row, but its input, the owner-approved project page bodies in docs/09-content-draft.md, is still a draft awaiting the owner (Praesto Sum has [Owner to write] brackets; the relay What I learned line and the AI Track Record opening line need a yes). Phase 5 depends on 3 and 4. Re-invoke /relay-execute once the docs/09 text is approved; it resumes at row 4 with phase_diff_bases[3] as the diff base."
+    },
+    {
+      "started_at": "2026-11-10T18:15:27Z",
+      "ended_at": "2026-11-10T19:22:15Z",
+      "outcome": "FAILED_TDD_REVIEW_BUDGET_EXCEEDED",
+      "trigger": "owner: \"Sim, executar\" after approving the docs/09 project page text (2026-11-10)",
+      "phases_completed": [
+        4
+      ]
+    },
+    {
+      "started_at": "2026-11-10T19:27:00Z",
+      "ended_at": "2026-11-10T19:40:36Z",
+      "outcome": "ALL_PHASES_COMPLETE",
+      "trigger": "owner: \"Sim, corrigir\" (manual recovery of the Phase 5 FAILED_TDD_REVIEW_BUDGET_EXCEEDED halt)",
+      "phases_completed": [
+        5
+      ]
+    }
+  ],
+  "pr_url": "https://github.com/fabiombarreto/site-pro/pull/3",
+  "merged_at": "2026-11-11T14:08:07Z",
+  "approve_outcome": "COMPLETE",
+  "docs_outcome": "APPROVED",
+  "approve_cleanup": "partial: worktree unregistered but its folder was left on disk (see approve-halt.json)",
+  "approve_docs_commit": "none (no docs edits needed post-merge)"
+}

@@ -1,0 +1,108 @@
+# TDD initial suite — phase 5 (test-after)
+# Source PRD: PRPs/prds/stage-4-sections-effects.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-4-sections-effects-phase-5-quality-gates.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-10
+# Test root: C:/repos/site-pro/.worktrees/stage-4-sections-effects (code_root); paths below are relative to it.
+
+## AC outcomes
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-1 Hero photo from ASCII | EXISTING_TEST_COVERS | tests/e2e/image-resolve-hero.spec.ts:118 (expectSequence: skeleton, ASCII in the aria-hidden overlay, Bayer dissolve, photo opacity above 0 to 1, final state, box unchanged), :213 desktop run; tests/unit/hero-photo-command.test.ts; tests/unit/image-resolve-timing.test.ts:46 |
+| AC-2 ASCII generated at build time | EXISTING_TEST_COVERS | tests/unit/image-ascii.test.ts:51-150 (transparent, white, two-tone, 48 columns, ramp, determinism), :147 missing file named, :152 unreadable file named; tests/e2e/image-delivery.spec.ts:48 |
+| AC-3 Covers resolve from blur | NEW_TEST_REQUIRED (generation and no-cover data already covered: tests/unit/image-blur.test.ts, tests/e2e/image-delivery.spec.ts:63) | tests/e2e/cover-resolve.spec.ts (fixture cover through the real runtime via route interception: inlined blurred copy in the overlay over the cover's box, sharp cover rising, no filter, nothing left; the no-cover dot-grid card with no blur phase); tests/e2e/support/cover-fixture.ts |
+| AC-4 Swapping in the real assets | NEW_TEST_REQUIRED (privacy half already covered: tests/unit/privacy-image-metadata.test.ts) | tests/e2e/asset-swap-invariance.spec.ts (a new 9:16 photo and 16:9 cover simulated on the served HTML; every box and the document height equal before and after, 1280x800 and 375x812, no-JS and built page) |
+| AC-5 Image delivery | EXISTING_TEST_COVERS | tests/e2e/image-delivery.spec.ts:25-61 |
+| AC-6 Section budgets | NEW_TEST_REQUIRED for the 2.5 s clock marks; hero marks EXISTING_TEST_COVERS | tests/e2e/section-budgets.spec.ts (each of About, Projects, Stack, Contact: created line within 2.5 s of clock time after its trigger, <t> <= 2.50). Existing: tests/e2e/effects-hero.spec.ts:43 (headline readable by 2.0 s), tests/e2e/behavior-gaps.spec.ts:58 (hero final, no window, within 3.2 s of clock time), tests/e2e/effects-scripts.spec.ts:197 and tests/unit/runtime-pacing.test.ts (compiled createdAt <= 2500, hero duration <= 3200, headline ends by 2000), tests/e2e/section-dock-logs.spec.ts:48 |
+| AC-7 Every section with its docs/04 effects | NEW_TEST_REQUIRED for the observed overlap and stagger; compiled and per-effect coverage EXISTING_TEST_COVERS | tests/e2e/section-budgets.spec.ts (second test: About buttons and stack chips pop about 90 ms apart, project cards overlap about 120 ms, never more than two steps building). Existing: tests/e2e/effects-scripts.spec.ts:157 and :176 (120 ms overlap, 300 ms cards, 90 ms staggers, effect order per section), tests/e2e/effects-hero.spec.ts, tests/e2e/effects-pointer.spec.ts, tests/e2e/section-dock-logs.spec.ts:48 |
+| AC-8 Commands and logs from the content | EXISTING_TEST_COVERS | tests/e2e/effects-scripts.spec.ts:79 (hero), :116 (About, Stack, Contact), :157 (Projects), :229 (dock logs); tests/e2e/section-dock-logs.spec.ts:48; tests/unit/section-call-args.test.ts (modified content, fifth project) |
+| AC-9 Layout and accessibility during the new effects | NEW_TEST_REQUIRED (ASCII-in-overlay and animated properties already covered: tests/e2e/image-resolve-hero.spec.ts:213, :224) | tests/e2e/image-effects-matrix.spec.ts (mid photo dissolve, mid cover resolve, after the build; Midnight and Daylight; 1280x800 and 375x812: boxes and document height equal the no-JS page of the same fixture, layout shift <= 0.01, axe 0 violations, tree and text of <main> equal, pieces inside the aria-hidden overlay, only opacity and clip-path written inline) |
+| AC-10 Instant paths leave nothing behind | NEW_TEST_REQUIRED for the cover paths; hero paths EXISTING_TEST_COVERS | tests/e2e/cover-resolve.spec.ts (Esc, Shift + Esc, dock skip, window bar click, infinity, focus into a later section, width change mid cover resolve; reduced motion, saved infinity, no JavaScript with a cover fixture). Existing: tests/e2e/image-resolve-hero.spec.ts:257 (the same paths mid dissolve), :338 (reduced motion, saved infinity, no JS at DOMContentLoaded) |
+| AC-11 Mobile | EXISTING_TEST_COVERS (plus the matrix) | tests/e2e/image-resolve-hero.spec.ts:389 (same sequence at 375x812, ASCII in the photo box, no horizontal scroll); tests/unit/image-resolve-timing.test.ts; tests/e2e/image-effects-matrix.spec.ts (scrollWidth equals clientWidth at three moments, both themes) |
+| AC-12 Budgets and Lighthouse | EXISTING_TEST_UPDATED (additive, see ledger) | tests/unit/quality-gates.test.ts (LCP assertion 2500 median, other thresholds still asserted at their existing tests; CI shape: check:frozen in the check job with fetch-depth 0, nine jobs). Existing: tests/unit/runtime-budget.test.ts, tests/e2e/quality-gates.spec.ts:25 (size budgets on the real build), tests/unit/image-resolve-contract.test.ts. Lighthouse medians run only in the CI lighthouse job |
+| AC-13 Project pages | EXISTING_TEST_COVERS | tests/e2e/project-pages.spec.ts:115-141 (approved body, fork note), tests/unit/content-copy.test.ts (no em dash, numbers, privacy), tests/e2e/subpages-axe.spec.ts:25-37 (axe 0 violations on the four project pages, both themes, three viewports), tests/e2e/quality-gates.spec.ts:19 (privacy gate on the build) |
+| AC-14 Scheduler unchanged | NEW_TEST_REQUIRED | tests/unit/check-frozen-runtime.test.ts (throwaway git repo: exit 0 unchanged; exit 1 naming each changed frozen file, uncommitted or committed; non-frozen edits ignored; unknown base and the absent default base b4271cb fail loudly with the fetch-depth hint; an exception honored only while its decision text is in docs/decisions.md); the Stage 3 behavior-rule specs are untouched and run in the full suite |
+
+## Test files written this session
+
+- tests/unit/check-frozen-runtime.test.ts (new)
+- tests/e2e/section-budgets.spec.ts (new)
+- tests/e2e/cover-resolve.spec.ts (new)
+- tests/e2e/image-effects-matrix.spec.ts (new)
+- tests/e2e/asset-swap-invariance.spec.ts (new)
+- tests/e2e/support/cover-fixture.ts (new helper, test-side only; nothing added to src/content)
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/quality-gates.test.ts:`Lighthouse CI configuration (AC-10)` and `CI shape for the quality gates (AC-11)` | AC-12 and AC-14 (phase 5 plan AC-A2, AC-A3): two test functions added (`requires a median LCP of at most 2500 ms as an error`; `runs the scheduler diff check in the check job with full history and keeps nine jobs`). No existing assertion was changed, dropped or weakened; the CLS, category, URL and run-count assertions are untouched. |
+
+## Revision 1 (targeted, after test-reviewer R-GREEN-LEGITIMATE x3)
+
+No AC outcome, existing-test mapping or ledger row above changed. The three failing specs were corrected in place; all three are specs this suite created (not previously-approved existing tests), so no ledger row is added (none was updated or deleted):
+
+- tests/e2e/asset-swap-invariance.spec.ts (AC-4): the main-text comparison now excludes the `.sp-cover-ph` placeholder label on both sides (a cover swap legitimately replaces that label with the cover image). Box, document-height and box-count comparisons are unchanged; any other text change still fails.
+- tests/e2e/image-effects-matrix.spec.ts (AC-9, "mid cover resolve"): the moment is now a blur-cover opacity in 0.15..0.85 reached with no `.sp-select[data-state="fading"]` present, and the test asserts zero fading selection labels at axe time. Decision: the fading Projects-heading label in the aria-hidden overlay is NOT excused; the moment was moved off it. Axe rules and the helper are untouched; the other 8 cells are unchanged. Risk: if a fading label spans the whole resolve the reach times out (a loud failure, not a pass).
+- tests/e2e/section-budgets.spec.ts (AC-7, second test): the building-steps probe counts only `.sp-select` boxes that are not `data-state="fading"` and whose centre is not inside the heading's box, so the "at most two building" and overlap-run checks measure card steps only. The first test (60 ms sampling allowance) is untouched.
+- Not executed in this session (no shell); re-run `pnpm exec prettier --write tests` and the three specs.
+
+## Revision 2 (targeted, after test-reviewer R-GREEN-LEGITIMATE x3, review 2)
+
+No AC outcome, existing-test mapping or ledger row changed; asset-swap-invariance.spec.ts and cover-resolve.spec.ts untouched. Both specs edited are specs this suite created, so no ledger row is added.
+
+- tests/e2e/image-effects-matrix.spec.ts (AC-9): the revision-1 zero-fading assertion is removed for every moment, restoring the "mid photo dissolve" and "after the build" cells to their review-1 behavior (plain axe, 0 violations). "Mid cover resolve" returns to the review-1 moment (blur-cover opacity 0.25 to 0.75). Only for that moment (`excusedOverlayLabel`), axe runs through AxeBuilder with the same tags and one `.exclude('.sp-select[data-state="fading"] .sp-select-label')`. Rationale (two-registers rule): that label is decorative, transient and inside the aria-hidden build layer, and the Projects heading's label fades during the whole first-card cover resolve; the page must still be axe-clean. The test asserts the excused nodes are inside `[data-build-fx-layer][aria-hidden="true"]`, and asserts 0 violations for everything else (cover, card, page text, all other rules), so the cell can still fail. `tests/e2e/support/home.ts` is unchanged.
+- tests/e2e/section-budgets.spec.ts (AC-7, second test): the card overlap is now measured from step START times. Each card step's selection box (heading's box excluded by geometry) is tagged on first sighting and its clock time recorded; overlap = CARD_MS (300, docs/04 and effect-timing.ts) minus the spacing between consecutive starts (compiled pitch 180 ms, so about 120 ms). Each overlap is asserted in 85..155 ms and the mean in 100..140 ms (tolerance: a start is seen up to one 10 ms slice plus one animation frame late, about 27 ms of error per spacing). At least 3 card starts must be observed. The "never more than two steps building" check, the 90 ms About-button stagger and the 90 ms stack-chip stagger are unchanged. The old box-lifetime run-length check was replaced, not relaxed: a box fades before its step ends, so it under-measured the overlap.
+- Not executed (no shell); run `pnpm exec prettier --write tests` and the two specs.
+
+## Notes for the orchestrator
+
+- docs/context/testing.md "Gap closed by" column (docs edit, not done by the test pair). The worktree's current cells name specs by plan; final names:
+  - AC-3: `tests/e2e/cover-resolve.spec.ts` (fixture cover through the real runtime, no-cover card; helper `tests/e2e/support/cover-fixture.ts`)
+  - AC-4: `tests/e2e/asset-swap-invariance.spec.ts`
+  - AC-6 and AC-7: `tests/e2e/section-budgets.spec.ts` (the 2.0 s and 3.2 s hero marks are already in `tests/e2e/effects-hero.spec.ts` and `tests/e2e/behavior-gaps.spec.ts`)
+  - AC-9: `tests/e2e/image-effects-matrix.spec.ts` (a new spec; it does not extend `tests/e2e/axe-build-matrix.spec.ts`)
+  - AC-10: `tests/e2e/cover-resolve.spec.ts` (cover paths); the hero paths and the reduced-motion, saved infinity and no-JS paths are already in `tests/e2e/image-resolve-hero.spec.ts`
+  - AC-12: `tests/unit/quality-gates.test.ts` (LCP assertion and the check job shape)
+  - AC-13: no gap; `tests/e2e/subpages-axe.spec.ts` already runs axe on the four project pages in both themes (the "Covered by" cell should add it)
+  - AC-14: `tests/unit/check-frozen-runtime.test.ts`
+  - AC-2: no gap; `tests/unit/image-ascii.test.ts:147` already covers the missing-file failure naming the file
+- The owner's rhythm review is not tested and no spec pretends it happened.
+- The specs were authored without the ability to execute them in this session (no shell tool). They have not been run, formatted with Prettier or linted; run `pnpm exec prettier --write tests`, `pnpm lint`, `pnpm test`, then `pnpm build && pnpm test:e2e`.
+- tests/unit/check-frozen-runtime.test.ts deliberately does not run the script against the real worktree: that needs history reaching b4271cb, which the CI `unit` job (shallow checkout) does not have. The real-tree check is `pnpm check:frozen` in the CI `check` job.
+
+## Formatting Outcome
+
+- Outcome: formatted
+- Command: `npm run format --` (discovery source: package.json scripts.format)
+- Touched files: tests/unit/check-frozen-runtime.test.ts, tests/e2e/section-budgets.spec.ts, tests/e2e/cover-resolve.spec.ts, tests/e2e/image-effects-matrix.spec.ts (rewritten by Prettier); tests/e2e/asset-swap-invariance.spec.ts, tests/e2e/support/cover-fixture.ts, tests/unit/quality-gates.test.ts (unchanged)
+- Note: scripts.format is `prettier --write .`, so the run also covered the rest of the tree; no other file changed
+
+## Formatting Outcome (revision 1)
+
+- Outcome: formatted
+- Command: `npm run format --` (package.json scripts.format)
+- Touched files: tests/e2e/asset-swap-invariance.spec.ts, tests/e2e/image-effects-matrix.spec.ts, tests/e2e/section-budgets.spec.ts
+
+## Formatting Outcome (revision 2)
+
+- Outcome: formatted
+- Command: `npm run format --` (package.json scripts.format)
+- Touched files: tests/e2e/image-effects-matrix.spec.ts, tests/e2e/section-budgets.spec.ts
+
+## Revision 3 (manual recovery after FAILED_TDD_REVIEW_BUDGET_EXCEEDED)
+
+Author: the orchestrating session, as the halt record's manual recovery path (hand-edit the suite), approved by the owner on 2026-11-10 ("Sim, corrigir"). Only tests/e2e/section-budgets.spec.ts changed, only its card start probe:
+
+- Before: a card start was the first sighting of any non-heading `.sp-select` box (window.__spSeen), which also picked up boxes from other steps and measured a start spacing of about 290 ms (overlap 10 ms).
+- After: a card start is the moment its cell leaves `data-build-fx="hidden"`, which the build-card runner does at a fixed 190 ms into the step (cardPhases().coverStarted in src/runtime/effect-timing.ts); the fixed offset cancels out of the spacing. Cards must be seen hidden before going live (counts asserted equal).
+- Unchanged: CARD_MS = 300, overlap = CARD_MS minus start spacing, each overlap 85..155 ms, mean 100..140 ms, at least 3 starts, "never more than two steps building", the 90 ms About and stack staggers, and the first test.
+- Evidence: `pnpm exec playwright test tests/e2e/section-budgets.spec.ts --project=chromium`: 2 passed; a one-off instrumented copy (deleted) printed starts [67910, 68080, 68280, 68450] and overlaps [130, 100, 130] (mean 120), so the old 290 ms spacing would still fail.
+- Ledger: no change (the spec was created by this suite).
+- Formatting: `prettier --write tests/e2e/section-budgets.spec.ts`, eslint clean.
+
+## Status
+
+*Approved: 2026-11-10*
+*Status: APPROVED*

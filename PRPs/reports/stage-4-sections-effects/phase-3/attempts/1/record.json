@@ -1,0 +1,43 @@
+{
+  "attempt": 1,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [
+    "docs/04-animations.md",
+    "docs/domain/areas/build.md",
+    "docs/02-experience.md",
+    "docs/decisions.md",
+    "docs/context/architecture.md",
+    "src/runtime/types.ts",
+    "src/runtime/compiler.ts",
+    "src/runtime/layer-timing.ts",
+    "src/runtime/layer.ts",
+    "src/runtime/effect-timing.ts",
+    "src/runtime/effects.ts",
+    "src/strings.ts",
+    "src/sections/call-args.ts",
+    "src/sections/pacing.ts",
+    "src/sections/hero.build.ts",
+    "src/sections/Hero.astro",
+    "src/sections/about.build.ts",
+    "src/sections/contact.build.ts",
+    "src/sections/projects.build.ts",
+    "src/sections/stack.build.ts"
+  ],
+  "validation": {
+    "level_1": "PASS",
+    "level_2": "PASS",
+    "level_3": "FAIL",
+    "level_3_note": "only 3 e2e tests pinning old timings fail (effects-hero.spec.ts:97, :168, effects-pointer.spec.ts:23); plan-excluded stale specs effects-scripts and runtime-timeline-contract not run"
+  },
+  "compiled": {
+    "hero": {
+      "created": 2650,
+      "duration": 3150
+    },
+    "about": 2400,
+    "projects": 2470,
+    "stack": 2440,
+    "contact": 2432
+  },
+  "base_commit": "5aa983a671bc7685bac435059f6ba24747a098ab"
+}

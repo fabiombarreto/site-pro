@@ -181,11 +181,11 @@ Current value of `tdd` in `docs/context/methodology.md`: **false**. Test-after o
 
 | # | Phase | Description | Status | Repo | Parallel | Depends | PRP Plan |
 |---|-------|-------------|--------|------|----------|---------|----------|
-| 1 | Image pipeline and derivatives | `image()` fields, responsive photo and covers through `astro:assets` + `sharp`, the build-time ASCII generator and blurred covers as build-layer data, the image-metadata privacy check; the final page unchanged | pending | - | - | - | - |
-| 2 | image-resolve | The effect in the registry: the hero ASCII dither dissolve and the cover resolve inside `build-card`, instant finishes, the hero script using it | pending | - | - | 1 | - |
-| 3 | Section tuning | The five final scripts: docs/04 effects, commands and per-section dock logs from the content, timings tuned to the budgets, base-timing tests updated | pending | - | - | 2 | - |
-| 4 | Project page text | The owner-approved bodies from docs/09 copied into the four project entries | pending | - | - | - | - |
-| 5 | Quality gates | E2E for AC-1 to AC-14, the axe and layout matrix at the new moments, Lighthouse with LCP, budgets, the scheduler diff check, docs/context/testing.md, the asset swap procedure, the owner's rhythm review | pending | - | - | 3, 4 | - |
+| 1 | Image pipeline and derivatives | `image()` fields, responsive photo and covers through `astro:assets` + `sharp`, the build-time ASCII generator and blurred covers as build-layer data, the image-metadata privacy check; the final page unchanged | complete | - | - | - | PRPs/plans/stage-4-sections-effects-phase-1-image-pipeline-and-derivatives.plan.md |
+| 2 | image-resolve | The effect in the registry: the hero ASCII dither dissolve and the cover resolve inside `build-card`, instant finishes, the hero script using it | complete | - | - | 1 | PRPs/plans/stage-4-sections-effects-phase-2-image-resolve.plan.md |
+| 3 | Section tuning | The five final scripts: docs/04 effects, commands and per-section dock logs from the content, timings tuned to the budgets, base-timing tests updated | complete | - | - | 2 | PRPs/plans/stage-4-sections-effects-phase-3-section-tuning.plan.md |
+| 4 | Project page text | The owner-approved bodies from docs/09 copied into the four project entries | complete | - | - | - | PRPs/plans/stage-4-sections-effects-phase-4-project-page-text.plan.md |
+| 5 | Quality gates | E2E for AC-1 to AC-14, the axe and layout matrix at the new moments, Lighthouse with LCP, budgets, the scheduler diff check, docs/context/testing.md, the asset swap procedure, the owner's rhythm review | complete | - | - | 3, 4 | PRPs/plans/stage-4-sections-effects-phase-5-quality-gates.plan.md |
 
 ### Phase Details
 

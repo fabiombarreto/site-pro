@@ -1,0 +1,17 @@
+{
+  "pr": 3,
+  "feature": "stage-4-sections-effects",
+  "steps_attempted": ["worktree_remove", "branch_delete_local", "branch_delete_remote", "worktree_prune"],
+  "steps_succeeded": ["branch_delete_local", "branch_delete_remote", "worktree_prune"],
+  "step_failed": "worktree_remove",
+  "error": "error: failed to delete 'C:/repos/site-pro/.worktrees/stage-4-sections-effects': Directory not empty (git unregistered the worktree; on Windows the folder was left behind with node_modules, test-results, playwright-report and copies of tracked files. A follow-up rm -rf of the leftover folder was denied by the permission prompt.)",
+  "state_after": "git worktree list shows only the main checkout; the leftover folder is untracked and ignored (.worktrees/ is gitignored); every PRPs file in it also exists in the main checkout",
+  "manual_recovery_steps": [
+    "Check: git worktree list",
+    "Check: git branch --list feature/stage-4-sections-effects",
+    "Check: git ls-remote --heads origin feature/stage-4-sections-effects",
+    "Close any process still using files under .worktrees/stage-4-sections-effects (dev server, Playwright, an editor)",
+    "Delete the leftover folder: Remove-Item -Recurse -Force C:\\repos\\site-pro\\.worktrees\\stage-4-sections-effects",
+    "If stale worktree refs: git worktree prune"
+  ]
+}

@@ -1,0 +1,64 @@
+# TDD initial suite — phase 2 (test-after)
+# Source PRD: PRPs/prds/stage-4-sections-effects.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-4-sections-effects-phase-2-image-resolve.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-10
+# Mode: test-after (tdd: false; frameworks vitest, playwright); test files live in the feature worktree .worktrees/stage-4-sections-effects
+
+## AC outcomes
+
+| AC (plan AC-A -> PRD AC) | Outcome | Path / mapping |
+|---|---|---|
+| AC-1 (A1) hero photo: select, skeleton, ASCII, Bayer dissolve over 700 ms, photo opacity above 0 to 1, nothing left, box unchanged | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/unit/image-resolve-timing.test.ts (duration 1000, standard 0-15 Bayer matrix, dissolveProgress/Step, photoOpacity, ditherAscii), tests/e2e/image-resolve-hero.spec.ts (moments 1800, 2000, 2250, 2750 on desktop), tests/unit/hero-photo-command.test.ts (command `hero.photo("<file>")` cut to 29 chars, 1600-2600, createdAt 2600), tests/unit/runtime-pacing.test.ts and tests/e2e/effects-scripts.spec.ts (hero commands and effects), tests/e2e/effects-hero.spec.ts (photo mid-dissolve at 2150, opaque at 2750) |
+| AC-1, AC-9 (A2) ASCII only in the aria-hidden overlay, only opacity/clip-path/transform written, no mask or filter | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/unit/image-resolve-contract.test.ts (aria-hidden pieces, token-only CSS, no mask/filter/transition/animation, runtime free of images/ modules), tests/e2e/image-resolve-hero.spec.ts (overlay in layer, outside main, inline names, animated properties), tests/e2e/effects-absent.spec.ts (selectors extended to .sp-ascii/.sp-blur-cover; existing overlay-scope test now sees the new pieces) |
+| AC-3 (A3) cover resolves from blur, none without a cover | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED + EXISTING_TEST_COVERS | tests/unit/image-resolve-timing.test.ts (cover progress 250-400 ms, coverStarted gate), tests/unit/effect-timing.test.ts:293 (cardPhases updated); no committed project has a cover, so the live blur piece has no input until Phase 5 wires a fixture (not covered end to end); the no-cover path is tests/e2e/image-delivery.spec.ts (placeholder kept, no data-build-blur) |
+| AC-10 (A4) instant paths leave nothing behind | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/e2e/image-resolve-hero.spec.ts (Esc, Shift+Esc, dock skip, window bar click, infinity, focus, width change during the dissolve; reduced motion, saved infinity and no JS with the photo visible at DOMContentLoaded), tests/e2e/support/effects.ts EFFECT_ARTIFACTS (used by effects-absent.spec.ts) |
+| AC-11 (A5) mobile: same sequence at 375x812, ASCII fits the box, no horizontal scroll | NEW_TEST_REQUIRED + EXISTING_TEST_COVERS | tests/e2e/image-resolve-hero.spec.ts (on a phone), tests/unit/image-resolve-timing.test.ts (asciiGeometry fills the box width/height), tests/e2e/effects-layout.spec.ts:24 (no horizontal scroll at 375px) |
+| AC-6 (A6) hero timing unchanged, budgets | EXISTING_TEST_UPDATED + EXISTING_TEST_COVERS | tests/unit/runtime-pacing.test.ts (createdAt 2600, duration <= 3200), tests/unit/hero-photo-command.test.ts, tests/e2e/effects-scripts.spec.ts, tests/e2e/effects-hero.spec.ts:146; budgets: tests/unit/runtime-budget.test.ts, measured by `pnpm check:budgets` in CI |
+| AC-14 (A7) frozen scheduler files unchanged | AMBIGUOUS-free, not automated | verified by the plan's `git diff b4271cb -- <frozen files>` command, not by a test (a test would duplicate the git check) |
+| AC-2, AC-4, AC-5, AC-7, AC-8, AC-9 (covers), AC-12 (Lighthouse), AC-13 | OUT_OF_PHASE_SCOPE | phases 1, 3, 4, 5 |
+
+## Test files written this session
+
+- tests/unit/image-resolve-timing.test.ts
+- tests/unit/hero-photo-command.test.ts
+- tests/unit/image-resolve-contract.test.ts
+- tests/e2e/image-resolve-hero.spec.ts
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/effect-timing.test.ts:plays a card as select, skeleton, cover, then title, summary and tags | AC-3 (A3): `cardPhases(...).cover` changed from a boolean to a 250-400 ms progress and `coverStarted` carries the old gate; the two old boolean assertions were replaced by `coverStarted` false/true at 200/249/250/449 plus progress 0, 0.5 and 1 at 250/325/400; no assertion dropped |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts:builds the hero in the approved order, effects and offsets within its budget | AC-1 (A1): the photo step is now `image-resolve` with call `hero.photo("<file>")` (an ellipsis for the content's bare path string); added exact start 1600, end 2600 and createdAt 2600; all other assertions unchanged |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-scripts.spec.ts:builds the hero in the approved order and effects at prototype v2 offsets | AC-1 (A1): photo call matches `hero.photo("<file name>")` and contains the placeholder basename, effect is `image-resolve`; other calls, offsets, headline and duration bounds kept; added photo step length 1000 and created mark 2600 |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-hero.spec.ts:decodes the role through scrambled glyphs and shows the photo as a skeleton before the placeholder | AC-1 (A1): the photo step now spans 1600-2600, so at 2150 the photo is live but mid-dissolve (image opacity strictly between 0 and 1) instead of opaque; the "photo opacity 1" assertion moved to the 2750 sample of the next-but-one test (not removed); title and role assertions unchanged |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-hero.spec.ts:leaves no marker, overlay element or inline style behind once the hero steps end, and keeps the final page | AC-1 (A1): added photo wrapper and image opacity 1 at 2750; nothing dropped |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/support/effects.ts:TargetFx/heroFrame, EFFECT_ARTIFACTS | AC-1, AC-10: added `imgOpacity` to the frame and `.sp-ascii, .sp-blur-cover` to the artifact selector (stricter) |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-absent.spec.ts:writes only opacity, clip-path and pointer-events on page elements...; serves no effect markup... | AC-9, AC-10: overlay selector and forbidden-markup regexes extended with `sp-ascii` and `sp-blur-cover` (stricter) |
+| (no DELETE) | — | — | no obsolete or redundant test was removed this session |
+
+## Verification (run by a delegated agent in the worktree)
+
+pnpm check exit 0 (0 errors), pnpm lint exit 0, pnpm format:check exit 0, pnpm test exit 0 (29 files, 494 tests), pnpm build exit 0, Playwright (image-resolve-hero, effects-hero, effects-scripts, effects-absent, effects-layout, image-delivery) 44 of 44 passed. The full e2e suite was not run in this phase.
+
+## Formatting Outcome
+
+- Outcome: formatted
+- Command: pnpm exec prettier --write on the 10 touched test files
+- Discovery source: package.json (prettier, scripts.format)
+- Files: tests/unit/image-resolve-timing.test.ts, tests/unit/hero-photo-command.test.ts, tests/unit/image-resolve-contract.test.ts, tests/e2e/image-resolve-hero.spec.ts, tests/unit/effect-timing.test.ts, tests/unit/runtime-pacing.test.ts, tests/e2e/effects-scripts.spec.ts, tests/e2e/effects-hero.spec.ts, tests/e2e/effects-absent.spec.ts, tests/e2e/support/effects.ts
+- Exit code: 0
+
+## Formatting Outcome
+
+- Outcome: formatted
+- Command: npm run format -- <10 touched test files> (package.json scripts.format; prettier --write . also runs repo-wide)
+- Discovery source: package.json scripts.format
+- Files: tests/unit/image-resolve-timing.test.ts tests/unit/hero-photo-command.test.ts tests/unit/image-resolve-contract.test.ts tests/e2e/image-resolve-hero.spec.ts tests/unit/effect-timing.test.ts tests/unit/runtime-pacing.test.ts tests/e2e/effects-scripts.spec.ts tests/e2e/effects-hero.spec.ts tests/e2e/effects-absent.spec.ts tests/e2e/support/effects.ts
+- Exit code: 0
+
+## Status
+
+*Approved: 2026-11-10*
+*Status: APPROVED*

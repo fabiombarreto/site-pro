@@ -1,0 +1,648 @@
+diff --git a/docs/02-experience.md b/docs/02-experience.md
+index 7769beb..ce3d984 100644
+--- a/docs/02-experience.md
++++ b/docs/02-experience.md
+@@ -178,7 +178,7 @@ The terminal folds into the **command dock** at the bottom, and the `hero.tsx` w
+ |---|---|
+ | `hero.title("Fabio Barreto.")` | The headline, typed letter by letter in giant banner type, on two lines |
+ | `hero.role("Senior Software Engineer")` | The role, decoded from scrambled characters |
+-| `hero.photo("fabio.png")` | A skeleton with its dimensions, then the full-body cut-out photo, emerging from an ASCII version of itself (D12), in front of the name. Its selection box runs past the bottom of the window, into About's place |
++| `hero.photo("<photo file name>")` | A skeleton with its dimensions, then the full-body cut-out photo, emerging from an ASCII version of itself (D12), in front of the name. Its selection box runs past the bottom of the window, into About's place |
+ | `hero.intro("12+ years shipping…")` | Skeleton lines that resolve into the intro text |
+ | `hero.links(["GitHub", "LinkedIn"])` | The buttons, popping in one after the other |
+ 
+diff --git a/docs/04-animations.md b/docs/04-animations.md
+index 1b9013a..5da2cc4 100644
+--- a/docs/04-animations.md
++++ b/docs/04-animations.md
+@@ -62,7 +62,7 @@ pending ──► queued ──► command ──► window ──► building 
+ | Enter (commits the line) | 80 ms | The line gets its full highlighting |
+ | Gap between logs | 100 ms | Logs appear at once, with no fade, like in a terminal |
+ | Boot terminal → dock | 300 ms | Only once, when the hero window opens |
+-| Window opening | 280 ms | Out of the dock. In sections after the hero the window may open at Enter, while the log is shown, to fit the budget (Stage 4 PRD) |
++| Window opening | 280 ms | Out of the dock. Sections after the hero open their window at Enter and the dock keeps its log for 100 ms. (Stage 4 PRD, to fit the budget) |
+ | Window command typing, per character | 12 ms | Windows type fast; at most 350 ms per command, long arguments are cut with `…` |
+ | Selection box | 150 ms | Dragged from the top-left corner to the element's size |
+ | Skeleton | ≥ 150 ms | Until the content is ready |
+@@ -70,7 +70,7 @@ pending ──► queued ──► command ──► window ──► building 
+ | Decode | 350 ms | |
+ | Lines resolving | 40 ms per line | |
+ | Image resolving | 700 ms | The hero photo's dissolve, after its selection box and skeleton (a 1,000 ms step); covers resolve inside their card's duration |
+-| Pop (buttons, chips, tags) | 180 ms | |
++| Pop (buttons, chips, tags) | 180 ms | Siblings pop 90 ms apart |
+ | Gap between siblings (stagger) | 90 ms | |
+ | Card build | ≈ 300–350 ms per card, 120 ms overlap | Never more than two cards building at once (Stage 4 PRD; was ≈ 450 ms) |
+ | Window closing | 300 ms | |
+@@ -125,10 +125,10 @@ idle                                    █   dock: ❯ █
+ | `type-text` | Headlines and titles | Characters typed with a thin caret in `--accent-fg`. The block cursor (`█`) stays in the build layer: at banner size it would cover the photo. | 28 ms/char |
+ | `decode` | Short labels (role, badges) | Letters scramble through random characters (`!<>-_\/[]{}=+*^?#`) and settle from left to right. | 350 ms |
+ | `resolve-lines` | Paragraphs | Skeleton bars give way to text, one line at a time. | 40 ms/line |
+-| `image-resolve` | Hero photo, project covers | The hero photo starts as ASCII art (generated at build time from the photo itself) and dissolves, with dithering, into the real photo (D12): after the selection box and skeleton, the ASCII fills the photo's box in the build layer and its characters vanish in a 4×4 Bayer order while the real photo rises from a low, non-zero opacity to full. Covers resolve from a blurred version: a tiny blurred cover generated at build time and inlined in the HTML shows over the cover and fades out as the real cover appears. Only `opacity` and `clip-path` change on the page; no animated mask or filter (Stage 4 PRD). | 1,000 ms hero step: 300 ms select and skeleton, then a 700 ms dissolve in 16 Bayer steps; covers resolve inside the card (cover opacity ramp 250–400 ms of the card) |
+-| `pop` | Buttons, chips, tags | Scale from 0.9 to 1 with a slight overshoot, right after the selection box. | 180 ms |
++| `image-resolve` | Hero photo, project covers | The hero photo starts as ASCII art (generated at build time from the photo itself) and dissolves, with dithering, into the real photo (D12): after the selection box and skeleton, the ASCII fills the photo's box in the build layer and its characters vanish in a 4×4 Bayer order while the real photo rises from a low, non-zero opacity to full. Covers resolve from a blurred version: a tiny blurred cover generated at build time and inlined in the HTML shows over the cover and fades out as the real cover appears. Only `opacity` and `clip-path` change on the page; no animated mask or filter (Stage 4 PRD). | 1,000 ms hero step: 300 ms select and skeleton, then a 700 ms dissolve in 16 Bayer steps; covers resolve inside the card (cover opacity ramp 190–270 ms of the card) |
++| `pop` | Buttons, chips, tags | Scale from 0.9 to 1 with a slight overshoot, right after the selection box. A group of buttons pops one after another, 90 ms apart. | 180 ms |
+ | `stagger` | Groups, lists | Children appear in sequence. | 90 ms between items |
+-| `build-card` | Project cards | `select` → `skeleton` → cover `image-resolve` → title `type-text` → summary `resolve-lines` → tags `pop`. The blurred cover fades out while the real cover rises, over the 250–400 ms span of the card. A card without a cover keeps its dot-grid placeholder, with no blur phase. | ≈ 300–350 ms |
++| `build-card` | Project cards | `select` → `skeleton` → cover `image-resolve` → title `type-text` → summary `resolve-lines` → tags `pop`. The blurred cover fades out while the real cover rises, over the cover opacity ramp 190–270 ms of the card. The card lasts 300 ms: select box drawn over 150 ms, skeleton 150–190 ms, cover and title 190–270 ms, summary 210–285 ms, tags 240–300 ms. A card without a cover keeps its dot-grid placeholder, with no blur phase. | 300 ms |
+ 
+ ### Optional effects
+ 
+diff --git a/docs/context/architecture.md b/docs/context/architecture.md
+index c5c2d96..72d6fe8 100644
+--- a/docs/context/architecture.md
++++ b/docs/context/architecture.md
+@@ -41,9 +41,9 @@ Two visual registers never mix: **the page** (modern, readable) and **the build
+ | `src/content/` | profile, projects/, stack.json |
+ | `src/components/page/` | React page components (NavBar, Button, ProjectCard, StackGroup, Footer, CommandPalette…). `Footer` has an opt-in `buildSlot` prop that renders an empty reserved line (`data-footer-build`) for the build summary; `index.astro` enables it; the slot takes the free width of the footer row, so filling it moves nothing |
+ | `src/components/build/` | Build-layer components as TypeScript DOM factories, not React (BootTerminal, CommandDock, CommandLine, BuildWindow, SelectionBox, Skeleton, AgentCursor for v1.1). Stage 3 Phase 2 built `dom.ts`, `tokenize.ts`, `Cursor`, `LogLine`, `CommandLine`, `BootTerminal`, `CommandDock`, `BuildWindow` and `PendingOutline`; Phase 4 adds `FooterBuild` (fills the reserved footer slot); Phase 3 adds `SelectionBox`, `Skeleton` and `TextOverlay` (the selection box with handles and label, the skeleton blocks, and the caret and scramble glyphs); Phase 2 adds `AsciiOverlay` and `BlurCover` (the dithered ASCII `<pre>` over the hero photo and the blurred cover image, both `aria-hidden` and placed with `transform`). Styled by `src/styles/build-layer.css` |
+-| `src/sections/` | Astro sections (Hero, About, Projects, Stack, Contact), each with its build script (`<section>.build.ts`, a step list compiled at build time and serialized into the section's `data-build` attribute; steps name `data-build-target` elements, wrapped in `.sp-build-wrap` where needed); `pacing.ts` (`pacedSteps` turns prototype v2 start offsets into step `gap`/`overlap` values and a final settle); the five base scripts use prototype v2's commands and pacing; `profile-links.ts` resolves the GitHub and LinkedIn URLs from the profile entry. Stage 2 Phase 5 composes them in `src/pages/index.astro` with `src/styles/home.css` |
++| `src/sections/` | Astro sections (Hero, About, Projects, Stack, Contact), each with its build script (`<section>.build.ts`, a step list compiled at build time and serialized into the section's `data-build` attribute; steps name `data-build-target` elements, wrapped in `.sp-build-wrap` where needed); `pacing.ts` (`pacedSteps` turns prototype v2 start offsets into step `gap`/`overlap` values and a final settle; `openAtEnter` opens a window at Enter); `call-args.ts` (`excerpt` and `labelList`, the content-derived window command arguments); the five base scripts use prototype v2's commands and pacing; `profile-links.ts` resolves the GitHub and LinkedIn URLs from the profile entry. Stage 2 Phase 5 composes them in `src/pages/index.astro` with `src/styles/home.css` |
+ | `src/scripts/` | Small client modules loaded from `Base.astro`: `theme-toggle`, and `nav.ts` (toggles `is-scrolled` on `.sp-nav` and closes the mobile menu popover when one of its links is clicked). `build-mode.ts` holds `SPEED_STORAGE_KEY` (`sp-speed`), `WATCHDOG_MS`, `parseSpeed` and `resolveMode`; the inline head script in `Base.astro` (rendered only when the page passes `build`) mirrors the two helpers |
+-| `src/runtime/` | Stage 3 Phase 1 (runtime core): `types.ts` (effects, section states, `BuildScript`, `Timeline`), `compiler.ts` (`compileScript` turns a section's step list into an absolute millisecond timeline; `serializeTimeline`), `clock.ts` (real and manual clocks), `scheduler.ts` (section queue, turbo, speed, hidden-tab handling), `triggers.ts` (`IntersectionObserver` per section) and `main.ts` (entry loaded by `index.astro`; reflects state on `<html>` data attributes and reveals the page if anything throws). Phase 2 adds `layer.ts` (the overlay: boot terminal, dock, build windows, pending outlines, driven by scheduler state) and `layer-timing.ts` (overlay timing and easing). Windows are placed by writing `left`/`top`/`width`/`height` on the absolutely positioned overlay, on placement and resize only, never per frame (a transformed window root would break the sticky bars); per-frame animation stays `transform`/`opacity` only. Phase 3 adds the effects registry: `effect-timing.ts` (pure, DOM-free: effect durations, seeded randomness, the phase of every effect as a function of the step's local time, the dock typing schedule, `truncateCall` that cuts window commands to 29 characters with `…`), `effect-dom.ts` (measurement plus the only writes an effect may make on a page element: the `data-build-fx` attribute and inline `opacity`/`clip-path`) and `effects.ts` (`createEffects`, runners for `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger` and `build-card`, driven by scheduler state and ticks). Effects reveal the real page elements in place with `clip-path` and `opacity`; the caret, scramble glyphs, selection boxes and skeletons live only in the overlay. `pop` and `stagger` use an inset `clip-path` with overshoot plus opacity, not a scale, because a transform on a page element would change measured boxes. `EFFECT_DURATION_MS` moved from `compiler.ts` to `effect-timing.ts` (re-exported). Phase 4 adds `controls-timing.ts` (pure idle constants, speed cycle, key mapping), `keys.ts`, `focus-rule.ts`, `resize.ts`, `api.ts` (the `Controls` object and store re-exports for Stage 5) and the scheduler's `skip`/`runAll`/`finishThrough`/`onQueue`; `main.ts` becomes a rebuildable show |
++| `src/runtime/` | Stage 3 Phase 1 (runtime core): `types.ts` (effects, section states, `BuildScript`, `Timeline`), `compiler.ts` (`compileScript` turns a section's step list into an absolute millisecond timeline; `serializeTimeline`), `clock.ts` (real and manual clocks), `scheduler.ts` (section queue, turbo, speed, hidden-tab handling), `triggers.ts` (`IntersectionObserver` per section) and `main.ts` (entry loaded by `index.astro`; reflects state on `<html>` data attributes and reveals the page if anything throws). Phase 2 adds `layer.ts` (the overlay: boot terminal, dock, build windows, pending outlines, driven by scheduler state) and `layer-timing.ts` (overlay timing and easing; `dockLogEnd` keeps a dock log visible 100 ms after Enter). A build script may declare an optional `log` that the compiler carries into the `Timeline` and the dock shows. Windows are placed by writing `left`/`top`/`width`/`height` on the absolutely positioned overlay, on placement and resize only, never per frame (a transformed window root would break the sticky bars); per-frame animation stays `transform`/`opacity` only. Phase 3 adds the effects registry: `effect-timing.ts` (pure, DOM-free: effect durations, seeded randomness, the phase of every effect as a function of the step's local time, the dock typing schedule, `truncateCall` that cuts window commands to 29 characters with `…`), `effect-dom.ts` (measurement plus the only writes an effect may make on a page element: the `data-build-fx` attribute and inline `opacity`/`clip-path`) and `effects.ts` (`createEffects`, runners for `select`, `skeleton`, `type-text`, `decode`, `resolve-lines`, `pop`, `stagger` and `build-card`, driven by scheduler state and ticks). Effects reveal the real page elements in place with `clip-path` and `opacity`; the caret, scramble glyphs, selection boxes and skeletons live only in the overlay. `pop` and `stagger` use an inset `clip-path` with overshoot plus opacity, not a scale, because a transform on a page element would change measured boxes. `EFFECT_DURATION_MS` moved from `compiler.ts` to `effect-timing.ts` (re-exported). Phase 4 adds `controls-timing.ts` (pure idle constants, speed cycle, key mapping), `keys.ts`, `focus-rule.ts`, `resize.ts`, `api.ts` (the `Controls` object and store re-exports for Stage 5) and the scheduler's `skip`/`runAll`/`finishThrough`/`onQueue`; `main.ts` becomes a rebuildable show |
+ | `src/images/` | Stage 4 Phase 1 image pipeline (build time, Node only): `pipeline.ts` (`imageSource` turns an `image()` asset into an `ImageSource` with AVIF and WebP `srcset` candidates through `getImage`, plus a fallback in the original format; SVG passes through unchanged; `PHOTO_SIZES`/`PHOTO_HEIGHTS` and `COVER_SIZES`/`COVER_WIDTHS` hold the responsive widths; `asciiForAsset` and `blurForAsset` resolve the source file under `src/assets`), `ascii.ts` (48-column luminance ramp ASCII of the photo, written to `data-build-ascii` on the hero photo wrapper) and `blur.ts` (32 px WebP data URI of each cover, written to `data-build-blur` on the project cell). The `ImageSource` type lives in `src/components/page/image-source.ts`; `Photo`, `ProjectCard` and `ProjectHeader` render it as `<picture>` with intrinsic `width`/`height`, and the hero photo loads eagerly with `fetchpriority="high"` |
+ | `src/stores/` | nanostores shared by the runtime and the islands; `build.ts` holds `currentSection`, `progress`, `status`, `speed` and `queue` atoms |
+ | `src/styles/` | tokens.css, themes, base.css; `build-pending.css` hides not-yet-built sections (`opacity: 0`) only while `<html data-build-mode="pending">`; `build-layer.css` styles the build layer (overlay only, including the `sp-build-fx` effects layer); a second rule hides elements marked `data-build-fx="hidden"` (`opacity: 0`, no pointer events) while pending, and sections in `building` or `closing` are no longer hidden as a whole; its roots (`.sp-build-layer`, `.sp-build-fx`) clip horizontal overflow with `overflow-x: clip` (vertical stays visible, and `clip` does not create a scroll container) so no overlay piece can widen the document |
+diff --git a/docs/decisions.md b/docs/decisions.md
+index 43aeab3..bc9afb5 100644
+--- a/docs/decisions.md
++++ b/docs/decisions.md
+@@ -249,6 +249,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
+ 
+ ---
+ 
++## [2026-11-10] Stage 4 Phase 3 · Section tuning
++
++**Context:** After Phases 1 and 2 the scripts still carried prototype v2 timings and placeholder text, and About, Projects, Stack and Contact missed the 2.5 s budget.
++**Decision:** Sections after the hero open their window at Enter, and the dock keeps its log for 100 ms. `pop` staggers its children 90 ms apart. Cards last 300 ms with a 120 ms overlap and retimed phases (skeleton 150–190 ms, cover and title 190–270 ms, summary 210–285 ms, tags 240–300 ms). A build script may declare an optional dock `log`, carried through the compiler into the timeline. Every window command argument and dock log comes from the content, and the hero command types the photo's original file name, never the hashed one. The first card starts while the heading is still typing (a budget lever). The scheduler and the other frozen runtime files are untouched.
++**Reason:** Meets the hero ≤ 3.2 s and other sections ≤ 2.5 s budgets with the levers the runtime already has, keeps one element at a time and never more than two cards at once (D8), and keeps commands authentic (B22). The rhythm is open to the owner's review on the preview.
++**Areas affected:** build, content, visual-design
++
++---
++
+ <!-- Template for future entries:
+ 
+ ## [YYYY-MM-DD] Title of the decision
+diff --git a/docs/domain/areas/build.md b/docs/domain/areas/build.md
+index d3376af..0ddddd4 100644
+--- a/docs/domain/areas/build.md
++++ b/docs/domain/areas/build.md
+@@ -35,15 +35,15 @@ The self-building show: boot terminal, command dock, build windows, element effe
+ | B27 | **The footer slot never moves anything**: the reserved build-summary slot takes the free width of the footer row (its box does not depend on its content), so filling it with the summary and Replay moves no other box, with or without JavaScript, at every viewport width |
+ | B28 | **A control's accessible name contains its visible text** (WCAG 2.5.3): the speed button names its state and the next one with the same glyph it shows, `Build speed: 1×. Switch to 2×`, `Build speed: 2×. Switch to instant` and `Build speed: ∞ (instant). Switch to 1×` |
+ | B29 | **`image-resolve` leaves the page untouched** (Stage 4 PRD): the ASCII version of the photo and the blurred covers are generated at build time, live only in the `aria-hidden` build layer and are never page text; on the page only the image's `opacity` and `clip-path` change (no animated mask or filter); a skip, run all, focus, resize, `∞`, reduced motion or no JavaScript leaves no ASCII or blurred piece behind |
+-| B30 | **Cards keep a short overlap**: each card lasts about 300–350 ms with a 120 ms overlap, so never more than two cards build at once (D8 keeps one element at a time in v1) |
++| B30 | **Cards keep a short overlap**: each card lasts 300 ms with a 120 ms overlap, so never more than two cards build at once (D8 keeps one element at a time in v1) |
+ 
+ ## Timings (1×, docs/04-animations.md)
+ 
+-Dock typing 40 ms ± 10 ms per character (+100 ms after `(` and `,`); window typing 12 ms per character, ≤ 350 ms per command; headline 28 ms/char; window open 280 ms, close 300 ms; boot fold 300 ms; select 150 ms; skeleton ≥ 150 ms; decode 350 ms; lines 40 ms/line; image 700 ms (the hero's dissolve, after select and skeleton; covers inside the card); pop 180 ms; stagger 90 ms; card ≈ 300–350 ms with a 120 ms overlap (Stage 4 PRD; was ≈ 450 ms); cursor 530/530 ms.
++Dock typing 40 ms ± 10 ms per character (+100 ms after `(` and `,`); window typing 12 ms per character, ≤ 350 ms per command; headline 28 ms/char; window open 280 ms, close 300 ms; boot fold 300 ms; select 150 ms; skeleton ≥ 150 ms; decode 350 ms; lines 40 ms/line; image 700 ms (the hero's dissolve, after select and skeleton; covers inside the card); pop 180 ms; stagger 90 ms; card 300 ms with a 120 ms overlap (Stage 4 PRD; was ≈ 450 ms); cursor 530/530 ms.
+ 
+ ## Effect mechanics (Stage 3 Phase 3)
+ 
+-Effects reveal the real page elements in place: `clip-path` and `opacity` on the element, never `transform`, `display`, `visibility` or text changes. Elements named by a section's steps are marked `data-build-fx="hidden"` when the section's command starts and released when their step reveals them. The caret, scramble glyphs, selection boxes and skeletons exist only in the `aria-hidden` overlay. `pop` and `stagger` animate an inset `clip-path` with overshoot and opacity (a page-element transform would change measured boxes). On-window commands are cut to 29 characters with `…`. The hero compiles to a readable headline at about 1.84 s and final at 3.1 s.
++Effects reveal the real page elements in place: `clip-path` and `opacity` on the element, never `transform`, `display`, `visibility` or text changes. Elements named by a section's steps are marked `data-build-fx="hidden"` when the section's command starts and released when their step reveals them. The caret, scramble glyphs, selection boxes and skeletons exist only in the `aria-hidden` overlay. `pop` and `stagger` animate an inset `clip-path` with overshoot and opacity (a page-element transform would change measured boxes); `pop` staggers its children 90 ms apart. A build script may declare an optional dock `log`, shown instead of `Reading <file>...`; sections after the hero open their window at Enter and the dock keeps the log for 100 ms. On-window commands are cut to 29 characters with `…`. The hero compiles to a readable headline at about 1.84 s and final at 3.1 s.
+ 
+ ## Lifecycle
+ 
+diff --git a/src/runtime/compiler.ts b/src/runtime/compiler.ts
+index 845bd76..2c47f65 100644
+--- a/src/runtime/compiler.ts
++++ b/src/runtime/compiler.ts
+@@ -49,6 +49,11 @@ export function compileScript(script: BuildScript): Timeline {
+       `build script "${script.section}": command must not contain < or >`,
+     );
+   }
++  if (script.log !== undefined && /[<>]/.test(script.log)) {
++    throw new Error(
++      `build script "${script.section}": log must not contain < or >`,
++    );
++  }
+   const commandEnd =
+     script.timing?.commandEnd ??
+     COMMAND_START_MS +
+@@ -82,6 +87,7 @@ export function compileScript(script: BuildScript): Timeline {
+     section: script.section,
+     file: script.file,
+     command: script.command,
++    ...(script.log === undefined ? {} : { log: script.log }),
+     commandEnd,
+     windowEnd,
+     buildStart,
+diff --git a/src/runtime/effect-timing.ts b/src/runtime/effect-timing.ts
+index 90ecc0d..f99fd04 100644
+--- a/src/runtime/effect-timing.ts
++++ b/src/runtime/effect-timing.ts
+@@ -11,7 +11,7 @@ export const DECODE_MS = 350;
+ export const LINE_MS = 40;
+ export const POP_MS = 180;
+ export const STAGGER_GAP_MS = 90;
+-export const CARD_MS = 450;
++export const CARD_MS = 300;
+ export const SCRAMBLE_FRAME_MS = 40;
+ export const WINDOW_CALL_MAX = 29;
+ // image-resolve: select (150) + skeleton (150), then the 700 ms dissolve.
+@@ -60,7 +60,8 @@ export const EFFECT_DURATION_MS: Record<
+     s.count === undefined
+       ? 'needs count'
+       : SELECT_MS + SKELETON_BARS_MS + s.count * LINE_MS,
+-  pop: () => SELECT_MS + POP_MS,
++  pop: (s) =>
++    SELECT_MS + POP_MS + Math.max((s.count ?? 1) - 1, 0) * STAGGER_GAP_MS,
+   stagger: (s) =>
+     s.count === undefined
+       ? 'needs count'
+@@ -198,12 +199,12 @@ export function cardPhases(localMs: number): {
+ } {
+   return {
+     select: ramp(localMs, 0, 150),
+-    skeleton: localMs >= 150 && localMs < 250,
+-    cover: ramp(localMs, 250, 400),
+-    coverStarted: localMs >= 250,
+-    title: ramp(localMs, 250, 400),
+-    summary: ramp(localMs, 300, 420),
+-    tags: ramp(localMs, 360, 450),
++    skeleton: localMs >= 150 && localMs < 190,
++    cover: ramp(localMs, 190, 270),
++    coverStarted: localMs >= 190,
++    title: ramp(localMs, 190, 270),
++    summary: ramp(localMs, 210, 285),
++    tags: ramp(localMs, 240, 300),
+   };
+ }
+ 
+diff --git a/src/runtime/effects.ts b/src/runtime/effects.ts
+index 95dea4a..694a647 100644
+--- a/src/runtime/effects.ts
++++ b/src/runtime/effects.ts
+@@ -33,7 +33,6 @@ import {
+   hashSeed,
+   popInset,
+   photoOpacity,
+-  popProgress,
+   resolveLinesAt,
+   staggerChildProgress,
+   typeCharsAt,
+@@ -279,8 +278,9 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+     const sel = selection(ctx);
+     const parts = ctx.targets.flatMap((t) => {
+       const kids = [...t.children] as HTMLElement[];
+-      return (kids.length > 0 ? kids : [t]).map((el) => ({
++      return (kids.length > 0 ? kids : [t]).map((el, index) => ({
+         el,
++        index,
+         radius: radiusOf(el),
+       }));
+     });
+@@ -289,8 +289,9 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+       render(l) {
+         sel.update(l, ctx.duration - FADE_MS, ctx.duration);
+         if (l < SELECT_MS) return;
+-        const p = popProgress(l);
+-        for (const part of parts) poof(part.el, p, part.radius);
++        for (const part of parts) {
++          poof(part.el, staggerChildProgress(l, part.index), part.radius);
++        }
+         if (!started) {
+           started = true;
+           for (const t of ctx.targets) live(t);
+@@ -403,7 +404,7 @@ const RUNNERS: Record<EffectName, (ctx: Ctx) => Mounted> = {
+     return {
+       render(l) {
+         const phase = cardPhases(l);
+-        sel.update(l, 300, 450);
++        sel.update(l, 200, 300);
+         skel.setOpacity(phase.skeleton ? 1 : 0);
+         if (!phase.coverStarted) return;
+         if (!covered) {
+diff --git a/src/runtime/layer-timing.ts b/src/runtime/layer-timing.ts
+index 31565ac..92db484 100644
+--- a/src/runtime/layer-timing.ts
++++ b/src/runtime/layer-timing.ts
+@@ -11,6 +11,8 @@ export const NAV_SLIDE_MS = 300;
+ export const FOLD_MS = 300;
+ export const WINDOW_CLOSE_MS = 300;
+ export const SPINNER_FRAME_MS = 80;
++export const DOCK_LOG_HOLD_MS = 100;
++export const WINDOW_OPEN_MS = 280;
+ 
+ type WindowTimes = Pick<Timeline, 'windowEnd' | 'buildStart' | 'createdAt'>;
+ 
+@@ -34,6 +36,10 @@ export function commandEnterAt(length: number): number {
+   return COMMAND_START_MS + length * COMMAND_CHAR_MS + COMMAND_ENTER_MS;
+ }
+ 
++export function dockLogEnd(windowEnd: number, enterAt: number): number {
++  return Math.max(windowEnd, enterAt + DOCK_LOG_HOLD_MS);
++}
++
+ export function bootLogCount(t: number, enterAt: number): number {
+   if (t < enterAt) return 0;
+   return Math.min(2, 1 + Math.floor((t - enterAt) / BOOT_LOG_GAP_MS));
+diff --git a/src/runtime/layer.ts b/src/runtime/layer.ts
+index 1f046e7..1500916 100644
+--- a/src/runtime/layer.ts
++++ b/src/runtime/layer.ts
+@@ -12,6 +12,7 @@ import {
+   BOOT_NAV_AT_MS,
+   bootLogCount,
+   commandEnterAt,
++  dockLogEnd,
+   foldProgress,
+   formatSeconds,
+   navSlideProgress,
+@@ -387,10 +388,12 @@ export function createBuildLayer(options: LayerOptions): BuildLayer {
+           dock.setState('building');
+           dock.setLog(null);
+           dock.setQueued(queueText);
+-        } else if (t < tl.windowEnd) {
++        } else if (t < dockLogEnd(tl.windowEnd, enterAt)) {
+           dock.setState('typing');
+           dock.setCommand(tl.command, typedChars(t, tl.command), true);
+-          dock.setLog(t >= enterAt ? buildStrings.readingFile(tl.file) : null);
++          dock.setLog(
++            t >= enterAt ? (tl.log ?? buildStrings.readingFile(tl.file)) : null,
++          );
+         } else {
+           dock.setState('building');
+           dock.setLog(null);
+diff --git a/src/runtime/types.ts b/src/runtime/types.ts
+index 52373dd..cdf8ddb 100644
+--- a/src/runtime/types.ts
++++ b/src/runtime/types.ts
+@@ -47,6 +47,7 @@ export interface Timeline {
+   section: SectionId;
+   file: string;
+   command: string;
++  log?: string;
+   commandEnd: number;
+   windowEnd: number;
+   buildStart: number;
+@@ -59,6 +60,7 @@ export interface BuildScript {
+   section: SectionId;
+   file: string;
+   command: string;
++  log?: string;
+   steps: BuildStep[];
+   settle?: number;
+   timing?: Partial<Pick<Timeline, 'commandEnd' | 'windowEnd' | 'buildStart'>>;
+diff --git a/src/sections/Hero.astro b/src/sections/Hero.astro
+index b771f48..ad506be 100644
+--- a/src/sections/Hero.astro
++++ b/src/sections/Hero.astro
+@@ -7,6 +7,7 @@ import {
+   asciiForAsset,
+   imageSource,
+   photoWidths,
++  sourcePathFor,
+ } from '../images/pipeline';
+ import { compileScript, serializeTimeline } from '../runtime/compiler';
+ import { strings } from '../strings';
+@@ -26,7 +27,8 @@ const photo = await imageSource(profile.photo, {
+ const ascii = await asciiForAsset(profile.photo);
+ const [first = '', ...rest] = profile.headline.split(' ');
+ const remainder = rest.join(' ');
+-const timeline = compileScript(heroBuild(profile));
++const photoName = sourcePathFor(profile.photo).split(/[\\/]/).pop();
++const timeline = compileScript(heroBuild(profile, photoName));
+ ---
+ 
+ <section
+diff --git a/src/sections/about.build.ts b/src/sections/about.build.ts
+index 4495c57..c3e47b0 100644
+--- a/src/sections/about.build.ts
++++ b/src/sections/about.build.ts
+@@ -1,12 +1,16 @@
+ import type { CollectionEntry } from 'astro:content';
+ import { estimateLines } from '../runtime/effect-timing';
+ import type { BuildScript } from '../runtime/types';
+-import { strings } from '../strings';
+-import { pacedSteps } from './pacing';
++import { buildStrings, strings } from '../strings';
++import { excerpt, labelList } from './call-args';
++import { openAtEnter, pacedSteps } from './pacing';
+ 
+ type ProfileData = CollectionEntry<'profile'>['data'];
+ 
++const COMMAND = 'renderAbout();';
++
+ export function aboutBuild(profile: ProfileData): BuildScript {
++  const labels = profile.links.map((l) => l.label);
+   const { steps, settle } = pacedSteps(
+     [
+       {
+@@ -19,7 +23,7 @@ export function aboutBuild(profile: ProfileData): BuildScript {
+       },
+       {
+         step: {
+-          call: 'about.text(…)',
++          call: `about.text("${excerpt(profile.bio)}")`,
+           target: 'text',
+           effect: 'resolve-lines',
+           count: estimateLines(profile.bio, 80),
+@@ -27,16 +31,23 @@ export function aboutBuild(profile: ProfileData): BuildScript {
+         pitch: 250,
+       },
+       {
+-        step: { call: 'about.links([…])', target: 'links', effect: 'pop' },
+-        pitch: 600,
++        step: {
++          call: `about.links(${labelList(labels)})`,
++          target: 'links',
++          effect: 'pop',
++          count: profile.links.length,
++        },
++        pitch: 500,
+       },
+     ],
+-    1150,
++    1230,
+   );
+   return {
+     section: 'about',
+     file: 'about.md',
+-    command: 'renderAbout();',
++    command: COMMAND,
++    log: buildStrings.readingFile('about.md'),
++    timing: openAtEnter(COMMAND),
+     steps,
+     settle,
+   };
+diff --git a/src/sections/call-args.ts b/src/sections/call-args.ts
+new file mode 100644
+index 0000000..e367758
+--- /dev/null
++++ b/src/sections/call-args.ts
+@@ -0,0 +1,23 @@
++export const ARG_EXCERPT_CHARS = 25;
++
++// The first words of a text, for a window command argument: whole words that
++// fit in `max` characters, then an ellipsis. Quotes and angle brackets are
++// dropped so the command stays one plain string.
++export function excerpt(text: string, max = ARG_EXCERPT_CHARS): string {
++  const clean = text.replace(/["<>]/g, '').replace(/\s+/g, ' ').trim();
++  if (clean.length <= max) return clean;
++  const words = clean.split(' ');
++  let out = '';
++  for (const word of words) {
++    const next = out === '' ? word : `${out} ${word}`;
++    if (next.length > max) break;
++    out = next;
++  }
++  if (out === '') out = (words[0] ?? '').slice(0, max);
++  return `${out}…`;
++}
++
++// A JSON-like list of labels: ["GitHub", "LinkedIn"].
++export function labelList(labels: readonly string[]): string {
++  return `[${labels.map((label) => `"${label}"`).join(', ')}]`;
++}
+diff --git a/src/sections/contact.build.ts b/src/sections/contact.build.ts
+index c271b2d..48e687c 100644
+--- a/src/sections/contact.build.ts
++++ b/src/sections/contact.build.ts
+@@ -1,12 +1,16 @@
+ import type { CollectionEntry } from 'astro:content';
+ import type { BuildScript } from '../runtime/types';
+-import { strings } from '../strings';
+-import { pacedSteps } from './pacing';
++import { buildStrings, strings } from '../strings';
++import { labelList } from './call-args';
++import { openAtEnter, pacedSteps } from './pacing';
+ 
+ type ProfileData = CollectionEntry<'profile'>['data'];
+ 
++const COMMAND = 'renderContact();';
++
+ export function contactBuild(profile: ProfileData): BuildScript {
+   if (!profile.location) throw new Error('profile.location is missing');
++  const labels = profile.links.map((l) => l.label);
+   const { steps, settle } = pacedSteps(
+     [
+       {
+@@ -18,25 +22,32 @@ export function contactBuild(profile: ProfileData): BuildScript {
+         },
+       },
+       {
+-        step: { call: 'contact.links([…])', target: 'links', effect: 'pop' },
+-        pitch: 450,
++        step: {
++          call: `contact.links(${labelList(labels)})`,
++          target: 'links',
++          effect: 'pop',
++          count: profile.links.length,
++        },
++        pitch: 350,
+       },
+       {
+         step: {
+-          call: 'contact.location(…)',
++          call: `contact.location("${profile.location}")`,
+           target: 'location',
+           effect: 'type-text',
+           text: profile.location,
+         },
+-        pitch: 200,
++        pitch: 230,
+       },
+     ],
+-    1100,
++    1180,
+   );
+   return {
+     section: 'contact',
+     file: 'contact.tsx',
+-    command: 'renderContact();',
++    command: COMMAND,
++    log: buildStrings.openingChannels,
++    timing: openAtEnter(COMMAND),
+     steps,
+     settle,
+   };
+diff --git a/src/sections/hero.build.ts b/src/sections/hero.build.ts
+index 3e7c2a0..0ff7be4 100644
+--- a/src/sections/hero.build.ts
++++ b/src/sections/hero.build.ts
+@@ -1,6 +1,7 @@
+ import type { CollectionEntry } from 'astro:content';
+ import { estimateLines } from '../runtime/effect-timing';
+ import type { BuildScript } from '../runtime/types';
++import { excerpt, labelList } from './call-args';
+ import { pacedSteps } from './pacing';
+ 
+ type ProfileData = CollectionEntry<'profile'>['data'];
+@@ -19,7 +20,14 @@ function photoFileName(photo: unknown): string {
+   return name.length > 0 ? name : '…';
+ }
+ 
+-export function heroBuild(profile: ProfileData): BuildScript {
++export function heroBuild(
++  profile: ProfileData,
++  photoName?: string,
++): BuildScript {
++  const typedPhotoName =
++    photoName !== undefined && photoName.length > 0
++      ? photoName
++      : photoFileName(profile.photo);
+   const { steps, settle } = pacedSteps(
+     [
+       {
+@@ -41,7 +49,7 @@ export function heroBuild(profile: ProfileData): BuildScript {
+       },
+       {
+         step: {
+-          call: `hero.photo("${photoFileName(profile.photo)}")`,
++          call: `hero.photo("${typedPhotoName}")`,
+           target: 'photo',
+           effect: 'image-resolve',
+         },
+@@ -49,19 +57,26 @@ export function heroBuild(profile: ProfileData): BuildScript {
+       },
+       {
+         step: {
+-          call: 'hero.intro(…)',
++          call: `hero.intro("${excerpt(profile.subtitle)}")`,
+           target: 'intro',
+           effect: 'resolve-lines',
+           count: estimateLines(profile.subtitle, 48),
+         },
+-        pitch: 300,
++        pitch: 250,
+       },
+       {
+-        step: { call: 'hero.links([…])', target: 'links', effect: 'pop' },
+-        pitch: 300,
++        // The hero renders one "See my work" button plus one button per
++        // profile link (Hero.astro), so the buttons pop one after another.
++        step: {
++          call: `hero.links(${labelList(profile.links.map((l) => l.label))})`,
++          target: 'links',
++          effect: 'pop',
++          count: profile.links.length + 1,
++        },
++        pitch: 230,
+       },
+     ],
+-    1300,
++    1350,
+   );
+   return {
+     section: 'top',
+diff --git a/src/sections/pacing.ts b/src/sections/pacing.ts
+index 5378b2f..0bbfb32 100644
+--- a/src/sections/pacing.ts
++++ b/src/sections/pacing.ts
+@@ -1,4 +1,5 @@
+ import { EFFECT_DURATION_MS } from '../runtime/effect-timing';
++import { WINDOW_OPEN_MS, commandEnterAt } from '../runtime/layer-timing';
+ import type { BuildStep } from '../runtime/types';
+ 
+ export interface PacedEntry {
+@@ -33,3 +34,18 @@ export function pacedSteps(
+   }
+   return { steps, settle: Math.max(minSettle, createdRel - previousEnd) };
+ }
++
++// Sections after the hero open their window at Enter: the window opens while
++// the dock still shows its log.
++export function openAtEnter(command: string): {
++  commandEnd: number;
++  windowEnd: number;
++  buildStart: number;
++} {
++  const commandEnd = commandEnterAt(command.length);
++  return {
++    commandEnd,
++    windowEnd: commandEnd,
++    buildStart: commandEnd + WINDOW_OPEN_MS,
++  };
++}
+diff --git a/src/sections/projects.build.ts b/src/sections/projects.build.ts
+index 687967a..697f3aa 100644
+--- a/src/sections/projects.build.ts
++++ b/src/sections/projects.build.ts
+@@ -1,7 +1,9 @@
+ import type { CollectionEntry } from 'astro:content';
+ import type { BuildScript } from '../runtime/types';
+-import { strings } from '../strings';
+-import { pacedSteps } from './pacing';
++import { buildStrings, strings } from '../strings';
++import { openAtEnter, pacedSteps } from './pacing';
++
++const COMMAND = 'renderProjects();';
+ 
+ export function projectsBuild(
+   projects: CollectionEntry<'projects'>[],
+@@ -22,15 +24,17 @@ export function projectsBuild(
+           target: `card-${id}`,
+           effect: 'build-card' as const,
+         },
+-        pitch: index === 0 ? 450 : 330,
++        pitch: index === 0 ? 280 : 180,
+       })),
+     ],
+-    1990,
++    1180,
+   );
+   return {
+     section: 'projects',
+     file: 'projects.tsx',
+-    command: 'renderProjects();',
++    command: COMMAND,
++    log: buildStrings.fetchingProjects(projects.length),
++    timing: openAtEnter(COMMAND),
+     steps,
+     settle,
+   };
+diff --git a/src/sections/stack.build.ts b/src/sections/stack.build.ts
+index 25881fb..64ae25c 100644
+--- a/src/sections/stack.build.ts
++++ b/src/sections/stack.build.ts
+@@ -1,7 +1,9 @@
+ import type { CollectionEntry } from 'astro:content';
+ import type { BuildScript } from '../runtime/types';
+-import { strings } from '../strings';
+-import { pacedSteps } from './pacing';
++import { buildStrings, strings } from '../strings';
++import { openAtEnter, pacedSteps } from './pacing';
++
++const COMMAND = 'renderStack();';
+ 
+ type StackData = CollectionEntry<'stack'>['data'];
+ 
+@@ -23,15 +25,17 @@ export function stackBuild(stack: StackData): BuildScript {
+           effect: 'stagger' as const,
+           count: group.items.length,
+         },
+-        pitch: index === 0 ? 400 : 150,
++        pitch: index === 0 ? 320 : 100,
+       })),
+     ],
+-    1350,
++    1270,
+   );
+   return {
+     section: 'stack',
+     file: 'stack.tsx',
+-    command: 'renderStack();',
++    command: COMMAND,
++    log: buildStrings.resolvingDependencies,
++    timing: openAtEnter(COMMAND),
+     steps,
+     settle,
+   };
+diff --git a/src/strings.ts b/src/strings.ts
+index 9173442..a2f9038 100644
+--- a/src/strings.ts
++++ b/src/strings.ts
+@@ -84,6 +84,9 @@ export const buildStrings = {
+   initializing: 'Initializing application...',
+   openingFile: (file: string) => `Opening ${file}...`,
+   readingFile: (file: string) => `Reading ${file}...`,
++  fetchingProjects: (count: number) => `Fetching projects... ${count} found`,
++  resolvingDependencies: 'Resolving dependencies...',
++  openingChannels: 'Opening channels...',
+   building: (name: string) => `Building ${name}…`,
+   created: (label: string, seconds: string) =>
+     `✔ ${label} Section created. (${seconds}s)`,

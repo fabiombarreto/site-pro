@@ -1,0 +1,15 @@
+{
+  "attempt": 2,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [
+    "src/runtime/effect-timing.ts",
+    "src/runtime/effects.ts"
+  ],
+  "validation": {
+    "level_1": "PASS",
+    "level_2": "PASS",
+    "level_3": "PASS"
+  },
+  "base_commit": "b26a51b61344db25309101f31dec08847f9e815b",
+  "note": "targeted revision: runner reveal = exported RESOLVE_REVEAL_MS (300)"
+}

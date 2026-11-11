@@ -1,0 +1,67 @@
+✓ Lockfile passes supply-chain policies (verified 1d ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: C:\Users\Fabio\AppData\Local\pnpm\store\v11
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 50, reused 50, downloaded 0, added 39
+Progress: resolved 122, reused 122, downloaded 0, added 111
+Progress: resolved 199, reused 199, downloaded 0, added 188
+Progress: resolved 213, reused 213, downloaded 0, added 202
+Progress: resolved 265, reused 265, downloaded 0, added 253
+Progress: resolved 317, reused 317, downloaded 0, added 305
+Progress: resolved 360, reused 360, downloaded 0, added 348
+Progress: resolved 396, reused 396, downloaded 0, added 384
+Progress: resolved 444, reused 444, downloaded 0, added 432
+Progress: resolved 487, reused 487, downloaded 0, added 475
+Progress: resolved 504, reused 504, downloaded 0, added 492
+Progress: resolved 553, reused 553, downloaded 0, added 541
+Progress: resolved 617, reused 617, downloaded 0, added 605
+Progress: resolved 630, reused 630, downloaded 0, added 618
+Progress: resolved 667, reused 667, downloaded 0, added 655
+Progress: resolved 710, reused 710, downloaded 0, added 698
+Progress: resolved 744, reused 744, downloaded 0, added 732
+Progress: resolved 799, reused 799, downloaded 0, added 788
+Progress: resolved 832, reused 832, downloaded 0, added 821
+Progress: resolved 854, reused 854, downloaded 0, added 844
+Progress: resolved 873, reused 873, downloaded 0, added 865
+Progress: resolved 889, reused 889, downloaded 0, added 884
+Packages: +894
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 894, reused 894, downloaded 0, added 894, done
+.../esbuild@0.27.7/node_modules/esbuild postinstall$ node install.js
+.../sharp@0.34.5/node_modules/sharp install$ node install/check.js || npm run build
+.../esbuild@0.27.7/node_modules/esbuild postinstall: Done
+.../sharp@0.34.5/node_modules/sharp install: Done
+
+dependencies:
++ @astrojs/react 7.1.2
++ astro 6.4.8
++ nanostores 1.5.5
++ react 19.3.1
++ react-dom 19.3.1
+
+devDependencies:
++ @astrojs/check 0.9.12
++ @axe-core/playwright 4.14.0
++ @eslint/js 9.39.5
++ @fontsource-variable/geist 5.3.0
++ @fontsource-variable/jetbrains-mono 5.3.0
++ @lhci/cli 0.16.0
++ @playwright/test 1.64.1
++ @types/node 26.6.6
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ eslint 9.39.5
++ eslint-plugin-astro 1.7.0
++ eslint-plugin-jsx-a11y 6.10.2
++ eslint-plugin-react 7.37.5
++ eslint-plugin-react-hooks 7.1.1
++ globals 17.14.0
++ prettier 3.9.10
++ prettier-plugin-astro 1.1.2
++ typescript 6.0.3
++ typescript-eslint 8.72.1
++ vitest 5.1.0
+
+Done in 32.4s using pnpm v12.16.1

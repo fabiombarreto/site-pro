@@ -1,0 +1,29 @@
+{
+  "outcome": "PLAN_VALIDATION_DEFECT",
+  "plan_validation_defect": {
+    "level": 2,
+    "command": "the second node -e in the plan Level 2 CONTENT_INVARIANTS block (plan line 185, const allowed=new Set([\"270\",\"2026\",\"19\"]))",
+    "observed": "FAIL: number 1 in praesto-sum (exit 1)",
+    "prd_refs": [
+      "PRD AC-13 (line 82): body shows the text approved in docs/09; no number absent from docs/09",
+      "docs/09-content-draft.md Praesto Sum block, ## Why Cloudflare Workers (the text AC-13 names)",
+      "docs/09-content-draft.md Sources note (ADR-0003, Cloudflare D1 behind Workers)"
+    ],
+    "reason": "The script reads the product name D1 (Cloudflare database) in the approved Praesto Sum text as the invented number 1. AC-13 forbids only numbers absent from docs/09, and D1 appears in docs/09 itself. The body is byte-identical to the approved block (Level 2 command 1 passes), so the allow-list/number regex of the plan command is wrong, not the copy."
+  },
+  "attempt": 1,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "verdict": "IMPLEMENTATION_COMPLETE",
+      "record": "attempts/1/record.json"
+    }
+  ],
+  "claim_check": {
+    "command_in_plan": "yes, plan line 185 Level 2",
+    "observed_in_validation_outputs": "yes",
+    "prd_refs_resolve": "AC-13 resolves (PRD line 82); the docs/09 refs are the approved text AC-13 explicitly names as its contract",
+    "other_levels_pass": "Level 1 PASS, Level 2 command 1 PASS, Level 3 PASS"
+  },
+  "note": "Returned to /relay-execute Step A.4.2 (plan-validation repair); code reviewer not dispatched; no retry spent; nothing reverted"
+}

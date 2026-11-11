@@ -1,0 +1,38 @@
+{
+  "run_id": "b3309ed7-eed9-4c72-98d3-6784021c6a5a",
+  "feature": "stage-4-sections-effects",
+  "started_at": "2026-11-10T15:27:32Z",
+  "ended_at": "2026-11-10T15:30:20Z",
+  "elapsed_ms": 167613,
+  "max_test_retries": 3,
+  "max_test_minutes": 30,
+  "attempts": [
+    {
+      "n": 1,
+      "verdict": "GREEN",
+      "record": "attempts/1/record.json",
+      "implementer_diff": null
+    }
+  ],
+  "outcome": "GREEN",
+  "phase": 3,
+  "time_breakdown": {
+    "attempt_1_suite_ms": 167613,
+    "attempt_1_correction_ms": 0
+  },
+  "tdd_mode": false,
+  "tiers": {
+    "check": "pnpm check exit 0",
+    "unit": "vitest 30 files, 521 passed",
+    "build": "pnpm build exit 0",
+    "e2e": "playwright 304 passed"
+  },
+  "secrets_redacted": {
+    "count": 0,
+    "categories": {
+      "env_names": 0,
+      "url_values": 0,
+      "regex_matches": 0
+    }
+  }
+}

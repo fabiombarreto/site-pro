@@ -1,0 +1,66 @@
+# TDD initial suite — phase 3 (test-after)
+# Source PRD: PRPs/prds/stage-4-sections-effects.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-4-sections-effects-phase-3-section-tuning.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-10
+# Mode: test-after (tdd: false; frameworks vitest, playwright); test files live in the feature worktree .worktrees/stage-4-sections-effects
+# Phase 2's APPROVED manifest is archived at PRPs/reports/stage-4-sections-effects/phase-2/test-suite.diff
+
+## AC outcomes
+
+| AC (plan AC-A -> PRD AC) | Outcome | Path / mapping |
+|---|---|---|
+| AC-6 (A1) hero headline step by 2000 ms and duration at most 3200 ms; every other section created at most 2500 ms and not before its last step ends; dock created line within budget | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts (hero starts 1300/1500/1600/1850/2080, createdAt 2650, duration 3150; per-section createdAt budgets on the real content), tests/e2e/effects-scripts.spec.ts (compiled timelines read from the served HTML, budget test), tests/e2e/effects-hero.spec.ts (compile budget test), tests/e2e/section-dock-logs.spec.ts (dock created line: hero at most 3.2 s, others at most 2.5 s) |
+| AC-7 (A3, A8) effects per section, staggered pop (330 + 90 x (count - 1)), 300 ms cards with exactly 120 ms overlap and never more than two at once, window opens at Enter and the log is held 100 ms | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/unit/effect-timing.test.ts (pop by count, build-card 300, retimed cardPhases, per-child stagger progress), tests/unit/image-resolve-timing.test.ts (card cover progress 190-270), tests/unit/runtime-pacing.test.ts (About/Projects/Stack/Contact offsets, card length 300, spacing 180, overlap 120, at most two at once), tests/unit/runtime-compiler.test.ts (pop group duration, log carried), tests/unit/runtime-layer-timing.test.ts (dockLogEnd), tests/unit/section-call-args.test.ts (openAtEnter), tests/e2e/runtime-timeline-contract.spec.ts (windowEnd equals commandEnd for non-hero), tests/e2e/effects-scripts.spec.ts (effect order, 300 ms cards, button and chip durations), tests/e2e/effects-hero.spec.ts (buttons pop one after another), tests/e2e/section-dock-logs.spec.ts (window open while the log shows, log held about 100 ms) |
+| AC-8 (A2, A4) commands and dock logs come from the content; hero.photo types the source file name | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/unit/section-call-args.test.ts (excerpt, labelList, log strings), tests/unit/runtime-pacing.test.ts (about.text, hero.intro, links lists, contact.location, modified content, `5 found`, photo name given), tests/unit/hero-photo-command.test.ts (source file name given, empty falls back), tests/unit/runtime-compiler.test.ts (log carrier, rejects < and >), tests/e2e/effects-scripts.spec.ts (served commands and logs; photo-placeholder-body.svg), tests/e2e/section-dock-logs.spec.ts (each log in the dock), tests/e2e/build-layer-show.spec.ts:76 (EXISTING_TEST_COVERS: Reading about.md... in the dock, still valid) |
+| AC-9, AC-10 (A7) layout and instant paths unchanged by the staggered pop and shorter card | EXISTING_TEST_COVERS | tests/e2e/effects-layout.spec.ts, tests/e2e/effects-absent.spec.ts, tests/e2e/layout-invariance.spec.ts, tests/e2e/image-resolve-hero.spec.ts (all still green; runner destroy paths unchanged) |
+| AC-12 (A6) size budgets | EXISTING_TEST_COVERS | tests/unit/runtime-budget.test.ts, tests/e2e/css-budget.spec.ts, tests/unit/quality-gates.test.ts (pnpm check:budgets is a plan gate) |
+| AC-14 (A5) scheduler and frozen runtime files untouched | EXISTING_TEST_COVERS | tests/unit/runtime-scheduler*.test.ts and the Stage 3 behavior specs pass unchanged; the frozen-file diff is a plan gate |
+| AC-1..5, AC-11, AC-13 | OUT_OF_PHASE_SCOPE | Phases 1, 2, 4 and 5 |
+
+## Test files written this session
+
+- tests/unit/section-call-args.test.ts (new)
+- tests/e2e/section-dock-logs.spec.ts (new)
+- Added cases inside existing files: tests/unit/runtime-compiler.test.ts, tests/unit/runtime-layer-timing.test.ts, tests/unit/runtime-pacing.test.ts, tests/unit/effect-timing.test.ts, tests/unit/hero-photo-command.test.ts, tests/e2e/effects-scripts.spec.ts, tests/e2e/effects-hero.spec.ts
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts:builds the hero in the approved order, effects and offsets within its budget | AC-6/AC-8: starts 1300/1500/1600/1850/2080, createdAt 2650, duration 3150, intro and links commands from the content; no assertion dropped (budget bounds kept) |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts:builds About with offsets 0, 250 and 750 | AC-7/AC-8: new offsets, text and links commands, exact createdAt 1230, window at Enter, log |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts:builds Projects with one card per project, 300 ms each | AC-7: first card 280, spacing 180 (was 330), card 300, overlap 120 kept exact, exact createdAt 1180, log |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts:builds Stack with one staggered group per content group | AC-7: groups 320 + 100 apart (was 400 + 150), createdAt 1270, window at Enter, log; chip durations kept |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts:builds Contact with offsets 0, 350 and 580 | AC-7/AC-8: new offsets and commands, createdAt 1182 (location ends 1122 plus the 60 ms minimum settle), window at Enter, log |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/runtime-pacing.test.ts:adds a card step for a project added to the content | AC-8: additionally asserts the `5 found` log; original assertions kept |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/effect-timing.test.ts:builds a project card in 300 ms | AC-7: CARD_MS 450 to 300 |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/effect-timing.test.ts:plays a card as select, skeleton, cover, then title, summary and tags | AC-7: cardPhases breakpoints 250/400/420/450 to 190/270/285/300; every phase still asserted |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/image-resolve-timing.test.ts:card cover progress (three tests) | AC-3/AC-7: cover 0 until 190 ms, 1 at 270 ms, coverStarted at 190, phases finish at 270/285/300; monotonic and skeleton-ends-at-cover checks kept over 0-300 ms |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/hero-photo-command.test.ts:places every hero step start and the created mark as tuned in Phase 3 | AC-6: starts 1850/2080 (were 1900/2200), createdAt 2650 (was 2600); photo end 2600, commandEnd, buildStart and the 2000/3200 bounds kept |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-scripts.spec.ts:builds the hero ...; builds About, Stack and Contact ...; builds Projects ... | AC-6/AC-7/AC-8: new offsets and created times, content-derived commands replace the placeholders, photo name photo-placeholder-body.svg, first card offset 280 |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/runtime-timeline-contract.spec.ts:orders each timeline | AC-7: strict commandEnd < windowEnd becomes <= (non-hero windows open at Enter); non-hero equality, the 280 ms opening and the hero's strict ordering are now asserted explicitly, windowEnd < buildStart kept |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/support/runtime.ts:TimelineJson | AC-8: adds optional `log` to the type |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-hero.spec.ts:resolves the intro line by line from skeleton bars, then pops the buttons | Old pin: intro live 2250, links live 2350. Now intro live 2200 and links live 2230 (a 30 ms gap, too narrow to sample), so the "intro live while links hidden" sample is replaced by: both hidden at 2120, both live at 2300, buttons clipped by an inset at 2400 with the first fully opaque and the last not yet; the intro-before-links order is pinned on the compiled timeline in the budget test |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-hero.spec.ts:shows the current call in the window bar | Old pin: hero.intro(…) and hero.links([…]) in full. Now the commands are the 29-character cut of the content-derived calls and the intro cannot finish typing before the links step starts (230 ms of 348 ms), so it is asserted as a prefix of `hero.intro("12+ years ship…")`; links a prefix at 2125 and exactly `hero.links(["GitHub", "Linke…` at 2500 |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-hero.spec.ts:compiles the hero within its budget | AC-6: budget bounds kept; adds no dock log, intro-before-links order and the 510 ms button group |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/effects-pointer.spec.ts:lets a created card take clicks ... | Old pin: card spacing 330 ms, second-card prefix at least 15 characters. Cards now start 180 ms apart, so only about 100 ms of typing fits before the next card takes over: prefix of at least 5 characters of the cut command; goes-live comment and hit tests unchanged. The full 29-character cut stays pinned by tests/unit/effect-timing.test.ts (window command cut) |
+| (no DELETE this session) | — | — | — |
+
+## Notes
+
+- Verified in the feature worktree: `pnpm check` 0 errors, `pnpm lint` and `pnpm format:check` pass, `pnpm test` 521 tests pass, `pnpm build` passes, full `pnpm test:e2e` 304 of 304 pass.
+- Gap noted: the second card's full cut command is never on screen with 180 ms spacing, so the e2e checks a typed prefix; the unit suite holds the cut itself.
+
+## Formatting Outcome
+
+- Outcome: formatted
+- Command: npm run format -- <13 touched test files> (package.json scripts.format; prettier --write . also runs repo-wide)
+- Discovery source: package.json scripts.format
+- Files: tests/unit/section-call-args.test.ts tests/e2e/section-dock-logs.spec.ts tests/unit/runtime-pacing.test.ts tests/unit/effect-timing.test.ts tests/unit/image-resolve-timing.test.ts tests/unit/hero-photo-command.test.ts tests/unit/runtime-layer-timing.test.ts tests/unit/runtime-compiler.test.ts tests/e2e/effects-scripts.spec.ts tests/e2e/runtime-timeline-contract.spec.ts tests/e2e/effects-hero.spec.ts tests/e2e/effects-pointer.spec.ts tests/e2e/support/runtime.ts
+- Exit code: 0
+
+## Status
+
+*Approved: 2026-11-10*
+*Status: APPROVED*

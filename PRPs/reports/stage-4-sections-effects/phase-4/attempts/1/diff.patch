@@ -1,0 +1,100 @@
+diff --git a/src/content/projects/ai-track-record.md b/src/content/projects/ai-track-record.md
+index 966fdc2..14214e5 100644
+--- a/src/content/projects/ai-track-record.md
++++ b/src/content/projects/ai-track-record.md
+@@ -12,3 +12,15 @@ featured: true
+ order: 2
+ status: planning
+ ---
++
++## The question
++
++Which AI coding workflows actually work? I want an answer I can measure and rerun.
++
++## The method
++
++AI Track Record is a local-first benchmark. It gives the same task to different models and prompt versions. Tests the agent never sees grade each result, and every run records its cost, time and quality.
++
++## Status
++
++It's still in planning. The first public results are due in December 2026.
+diff --git a/src/content/projects/praesto-sum.md b/src/content/projects/praesto-sum.md
+index 69df3b5..545e80f 100644
+--- a/src/content/projects/praesto-sum.md
++++ b/src/content/projects/praesto-sum.md
+@@ -12,3 +12,21 @@ featured: true
+ order: 3
+ status: in development
+ ---
++
++## What it is
++
++Praesto Sum is a personal assistant for one user. It puts tasks and Google Calendar in one app you install.
++
++## Why one user
++
++I built it for myself, to keep tasks and calendar in one place instead of a handful of apps that never talk to each other. One user keeps it small enough for one person to maintain: no accounts, no sign-up, one token protecting the whole API.
++
++## Why Cloudflare Workers
++
++I wanted it to cost nothing and need no upkeep: no server at home, no monthly bill, nothing to patch. One Worker on Cloudflare's free plan serves the app, the API and the scheduled jobs, and the data lives in D1, Cloudflare's database.
++
++## Installing it
++
++It's a PWA, so there's no app store. On my phone it sits on the home screen, and on my PC it opens in its own window. One codebase serves both.
++
++It's built with TypeScript and React 19 and still in development. Tasks and Google Calendar events already show up side by side; reminders and push notifications come next.
+diff --git a/src/content/projects/relay.md b/src/content/projects/relay.md
+index 027e871..6cb0737 100644
+--- a/src/content/projects/relay.md
++++ b/src/content/projects/relay.md
+@@ -14,3 +14,24 @@ status: active
+ ---
+ 
+ The repository is a fork of Wirasm/prp. relay is the plugin I built inside it.
++
++## The problem
++
++Getting an AI agent from an idea to a pull request takes more than one prompt. It needs a spec to work from, a plan someone checked, and a clear signal that the work is done.
++
++## How it works
++
++relay is a Claude Code plugin that takes a feature through the same stages every time:
++
++1. An interactive PRD, written with me in a short Q&A.
++2. A plan, then a plan review.
++3. The implementation, then a code review.
++4. A test run with an auto-correction loop that has a budget.
++
++Every stage has a writer agent and a reviewer agent, and nothing moves on until the reviewer approves. Changes wait in an isolated worktree until I merge them. A validation suite checks the plugin itself.
++
++This site is built with relay, one stage at a time.
++
++## What I learned
++
++I audited 270 review runs. Each reviewer's feedback was passed along to the next attempt, but no writer agent ever read it, so every retry started from scratch. Now each writer reads the feedback and fixes only what failed. The lesson I keep: check that the next step actually reads what the last one produced.
+diff --git a/src/content/projects/site-pro.md b/src/content/projects/site-pro.md
+index 27dd457..7cda124 100644
+--- a/src/content/projects/site-pro.md
++++ b/src/content/projects/site-pro.md
+@@ -12,3 +12,20 @@ featured: true
+ order: 4
+ status: in development
+ ---
++
++## The idea
++
++This site builds itself while you watch. A typed command opens a build window, the window creates the section one element at a time, then steps aside and leaves a normal, readable page.
++
++## How it works
++
++- Astro renders the whole page to HTML at build time, with React components rendered to static HTML. Without JavaScript you get the finished page.
++- A small runtime in plain TypeScript plays the build. Each section has a build script, compiled at build time into a timeline, and one animation loop plays it.
++- The build happens on a layer above the page, so the page never moves. Screen readers skip that layer, and reduced motion turns it off.
++- You're always in control: Esc skips a section, and the dock at the bottom has Skip, speed and Replay.
++
++## How I built it
++
++I designed it in Claude Design and wrote every decision down before any code. Each stage then went through relay, my Claude Code plugin, from PRD to pull request, with tests for every behavior rule.
++
++The code is on GitHub under the MIT license.

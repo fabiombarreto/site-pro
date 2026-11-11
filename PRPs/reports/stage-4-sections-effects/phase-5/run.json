@@ -1,0 +1,31 @@
+{
+  "run_id": "e05e66cf-0a78-41a7-aac4-c1db4d10d761",
+  "feature": "stage-4-sections-effects",
+  "started_at": "2026-11-10T19:36:05Z",
+  "ended_at": "2026-11-10T19:39:44Z",
+  "elapsed_ms": 166000,
+  "max_test_retries": 3,
+  "max_test_minutes": 30,
+  "attempts": [
+    {
+      "n": 1,
+      "verdict": "GREEN",
+      "record": "attempts/1/record.json"
+    }
+  ],
+  "outcome": "GREEN",
+  "phase": 5,
+  "time_breakdown": {
+    "attempt_1_suite_ms": 166000
+  },
+  "tdd_mode": false,
+  "secrets_redacted": {
+    "count": 0,
+    "categories": {
+      "env_names": 0,
+      "url_values": 0,
+      "regex_matches": 0
+    }
+  },
+  "summary": "check 0 errors; vitest 552/552 (31 files); build ok; playwright 354/354; check:frozen, check:budgets, check:privacy exit 0"
+}

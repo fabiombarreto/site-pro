@@ -1,0 +1,41 @@
+# TDD initial suite — phase 4
+# Source PRD: PRPs/prds/stage-4-sections-effects.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-4-sections-effects-phase-4-project-page-text.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-10
+
+## AC outcomes
+
+| AC | Outcome | Path / mapping |
+|---|---|---|
+| AC-13 (body text, plan AC-A1, AC-A2, AC-A3, AC-A5) | EXISTING_TEST_UPDATED | tests/unit/content-copy.test.ts (approved-body, sections, fork note, voice/number tests replace the stale fork-note and empty-body assertions); tests/e2e/project-pages.spec.ts (prose body, h2 sections, sentence per page) |
+| AC-13 (frontmatter unchanged, AC-A5) | EXISTING_TEST_COVERS | tests/unit/content-copy.test.ts:135 ($id carries its approved frontmatter); tests/e2e/project-pages.spec.ts header test |
+| AC-13 (no em dash, only approved URLs, no email) | EXISTING_TEST_COVERS | tests/unit/content-copy.test.ts "privacy and voice of the content layer" (covers the new bodies via contentFiles); `pnpm check:privacy` |
+| AC-13 (axe 0 violations, both themes, each page, AC-A4) | EXISTING_TEST_COVERS | tests/e2e/subpages-axe.spec.ts:15-39 (all four /projects/<slug>, both themes, three viewports) |
+| AC-1..AC-12, AC-14 | OUT_OF_PHASE_SCOPE | (delivered by other phases / Phase 5 matrix) |
+
+## Test files written this session
+
+(none created; two existing files updated)
+- tests/unit/content-copy.test.ts (updated)
+- tests/e2e/project-pages.spec.ts (updated)
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/content-copy.test.ts:'gives relay the fork note as its body' | AC-13: relay's body is now the full approved docs/09 text, whose first line is the fork sentence. Replaced by an exact docs/09 comparison plus a first-line fork-note assertion and section-heading check; no assertion the AC still requires was dropped. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/content-copy.test.ts:'leaves the %s body empty' | AC-13: the three bodies are now the approved text, so emptiness is no longer the contract. Replaced by exact docs/09 comparison, section headings, and no link/address/em dash/unapproved number for all four bodies. |
+| UPDATE | EXISTING_TEST_UPDATED | tests/e2e/project-pages.spec.ts:'renders the fork note inside the prose body' / 'renders no body: no prose element and no fork note' | AC-13: non-relay pages now render a prose body. Every page now asserts one .sp-prose, its h2 sections and an approved sentence; relay keeps the fork-note assertion; other pages keep the "no fork note" assertion. |
+
+## Formatting Outcome
+
+- Outcome: formatted
+- Command: `npm run format --` (discovery source: package.json scripts.format)
+- Touched files: tests/unit/content-copy.test.ts (rewritten by Prettier), tests/e2e/project-pages.spec.ts (unchanged)
+- Note: scripts.format is `prettier --write .`, so the run also covered the rest of the tree; no other file changed
+
+## Status
+
+*Approved: 2026-11-10*
+*Status: APPROVED*

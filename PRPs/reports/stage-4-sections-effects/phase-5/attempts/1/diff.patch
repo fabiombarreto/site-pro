@@ -1,0 +1,315 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 75c85a5..d33a6be 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -31,6 +31,8 @@ jobs:
+     runs-on: ubuntu-latest
+     steps:
+       - uses: actions/checkout@v6
++        with:
++          fetch-depth: 0
+       - run: corepack enable
+       - uses: actions/setup-node@v6
+         with:
+@@ -38,6 +40,7 @@ jobs:
+           cache: pnpm
+       - run: pnpm install --frozen-lockfile
+       - run: pnpm astro check
++      - run: pnpm check:frozen
+ 
+   unit:
+     runs-on: ubuntu-latest
+diff --git a/docs/context/testing.md b/docs/context/testing.md
+index b7a06a4..5dfdda7 100644
+--- a/docs/context/testing.md
++++ b/docs/context/testing.md
+@@ -74,8 +74,11 @@ Each gate is its own CI job and exits non-zero on a violation.
+ 
+ - `pnpm check:tokens` (CI job `tokens`, AC-9): no color or `box-shadow` literal in `src/` outside `src/styles/tokens.css` and `src/assets/`.
+ - `pnpm check:privacy` (CI job `privacy`, AC-8): privacy rules over `dist/`; run `pnpm build` first. It also fails on any raster image in `src/assets` carrying EXIF or XMP metadata (GPS lives in EXIF) and on SVGs with XMP/RDF or `exif:` markup (`--assets <dir>` overrides the folder).
+-- `pnpm check:budgets` (CI job `budgets`, AC-10): gzip budgets over `dist/` (JS total 90 KB, JS before first paint 20 KB, runtime 18 KB, CSS 25 KB; the runtime is the JS only the home page loads, followed through its module imports); run `pnpm build` first. Measured on 2026-11-08 (Stage 3 Phase 5): JS total 13.9 KB, runtime 12.1 KB, critical 12.8 KB, CSS 7.4 KB gzip.
+-- `pnpm lighthouse` (CI job `lighthouse`, AC-10): Lighthouse CI per `lighthouserc.json`, median of 3 runs on `/` and `/projects/relay/`, every category >= 0.95 and CLS <= 0.01. It needs `pnpm build` and Chrome; locally set `CHROME_PATH=$(node -p "require('@playwright/test').chromium.executablePath()")`. Local Windows recipe: docs/development.md.
++- `pnpm check:budgets` (CI job `budgets`, AC-10): gzip budgets over `dist/` (JS total 90 KB, JS before first paint 20 KB, runtime 18 KB, CSS 25 KB; the runtime is the JS only the home page loads, followed through its module imports); run `pnpm build` first. Measured in Stage 4 Phase 5: JS total 14.7 KB, runtime 12.8 KB, critical 13.5 KB, CSS 7.5 KB gzip.
++- `pnpm lighthouse` (CI job `lighthouse`, AC-10): Lighthouse CI per `lighthouserc.json`, median of 3 runs on `/` and `/projects/relay/`, every category >= 0.95, CLS <= 0.01 and LCP <= 2.5 s. It needs `pnpm build` and Chrome; locally set `CHROME_PATH=$(node -p "require('@playwright/test').chromium.executablePath()")`. Local Windows recipe: docs/development.md.
++- `pnpm check:frozen` (CI job `check`, Stage 4 AC-14): the nine frozen `src/runtime/` files (scheduler, clock, triggers, focus-rule, resize, keys, controls-timing, main, api) against `b4271cb`; a recorded bug-fix exception needs its docs/decisions.md entry.
++
++The owner rhythm review is tracked in docs/stage-4-rhythm-review.md and is not an automated gate.
+ 
+ ## Behavior rule coverage (Stage 3)
+ 
+@@ -102,7 +105,9 @@ The 18 rules of the "Behavior rules" section of docs/02-experience.md map to PRD
+ | **No JavaScript** | AC-15 | `tests/e2e/runtime-fallbacks.spec.ts` (no JS, aborted runtime, throwing runtime; the aborted-runtime test reveals the page after 1.5 s paused plus 3 s run of clock time), `tests/e2e/build-layer-absent.spec.ts`, `tests/e2e/effects-absent.spec.ts`, `tests/unit/runtime-mode-clock.test.ts` (the watchdog constant is 3 s) | `tests/e2e/behavior-gaps.spec.ts` (an explicit 3 s end-to-end bound) |
+ | **Background tab** | AC-16 | `tests/e2e/runtime-build-order.spec.ts`, `tests/unit/runtime-scheduler.test.ts`, `tests/unit/runtime-scheduler-tick.test.ts` | - |
+ 
+-### Other acceptance criteria
++### Other acceptance criteria (Stage 3 numbering)
++
++The AC numbers in this section are Stage 3's. Stage 4's AC-1 to AC-14 are mapped in "Stage 4 AC-to-spec mapping" below.
+ 
+ - **AC-1** (hero build): `tests/e2e/effects-scripts.spec.ts`, `tests/e2e/effects-hero.spec.ts`, `tests/e2e/build-layer-show.spec.ts` and `tests/unit/runtime-pacing.test.ts` cover the order, the 2.0 s headline, the compiled duration of at most 3200 ms and the idle dock. The first-paint pending state and the clock-measured 3.2 s are gaps closed by `tests/e2e/behavior-gaps.spec.ts`.
+ - **AC-17** (done state and Replay): `tests/e2e/controls-done-replay.spec.ts` and `tests/e2e/controls-speed.spec.ts`.
+@@ -113,6 +118,27 @@ The 18 rules of the "Behavior rules" section of docs/02-experience.md map to PRD
+ 
+ The Stage 2 spec `tests/e2e/home-no-build-layer.spec.ts` was rewritten in Phase 4 for the real build layer (not weakened).
+ 
++## Stage 4 AC-to-spec mapping
++
++The AC numbers below are those of `PRPs/prds/stage-4-sections-effects.prd.md` and differ from the Stage 3 numbers above. "Covered by" lists specs that exist today and cite the Stage 4 AC in their header; "Gap closed by" lists specs the test pair authors after code review, and `-` means no gap.
++
++| AC | Covered by | Gap closed by |
++|---|---|---|
++| **AC-1** Hero photo from ASCII | `tests/e2e/image-resolve-hero.spec.ts`, `tests/unit/image-resolve-timing.test.ts`, `tests/unit/image-resolve-contract.test.ts`, `tests/unit/hero-photo-command.test.ts` | - |
++| **AC-2** ASCII generated at build time | `tests/unit/image-ascii.test.ts`, `tests/e2e/image-delivery.spec.ts` | a missing photo fails the build naming the file, if not already covered (`tests/unit/image-ascii.test.ts`) |
++| **AC-3** Covers resolve from blur | `tests/unit/image-blur.test.ts`, `tests/unit/image-resolve-timing.test.ts`, `tests/e2e/image-delivery.spec.ts` (no cover, no blur data) | a test-side fixture cover through the real runtime and the no-cover card (a new cover-resolve spec) |
++| **AC-4** Swapping in the real assets | `tests/unit/privacy-image-metadata.test.ts` | swap invariance at 1280x800 and 375x812 (a new spec) |
++| **AC-5** Image delivery | `tests/e2e/image-delivery.spec.ts` | - |
++| **AC-6** Section budgets | `tests/e2e/section-dock-logs.spec.ts`, `tests/unit/runtime-pacing.test.ts`, `tests/unit/hero-photo-command.test.ts`, `tests/unit/section-call-args.test.ts` | `tests/e2e/section-budgets.spec.ts` (the clock-measured 2.0 s, 3.2 s and 2.5 s marks) |
++| **AC-7** Every section with its docs/04 effects | `tests/e2e/section-dock-logs.spec.ts` (window opens at Enter), `tests/unit/section-call-args.test.ts` | `tests/e2e/section-budgets.spec.ts` (effects at paused moments: card overlap, button and chip spacing) |
++| **AC-8** Commands and logs from the content | `tests/e2e/section-dock-logs.spec.ts`, `tests/unit/section-call-args.test.ts` | - |
++| **AC-9** Layout and accessibility during the new effects | `tests/e2e/image-resolve-hero.spec.ts` (ASCII in the `aria-hidden` overlay), `tests/unit/image-resolve-contract.test.ts` | axe and layout matrix mid dissolve, mid cover resolve and done, both themes, 1280x800 and 375x812 (extends `tests/e2e/axe-build-matrix.spec.ts`) |
++| **AC-10** Instant paths leave nothing behind | `tests/e2e/image-resolve-hero.spec.ts` | skip, run all, focus, infinity, width change mid cover and the reduced-motion paths (a new spec) |
++| **AC-11** Mobile | `tests/e2e/image-resolve-hero.spec.ts`, `tests/unit/image-resolve-timing.test.ts` | - |
++| **AC-12** Budgets and Lighthouse | `tests/unit/image-resolve-contract.test.ts` (the runtime never imports the image generators), `tests/unit/runtime-budget.test.ts`, `tests/unit/quality-gates.test.ts`, `tests/e2e/quality-gates.spec.ts`; Lighthouse medians only in the CI `lighthouse` job | `tests/unit/quality-gates.test.ts` updated for the LCP assertion (2500, median) |
++| **AC-13** Project pages | `tests/e2e/project-pages.spec.ts`, `tests/unit/content-copy.test.ts` | axe on the four project pages in both themes (`tests/e2e/project-pages.spec.ts`) |
++| **AC-14** Scheduler unchanged | `pnpm check:frozen` (CI job `check`) | `tests/unit/check-frozen-runtime.test.ts`; the Stage 3 behavior-rule specs above keep passing |
++
+ ### Test conventions for animated pages
+ 
+ - Always run `pnpm build` before `pnpm test:e2e`.
+diff --git a/docs/decisions.md b/docs/decisions.md
+index d3ce894..55305dc 100644
+--- a/docs/decisions.md
++++ b/docs/decisions.md
+@@ -267,6 +267,15 @@ The full decision table, with options and status, is docs/07-roadmap-and-decisio
+ 
+ ---
+ 
++## [2026-11-10] Stage 4 Phase 5 quality gates
++
++**Context:** Stage 4 targets needed enforcement in CI and a review path for what a machine cannot judge: Lighthouse asserted no LCP, nothing verified that the scheduler and controls files still match the Stage 3 merge, and the rhythm of the build is the owner's call.
++**Decision:** (1) Lighthouse CI gains `largest-contentful-paint` with `maxNumericValue` 2500 and median aggregation over the existing 3 runs; no other threshold changes, and a miss goes to the owner as numbers, never as a relaxed threshold. (2) The scheduler diff check `scripts/check-frozen-runtime.mjs` (`pnpm check:frozen`) compares the nine frozen files (scheduler, clock, triggers, focus-rule, resize, keys, controls-timing, main, api) against `b4271cb`. It runs inside the existing `check` CI job with full history (`fetch-depth: 0`), so the job count stays nine and branch protection is unchanged; a git failure (unknown base, shallow clone) fails loudly. A bug-fix exception needs its own docs/decisions.md entry before its file is added to the script exception list. (3) The owner rhythm review is a human hand-off in docs/stage-4-rhythm-review.md and stays "awaiting owner review" until the owner approves on the preview.
++**Reason:** Every Stage 4 target stays enforced by something that can fail, thresholds are not weakened to pass, and a human approval is never claimed by the pipeline.
++**Areas affected:** build, visual-design
++
++---
++
+ <!-- Template for future entries:
+ 
+ ## [YYYY-MM-DD] Title of the decision
+diff --git a/docs/development.md b/docs/development.md
+index 511284a..456ac62 100644
+--- a/docs/development.md
++++ b/docs/development.md
+@@ -23,6 +23,7 @@ The project is scaffolded (Stage 2 Phase 1): the commands below are real and mat
+ | Token check | `pnpm check:tokens` |
+ | Privacy check | `pnpm check:privacy` (needs `pnpm build`; also scans the source images in `src/assets` for EXIF and XMP metadata; `--dist <dir>` and `--assets <dir>` override the two scanned folders) |
+ | Size budgets | `pnpm check:budgets` (needs `pnpm build`) |
++| Frozen runtime | `pnpm check:frozen` (the nine scheduler and controls files in `src/runtime/` against `b4271cb`; needs git history) |
+ 
+ `pnpm build` also verifies the build scripts: every `data-build` step on the home page must name a `data-build-target` present in the HTML, otherwise the build fails (`scripts/verify-build-targets.mjs`).
+ 
+@@ -46,7 +47,7 @@ export CHROME_PATH="$(node -p "require('@playwright/test').chromium.executablePa
+ pnpm lighthouse
+ ```
+ 
+-If that path does not exist, run `pnpm exec playwright install chromium` first. If lhci still cannot start Chrome (for example "No Chrome installations found" on Windows), the CI `lighthouse` job is authoritative and the pull request records that Lighthouse was not run locally. Lighthouse covers `/` with the build running (the real runtime on the real clock) and `/projects/relay/`, median of 3 runs, every category >= 0.95 and CLS <= 0.01 (`lighthouserc.json`).
++If that path does not exist, run `pnpm exec playwright install chromium` first. If lhci still cannot start Chrome (for example "No Chrome installations found" on Windows), the CI `lighthouse` job is authoritative and the pull request records that Lighthouse was not run locally. Lighthouse covers `/` with the build running (the real runtime on the real clock) and `/projects/relay/`, median of 3 runs, every category >= 0.95, CLS <= 0.01 and LCP <= 2.5 s (`lighthouserc.json`).
+ 
+ ### Running the E2E suite
+ 
+@@ -54,7 +55,7 @@ Build first, then run `pnpm test:e2e`. The suite drives the animated page on a f
+ 
+ ## Continuous integration
+ 
+-GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pushes to `main`, with nine separately reported jobs: `lint`, `check`, `unit`, `build`, `e2e`, `tokens`, `privacy`, `budgets` and `lighthouse`. Deploys are done by Cloudflare Workers Builds, not by CI.
++GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pushes to `main`, with nine separately reported jobs: `lint`, `check`, `unit`, `build`, `e2e`, `tokens`, `privacy`, `budgets` and `lighthouse`. The `check` job also runs `pnpm check:frozen` (with full git history), so the job count stays nine. Deploys are done by Cloudflare Workers Builds, not by CI.
+ 
+ Playwright screenshot baselines (a PRD Should; gate versus advisory is still open) must be generated in CI's Linux environment, so they are a follow-up and not part of the nine jobs.
+ 
+@@ -84,3 +85,14 @@ The relay pipeline (`/relay-prd` → `/relay-plan` → `/relay-implement` → `/
+ ## Adding a project
+ 
+ Add one Markdown file under `src/content/projects/` with the fields in docs/05-content.md (the file name is the slug; `title`, `summary` ≤ 140 chars, `cover` 16:9, 2–4 `tags`, `status`, `order`…). Only personal projects; follow the voice rules in docs/09-content-draft.md.
++
++## Replacing the photo and covers
++
++The real photo and the project covers are a content-only swap: no code changes (docs/05-content.md, docs/06-architecture.md).
++
++1. Prepare the file to its spec: the photo is a full-body 9:16 cut-out (a PNG with a transparent background, at least 1200 x 2133 px); each cover is 16:9 (at least 1280 px wide). Strip EXIF, XMP and GPS metadata before the file enters the repository.
++2. Put the file in `src/assets`.
++3. Reference it from the content: the `photo` field of `src/content/profile.json`, or the `cover` field of the project file in `src/content/projects/`, using the same relative path form the current content uses (for example `../assets/photo-placeholder-body.svg`).
++4. Run `pnpm check:privacy` (fails naming any image with metadata), `pnpm build` (regenerates the responsive AVIF/WebP versions, the ASCII version and the blurred covers; a missing or unreadable file fails the build naming it), `pnpm test`, `pnpm test:e2e`, `pnpm check:budgets` and `pnpm lighthouse`.
++5. Open the preview and re-run the review items in docs/stage-4-rhythm-review.md (the ASCII color, `PHOTO_START_OPACITY`, LCP).
++6. What CI re-checks: the `privacy` job on `src/assets`, the `budgets` job, the `lighthouse` job (including LCP), the `e2e` job (layout invariance and axe) and the frozen runtime check in the `check` job.
+diff --git a/docs/stage-4-rhythm-review.md b/docs/stage-4-rhythm-review.md
+new file mode 100644
+index 0000000..bcfcb1b
+--- /dev/null
++++ b/docs/stage-4-rhythm-review.md
+@@ -0,0 +1,48 @@
++Status: awaiting owner review
++
++# Stage 4 rhythm review (owner hand-off)
++
++The autonomous pipeline cannot perform this review: it is a judgement of feel on the pull request preview. No box below is checked by the pipeline, and no measured value is filled in. The phase's success signal ("the owner approves the rhythm") is completed by the owner.
++
++## How to run it
++
++1. Open the pull request's Workers Builds preview.
++2. Watch the build at 1x speed on desktop (1280x800) and on a phone (375x812), in both themes (Midnight and Daylight).
++3. Compare it with prototype v2 and with docs/04-animations.md.
++4. Record the numbers you measure in the pull request, not in this file's checklist.
++
++## Budgets to eyeball
++
++Figures below are compiled timelines of the committed content (`tests/unit/runtime-pacing.test.ts` and `src/sections/*.build.ts`).
++
++| Section | Created at | Budget |
++|---|---|---|
++| Hero | 2650 ms from load (done at 3150 ms, window gone) | 3.2 s |
++| About | about 2400 ms after its trigger | 2.5 s |
++| Projects | about 2470 ms after its trigger | 2.5 s |
++| Stack | about 2440 ms after its trigger | 2.5 s |
++| Contact | about 2432 ms after its trigger | 2.5 s |
++
++## Open items
++
++- [ ] 300 ms cards squeeze the skeleton to 40 ms and the cover resolve to 80 ms: is that readable?
++- [ ] The first card starts while the Projects heading is still typing: is the overlap acceptable?
++- [ ] The dock log is visible only about 100 ms: is it legible?
++- [ ] Up to 4 stack groups pop at once: is the group pop distinct enough?
++- [ ] Slack is thin: hero 50 ms and projects 30 ms. A fifth project would overrun the 2.5 s budget, so adding a project needs re-tuning.
++- [ ] `PHOTO_START_OPACITY` (0.12) and the ASCII color need tuning on the preview with the placeholder, and again with the real photo.
++- [ ] LCP measured on the preview (a trace or Lighthouse) and reported as numbers in the pull request.
++
++## Levers
++
++| What | Where |
++|---|---|
++| `CARD_MS`, `STAGGER_GAP_MS`, `DISSOLVE_MS`, `PHOTO_START_OPACITY` | `src/runtime/effect-timing.ts` |
++| Step pitches and overlaps, minimum settle | `src/sections/pacing.ts` and `src/sections/*.build.ts` |
++| ASCII color token | `src/styles/build-layer.css`, rule `.sp-ascii` (`color: var(--accent-fg)`, defined in `src/styles/tokens.css`) |
++
++Any change re-runs the unit timing tests, `pnpm check:budgets` and `pnpm lighthouse`. No budget or Lighthouse threshold is relaxed to pass.
++
++## Decision
++
++Owner approval: pending
+diff --git a/lighthouserc.json b/lighthouserc.json
+index d3c0870..3e364b9 100644
+--- a/lighthouserc.json
++++ b/lighthouserc.json
+@@ -27,6 +27,10 @@
+         "cumulative-layout-shift": [
+           "error",
+           { "maxNumericValue": 0.01, "aggregationMethod": "median" }
++        ],
++        "largest-contentful-paint": [
++          "error",
++          { "maxNumericValue": 2500, "aggregationMethod": "median" }
+         ]
+       }
+     },
+diff --git a/package.json b/package.json
+index ec50416..3ee0bcc 100644
+--- a/package.json
++++ b/package.json
+@@ -19,6 +19,7 @@
+     "check:tokens": "node scripts/check-tokens.mjs",
+     "check:privacy": "node scripts/check-privacy.mjs",
+     "check:budgets": "node scripts/check-budgets.mjs",
++    "check:frozen": "node scripts/check-frozen-runtime.mjs",
+     "lighthouse": "lhci autorun"
+   },
+   "dependencies": {
+diff --git a/scripts/check-frozen-runtime.mjs b/scripts/check-frozen-runtime.mjs
+new file mode 100644
+index 0000000..93cbe36
+--- /dev/null
++++ b/scripts/check-frozen-runtime.mjs
+@@ -0,0 +1,85 @@
++#!/usr/bin/env node
++// Stage 4 AC-14: the scheduler and controls files in src/runtime/ stay frozen
++// at the Stage 3 merge, except bug fixes recorded in docs/decisions.md.
++import { spawnSync } from 'node:child_process';
++import { existsSync, readFileSync } from 'node:fs';
++import { resolve } from 'node:path';
++import { pathToFileURL } from 'node:url';
++
++const DEFAULT_BASE = 'b4271cb';
++
++const FROZEN = [
++  'src/runtime/scheduler.ts',
++  'src/runtime/clock.ts',
++  'src/runtime/triggers.ts',
++  'src/runtime/focus-rule.ts',
++  'src/runtime/resize.ts',
++  'src/runtime/keys.ts',
++  'src/runtime/controls-timing.ts',
++  'src/runtime/main.ts',
++  'src/runtime/api.ts',
++];
++
++// Recorded bug fixes: `{ file, decision }`, where `decision` is the heading
++// text of the docs/decisions.md entry that records the fix. A file is exempt
++// only while that text appears in docs/decisions.md.
++const BUG_FIX_EXCEPTIONS = [];
++
++function readDecisions(cwd) {
++  const path = resolve(cwd, 'docs/decisions.md');
++  return existsSync(path) ? readFileSync(path, 'utf8') : '';
++}
++
++// Compares the working tree (uncommitted edits count) against `base` and
++// returns the violations: changed frozen files, or a single loud violation
++// when git cannot answer (unknown base, shallow clone).
++export function findFrozenViolations({
++  base = DEFAULT_BASE,
++  cwd = process.cwd(),
++} = {}) {
++  const run = spawnSync('git', ['diff', '--name-only', base, '--', ...FROZEN], {
++    cwd,
++    encoding: 'utf8',
++  });
++  if (run.error || run.status !== 0) {
++    const detail = (run.error?.message ?? run.stderr ?? '').trim();
++    return [
++      `cannot diff against base ${base}: ${detail}. ` +
++        'The base must be reachable; in CI use actions/checkout with fetch-depth: 0.',
++    ];
++  }
++  const decisions = readDecisions(cwd);
++  const exempt = new Set(
++    BUG_FIX_EXCEPTIONS.filter(({ decision }) =>
++      decisions.includes(decision),
++    ).map(({ file }) => file),
++  );
++  return run.stdout
++    .split(/\r?\n/)
++    .map((line) => line.trim())
++    .filter((file) => file !== '' && !exempt.has(file));
++}
++
++function main() {
++  const flag = process.argv.indexOf('--base');
++  const base = flag === -1 ? DEFAULT_BASE : process.argv[flag + 1];
++  const violations = findFrozenViolations({ base });
++  if (violations.length > 0) {
++    for (const v of violations) {
++      console.error(
++        FROZEN.includes(v)
++          ? `FAIL frozen runtime file changed: ${v}`
++          : `FAIL frozen runtime check: ${v}`,
++      );
++    }
++    process.exit(1);
++  }
++  console.log(`PASS: frozen runtime files match ${base}`);
++}
++
++if (
++  process.argv[1] &&
++  import.meta.url === pathToFileURL(process.argv[1]).href
++) {
++  main();
++}

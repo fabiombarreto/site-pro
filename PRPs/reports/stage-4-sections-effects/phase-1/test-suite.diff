@@ -1,0 +1,62 @@
+# TDD initial suite — phase 1 (test-after)
+# Source PRD: PRPs/prds/stage-4-sections-effects.prd.md (Acceptance Criteria)
+# Source plan: C:/repos/site-pro/PRPs/plans/completed/stage-4-sections-effects-phase-1-image-pipeline-and-derivatives.plan.md
+# Aggregate verdict: SUITE_DRAFT_WRITTEN
+# Generated: 2026-11-10
+# Mode: test-after (tdd: false; frameworks vitest, playwright); test files live in the feature worktree .worktrees/stage-4-sections-effects
+
+## AC outcomes
+
+| AC (plan AC-A -> PRD AC) | Outcome | Path / mapping |
+|---|---|---|
+| AC-2 (A1) ASCII generator fixtures, 48 columns, ramp, deterministic | NEW_TEST_REQUIRED | tests/unit/image-ascii.test.ts |
+| AC-2 (A2) missing or unreadable photo fails naming the file | NEW_TEST_REQUIRED | tests/unit/image-ascii.test.ts (generator error names the file, which Hero.astro lets fail the build); a full `astro build` failure run is not automated |
+| AC-2 (A3) ASCII serialized as data-build-ascii, not page text | NEW_TEST_REQUIRED | tests/e2e/image-delivery.spec.ts |
+| AC-3 (A4) blurred cover data URI, none without a cover | NEW_TEST_REQUIRED | tests/unit/image-blur.test.ts (derivative), tests/e2e/image-delivery.spec.ts (no blur data and placeholder kept with the committed content). The inlined `data-build-blur` on a card with a cover has no committed input; the plan's Level 3 probe covers it until Phase 5 adds a permanent fixture |
+| AC-5 (A5) hero photo delivery | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/e2e/image-delivery.spec.ts (built HTML), tests/unit/page-content-components.test.ts (Photo markup) |
+| AC-5 (A6) covers lazy, dimensions, AVIF/WebP | NEW_TEST_REQUIRED + EXISTING_TEST_UPDATED | tests/unit/page-content-components.test.ts (card and header markup); raster `getImage()` output needs `astro:assets` and is covered only by the plan's Level 3 probe |
+| AC-4 (A7) swap with no code change, boxes unchanged | EXISTING_TEST_COVERS + EXISTING_TEST_UPDATED | tests/e2e/layout-invariance.spec.ts:98 (boxes vs no-JS page at 1280x800 and 375x812); tests/unit/content-schemas.test.ts (photo and cover are image() fields, profile photo path resolves under src/assets) |
+| AC-4 (A8) EXIF/XMP/GPS image fails check:privacy naming the file | NEW_TEST_REQUIRED | tests/unit/privacy-image-metadata.test.ts |
+| AC-12 (A9) budgets and Lighthouse | EXISTING_TEST_COVERS | tests/unit/runtime-budget.test.ts:44, tests/unit/quality-gates.test.ts:174 and :253 (Lighthouse config); measured values come from the CI budgets and lighthouse jobs |
+| AC-1, AC-6 to AC-11, AC-13, AC-14 | OUT_OF_PHASE_SCOPE | deferred to phases 2 to 5 |
+
+## Test files written this session
+
+- tests/unit/image-ascii.test.ts
+- tests/unit/image-blur.test.ts
+- tests/unit/privacy-image-metadata.test.ts
+- tests/e2e/image-delivery.spec.ts
+
+## Lifecycle ledger
+
+| Op | Classification | Test (file:function) | Justification |
+|----|-----------------|-----------------------|----------------|
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/content-schemas.test.ts (whole file: every `projectSchema` / `profileSchema` call; `validProfile`) | AC-4 (A7): schemas became factories taking an image() context and `photo`/`cover` are image() fields; the test now builds the schemas through a stand-in image() context and a metadata object for `photo`. Every prior limit assertion is kept; assertions were added (cover optional, photo required) |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/content-schemas.test.ts:validates the profile entry | AC-4 (A7): committed `photo` is now a path Astro resolves; the entry is validated with a metadata object for `photo` and a new test asserts the path is `../assets/...` and the file exists |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/page-content-components.test.ts:Photo renders the cutout built state | AC-5 (A5): Photo takes an `image` object; same class, src, alt, 900 x 1600 and no-style assertions now read the attributes of the `<img>` |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/page-content-components.test.ts:Photo passes the requested height only as --photo-h | AC-5 (A5): prop change from `src` to `image`; assertions unchanged |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/page-content-components.test.ts:Photo adds the glow class and a described alt text | AC-5 (A5): prop change from `src` to `image`; assertions unchanged |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/page-content-components.test.ts:ProjectCard shows the given cover | AC-5 (A6): cover is an image object; asserts src, empty alt, dimensions and lazy loading, still no placeholder |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/page-content-components.test.ts:ProjectHeader shows the slug-labelled CSS cover, or the given cover image | AC-5 (A6): cover is an image object; same placeholder assertion, cover assertions now cover dimensions and lazy loading |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/page-styles.test.ts:stops the card lift and the cover zoom | AC-5 (A5/A6): `.sp-card-cover > *` selectors became `.sp-card-cover img` and `.sp-card-cover > .sp-cover-ph` (a picture wrapper breaks the child combinator); same transition-none and transform-none assertions |
+| UPDATE | EXISTING_TEST_UPDATED | tests/unit/page-styles.test.ts:lifts the card by 3px and zooms the cover by 1.03 | AC-5 (A5/A6): same selector change; still asserts scale(1.03); a picture display:contents assertion was added |
+| DELETE | OBSOLETE_TEST_REMOVED | tests/unit/page-content-components.test.ts:resolveAssetUrl resolves the profile photo path as stored, without a leading slash | Pages no longer resolve images through resolve-asset.ts (the pipeline replaces it, AC-4/A7); no in-scope AC requires the URL-only resolver. The helper file stays but has no consumers |
+| DELETE | OBSOLETE_TEST_REMOVED | tests/unit/page-content-components.test.ts:resolveAssetUrl resolves the same asset with or without the leading slash | Same: behavior of the retired URL-only resolver |
+| DELETE | OBSOLETE_TEST_REMOVED | tests/unit/page-content-components.test.ts:resolveAssetUrl returns undefined for a missing path or no path | Same: the pipeline instead fails the build naming the source (AC-2/A2), asserted in image-ascii.test.ts |
+
+## Verification (run by a delegated agent in the worktree)
+
+pnpm check exit 0 (0 errors), pnpm lint exit 0, pnpm format:check exit 0, pnpm test exit 0 (26 files, 451 tests), pnpm build exit 0, pnpm test:e2e tests/e2e/image-delivery.spec.ts exit 0 (7 of 7). The full e2e suite was not run in this phase.
+
+## Formatting Outcome
+
+- Outcome: formatted
+- Command: npm run format -- <7 touched test files> (package.json scripts.format; the script is prettier --write ., so it also ran repo-wide)
+- Discovery source: package.json scripts.format
+- Files: tests/unit/image-ascii.test.ts, tests/unit/image-blur.test.ts, tests/unit/privacy-image-metadata.test.ts, tests/e2e/image-delivery.spec.ts, tests/unit/content-schemas.test.ts, tests/unit/page-content-components.test.ts, tests/unit/page-styles.test.ts
+- Exit code: 0
+
+## Status
+
+*Approved: 2026-11-10*
+*Status: APPROVED*

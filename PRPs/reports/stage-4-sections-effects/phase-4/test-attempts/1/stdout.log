@@ -1,0 +1,431 @@
+== pnpm check
+$ astro check
+[2m15:34:49[22m [34m[content][39m Syncing content
+[2m15:34:49[22m [34m[content][39m Synced content
+[2m15:34:49[22m [34m[types][39m Generated [2m980ms[22m
+[2m15:34:49[22m [34m[check][39m Getting diagnostics for Astro files in C:\repos\site-pro\.worktrees\stage-4-sections-effects...
+Result (165 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+
+check exit 0
+== pnpm test
+
+ RUN  v5.1.0 C:/repos/site-pro/.worktrees/stage-4-sections-effects
+
+ ✓ tests/unit/page-styles.test.ts (37 tests) 39ms
+ ✓ tests/unit/design-tokens.test.ts (29 tests) 176ms
+ ✓ tests/unit/image-resolve-timing.test.ts (28 tests) 91ms
+ ✓ tests/unit/image-blur.test.ts (7 tests) 186ms
+stderr | tests/unit/home-href.test.ts > NavBar homeHref > prefixes the brand and the four section links with "/" when set
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+stderr | tests/unit/page-navigation.test.ts > NavBar > is a header with the brand linking to the top of the page
+Invalid DOM property `popovertarget`. Did you mean `popoverTarget`?
+
+ ✓ tests/unit/home-href.test.ts (7 tests) 49ms
+ ✓ tests/unit/page-navigation.test.ts (11 tests) 60ms
+ ✓ tests/unit/scaffold-config.test.ts (21 tests) 18ms
+ ✓ tests/unit/image-ascii.test.ts (13 tests) 595ms
+stderr | tests/unit/page-content-components.test.ts > Photo > serves the hero photo eager with high fetch priority, never lazy, when it has priority
+Invalid DOM property `fetchpriority`. Did you mean `fetchPriority`?
+
+ ✓ tests/unit/page-content-components.test.ts (26 tests) 48ms
+ ✓ tests/unit/content-copy.test.ts (30 tests) 71ms
+ ✓ tests/unit/effect-timing.test.ts (32 tests) 53ms
+ ✓ tests/unit/verify-build-targets.test.ts (4 tests) 52ms
+ ✓ tests/unit/runtime-budget.test.ts (5 tests) 1272ms
+   ✓ runtime budget (5)
+     ✓ prints the runtime number next to the other metrics and passes when small 359ms
+ ✓ tests/unit/build-layer-components.test.ts (13 tests) 28ms
+ ✓ tests/unit/runtime-compiler.test.ts (26 tests) 21ms
+ ✓ tests/unit/runtime-scheduler.test.ts (15 tests) 23ms
+ ✓ tests/unit/theme-helpers.test.ts (10 tests) 25ms
+ ✓ tests/unit/page-primitives.test.ts (31 tests) 37ms
+ ✓ tests/unit/runtime-pacing.test.ts (19 tests) 40ms
+ ✓ tests/unit/content-schemas.test.ts (28 tests) 31ms
+ ✓ tests/unit/image-resolve-contract.test.ts (8 tests) 14ms
+ ✓ tests/unit/hero-photo-command.test.ts (9 tests) 19ms
+ ✓ tests/unit/runtime-controls-timing.test.ts (15 tests) 13ms
+ ✓ tests/unit/runtime-scheduler-tick.test.ts (4 tests) 11ms
+ ✓ tests/unit/runtime-scheduler-controls.test.ts (10 tests) 12ms
+ ✓ tests/unit/runtime-layer-timing.test.ts (18 tests) 12ms
+ ✓ tests/unit/runtime-mode-clock.test.ts (19 tests) 12ms
+ ✓ tests/unit/section-call-args.test.ts (10 tests) 11ms
+ ✓ tests/unit/privacy-image-metadata.test.ts (8 tests) 2702ms
+   ✓ image metadata gate (8)
+     ✓ passes clean raster and SVG images and says it scanned image metadata 506ms
+     ✓ fails an image carrying EXIF and names the file 391ms
+     ✓ fails an image carrying GPS coordinates (GPS lives in EXIF) and names the file 601ms
+     ✓ names a flagged image in a subfolder by its path under the assets folder 380ms
+ ✓ tests/unit/quality-gates.test.ts (37 tests) 4548ms
+   ✓ token gate on fixtures (AC-9) (8)
+     ✓ passes when literals only live in tokens.css and assets/ 337ms
+     ✓ fails on a box-shadow without a token in a source file 326ms
+
+ Test Files  30 passed (30)
+      Tests  530 passed (530)
+   Start at  15:35:01
+   Duration  5.01s (tests 63%, import 18%, transform 17%, worker 2%)
+
+    Isolate  30 workers spawned · ~426ms startup each (spawn + environment, per file)
+             at least ~736ms faster with isolate: false — reuses workers across files instead of one per file
+
+JUNIT report written to C:/repos/site-pro/PRPs/reports/stage-4-sections-effects/attempts/1/junit-vitest.xml
+vitest exit 0
+== pnpm build
+$ astro build
+[2m15:35:10[22m [34m[content][39m Syncing content
+[2m15:35:10[22m [34m[content][39m Synced content
+[2m15:35:10[22m [34m[types][39m Generated [2m955ms[22m
+[2m15:35:10[22m [34m[build][39m output: [34m"static"[39m
+[2m15:35:10[22m [34m[build][39m mode: [34m"static"[39m
+[2m15:35:10[22m [34m[build][39m directory: [34mC:\repos\site-pro\.worktrees\stage-4-sections-effects\dist\[39m
+[2m15:35:10[22m [34m[build][39m Collecting build info...
+[2m15:35:10[22m [34m[build][39m [32m✓ Completed in 1.02s.[39m
+[2m15:35:10[22m [34m[build][39m Building static entrypoints...
+[33m[1m15:35:11[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js (400:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[33m[1m15:35:12[22m [WARN] [vite][39m [33mnode_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js (74:0): A comment
+
+"/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+ * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+ * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+
+in "node_modules/.pnpm/zod@4.6.7/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.[39m
+[2m15:35:13[22m [34m[vite][39m [32m✓ built in 2.82s[39m
+[2m15:35:14[22m [34m[vite][39m [32m✓ built in 1.07s[39m
+[2m15:35:14[22m [34m[build][39m Rearranging server assets...
+
+[42m[30m generating static routes [39m[49m
+[2m15:35:15[22m   [34m├─[39m [2m/404.html[22m [2m(+30ms)[22m 
+[2m15:35:15[22m   [34m├─[39m [2m/projects/ai-track-record/index.html[22m [2m(+11ms)[22m 
+[2m15:35:15[22m   [34m├─[39m [2m/projects/praesto-sum/index.html[22m [2m(+8ms)[22m 
+[2m15:35:15[22m   [34m├─[39m [2m/projects/relay/index.html[22m [2m(+7ms)[22m 
+[2m15:35:15[22m   [34m├─[39m [2m/projects/site-pro/index.html[22m [2m(+6ms)[22m 
+[2m15:35:15[22m   [34m├─[39m [2m/index.html[22m [2m(+62ms)[22m 
+[2m15:35:15[22m [32m✓ Completed in 428ms.
+[39m
+[2m15:35:15[22m [34m[build][39m [32m✓ Completed in 4.41s.[39m
+[2m15:35:15[22m [34m[build][39m 6 page(s) built in [1m5.47s[22m
+[2m15:35:15[22m [34m[build][39m [1mComplete![22m
+build exit 0
+== pnpm test:e2e
+
+Running 308 tests using 6 workers
+
+  ok   5 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, daylight theme › has no axe violations at the boot, and <main> equals the no-JS page (2.6s)
+  ok   1 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, midnight theme › has no axe violations at the boot, and <main> equals the no-JS page (3.1s)
+  ok   2 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, midnight theme › has no axe violations at after the build, and <main> equals the no-JS page (5.1s)
+  ok   6 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, daylight theme › has no axe violations at mid-hero, and <main> equals the no-JS page (5.5s)
+  ok   3 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, midnight theme › has no axe violations at mid-hero, and <main> equals the no-JS page (5.8s)
+  ok   8 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, daylight theme › has no axe violations at after the build, and <main> equals the no-JS page (3.5s)
+  ok   9 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, midnight theme › has no axe violations at the boot, and <main> equals the no-JS page (2.4s)
+  ok   4 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, midnight theme › has no axe violations at mid-projects, and <main> equals the no-JS page (8.1s)
+  ok  13 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, daylight theme › has no axe violations at the boot, and <main> equals the no-JS page (1.6s)
+  ok   7 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › desktop 1280x800, daylight theme › has no axe violations at mid-projects, and <main> equals the no-JS page (6.2s)
+  ok  12 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, midnight theme › has no axe violations at after the build, and <main> equals the no-JS page (3.3s)
+  ok  10 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, midnight theme › has no axe violations at mid-hero, and <main> equals the no-JS page (4.6s)
+  ok  17 [chromium] › tests\e2e\behavior-gaps.spec.ts:30:1 › AC-1: before the runtime starts the hero is pending, hidden but laid out and in the accessibility tree (365ms)
+  ok  14 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, daylight theme › has no axe violations at mid-hero, and <main> equals the no-JS page (3.3s)
+  ok  16 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, daylight theme › has no axe violations at after the build, and <main> equals the no-JS page (2.6s)
+  ok  11 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, midnight theme › has no axe violations at mid-projects, and <main> equals the no-JS page (6.2s)
+  ok  21 [chromium] › tests\e2e\behavior-gaps.spec.ts:238:1 › AC-4: every pending section shows a dashed outline over its box, labeled with its window file name and hidden from the accessibility tree (1.5s)
+  ok  18 [chromium] › tests\e2e\behavior-gaps.spec.ts:58:1 › AC-1: the hero is final within 3.2 s of clock time, with the created line, no window and the idle dock (3.6s)
+  ok  23 [chromium] › tests\e2e\behavior-gaps.spec.ts:376:1 › AC-15: with the runtime request aborted every section is revealed within 3 s of clock time, with no build-layer element on screen (613ms)
+  ok  24 [chromium] › tests\e2e\build-layer-absent.spec.ts:21:3 › no layer is created › under reduced motion, with the nav visible (350ms)
+  ok  25 [chromium] › tests\e2e\build-layer-absent.spec.ts:42:3 › no layer is created › with a saved infinity speed, with the nav visible (383ms)
+  ok  26 [chromium] › tests\e2e\build-layer-absent.spec.ts:63:3 › no layer is created › without JavaScript, with the nav visible (347ms)
+  ok  27 [chromium] › tests\e2e\build-layer-absent.spec.ts:75:3 › no layer is created › when the runtime is blocked: the nav is hidden while pending, then shown by the watchdog with no layer (332ms)
+  ok  15 [chromium] › tests\e2e\axe-build-matrix.spec.ts:95:9 › mobile 375x812, daylight theme › has no axe violations at mid-projects, and <main> equals the no-JS page (5.7s)
+  ok  30 [chromium] › tests\e2e\build-layer-absent.spec.ts:129:3 › reserved footer build slot › is absent from project pages, which also carry no build-layer markup (45ms)
+  ok  28 [chromium] › tests\e2e\build-layer-absent.spec.ts:88:3 › reserved footer build slot › is present, empty and one line high on / without JavaScript (335ms)
+  ok  29 [chromium] › tests\e2e\build-layer-absent.spec.ts:109:3 › reserved footer build slot › takes its own row under 768 px (272ms)
+  ok  32 [chromium] › tests\e2e\build-layer-layout.spec.ts:136:1 › desktop: the bars stick under the nav and the window follows the section after a height-only resize (965ms)
+  ok  33 [chromium] › tests\e2e\build-layer-layout.spec.ts:167:1 › desktop: a width change finishes the building hero and leaves no window for it (1.1s)
+  ok  20 [chromium] › tests\e2e\behavior-gaps.spec.ts:167:1 › AC-2: after scrolling back up to built sections and down again, no window opens over them and none of their elements animates again (5.0s)
+  ok  22 [chromium] › tests\e2e\behavior-gaps.spec.ts:293:1 › AC-11: with the Projects window open and the relay card created, a real click on the card title navigates to /projects/relay (4.7s)
+  ok  19 [chromium] › tests\e2e\behavior-gaps.spec.ts:115:1 › AC-2: About starts when its top crosses 75 % of the viewport height and not before, then types renderAbout(); and builds one about.md window (6.4s)
+  ok  34 [chromium] › tests\e2e\build-layer-layout.spec.ts:192:1 › mobile 375x812: one compact bar with the current command, a dock of viewport width minus 16 px per side, bars stuck under the nav (1.0s)
+  ok  38 [chromium] › tests\e2e\controls-dock-a11y.spec.ts:51:1 › the reduced-motion dock exposes a button named "Play the build animation" (677ms)
+  ok  37 [chromium] › tests\e2e\controls-dock-a11y.spec.ts:22:1 › the ready dock is a group named "Site build" holding real buttons, with its status text hidden from assistive technology (799ms)
+  ok  39 [chromium] › tests\e2e\controls-dock-a11y.spec.ts:68:1 › Tab reaches the dock button and it shows the 2px accent ring (1.1s)
+  ok  40 [chromium] › tests\e2e\controls-dock-a11y.spec.ts:97:1 › the text and accessibility tree of main equal the no-JS page with the ready dock present (997ms)
+  ok  31 [chromium] › tests\e2e\build-layer-layout.spec.ts:65:1 › never moves a box or the text while the hero and Projects windows are open, and shifts layout by at most 0.01 (3.9s)
+  ok  36 [chromium] › tests\e2e\build-layer-show.spec.ts:93:1 › keeps the layer in one decorative overlay outside main and only catches clicks on the bars (2.2s)
+  ok  35 [chromium] › tests\e2e\build-layer-show.spec.ts:16:1 › shows the boot, folds it into the dock, opens and closes the hero window, then builds About in the dock (3.0s)
+  ok  43 [chromium] › tests\e2e\controls-done-replay.spec.ts:104:1 › Replay from the footer scrolls to the top, returns every section to pending and replays from the boot (2.4s)
+  ok  44 [chromium] › tests\e2e\controls-done-replay.spec.ts:143:1 › Replay from the dock replays the same way (2.5s)
+  ok  47 [chromium] › tests\e2e\controls-focus-resize.spec.ts:83:3 › focus moving to .sp-nav-link[href="#about"] during the boot finishes the hero within a frame (660ms)
+  ok  48 [chromium] › tests\e2e\controls-focus-resize.spec.ts:83:3 › focus moving to #main during the boot finishes the hero within a frame (530ms)
+  ok  49 [chromium] › tests\e2e\controls-focus-resize.spec.ts:83:3 › focus moving to #top .sp-hero-actions a during the boot finishes the hero within a frame (522ms)
+  ok  45 [chromium] › tests\e2e\controls-focus-resize.spec.ts:19:1 › focus entering Stack finishes Stack and every section before it within a frame, and keeps focus there (4.7s)
+  ok  46 [chromium] › tests\e2e\controls-focus-resize.spec.ts:42:1 › focus entering a link in Projects finishes About and Projects, keeps focus and shows the 2px accent ring (4.6s)
+  ok  50 [chromium] › tests\e2e\controls-focus-resize.spec.ts:104:3 › a width change to 1024 finishes the building section and the next one builds on its trigger with its window on the new box (2.9s)
+  ok  51 [chromium] › tests\e2e\controls-focus-resize.spec.ts:104:3 › a width change to 800 finishes the building section and the next one builds on its trigger with its window on the new box (2.8s)
+  ok  52 [chromium] › tests\e2e\controls-focus-resize.spec.ts:137:3 › on a phone › a height-only resize, as when the URL bar shows or hides, lets the build continue (1.6s)
+  ok  53 [chromium] › tests\e2e\controls-skip.spec.ts:24:1 › Esc finishes the building section as created and leaves the next one waiting for its trigger (2.1s)
+  ok  56 [chromium] › tests\e2e\controls-skip.spec.ts:117:3 › on a phone › Esc with the mobile menu open only closes the menu; the next Esc skips (1.8s)
+  ok  54 [chromium] › tests\e2e\controls-skip.spec.ts:43:1 › the dock button named "Skip this section's build" skips the section (3.6s)
+  ok  58 [chromium] › tests\e2e\controls-skip.spec.ts:169:1 › Shift + Esc also finishes sections that no trigger has reached (1.6s)
+  ok  57 [chromium] › tests\e2e\controls-skip.spec.ts:149:1 › Shift + Esc finishes every remaining section within a frame and shows the complete state with Replay (2.8s)
+  ok  55 [chromium] › tests\e2e\controls-skip.spec.ts:62:1 › a click on the window title bar skips, a click on the window body does not, and a click on the command bar skips (4.5s)
+  ok  59 [chromium] › tests\e2e\controls-speed.spec.ts:34:1 › the speed button cycles 1x, 2x, infinity, 1x with its name and sp-speed following (1.5s)
+  ok  62 [chromium] › tests\e2e\controls-speed.spec.ts:120:1 › a saved infinity renders the ready page with the dock at 5/5 sections, no show piece, and Replay in the footer (501ms)
+  ok  60 [chromium] › tests\e2e\controls-speed.spec.ts:79:1 › switching to infinity finishes the building section and every triggered one (1.5s)
+  ok  41 [chromium] › tests\e2e\controls-done-replay.spec.ts:27:1 › the scroll hint pulses after 4 s without a scroll and stops at the next scroll (12.7s)
+  ok  63 [chromium] › tests\e2e\controls-speed.spec.ts:151:1 › Replay from a ready page scrolls to the top, plays from the boot at 1x and saves 1x (466ms)
+  ok  64 [chromium] › tests\e2e\controls-speed.spec.ts:170:3 › reduced motion › shows the ready dock with Play build only, a steady cursor and no pulse (423ms)
+  ok  61 [chromium] › tests\e2e\controls-speed.spec.ts:104:1 › at 2x the hero completes in about half of its 1x clock time (1.8s)
+  ok  65 [chromium] › tests\e2e\controls-speed.spec.ts:204:3 › reduced motion › Play build scrolls to the top and builds from the boot at 1x (4.3s)
+  ok  42 [chromium] › tests\e2e\controls-done-replay.spec.ts:58:1 › a finished 1x build shows the complete state with Replay, collapses after about 4 s, reopens from the expand button and fills the footer without moving anything (16.9s)
+  ok  69 [chromium] › tests\e2e\controls-turbo-navigation.spec.ts:100:1 › a first visit to /#projects scrolls at once by the browser, builds the hero and About in turbo, then Projects at 1x (5.1s)
+  ok  68 [chromium] › tests\e2e\controls-turbo-navigation.spec.ts:77:1 › the runtime never moves the page while the hero and the triggered sections build (7.0s)
+  ok  73 [chromium] › tests\e2e\css-budget.spec.ts:18:3 › built dist/ CSS budget (AC-A9) › all CSS together is at most 25 KB gzipped (11ms)
+  ok  67 [chromium] › tests\e2e\controls-turbo-navigation.spec.ts:60:1 › the dock shows the queue status as queued n/5 while turbo catches up and none while the last section builds (7.2s)
+  ok  74 [chromium] › tests\e2e\effects-absent.spec.ts:12:3 › no effect artifact exists › under reduced motion (388ms)
+  ok  75 [chromium] › tests\e2e\effects-absent.spec.ts:27:3 › no effect artifact exists › with a saved infinity speed (365ms)
+  ok  70 [chromium] › tests\e2e\controls-turbo-navigation.spec.ts:138:3 › a first visit to /#about goes to the target at once and builds every earlier section before it (3.8s)
+  ok  76 [chromium] › tests\e2e\effects-absent.spec.ts:40:3 › no effect artifact exists › without JavaScript (304ms)
+  ok  77 [chromium] › tests\e2e\effects-absent.spec.ts:51:3 › no effect artifact exists › when the runtime is blocked, and the headline stays visible (295ms)
+  ok  78 [chromium] › tests\e2e\effects-absent.spec.ts:65:3 › no effect artifact exists › when the runtime script throws on load, and the headline stays visible (350ms)
+  ok  80 [chromium] › tests\e2e\effects-absent.spec.ts:85:5 › no effect artifact exists › on /no-such-page, outside the home page (294ms)
+  ok  79 [chromium] › tests\e2e\effects-absent.spec.ts:85:5 › no effect artifact exists › on /projects/relay/, outside the home page (379ms)
+  ok  82 [chromium] › tests\e2e\effects-absent.spec.ts:198:1 › serves no effect markup on the home page, the 404 or the project pages (62ms)
+  ok  66 [chromium] › tests\e2e\controls-turbo-navigation.spec.ts:30:1 › scrolling straight to Contact queues the sections between, builds them at 5x with queued n/5, then Contact at 1x (9.1s)
+  ok  71 [chromium] › tests\e2e\controls-turbo-navigation.spec.ts:138:3 › a first visit to /#contact goes to the target at once and builds every earlier section before it (6.0s)
+  ok  72 [chromium] › tests\e2e\controls-turbo-navigation.spec.ts:161:1 › activating the nav Stack link goes to Stack at once, builds About and Projects in turbo in order, then Stack at 1x (6.3s)
+  ok  83 [chromium] › tests\e2e\effects-axe.spec.ts:26:5 › midnight theme › has no axe violations mid-hero, while the role decodes and the photo is a skeleton (3.6s)
+  ok  85 [chromium] › tests\e2e\effects-axe.spec.ts:26:5 › daylight theme › has no axe violations mid-hero, while the role decodes and the photo is a skeleton (3.7s)
+  ok  81 [chromium] › tests\e2e\effects-absent.spec.ts:92:1 › writes only opacity, clip-path and pointer-events on page elements and animates only transform, opacity and clip-path, with every overlay in the aria-hidden layer (4.9s)
+  ok  87 [chromium] › tests\e2e\effects-hero.spec.ts:27:1 › selects the headline under a selection box while it is hidden and unclickable, with later steps untouched (1.7s)
+  ok  84 [chromium] › tests\e2e\effects-axe.spec.ts:38:5 › midnight theme › has no axe violations mid-projects, while two cards overlap (5.8s)
+  ok  88 [chromium] › tests\e2e\effects-hero.spec.ts:43:1 › types the headline with a thin caret and a clip-path, and has it readable by 2.0 s with the text untouched (2.4s)
+  ok  92 [chromium] › tests\e2e\effects-hero.spec.ts:164:1 › compiles the hero within its budget: headline step done by 2.0 s, whole hero by 3.2 s (357ms)
+  ok  89 [chromium] › tests\e2e\effects-hero.spec.ts:68:1 › decodes the role through scrambled glyphs and shows the photo as a skeleton before the placeholder (2.7s)
+  ok  86 [chromium] › tests\e2e\effects-axe.spec.ts:38:5 › daylight theme › has no axe violations mid-projects, while two cards overlap (5.6s)
+  ok  91 [chromium] › tests\e2e\effects-hero.spec.ts:138:1 › leaves no marker, overlay element or inline style behind once the hero steps end, and keeps the final page (3.9s)
+  ok  94 [chromium] › tests\e2e\effects-layout.spec.ts:24:3 › never adds horizontal scroll while the hero elements are created at 1280px (3.2s)
+  ok  95 [chromium] › tests\e2e\effects-layout.spec.ts:24:3 › never adds horizontal scroll while the hero elements are created at 375px (3.4s)
+  ok  99 [chromium] › tests\e2e\effects-scripts.spec.ts:63:1 › names every target of every step inside its section and leaves no content outside a target (453ms)
+  ok  98 [chromium] › tests\e2e\effects-pointer.spec.ts:119:1 › keeps a section that has not started building from taking the pointer (1.3s)
+  ok  90 [chromium] › tests\e2e\effects-hero.spec.ts:98:1 › resolves the intro line by line from skeleton bars, then pops the buttons, none clickable before they are created (6.2s)
+  ok 100 [chromium] › tests\e2e\effects-scripts.spec.ts:79:1 › builds the hero in the approved order and effects at the tuned offsets (347ms)
+  ok 101 [chromium] › tests\e2e\effects-scripts.spec.ts:116:1 › builds About, Stack and Contact with the commands and offsets of the tuned scripts (436ms)
+  ok 102 [chromium] › tests\e2e\effects-scripts.spec.ts:157:1 › builds Projects with one card per project, each starting 120 ms before the previous card ends (459ms)
+  ok 103 [chromium] › tests\e2e\effects-scripts.spec.ts:176:1 › lasts 300 ms per card, never builds more than two cards at once and staggers the buttons and chips (358ms)
+  ok  93 [chromium] › tests\e2e\effects-hero.spec.ts:194:1 › shows the current call in the window bar, typed from the step start and cut to the displayed command (5.7s)
+  ok 104 [chromium] › tests\e2e\effects-scripts.spec.ts:197:1 › creates every section within its budget with the effects in the documented order (318ms)
+  ok 105 [chromium] › tests\e2e\effects-scripts.spec.ts:229:1 › carries the dock logs of the content and opens non-hero windows at Enter (362ms)
+  ok 106 [chromium] › tests\e2e\home-axe.spec.ts:27:7 › midnight theme › has no axe violations on / at 1280x800 (1.7s)
+  ok 108 [chromium] › tests\e2e\home-axe.spec.ts:27:7 › midnight theme › has no axe violations on / at 375x812 (1.6s)
+  ok 107 [chromium] › tests\e2e\home-axe.spec.ts:27:7 › midnight theme › has no axe violations on / at 800x1024 (1.6s)
+  ok  97 [chromium] › tests\e2e\effects-pointer.spec.ts:23:1 › lets a created card take clicks while the next ones are hidden and ignore the pointer, and cuts the window command (4.6s)
+  ok 109 [chromium] › tests\e2e\home-axe.spec.ts:37:5 › midnight theme › has no axe violations on / at 375x812 with the mobile menu open (1.7s)
+  ok 114 [chromium] › tests\e2e\home-content.spec.ts:138:5 › navigation without JavaScript (AC-2) › the About nav link sets #about and shows its h2 (528ms)
+  ok 115 [chromium] › tests\e2e\home-content.spec.ts:138:5 › navigation without JavaScript (AC-2) › the Projects nav link sets #projects and shows its h2 (425ms)
+  ok 112 [chromium] › tests\e2e\home-axe.spec.ts:27:7 › daylight theme › has no axe violations on / at 375x812 (1.7s)
+  ok 111 [chromium] › tests\e2e\home-axe.spec.ts:27:7 › daylight theme › has no axe violations on / at 800x1024 (1.7s)
+  ok 110 [chromium] › tests\e2e\home-axe.spec.ts:27:7 › daylight theme › has no axe violations on / at 1280x800 (1.7s)
+  ok 116 [chromium] › tests\e2e\home-content.spec.ts:138:5 › navigation without JavaScript (AC-2) › the Stack nav link sets #stack and shows its h2 (454ms)
+  ok 120 [chromium] › tests\e2e\home-content.spec.ts:32:3 › static HTML of / (AC-1) › has one main holding the five sections in order (3ms)
+  ok 121 [chromium] › tests\e2e\home-content.spec.ts:44:3 › static HTML of / (AC-1) › has exactly one h1 reading "Fabio Barreto." (3ms)
+  ok 113 [chromium] › tests\e2e\home-axe.spec.ts:37:5 › daylight theme › has no axe violations on / at 375x812 with the mobile menu open (1.7s)
+  ok 122 [chromium] › tests\e2e\home-content.spec.ts:50:3 › static HTML of / (AC-1) › has one h2 per later section and labels each section by it (9ms)
+  ok 123 [chromium] › tests\e2e\home-content.spec.ts:66:3 › static HTML of / (AC-1) › has a per-page title and description from the profile (2ms)
+  ok 124 [chromium] › tests\e2e\home-content.spec.ts:74:3 › static HTML of / (AC-1) › shows the approved hero copy (4ms)
+  ok 126 [chromium] › tests\e2e\home-content.spec.ts:84:3 › static HTML of / (AC-1) › shows the approved About text and profile buttons (3ms)
+  ok 125 [chromium] › tests\e2e\home-content.spec.ts:92:3 › static HTML of / (AC-1) › shows four project cards with title, summary, tags, year and status (26ms)
+  ok 128 [chromium] › tests\e2e\home-content.spec.ts:109:3 › static HTML of / (AC-1) › shows the six stack groups with their items in display order (11ms)
+  ok 127 [chromium] › tests\e2e\home-content.spec.ts:124:3 › static HTML of / (AC-1) › shows the Contact lead and the only location text (2ms)
+  ok 118 [chromium] › tests\e2e\home-content.spec.ts:138:5 › navigation without JavaScript (AC-2) › the Contact nav link sets #contact and shows its h2 (422ms)
+  ok 119 [chromium] › tests\e2e\home-content.spec.ts:190:3 › navigation without JavaScript (AC-2) › points each project card title at /projects/<slug> (433ms)
+  ok 117 [chromium] › tests\e2e\home-content.spec.ts:159:3 › navigation without JavaScript (AC-2) › shows every section text (475ms)
+  ok 129 [chromium] › tests\e2e\home-keyboard.spec.ts:10:3 › skip link › is the first Tab stop, is visible, and moves focus to main (515ms)
+  ok 130 [chromium] › tests\e2e\home-keyboard.spec.ts:29:3 › skip link › is out of view until it takes focus (533ms)
+  ok 133 [chromium] › tests\e2e\home-mobile-menu.spec.ts:12:3 › phone viewport with JavaScript › hides the section links and shows the menu button (443ms)
+  ok 132 [chromium] › tests\e2e\home-keyboard.spec.ts:83:3 › focus order and ring › rings the first stop after the skip link, the brand, in the accent color (480ms)
+  ok 131 [chromium] › tests\e2e\home-keyboard.spec.ts:38:3 › focus order and ring › every link and button takes focus in DOM order with a 2px accent ring offset 2px (766ms)
+  ok 136 [chromium] › tests\e2e\home-mobile-menu.spec.ts:76:3 › phone viewport with JavaScript › closes on Escape and returns focus to the button (460ms)
+  ok 134 [chromium] › tests\e2e\home-mobile-menu.spec.ts:47:3 › phone viewport with JavaScript › reaches every menu item by keyboard, in order (475ms)
+  ok 138 [chromium] › tests\e2e\home-mobile-menu.spec.ts:99:3 › phone viewport without JavaScript › opens the menu and closes it on Escape (403ms)
+  ok 139 [chromium] › tests\e2e\home-mobile-menu.spec.ts:112:5 › tablet and desktop widths › shows no menu button and inline links at 768px (266ms)
+  ok 140 [chromium] › tests\e2e\home-mobile-menu.spec.ts:112:5 › tablet and desktop widths › shows no menu button and inline links at 1280px (298ms)
+  ok 142 [chromium] › tests\e2e\home-mobile-menu.spec.ts:150:5 › sticky nav › without JavaScript › stays translucent at the top (345ms)
+  ok 141 [chromium] › tests\e2e\home-mobile-menu.spec.ts:130:3 › sticky nav › is sticky, 64px tall, transparent at the top and translucent once scrolled (639ms)
+  ok 135 [chromium] › tests\e2e\home-mobile-menu.spec.ts:20:3 › phone viewport with JavaScript › opens a menu with four numbered links and the profile buttons (2.0s)
+  ok 137 [chromium] › tests\e2e\home-mobile-menu.spec.ts:87:3 › phone viewport with JavaScript › closes and navigates when a link is chosen (2.0s)
+  ok 144 [chromium] › tests\e2e\home-no-build-layer.spec.ts:34:3 › after the page has loaded and idled for 2 s › keeps only the dock once the hero is built: no boot terminal, window, selection box or skeleton, and no visible expand button (1.2s)
+  ok 147 [chromium] › tests\e2e\home-no-build-layer.spec.ts:90:3 › after the page has loaded and idled for 2 s › has at least one transition, so the check above is not vacuous (285ms)
+  ok 149 [chromium] › tests\e2e\home-no-build-layer.spec.ts:128:3 › the served HTML › carries no build-layer markup and no pending runtime state (37ms)
+  ok 148 [chromium] › tests\e2e\home-no-build-layer.spec.ts:105:3 › after the page has loaded and idled for 2 s › runs no transition or animation under reduced motion (304ms)
+  ok 150 [chromium] › tests\e2e\home-responsive-layout.spec.ts:43:5 › desktop 1440 › sizes the hero photo placeholder at 9:16 (296ms)
+  ok 146 [chromium] › tests\e2e\home-no-build-layer.spec.ts:70:3 › after the page has loaded and idled for 2 s › only transitions for 150 to 300 ms (840ms)
+  ok 151 [chromium] › tests\e2e\home-responsive-layout.spec.ts:50:5 › desktop 1440 › renders the banner name on two lines (365ms)
+  ok 143 [chromium] › tests\e2e\home-no-build-layer.spec.ts:16:3 › after the page has loaded and idled for 2 s › has no boot terminal, dock, window, outline, selection box or skeleton in instant mode (2.3s)
+  ok 152 [chromium] › tests\e2e\home-responsive-layout.spec.ts:64:5 › desktop 1440 › lays out the project grid and stack grid in the right columns (381ms)
+  ok 153 [chromium] › tests\e2e\home-responsive-layout.spec.ts:76:5 › desktop 1440 › offsets the right project column by 96px (444ms)
+  ok 155 [chromium] › tests\e2e\home-responsive-layout.spec.ts:43:5 › tablet 800 › sizes the hero photo placeholder at 9:16 (340ms)
+  ok 156 [chromium] › tests\e2e\home-responsive-layout.spec.ts:50:5 › tablet 800 › renders the banner name on two lines (338ms)
+  ok 157 [chromium] › tests\e2e\home-responsive-layout.spec.ts:64:5 › tablet 800 › lays out the project grid and stack grid in the right columns (384ms)
+  ok 158 [chromium] › tests\e2e\home-responsive-layout.spec.ts:76:5 › tablet 800 › offsets the right project column by 96px (370ms)
+  ok 160 [chromium] › tests\e2e\home-responsive-layout.spec.ts:43:5 › phone 375 › sizes the hero photo placeholder at 9:16 (457ms)
+  ok 145 [chromium] › tests\e2e\home-no-build-layer.spec.ts:49:3 › after the page has loaded and idled for 2 s › renders the same main text as the no-JS page (2.9s)
+  ok 154 [chromium] › tests\e2e\home-responsive-layout.spec.ts:105:5 › desktop 1440 › never scrolls horizontally and shifts layout by at most 0.01 (1.3s)
+  ok 161 [chromium] › tests\e2e\home-responsive-layout.spec.ts:50:5 › phone 375 › renders the banner name on two lines (529ms)
+  ok 162 [chromium] › tests\e2e\home-responsive-layout.spec.ts:64:5 › phone 375 › lays out the project grid and stack grid in the right columns (385ms)
+  ok 163 [chromium] › tests\e2e\home-responsive-layout.spec.ts:76:5 › phone 375 › offsets the right project column by 0px (339ms)
+  ok 159 [chromium] › tests\e2e\home-responsive-layout.spec.ts:105:5 › tablet 800 › never scrolls horizontally and shifts layout by at most 0.01 (1.3s)
+  ok 165 [chromium] › tests\e2e\home-responsive-layout.spec.ts:138:3 › hero stacking › puts the photo in front of the name and lets it run into About (463ms)
+  ok 167 [chromium] › tests\e2e\image-delivery.spec.ts:97:3 › image delivery on a project page › shows the dot-grid placeholder and no cover image or blur data when the project has no cover (37ms)
+  ok 168 [chromium] › tests\e2e\image-delivery.spec.ts:25:3 › image delivery in the static HTML of / › serves the hero photo with intrinsic dimensions and high fetch priority, never lazy (3ms)
+  ok 169 [chromium] › tests\e2e\image-delivery.spec.ts:42:3 › image delivery in the static HTML of / › keeps the photo box ratio of the intrinsic dimensions at 9:16 (2ms)
+  ok 171 [chromium] › tests\e2e\image-delivery.spec.ts:63:3 › image delivery in the static HTML of / › has no blur data because no committed project has a cover (2ms)
+  ok 172 [chromium] › tests\e2e\image-delivery.spec.ts:34:3 › image delivery in the static HTML of / › serves the placeholder SVG photo as it is, without picture sources (3ms)
+  ok 166 [chromium] › tests\e2e\image-delivery.spec.ts:78:3 › the photo ASCII is not page text › stays out of the text of main (392ms)
+  ok 164 [chromium] › tests\e2e\home-responsive-layout.spec.ts:105:5 › phone 375 › never scrolls horizontally and shifts layout by at most 0.01 (1.3s)
+  ok  96 [chromium] › tests\e2e\effects-layout.spec.ts:44:1 › keeps every box, the document height and the text of the ready page while elements are created, and shifts layout by at most 0.01 (14.5s)
+  ok 170 [chromium] › tests\e2e\image-delivery.spec.ts:48:3 › image delivery in the static HTML of / › puts the photo ASCII on the photo target as data equal to the generator output (1.4s)
+  ok 174 [chromium] › tests\e2e\image-resolve-hero.spec.ts:224:3 › on desktop › animates only opacity, clip-path and transform while the photo resolves (3.1s)
+  ok 175 [chromium] › tests\e2e\image-resolve-hero.spec.ts:303:5 › instant paths leave no ASCII behind › Esc during the dissolve (3.4s)
+  ok 173 [chromium] › tests\e2e\image-resolve-hero.spec.ts:213:3 › on desktop › goes from skeleton to an ASCII that vanishes in Bayer order while the photo rises from above 0 to 1 (4.2s)
+  ok 176 [chromium] › tests\e2e\image-resolve-hero.spec.ts:303:5 › instant paths leave no ASCII behind › Shift + Esc during the dissolve (3.6s)
+  ok 177 [chromium] › tests\e2e\image-resolve-hero.spec.ts:303:5 › instant paths leave no ASCII behind › the dock skip button during the dissolve (3.6s)
+  ok 178 [chromium] › tests\e2e\image-resolve-hero.spec.ts:303:5 › instant paths leave no ASCII behind › a click on the window bar during the dissolve (3.9s)
+  ok 183 [chromium] › tests\e2e\image-resolve-hero.spec.ts:349:3 › no ASCII ever appears when the build does not animate › under reduced motion, with the photo visible at DOMContentLoaded (374ms)
+  ok 185 [chromium] › tests\e2e\image-resolve-hero.spec.ts:377:3 › no ASCII ever appears when the build does not animate › without JavaScript (281ms)
+  ok 184 [chromium] › tests\e2e\image-resolve-hero.spec.ts:364:3 › no ASCII ever appears when the build does not animate › with a saved infinity speed, with the photo visible at DOMContentLoaded (424ms)
+  ok 182 [chromium] › tests\e2e\image-resolve-hero.spec.ts:324:3 › instant paths leave no ASCII behind › Esc during the first selection frames also leaves the photo untouched (2.2s)
+  ok 179 [chromium] › tests\e2e\image-resolve-hero.spec.ts:303:5 › instant paths leave no ASCII behind › switching to infinity during the dissolve (3.6s)
+  ok 180 [chromium] › tests\e2e\image-resolve-hero.spec.ts:303:5 › instant paths leave no ASCII behind › moving focus into the page during the dissolve (3.5s)
+  ok 181 [chromium] › tests\e2e\image-resolve-hero.spec.ts:303:5 › instant paths leave no ASCII behind › a viewport width change during the dissolve (3.5s)
+  ok 189 [chromium] › tests\e2e\mobile-build.spec.ts:20:3 › 375x812 touch › the dock shows only the status and Skip while the hero builds, and a tap on the window bar skips the hero (1.0s)
+  ok 192 [chromium] › tests\e2e\not-found.spec.ts:12:5 › unknown path /nope › answers with status 404 and the not-found heading (25ms)
+  ok 193 [chromium] › tests\e2e\not-found.spec.ts:23:5 › unknown path /nope › shows a Go home link to / inside main, with the nav and footer around it (270ms)
+  ok 194 [chromium] › tests\e2e\not-found.spec.ts:12:5 › unknown path /projects/does-not-exist › answers with status 404 and the not-found heading (24ms)
+  ok 195 [chromium] › tests\e2e\not-found.spec.ts:23:5 › unknown path /projects/does-not-exist › shows a Go home link to / inside main, with the nav and footer around it (320ms)
+  ok 196 [chromium] › tests\e2e\not-found.spec.ts:48:3 › the 404 document › has a per-page title and the profile subtitle as description (2ms)
+  ok 197 [chromium] › tests\e2e\not-found.spec.ts:55:3 › the 404 document › is a plain page with one skip target, no build layer, form, mailto or tel (3ms)
+  ok 198 [chromium] › tests\e2e\not-found.spec.ts:62:3 › the 404 document › points every nav link at the home sections, not at same-page hashes (3ms)
+  ok 199 [chromium] › tests\e2e\placeholder-page.spec.ts:14:3 › static HTML of / › is a complete document with one main and one h1, before any script runs (17ms)
+  ok 200 [chromium] › tests\e2e\placeholder-page.spec.ts:40:3 › static HTML of / › shows the heading with JavaScript disabled (389ms)
+  ok 186 [chromium] › tests\e2e\image-resolve-hero.spec.ts:392:3 › on a phone › goes through the same sequence with the ASCII inside the photo box and no horizontal scroll (4.2s)
+  ok 202 [chromium] › tests\e2e\placeholder-page.spec.ts:72:3 › built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form (14ms)
+  ok 203 [chromium] › tests\e2e\project-pages.spec.ts:44:3 › every project card link resolves (AC-2) › the home page links four distinct /projects/<slug> pages that load with 200 (77ms)
+  ok 204 [chromium] › tests\e2e\project-pages.spec.ts:146:5 › project pages stay in the page register with no profile leaks › /projects/relay has the footer, no build layer, no form, mailto or tel (21ms)
+  ok 205 [chromium] › tests\e2e\project-pages.spec.ts:146:5 › project pages stay in the page register with no profile leaks › /projects/ai-track-record has the footer, no build layer, no form, mailto or tel (18ms)
+  ok 206 [chromium] › tests\e2e\project-pages.spec.ts:146:5 › project pages stay in the page register with no profile leaks › /projects/praesto-sum has the footer, no build layer, no form, mailto or tel (14ms)
+  ok 207 [chromium] › tests\e2e\project-pages.spec.ts:146:5 › project pages stay in the page register with no profile leaks › /projects/site-pro has the footer, no build layer, no form, mailto or tel (14ms)
+  ok 208 [chromium] › tests\e2e\project-pages.spec.ts:72:5 › /projects/relay (AC-14) › has one h1 reading the project title and one main skip target (3ms)
+  ok 209 [chromium] › tests\e2e\project-pages.spec.ts:82:5 › /projects/relay (AC-14) › has a per-page title and a description equal to the summary (2ms)
+  ok 210 [chromium] › tests\e2e\project-pages.spec.ts:87:5 › /projects/relay (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label (289ms)
+  ok 211 [chromium] › tests\e2e\project-pages.spec.ts:116:5 › /projects/relay (AC-14) › renders the approved body in one prose block beneath the h1 (293ms)
+  ok 201 [chromium] › tests\e2e\placeholder-page.spec.ts:50:3 › static HTML of / › has no axe violations (1.4s)
+  ok 190 [chromium] › tests\e2e\mobile-build.spec.ts:131:3 › keeps the title bar and command bar of a section taller than the viewport under the nav until its end at 1280x800 (3.7s)
+  ok 212 [chromium] › tests\e2e\project-pages.spec.ts:130:7 › /projects/relay (AC-14) › states the fork of Wirasm/prp inside the prose body (349ms)
+  ok 215 [chromium] › tests\e2e\project-pages.spec.ts:72:5 › /projects/ai-track-record (AC-14) › has one h1 reading the project title and one main skip target (3ms)
+  ok 216 [chromium] › tests\e2e\project-pages.spec.ts:82:5 › /projects/ai-track-record (AC-14) › has a per-page title and a description equal to the summary (2ms)
+  ok 213 [chromium] › tests\e2e\project-pages.spec.ts:116:5 › /projects/ai-track-record (AC-14) › renders the approved body in one prose block beneath the h1 (310ms)
+  ok 218 [chromium] › tests\e2e\project-pages.spec.ts:137:7 › /projects/ai-track-record (AC-14) › does not carry the relay fork note (2ms)
+  ok 214 [chromium] › tests\e2e\project-pages.spec.ts:87:5 › /projects/praesto-sum (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label (354ms)
+  ok 219 [chromium] › tests\e2e\project-pages.spec.ts:72:5 › /projects/praesto-sum (AC-14) › has one h1 reading the project title and one main skip target (5ms)
+  ok 221 [chromium] › tests\e2e\project-pages.spec.ts:82:5 › /projects/praesto-sum (AC-14) › has a per-page title and a description equal to the summary (2ms)
+  ok 191 [chromium] › tests\e2e\mobile-build.spec.ts:131:3 › keeps the title bar and command bar of a section taller than the viewport under the nav until its end at 375x812 (3.7s)
+  ok 222 [chromium] › tests\e2e\project-pages.spec.ts:82:5 › /projects/site-pro (AC-14) › has a per-page title and a description equal to the summary (1ms)
+  ok 217 [chromium] › tests\e2e\project-pages.spec.ts:87:5 › /projects/ai-track-record (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label (351ms)
+  ok 220 [chromium] › tests\e2e\project-pages.spec.ts:116:5 › /projects/praesto-sum (AC-14) › renders the approved body in one prose block beneath the h1 (317ms)
+  ok 226 [chromium] › tests\e2e\project-pages.spec.ts:137:7 › /projects/praesto-sum (AC-14) › does not carry the relay fork note (1ms)
+  ok 227 [chromium] › tests\e2e\project-pages.spec.ts:72:5 › /projects/site-pro (AC-14) › has one h1 reading the project title and one main skip target (2ms)
+  ok 224 [chromium] › tests\e2e\project-pages.spec.ts:87:5 › /projects/site-pro (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label (335ms)
+  ok 223 [chromium] › tests\e2e\quality-gates.spec.ts:19:1 › the privacy gate passes on the real build (AC-8) (367ms)
+  ok 187 [chromium] › tests\e2e\layout-invariance.spec.ts:98:3 › keeps every box and the document height of the no-JavaScript page at the boot, mid-hero, mid-projects and after the build at 1280x800, with a layout shift of at most 0.01 (6.1s)
+  ok 225 [chromium] › tests\e2e\quality-gates.spec.ts:25:1 › the size-budget gate passes on the real build (AC-10) (176ms)
+  ok 231 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:20:3 › JavaScript disabled › equals the Stage 2 page: no pending state, no runtime state, content visible (280ms)
+  ok 188 [chromium] › tests\e2e\layout-invariance.spec.ts:98:3 › keeps every box and the document height of the no-JavaScript page at the boot, mid-hero, mid-projects and after the build at 375x812, with a layout shift of at most 0.01 (5.7s)
+  ok 229 [chromium] › tests\e2e\project-pages.spec.ts:116:5 › /projects/site-pro (AC-14) › renders the approved body in one prose block beneath the h1 (352ms)
+  ok 234 [chromium] › tests\e2e\project-pages.spec.ts:137:7 › /projects/site-pro (AC-14) › does not carry the relay fork note (1ms)
+  ok 233 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:39:3 › runtime module blocked or throwing › keeps every section hidden before the watchdog and shows them all within 3 s of clock time (391ms)
+  ok 235 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:56:3 › runtime module blocked or throwing › reveals the page when the runtime script throws on load (366ms)
+  ok 236 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:74:3 › pending state before the runtime starts › hides later sections with opacity only, keeping them laid out and in the accessibility tree (362ms)
+  ok 232 [chromium] › tests\e2e\runtime-build-order.spec.ts:153:1 › lays out the pending page exactly like the ready page (782ms)
+  ok 239 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:148:5 › saved speed before first paint › resolves a saved sp-speed of "2" to 2x and still builds (290ms)
+  ok 238 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:121:3 › instant mode › renders ready at DOMContentLoaded for a saved infinity speed and ends every section done (335ms)
+  ok 237 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:100:3 › instant mode › renders ready at DOMContentLoaded under reduced motion and ends every section done (351ms)
+  ok 241 [chromium] › tests\e2e\runtime-timeline-contract.spec.ts:87:5 › pages without a build › /projects/relay/ carries no build script and no runtime hook (18ms)
+  ok 243 [chromium] › tests\e2e\runtime-timeline-contract.spec.ts:87:5 › pages without a build › /no-such-page carries no build script and no runtime hook (14ms)
+  ok 242 [chromium] › tests\e2e\runtime-timeline-contract.spec.ts:21:3 › compiled build scripts in the served HTML › carries one timeline per section, in document order (7ms)
+  ok 240 [chromium] › tests\e2e\runtime-fallbacks.spec.ts:148:5 › saved speed before first paint › resolves a saved sp-speed of "fast" to 1x and still builds (309ms)
+  ok 244 [chromium] › tests\e2e\runtime-timeline-contract.spec.ts:26:3 › compiled build scripts in the served HTML › names the headline in hero.title and times it at 150 + n x 28 ms (2ms)
+  ok 245 [chromium] › tests\e2e\runtime-timeline-contract.spec.ts:35:3 › compiled build scripts in the served HTML › has one projects.card per project, each starting 120 ms before the previous ends (4ms)
+  ok 246 [chromium] › tests\e2e\runtime-timeline-contract.spec.ts:51:3 › compiled build scripts in the served HTML › orders each timeline: steps have a duration and the phases follow the last step (22ms)
+  ok 247 [chromium] › tests\e2e\runtime-timeline-contract.spec.ts:74:3 › compiled build scripts in the served HTML › finds every step target in the page (10ms)
+  ok 249 [chromium] › tests\e2e\section-dock-logs.spec.ts:118:1 › keeps the hero on its boot logs, with no per-section dock log (524ms)
+  ok 251 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/relay at 800x1024 (1.1s)
+  ok 250 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/relay at 1280x800 (1.1s)
+  ok 252 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/relay at 375x812 (1.1s)
+  ok 254 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/ai-track-record at 800x1024 (1.0s)
+  ok 253 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/ai-track-record at 1280x800 (1.0s)
+  ok 255 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/ai-track-record at 375x812 (1.0s)
+  ok 256 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/praesto-sum at 1280x800 (1.0s)
+  ok 257 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/praesto-sum at 800x1024 (1.0s)
+  ok 258 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/praesto-sum at 375x812 (1.2s)
+  ok 230 [chromium] › tests\e2e\runtime-build-order.spec.ts:94:1 › does not advance the build while the tab is hidden and resumes when it is visible (5.3s)
+  ok 259 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/site-pro at 1280x800 (1.2s)
+  ok 260 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/site-pro at 800x1024 (1.2s)
+  ok 261 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /projects/site-pro at 375x812 (1.1s)
+  ok 262 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /nope at 1280x800 (1.1s)
+  ok 263 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /nope at 800x1024 (1.0s)
+  ok 264 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › midnight theme › has no axe violations on /nope at 375x812 (1.0s)
+  ok 266 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/relay at 1280x800 (1.1s)
+  ok 265 [chromium] › tests\e2e\subpages-axe.spec.ts:41:5 › midnight theme › has no axe violations on /projects/relay at 375x812 with the mobile menu open (1.2s)
+  ok 267 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/relay at 800x1024 (1.1s)
+  ok 268 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/relay at 375x812 (1.1s)
+  ok 269 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/ai-track-record at 1280x800 (1.0s)
+  ok 270 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/ai-track-record at 800x1024 (1.1s)
+  ok 248 [chromium] › tests\e2e\section-dock-logs.spec.ts:48:1 › shows each section its own dock log while the window opens at Enter, then the created line within 2.5 s (7.7s)
+  ok 271 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/ai-track-record at 375x812 (1.2s)
+  ok 272 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/praesto-sum at 1280x800 (1.2s)
+  ok 273 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/praesto-sum at 800x1024 (1.1s)
+  ok 274 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/praesto-sum at 375x812 (1.1s)
+  ok 275 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/site-pro at 1280x800 (1.2s)
+  ok 276 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/site-pro at 800x1024 (1.1s)
+  ok 277 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /projects/site-pro at 375x812 (1.1s)
+  ok 282 [chromium] › tests\e2e\subpages-navigation.spec.ts:12:5 › skip link on the new pages (AC-3) › /projects/relay: the first Tab focuses the skip link and Enter focuses main (379ms)
+  ok 278 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /nope at 1280x800 (1.1s)
+  ok 279 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /nope at 800x1024 (1.1s)
+  ok 283 [chromium] › tests\e2e\subpages-navigation.spec.ts:12:5 › skip link on the new pages (AC-3) › /projects/site-pro: the first Tab focuses the skip link and Enter focuses main (341ms)
+  ok 284 [chromium] › tests\e2e\subpages-navigation.spec.ts:12:5 › skip link on the new pages (AC-3) › /nope: the first Tab focuses the skip link and Enter focuses main (497ms)
+  ok 285 [chromium] › tests\e2e\subpages-navigation.spec.ts:30:3 › without JavaScript › the relay fork note is readable in the page text (348ms)
+  ok 280 [chromium] › tests\e2e\subpages-axe.spec.ts:27:9 › daylight theme › has no axe violations on /nope at 375x812 (1.3s)
+  ok 286 [chromium] › tests\e2e\subpages-navigation.spec.ts:38:3 › without JavaScript › the back link lands on / with the projects heading in view (460ms)
+  ok 281 [chromium] › tests\e2e\subpages-axe.spec.ts:41:5 › daylight theme › has no axe violations on /projects/relay at 375x812 with the mobile menu open (1.4s)
+  ok 291 [chromium] › tests\e2e\theme.spec.ts:21:3 › theme without a flash › serves Midnight in the HTML with the theme script before any stylesheet (80ms)
+  ok 287 [chromium] › tests\e2e\subpages-navigation.spec.ts:50:5 › without JavaScript › the nav link /#about from a project page lands with that h2 in view (476ms)
+  ok 288 [chromium] › tests\e2e\subpages-navigation.spec.ts:50:5 › without JavaScript › the nav link /#contact from a project page lands with that h2 in view (520ms)
+  ok 289 [chromium] › tests\e2e\subpages-navigation.spec.ts:62:3 › without JavaScript › Go home on the 404 reaches the home page (549ms)
+  ok 290 [chromium] › tests\e2e\subpages-navigation.spec.ts:75:3 › mobile menu on a project page › opens with four home-prefixed links and navigates to the home section (604ms)
+  ok 292 [chromium] › tests\e2e\theme.spec.ts:35:3 › theme without a flash › starts in Midnight with a Daylight-offering toggle (470ms)
+  ok 294 [chromium] › tests\e2e\theme.spec.ts:86:3 › theme without a flash › applies a stored Daylight preference before first paint (353ms)
+  ok 295 [chromium] › tests\e2e\theme.spec.ts:98:3 › theme without a flash › ignores an unknown stored value (329ms)
+  ok 299 [chromium] › tests\e2e\theme.spec.ts:161:3 › fonts › serves both self-hosted font files (26ms)
+  ok 296 [chromium] › tests\e2e\theme.spec.ts:109:3 › theme without a flash › exposes no theme control with JavaScript disabled (414ms)
+  ok 301 [chromium] › tests\e2e\theme.spec.ts:181:3 › fonts › preloads both fonts in the served head (55ms)
+  ok 297 [chromium] › tests\e2e\theme.spec.ts:126:3 › focus and motion › rings the focused toggle with a 2px solid accent outline offset 2px (434ms)
+  ok 300 [chromium] › tests\e2e\theme.spec.ts:172:3 › fonts › loads Geist for the page text (320ms)
+  ok 298 [chromium] › tests\e2e\theme.spec.ts:146:3 › focus and motion › runs the 150 ms hover transition only without reduced motion (434ms)
+  ok 303 [chromium] › tests\e2e\theme.spec.ts:217:5 › Backdrop › scales the first glow to 900px at 1440px wide (492ms)
+  ok 306 [chromium] › tests\e2e\theme.spec.ts:236:3 › built dist/ styles › keeps the emitted CSS within 25 KB gzip (10ms)
+  ok 307 [chromium] › tests\e2e\theme.spec.ts:245:3 › built dist/ styles › references no remote font host (17ms)
+  ok 308 [chromium] › tests\e2e\theme.spec.ts:253:3 › built dist/ styles › inlines the generated grain and the JS-reveal rule in the CSS (8ms)
+  ok 302 [chromium] › tests\e2e\theme.spec.ts:195:3 › Backdrop › is decorative, absolutely positioned and adds no horizontal scroll (651ms)
+  ok 305 [chromium] › tests\e2e\theme.spec.ts:217:5 › Backdrop › scales the first glow to 540px at 375px wide (549ms)
+  ok 304 [chromium] › tests\e2e\theme.spec.ts:217:5 › Backdrop › scales the first glow to 702px at 800px wide (645ms)
+  ok 293 [chromium] › tests\e2e\theme.spec.ts:50:3 › theme without a flash › switches theme, renames the toggle and keeps Daylight after reload (3.4s)
+  ok 228 [chromium] › tests\e2e\runtime-build-order.spec.ts:20:1 › builds the hero, leaves About pending without scrolling, then builds the rest in order, one at a time, at turbo speed (20.4s)
+
+  308 passed (1.7m)
+e2e exit 0

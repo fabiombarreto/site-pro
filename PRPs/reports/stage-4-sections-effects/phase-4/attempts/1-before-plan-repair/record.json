@@ -1,0 +1,27 @@
+{
+  "attempt": 1,
+  "verdict": "IMPLEMENTATION_COMPLETE",
+  "files_changed": [
+    "src/content/projects/ai-track-record.md",
+    "src/content/projects/praesto-sum.md",
+    "src/content/projects/relay.md",
+    "src/content/projects/site-pro.md"
+  ],
+  "validation": {
+    "level_1": "PASS",
+    "level_2": "FAIL",
+    "level_3": "PASS"
+  },
+  "plan_validation_defect": {
+    "level": 2,
+    "command": "the second node -e in the plan Level 2 CONTENT_INVARIANTS block (plan line 185, const allowed=new Set([\"270\",\"2026\",\"19\"]))",
+    "observed": "FAIL: number 1 in praesto-sum (exit 1)",
+    "prd_refs": [
+      "PRD AC-13 (line 82): body shows the text approved in docs/09; no number absent from docs/09",
+      "docs/09-content-draft.md Praesto Sum block, ## Why Cloudflare Workers (the text AC-13 names)",
+      "docs/09-content-draft.md Sources note (ADR-0003, Cloudflare D1 behind Workers)"
+    ],
+    "reason": "The script reads the product name D1 (Cloudflare database) in the approved Praesto Sum text as the invented number 1. AC-13 forbids only numbers absent from docs/09, and D1 appears in docs/09 itself. The body is byte-identical to the approved block (Level 2 command 1 passes), so the allow-list/number regex of the plan command is wrong, not the copy."
+  },
+  "base_commit": "8886a291c61d63467fec05dbfe33240bf10c46d9"
+}

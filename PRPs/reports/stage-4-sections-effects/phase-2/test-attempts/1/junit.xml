@@ -1,0 +1,676 @@
+<testsuites id="" name="" tests="299" failures="0" skipped="0" errors="0" time="142.387002">
+<testsuite name="axe-build-matrix.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="16" failures="0" skipped="0" time="92.647" errors="0">
+<testcase name="desktop 1280x800, midnight theme › has no axe violations at the boot, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="4.035">
+</testcase>
+<testcase name="desktop 1280x800, midnight theme › has no axe violations at mid-hero, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="6.91">
+</testcase>
+<testcase name="desktop 1280x800, midnight theme › has no axe violations at mid-projects, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="10.394">
+</testcase>
+<testcase name="desktop 1280x800, midnight theme › has no axe violations at after the build, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="6.527">
+</testcase>
+<testcase name="desktop 1280x800, daylight theme › has no axe violations at the boot, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="3.504">
+</testcase>
+<testcase name="desktop 1280x800, daylight theme › has no axe violations at mid-hero, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="7.534">
+</testcase>
+<testcase name="desktop 1280x800, daylight theme › has no axe violations at mid-projects, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="8.475">
+</testcase>
+<testcase name="desktop 1280x800, daylight theme › has no axe violations at after the build, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="4.147">
+</testcase>
+<testcase name="mobile 375x812, midnight theme › has no axe violations at the boot, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="3.229">
+</testcase>
+<testcase name="mobile 375x812, midnight theme › has no axe violations at mid-hero, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="5.286">
+</testcase>
+<testcase name="mobile 375x812, midnight theme › has no axe violations at mid-projects, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="9.101">
+</testcase>
+<testcase name="mobile 375x812, midnight theme › has no axe violations at after the build, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="4.515">
+</testcase>
+<testcase name="mobile 375x812, daylight theme › has no axe violations at the boot, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="2.298">
+</testcase>
+<testcase name="mobile 375x812, daylight theme › has no axe violations at mid-hero, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="4.722">
+</testcase>
+<testcase name="mobile 375x812, daylight theme › has no axe violations at mid-projects, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="8.074">
+</testcase>
+<testcase name="mobile 375x812, daylight theme › has no axe violations at after the build, and &lt;main&gt; equals the no-JS page" classname="axe-build-matrix.spec.ts" time="3.896">
+</testcase>
+</testsuite>
+<testsuite name="behavior-gaps.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="38.912" errors="0">
+<testcase name="AC-1: before the runtime starts the hero is pending, hidden but laid out and in the accessibility tree" classname="behavior-gaps.spec.ts" time="0.517">
+</testcase>
+<testcase name="AC-1: the hero is final within 3.2 s of clock time, with the created line, no window and the idle dock" classname="behavior-gaps.spec.ts" time="8.262">
+</testcase>
+<testcase name="AC-2: About starts when its top crosses 75 % of the viewport height and not before, then types renderAbout(); and builds one about.md window" classname="behavior-gaps.spec.ts" time="13.632">
+</testcase>
+<testcase name="AC-2: after scrolling back up to built sections and down again, no window opens over them and none of their elements animates again" classname="behavior-gaps.spec.ts" time="6.318">
+</testcase>
+<testcase name="AC-4: every pending section shows a dashed outline over its box, labeled with its window file name and hidden from the accessibility tree" classname="behavior-gaps.spec.ts" time="1.917">
+</testcase>
+<testcase name="AC-11: with the Projects window open and the relay card created, a real click on the card title navigates to /projects/relay" classname="behavior-gaps.spec.ts" time="7.207">
+</testcase>
+<testcase name="AC-15: with the runtime request aborted every section is revealed within 3 s of clock time, with no build-layer element on screen" classname="behavior-gaps.spec.ts" time="1.059">
+</testcase>
+</testsuite>
+<testsuite name="build-layer-absent.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="3.351" errors="0">
+<testcase name="no layer is created › under reduced motion, with the nav visible" classname="build-layer-absent.spec.ts" time="0.752">
+</testcase>
+<testcase name="no layer is created › with a saved infinity speed, with the nav visible" classname="build-layer-absent.spec.ts" time="0.597">
+</testcase>
+<testcase name="no layer is created › without JavaScript, with the nav visible" classname="build-layer-absent.spec.ts" time="0.546">
+</testcase>
+<testcase name="no layer is created › when the runtime is blocked: the nav is hidden while pending, then shown by the watchdog with no layer" classname="build-layer-absent.spec.ts" time="0.499">
+</testcase>
+<testcase name="reserved footer build slot › is present, empty and one line high on / without JavaScript" classname="build-layer-absent.spec.ts" time="0.443">
+</testcase>
+<testcase name="reserved footer build slot › takes its own row under 768 px" classname="build-layer-absent.spec.ts" time="0.457">
+</testcase>
+<testcase name="reserved footer build slot › is absent from project pages, which also carry no build-layer markup" classname="build-layer-absent.spec.ts" time="0.057">
+</testcase>
+</testsuite>
+<testsuite name="build-layer-layout.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="4" failures="0" skipped="0" time="9.596" errors="0">
+<testcase name="never moves a box or the text while the hero and Projects windows are open, and shifts layout by at most 0.01" classname="build-layer-layout.spec.ts" time="5.04">
+</testcase>
+<testcase name="desktop: the bars stick under the nav and the window follows the section after a height-only resize" classname="build-layer-layout.spec.ts" time="2.026">
+</testcase>
+<testcase name="desktop: a width change finishes the building hero and leaves no window for it" classname="build-layer-layout.spec.ts" time="1.385">
+</testcase>
+<testcase name="mobile 375x812: one compact bar with the current command, a dock of viewport width minus 16 px per side, bars stuck under the nav" classname="build-layer-layout.spec.ts" time="1.145">
+</testcase>
+</testsuite>
+<testsuite name="build-layer-show.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="2" failures="0" skipped="0" time="6.19" errors="0">
+<testcase name="shows the boot, folds it into the dock, opens and closes the hero window, then builds About in the dock" classname="build-layer-show.spec.ts" time="3.452">
+</testcase>
+<testcase name="keeps the layer in one decorative overlay outside main and only catches clicks on the bars" classname="build-layer-show.spec.ts" time="2.738">
+</testcase>
+</testsuite>
+<testsuite name="controls-dock-a11y.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="4" failures="0" skipped="0" time="4.341" errors="0">
+<testcase name="the ready dock is a group named &quot;Site build&quot; holding real buttons, with its status text hidden from assistive technology" classname="controls-dock-a11y.spec.ts" time="0.902">
+</testcase>
+<testcase name="the reduced-motion dock exposes a button named &quot;Play the build animation&quot;" classname="controls-dock-a11y.spec.ts" time="0.575">
+</testcase>
+<testcase name="Tab reaches the dock button and it shows the 2px accent ring" classname="controls-dock-a11y.spec.ts" time="1.665">
+</testcase>
+<testcase name="the text and accessibility tree of main equal the no-JS page with the ready dock present" classname="controls-dock-a11y.spec.ts" time="1.199">
+</testcase>
+</testsuite>
+<testsuite name="controls-done-replay.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="4" failures="0" skipped="0" time="41.382" errors="0">
+<testcase name="the scroll hint pulses after 4 s without a scroll and stops at the next scroll" classname="controls-done-replay.spec.ts" time="9.141">
+</testcase>
+<testcase name="a finished 1x build shows the complete state with Replay, collapses after about 4 s, reopens from the expand button and fills the footer without moving anything" classname="controls-done-replay.spec.ts" time="26.81">
+</testcase>
+<testcase name="Replay from the footer scrolls to the top, returns every section to pending and replays from the boot" classname="controls-done-replay.spec.ts" time="2.62">
+</testcase>
+<testcase name="Replay from the dock replays the same way" classname="controls-done-replay.spec.ts" time="2.811">
+</testcase>
+</testsuite>
+<testsuite name="controls-focus-resize.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="8" failures="0" skipped="0" time="29.398" errors="0">
+<testcase name="focus entering Stack finishes Stack and every section before it within a frame, and keeps focus there" classname="controls-focus-resize.spec.ts" time="5.357">
+</testcase>
+<testcase name="focus entering a link in Projects finishes About and Projects, keeps focus and shows the 2px accent ring" classname="controls-focus-resize.spec.ts" time="9.482">
+</testcase>
+<testcase name="focus moving to .sp-nav-link[href=&quot;#about&quot;] during the boot finishes the hero within a frame" classname="controls-focus-resize.spec.ts" time="0.651">
+</testcase>
+<testcase name="focus moving to #main during the boot finishes the hero within a frame" classname="controls-focus-resize.spec.ts" time="0.865">
+</testcase>
+<testcase name="focus moving to #top .sp-hero-actions a during the boot finishes the hero within a frame" classname="controls-focus-resize.spec.ts" time="1.118">
+</testcase>
+<testcase name="a width change to 1024 finishes the building section and the next one builds on its trigger with its window on the new box" classname="controls-focus-resize.spec.ts" time="4.71">
+</testcase>
+<testcase name="a width change to 800 finishes the building section and the next one builds on its trigger with its window on the new box" classname="controls-focus-resize.spec.ts" time="4.506">
+</testcase>
+<testcase name="on a phone › a height-only resize, as when the URL bar shows or hides, lets the build continue" classname="controls-focus-resize.spec.ts" time="2.709">
+</testcase>
+</testsuite>
+<testsuite name="controls-skip.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="6" failures="0" skipped="0" time="29.688" errors="0">
+<testcase name="Esc finishes the building section as created and leaves the next one waiting for its trigger" classname="controls-skip.spec.ts" time="3.089">
+</testcase>
+<testcase name="the dock button named &quot;Skip this section&apos;s build&quot; skips the section" classname="controls-skip.spec.ts" time="5.72">
+</testcase>
+<testcase name="a click on the window title bar skips, a click on the window body does not, and a click on the command bar skips" classname="controls-skip.spec.ts" time="7.843">
+</testcase>
+<testcase name="on a phone › Esc with the mobile menu open only closes the menu; the next Esc skips" classname="controls-skip.spec.ts" time="2.587">
+</testcase>
+<testcase name="Shift + Esc finishes every remaining section within a frame and shows the complete state with Replay" classname="controls-skip.spec.ts" time="7.861">
+</testcase>
+<testcase name="Shift + Esc also finishes sections that no trigger has reached" classname="controls-skip.spec.ts" time="2.588">
+</testcase>
+</testsuite>
+<testsuite name="controls-speed.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="16.278" errors="0">
+<testcase name="the speed button cycles 1x, 2x, infinity, 1x with its name and sp-speed following" classname="controls-speed.spec.ts" time="2.263">
+</testcase>
+<testcase name="switching to infinity finishes the building section and every triggered one" classname="controls-speed.spec.ts" time="2.547">
+</testcase>
+<testcase name="at 2x the hero completes in about half of its 1x clock time" classname="controls-speed.spec.ts" time="3.012">
+</testcase>
+<testcase name="a saved infinity renders the ready page with the dock at 5/5 sections, no show piece, and Replay in the footer" classname="controls-speed.spec.ts" time="0.829">
+</testcase>
+<testcase name="Replay from a ready page scrolls to the top, plays from the boot at 1x and saves 1x" classname="controls-speed.spec.ts" time="0.788">
+</testcase>
+<testcase name="reduced motion › shows the ready dock with Play build only, a steady cursor and no pulse" classname="controls-speed.spec.ts" time="0.867">
+</testcase>
+<testcase name="reduced motion › Play build scrolls to the top and builds from the boot at 1x" classname="controls-speed.spec.ts" time="5.972">
+</testcase>
+</testsuite>
+<testsuite name="controls-turbo-navigation.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="80.041" errors="0">
+<testcase name="scrolling straight to Contact queues the sections between, builds them at 5x with queued n/5, then Contact at 1x" classname="controls-turbo-navigation.spec.ts" time="13.63">
+</testcase>
+<testcase name="the dock shows the queue status as queued n/5 while turbo catches up and none while the last section builds" classname="controls-turbo-navigation.spec.ts" time="11.21">
+</testcase>
+<testcase name="the runtime never moves the page while the hero and the triggered sections build" classname="controls-turbo-navigation.spec.ts" time="10.279">
+</testcase>
+<testcase name="a first visit to /#projects scrolls at once by the browser, builds the hero and About in turbo, then Projects at 1x" classname="controls-turbo-navigation.spec.ts" time="10.964">
+</testcase>
+<testcase name="a first visit to /#about goes to the target at once and builds every earlier section before it" classname="controls-turbo-navigation.spec.ts" time="5.614">
+</testcase>
+<testcase name="a first visit to /#contact goes to the target at once and builds every earlier section before it" classname="controls-turbo-navigation.spec.ts" time="18.283">
+</testcase>
+<testcase name="activating the nav Stack link goes to Stack at once, builds About and Projects in turbo in order, then Stack at 1x" classname="controls-turbo-navigation.spec.ts" time="10.061">
+</testcase>
+</testsuite>
+<testsuite name="css-budget.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="1" failures="0" skipped="0" time="0.018" errors="0">
+<testcase name="built dist/ CSS budget (AC-A9) › all CSS together is at most 25 KB gzipped" classname="css-budget.spec.ts" time="0.018">
+</testcase>
+</testsuite>
+<testsuite name="effects-absent.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="9" failures="0" skipped="0" time="10.562" errors="0">
+<testcase name="no effect artifact exists › under reduced motion" classname="effects-absent.spec.ts" time="0.5">
+</testcase>
+<testcase name="no effect artifact exists › with a saved infinity speed" classname="effects-absent.spec.ts" time="0.543">
+</testcase>
+<testcase name="no effect artifact exists › without JavaScript" classname="effects-absent.spec.ts" time="0.462">
+</testcase>
+<testcase name="no effect artifact exists › when the runtime is blocked, and the headline stays visible" classname="effects-absent.spec.ts" time="0.449">
+</testcase>
+<testcase name="no effect artifact exists › when the runtime script throws on load, and the headline stays visible" classname="effects-absent.spec.ts" time="0.925">
+</testcase>
+<testcase name="no effect artifact exists › on /projects/relay/, outside the home page" classname="effects-absent.spec.ts" time="0.566">
+</testcase>
+<testcase name="no effect artifact exists › on /no-such-page, outside the home page" classname="effects-absent.spec.ts" time="0.519">
+</testcase>
+<testcase name="writes only opacity, clip-path and pointer-events on page elements and animates only transform, opacity and clip-path, with every overlay in the aria-hidden layer" classname="effects-absent.spec.ts" time="6.339">
+</testcase>
+<testcase name="serves no effect markup on the home page, the 404 or the project pages" classname="effects-absent.spec.ts" time="0.259">
+</testcase>
+</testsuite>
+<testsuite name="effects-axe.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="4" failures="0" skipped="0" time="30.782" errors="0">
+<testcase name="midnight theme › has no axe violations mid-hero, while the role decodes and the photo is a skeleton" classname="effects-axe.spec.ts" time="7.88">
+</testcase>
+<testcase name="midnight theme › has no axe violations mid-projects, while two cards overlap" classname="effects-axe.spec.ts" time="8.875">
+</testcase>
+<testcase name="daylight theme › has no axe violations mid-hero, while the role decodes and the photo is a skeleton" classname="effects-axe.spec.ts" time="5.37">
+</testcase>
+<testcase name="daylight theme › has no axe violations mid-projects, while two cards overlap" classname="effects-axe.spec.ts" time="8.657">
+</testcase>
+</testsuite>
+<testsuite name="effects-hero.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="30.628" errors="0">
+<testcase name="selects the headline under a selection box while it is hidden and unclickable, with later steps untouched" classname="effects-hero.spec.ts" time="2.546">
+</testcase>
+<testcase name="types the headline with a thin caret and a clip-path, and has it readable by 2.0 s with the text untouched" classname="effects-hero.spec.ts" time="3.626">
+</testcase>
+<testcase name="decodes the role through scrambled glyphs and shows the photo as a skeleton before the placeholder" classname="effects-hero.spec.ts" time="8.918">
+</testcase>
+<testcase name="resolves the intro line by line from skeleton bars, then pops the buttons, none clickable before they are created" classname="effects-hero.spec.ts" time="4.486">
+</testcase>
+<testcase name="leaves no marker, overlay element or inline style behind once the hero steps end, and keeps the final page" classname="effects-hero.spec.ts" time="5.62">
+</testcase>
+<testcase name="compiles the hero within its budget: headline step done by 2.0 s, whole hero by 3.2 s" classname="effects-hero.spec.ts" time="0.542">
+</testcase>
+<testcase name="shows the current call in the window bar, typed from the step start and cut to the displayed command" classname="effects-hero.spec.ts" time="4.89">
+</testcase>
+</testsuite>
+<testsuite name="effects-layout.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="3" failures="0" skipped="0" time="37.844" errors="0">
+<testcase name="never adds horizontal scroll while the hero elements are created at 1280px" classname="effects-layout.spec.ts" time="4.508">
+</testcase>
+<testcase name="never adds horizontal scroll while the hero elements are created at 375px" classname="effects-layout.spec.ts" time="5.187">
+</testcase>
+<testcase name="keeps every box, the document height and the text of the ready page while elements are created, and shifts layout by at most 0.01" classname="effects-layout.spec.ts" time="28.149">
+</testcase>
+</testsuite>
+<testsuite name="effects-pointer.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="2" failures="0" skipped="0" time="16.99" errors="0">
+<testcase name="lets a created card take clicks while the next ones are hidden and ignore the pointer, and cuts the window command" classname="effects-pointer.spec.ts" time="14.969">
+</testcase>
+<testcase name="keeps a section that has not started building from taking the pointer" classname="effects-pointer.spec.ts" time="2.021">
+</testcase>
+</testsuite>
+<testsuite name="effects-scripts.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="4" failures="0" skipped="0" time="2.603" errors="0">
+<testcase name="names every target of every step inside its section and leaves no content outside a target" classname="effects-scripts.spec.ts" time="0.769">
+</testcase>
+<testcase name="builds the hero in the approved order and effects at prototype v2 offsets" classname="effects-scripts.spec.ts" time="0.769">
+</testcase>
+<testcase name="builds About, Stack and Contact with the commands and offsets of prototype v2" classname="effects-scripts.spec.ts" time="0.56">
+</testcase>
+<testcase name="builds Projects with one card per project, each starting 120 ms before the previous card ends" classname="effects-scripts.spec.ts" time="0.505">
+</testcase>
+</testsuite>
+<testsuite name="home-axe.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="8" failures="0" skipped="0" time="20.821" errors="0">
+<testcase name="midnight theme › has no axe violations on / at 1280x800" classname="home-axe.spec.ts" time="2.981">
+</testcase>
+<testcase name="midnight theme › has no axe violations on / at 800x1024" classname="home-axe.spec.ts" time="2.377">
+</testcase>
+<testcase name="midnight theme › has no axe violations on / at 375x812" classname="home-axe.spec.ts" time="2.38">
+</testcase>
+<testcase name="midnight theme › has no axe violations on / at 375x812 with the mobile menu open" classname="home-axe.spec.ts" time="2.558">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 1280x800" classname="home-axe.spec.ts" time="2.548">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 800x1024" classname="home-axe.spec.ts" time="2.517">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 375x812" classname="home-axe.spec.ts" time="2.726">
+</testcase>
+<testcase name="daylight theme › has no axe violations on / at 375x812 with the mobile menu open" classname="home-axe.spec.ts" time="2.734">
+</testcase>
+</testsuite>
+<testsuite name="home-content.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="15" failures="0" skipped="0" time="4.912" errors="0">
+<testcase name="static HTML of / (AC-1) › has one main holding the five sections in order" classname="home-content.spec.ts" time="0.004">
+</testcase>
+<testcase name="static HTML of / (AC-1) › has exactly one h1 reading &quot;Fabio Barreto.&quot;" classname="home-content.spec.ts" time="0.003">
+</testcase>
+<testcase name="static HTML of / (AC-1) › has one h2 per later section and labels each section by it" classname="home-content.spec.ts" time="0.02">
+</testcase>
+<testcase name="static HTML of / (AC-1) › has a per-page title and description from the profile" classname="home-content.spec.ts" time="0.006">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the approved hero copy" classname="home-content.spec.ts" time="0.005">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the approved About text and profile buttons" classname="home-content.spec.ts" time="0.013">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows four project cards with title, summary, tags, year and status" classname="home-content.spec.ts" time="0.064">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the six stack groups with their items in display order" classname="home-content.spec.ts" time="0.029">
+</testcase>
+<testcase name="static HTML of / (AC-1) › shows the Contact lead and the only location text" classname="home-content.spec.ts" time="0.01">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the About nav link sets #about and shows its h2" classname="home-content.spec.ts" time="0.774">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the Projects nav link sets #projects and shows its h2" classname="home-content.spec.ts" time="0.792">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the Stack nav link sets #stack and shows its h2" classname="home-content.spec.ts" time="1.01">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › the Contact nav link sets #contact and shows its h2" classname="home-content.spec.ts" time="0.817">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › shows every section text" classname="home-content.spec.ts" time="0.723">
+</testcase>
+<testcase name="navigation without JavaScript (AC-2) › points each project card title at /projects/&lt;slug&gt;" classname="home-content.spec.ts" time="0.642">
+</testcase>
+</testsuite>
+<testsuite name="home-keyboard.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="4" failures="0" skipped="0" time="3.443" errors="0">
+<testcase name="skip link › is the first Tab stop, is visible, and moves focus to main" classname="home-keyboard.spec.ts" time="0.681">
+</testcase>
+<testcase name="skip link › is out of view until it takes focus" classname="home-keyboard.spec.ts" time="0.636">
+</testcase>
+<testcase name="focus order and ring › every link and button takes focus in DOM order with a 2px accent ring offset 2px" classname="home-keyboard.spec.ts" time="1.108">
+</testcase>
+<testcase name="focus order and ring › rings the first stop after the skip link, the brand, in the accent color" classname="home-keyboard.spec.ts" time="1.018">
+</testcase>
+</testsuite>
+<testsuite name="home-mobile-menu.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="10" failures="0" skipped="0" time="10.419" errors="0">
+<testcase name="phone viewport with JavaScript › hides the section links and shows the menu button" classname="home-mobile-menu.spec.ts" time="0.521">
+</testcase>
+<testcase name="phone viewport with JavaScript › opens a menu with four numbered links and the profile buttons" classname="home-mobile-menu.spec.ts" time="2.433">
+</testcase>
+<testcase name="phone viewport with JavaScript › reaches every menu item by keyboard, in order" classname="home-mobile-menu.spec.ts" time="0.785">
+</testcase>
+<testcase name="phone viewport with JavaScript › closes on Escape and returns focus to the button" classname="home-mobile-menu.spec.ts" time="0.626">
+</testcase>
+<testcase name="phone viewport with JavaScript › closes and navigates when a link is chosen" classname="home-mobile-menu.spec.ts" time="2.464">
+</testcase>
+<testcase name="phone viewport without JavaScript › opens the menu and closes it on Escape" classname="home-mobile-menu.spec.ts" time="0.756">
+</testcase>
+<testcase name="tablet and desktop widths › shows no menu button and inline links at 768px" classname="home-mobile-menu.spec.ts" time="0.673">
+</testcase>
+<testcase name="tablet and desktop widths › shows no menu button and inline links at 1280px" classname="home-mobile-menu.spec.ts" time="0.546">
+</testcase>
+<testcase name="sticky nav › is sticky, 64px tall, transparent at the top and translucent once scrolled" classname="home-mobile-menu.spec.ts" time="1.097">
+</testcase>
+<testcase name="sticky nav › without JavaScript › stays translucent at the top" classname="home-mobile-menu.spec.ts" time="0.518">
+</testcase>
+</testsuite>
+<testsuite name="home-no-build-layer.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="10.066" errors="0">
+<testcase name="after the page has loaded and idled for 2 s › has no boot terminal, dock, window, outline, selection box or skeleton in instant mode" classname="home-no-build-layer.spec.ts" time="2.595">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › keeps only the dock once the hero is built: no boot terminal, window, selection box or skeleton, and no visible expand button" classname="home-no-build-layer.spec.ts" time="1.715">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › renders the same main text as the no-JS page" classname="home-no-build-layer.spec.ts" time="3.43">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › only transitions for 150 to 300 ms" classname="home-no-build-layer.spec.ts" time="0.975">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › has at least one transition, so the check above is not vacuous" classname="home-no-build-layer.spec.ts" time="0.482">
+</testcase>
+<testcase name="after the page has loaded and idled for 2 s › runs no transition or animation under reduced motion" classname="home-no-build-layer.spec.ts" time="0.838">
+</testcase>
+<testcase name="the served HTML › carries no build-layer markup and no pending runtime state" classname="home-no-build-layer.spec.ts" time="0.031">
+</testcase>
+</testsuite>
+<testsuite name="home-responsive-layout.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="16" failures="0" skipped="0" time="17.795" errors="0">
+<testcase name="desktop 1440 › sizes the hero photo placeholder at 9:16" classname="home-responsive-layout.spec.ts" time="0.814">
+</testcase>
+<testcase name="desktop 1440 › renders the banner name on two lines" classname="home-responsive-layout.spec.ts" time="0.739">
+</testcase>
+<testcase name="desktop 1440 › lays out the project grid and stack grid in the right columns" classname="home-responsive-layout.spec.ts" time="1.324">
+</testcase>
+<testcase name="desktop 1440 › offsets the right project column by 96px" classname="home-responsive-layout.spec.ts" time="1.77">
+</testcase>
+<testcase name="desktop 1440 › never scrolls horizontally and shifts layout by at most 0.01" classname="home-responsive-layout.spec.ts" time="1.804">
+</testcase>
+<testcase name="tablet 800 › sizes the hero photo placeholder at 9:16" classname="home-responsive-layout.spec.ts" time="0.899">
+</testcase>
+<testcase name="tablet 800 › renders the banner name on two lines" classname="home-responsive-layout.spec.ts" time="1.316">
+</testcase>
+<testcase name="tablet 800 › lays out the project grid and stack grid in the right columns" classname="home-responsive-layout.spec.ts" time="0.694">
+</testcase>
+<testcase name="tablet 800 › offsets the right project column by 96px" classname="home-responsive-layout.spec.ts" time="0.66">
+</testcase>
+<testcase name="tablet 800 › never scrolls horizontally and shifts layout by at most 0.01" classname="home-responsive-layout.spec.ts" time="1.996">
+</testcase>
+<testcase name="phone 375 › sizes the hero photo placeholder at 9:16" classname="home-responsive-layout.spec.ts" time="0.656">
+</testcase>
+<testcase name="phone 375 › renders the banner name on two lines" classname="home-responsive-layout.spec.ts" time="0.874">
+</testcase>
+<testcase name="phone 375 › lays out the project grid and stack grid in the right columns" classname="home-responsive-layout.spec.ts" time="0.815">
+</testcase>
+<testcase name="phone 375 › offsets the right project column by 0px" classname="home-responsive-layout.spec.ts" time="0.767">
+</testcase>
+<testcase name="phone 375 › never scrolls horizontally and shifts layout by at most 0.01" classname="home-responsive-layout.spec.ts" time="1.826">
+</testcase>
+<testcase name="hero stacking › puts the photo in front of the name and lets it run into About" classname="home-responsive-layout.spec.ts" time="0.841">
+</testcase>
+</testsuite>
+<testsuite name="image-delivery.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="3.878" errors="0">
+<testcase name="image delivery in the static HTML of / › serves the hero photo with intrinsic dimensions and high fetch priority, never lazy" classname="image-delivery.spec.ts" time="0.014">
+</testcase>
+<testcase name="image delivery in the static HTML of / › serves the placeholder SVG photo as it is, without picture sources" classname="image-delivery.spec.ts" time="0.003">
+</testcase>
+<testcase name="image delivery in the static HTML of / › keeps the photo box ratio of the intrinsic dimensions at 9:16" classname="image-delivery.spec.ts" time="0.002">
+</testcase>
+<testcase name="image delivery in the static HTML of / › puts the photo ASCII on the photo target as data equal to the generator output" classname="image-delivery.spec.ts" time="3.165">
+</testcase>
+<testcase name="image delivery in the static HTML of / › has no blur data because no committed project has a cover" classname="image-delivery.spec.ts" time="0.011">
+</testcase>
+<testcase name="the photo ASCII is not page text › stays out of the text of main" classname="image-delivery.spec.ts" time="0.64">
+</testcase>
+<testcase name="image delivery on a project page › shows the dot-grid placeholder and no cover image or blur data when the project has no cover" classname="image-delivery.spec.ts" time="0.043">
+</testcase>
+</testsuite>
+<testsuite name="image-resolve-hero.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="14" failures="0" skipped="0" time="58.032" errors="0">
+<testcase name="on desktop › goes from skeleton to an ASCII that vanishes in Bayer order while the photo rises from above 0 to 1" classname="image-resolve-hero.spec.ts" time="5.558">
+</testcase>
+<testcase name="on desktop › animates only opacity, clip-path and transform while the photo resolves" classname="image-resolve-hero.spec.ts" time="7.625">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › Esc during the dissolve" classname="image-resolve-hero.spec.ts" time="4.176">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › Shift + Esc during the dissolve" classname="image-resolve-hero.spec.ts" time="4.261">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › the dock skip button during the dissolve" classname="image-resolve-hero.spec.ts" time="4.679">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › a click on the window bar during the dissolve" classname="image-resolve-hero.spec.ts" time="4.804">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › switching to infinity during the dissolve" classname="image-resolve-hero.spec.ts" time="4.537">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › moving focus into the page during the dissolve" classname="image-resolve-hero.spec.ts" time="4.753">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › a viewport width change during the dissolve" classname="image-resolve-hero.spec.ts" time="4.599">
+</testcase>
+<testcase name="instant paths leave no ASCII behind › Esc during the first selection frames also leaves the photo untouched" classname="image-resolve-hero.spec.ts" time="5.203">
+</testcase>
+<testcase name="no ASCII ever appears when the build does not animate › under reduced motion, with the photo visible at DOMContentLoaded" classname="image-resolve-hero.spec.ts" time="1.28">
+</testcase>
+<testcase name="no ASCII ever appears when the build does not animate › with a saved infinity speed, with the photo visible at DOMContentLoaded" classname="image-resolve-hero.spec.ts" time="0.781">
+</testcase>
+<testcase name="no ASCII ever appears when the build does not animate › without JavaScript" classname="image-resolve-hero.spec.ts" time="0.321">
+</testcase>
+<testcase name="on a phone › goes through the same sequence with the ASCII inside the photo box and no horizontal scroll" classname="image-resolve-hero.spec.ts" time="5.455">
+</testcase>
+</testsuite>
+<testsuite name="layout-invariance.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="2" failures="0" skipped="0" time="23.503" errors="0">
+<testcase name="keeps every box and the document height of the no-JavaScript page at the boot, mid-hero, mid-projects and after the build at 1280x800, with a layout shift of at most 0.01" classname="layout-invariance.spec.ts" time="9.035">
+</testcase>
+<testcase name="keeps every box and the document height of the no-JavaScript page at the boot, mid-hero, mid-projects and after the build at 375x812, with a layout shift of at most 0.01" classname="layout-invariance.spec.ts" time="14.468">
+</testcase>
+</testsuite>
+<testsuite name="mobile-build.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="3" failures="0" skipped="0" time="13.683" errors="0">
+<testcase name="375x812 touch › the dock shows only the status and Skip while the hero builds, and a tap on the window bar skips the hero" classname="mobile-build.spec.ts" time="1.362">
+</testcase>
+<testcase name="keeps the title bar and command bar of a section taller than the viewport under the nav until its end at 1280x800" classname="mobile-build.spec.ts" time="6.23">
+</testcase>
+<testcase name="keeps the title bar and command bar of a section taller than the viewport under the nav until its end at 375x812" classname="mobile-build.spec.ts" time="6.091">
+</testcase>
+</testsuite>
+<testsuite name="not-found.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="1.361" errors="0">
+<testcase name="unknown path /nope › answers with status 404 and the not-found heading" classname="not-found.spec.ts" time="0.021">
+</testcase>
+<testcase name="unknown path /nope › shows a Go home link to / inside main, with the nav and footer around it" classname="not-found.spec.ts" time="0.491">
+</testcase>
+<testcase name="unknown path /projects/does-not-exist › answers with status 404 and the not-found heading" classname="not-found.spec.ts" time="0.026">
+</testcase>
+<testcase name="unknown path /projects/does-not-exist › shows a Go home link to / inside main, with the nav and footer around it" classname="not-found.spec.ts" time="0.812">
+</testcase>
+<testcase name="the 404 document › has a per-page title and the profile subtitle as description" classname="not-found.spec.ts" time="0.002">
+</testcase>
+<testcase name="the 404 document › is a plain page with one skip target, no build layer, form, mailto or tel" classname="not-found.spec.ts" time="0.005">
+</testcase>
+<testcase name="the 404 document › points every nav link at the home sections, not at same-page hashes" classname="not-found.spec.ts" time="0.004">
+</testcase>
+</testsuite>
+<testsuite name="placeholder-page.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="4" failures="0" skipped="0" time="2.955" errors="0">
+<testcase name="static HTML of / › is a complete document with one main and one h1, before any script runs" classname="placeholder-page.spec.ts" time="0.036">
+</testcase>
+<testcase name="static HTML of / › shows the heading with JavaScript disabled" classname="placeholder-page.spec.ts" time="0.537">
+</testcase>
+<testcase name="static HTML of / › has no axe violations" classname="placeholder-page.spec.ts" time="2.356">
+</testcase>
+<testcase name="built dist/ privacy (AC-A6) › no HTML page contains mailto:, tel: or a form" classname="placeholder-page.spec.ts" time="0.026">
+</testcase>
+</testsuite>
+<testsuite name="project-pages.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="21" failures="0" skipped="0" time="5.146" errors="0">
+<testcase name="every project card link resolves (AC-2) › the home page links four distinct /projects/&lt;slug&gt; pages that load with 200" classname="project-pages.spec.ts" time="0.13">
+</testcase>
+<testcase name="/projects/relay (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.005">
+</testcase>
+<testcase name="/projects/relay (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.003">
+</testcase>
+<testcase name="/projects/relay (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="0.545">
+</testcase>
+<testcase name="/projects/relay (AC-14) › renders the fork note inside the prose body" classname="project-pages.spec.ts" time="0.453">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.005">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.002">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="0.775">
+</testcase>
+<testcase name="/projects/ai-track-record (AC-14) › renders no body: no prose element and no fork note" classname="project-pages.spec.ts" time="0.506">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.003">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.001">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="1.01">
+</testcase>
+<testcase name="/projects/praesto-sum (AC-14) › renders no body: no prose element and no fork note" classname="project-pages.spec.ts" time="0.527">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › has one h1 reading the project title and one main skip target" classname="project-pages.spec.ts" time="0.004">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › has a per-page title and a description equal to the summary" classname="project-pages.spec.ts" time="0.003">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › shows the back link, summary, year, status, tags, Repo link and cover label" classname="project-pages.spec.ts" time="0.57">
+</testcase>
+<testcase name="/projects/site-pro (AC-14) › renders no body: no prose element and no fork note" classname="project-pages.spec.ts" time="0.49">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/relay has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.03">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/ai-track-record has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.027">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/praesto-sum has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.028">
+</testcase>
+<testcase name="project pages stay in the page register with no profile leaks › /projects/site-pro has the footer, no build layer, no form, mailto or tel" classname="project-pages.spec.ts" time="0.029">
+</testcase>
+</testsuite>
+<testsuite name="quality-gates.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="2" failures="0" skipped="0" time="1.581" errors="0">
+<testcase name="the privacy gate passes on the real build (AC-8)" classname="quality-gates.spec.ts" time="0.968">
+</testcase>
+<testcase name="the size-budget gate passes on the real build (AC-10)" classname="quality-gates.spec.ts" time="0.613">
+</testcase>
+</testsuite>
+<testsuite name="runtime-build-order.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="3" failures="0" skipped="0" time="22.176" errors="0">
+<testcase name="builds the hero, leaves About pending without scrolling, then builds the rest in order, one at a time, at turbo speed" classname="runtime-build-order.spec.ts" time="14.618">
+</testcase>
+<testcase name="does not advance the build while the tab is hidden and resumes when it is visible" classname="runtime-build-order.spec.ts" time="5.96">
+</testcase>
+<testcase name="lays out the pending page exactly like the ready page" classname="runtime-build-order.spec.ts" time="1.598">
+</testcase>
+</testsuite>
+<testsuite name="runtime-fallbacks.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="8" failures="0" skipped="0" time="4.021" errors="0">
+<testcase name="JavaScript disabled › equals the Stage 2 page: no pending state, no runtime state, content visible" classname="runtime-fallbacks.spec.ts" time="0.495">
+</testcase>
+<testcase name="runtime module blocked or throwing › keeps every section hidden before the watchdog and shows them all within 3 s of clock time" classname="runtime-fallbacks.spec.ts" time="0.561">
+</testcase>
+<testcase name="runtime module blocked or throwing › reveals the page when the runtime script throws on load" classname="runtime-fallbacks.spec.ts" time="0.5">
+</testcase>
+<testcase name="pending state before the runtime starts › hides later sections with opacity only, keeping them laid out and in the accessibility tree" classname="runtime-fallbacks.spec.ts" time="0.516">
+</testcase>
+<testcase name="instant mode › renders ready at DOMContentLoaded under reduced motion and ends every section done" classname="runtime-fallbacks.spec.ts" time="0.512">
+</testcase>
+<testcase name="instant mode › renders ready at DOMContentLoaded for a saved infinity speed and ends every section done" classname="runtime-fallbacks.spec.ts" time="0.544">
+</testcase>
+<testcase name="saved speed before first paint › resolves a saved sp-speed of &quot;2&quot; to 2x and still builds" classname="runtime-fallbacks.spec.ts" time="0.45">
+</testcase>
+<testcase name="saved speed before first paint › resolves a saved sp-speed of &quot;fast&quot; to 1x and still builds" classname="runtime-fallbacks.spec.ts" time="0.443">
+</testcase>
+</testsuite>
+<testsuite name="runtime-timeline-contract.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="7" failures="0" skipped="0" time="0.106" errors="0">
+<testcase name="compiled build scripts in the served HTML › carries one timeline per section, in document order" classname="runtime-timeline-contract.spec.ts" time="0.004">
+</testcase>
+<testcase name="compiled build scripts in the served HTML › names the headline in hero.title and times it at 150 + n x 28 ms" classname="runtime-timeline-contract.spec.ts" time="0.002">
+</testcase>
+<testcase name="compiled build scripts in the served HTML › has one projects.card per project, each starting 120 ms before the previous ends" classname="runtime-timeline-contract.spec.ts" time="0.006">
+</testcase>
+<testcase name="compiled build scripts in the served HTML › orders each timeline: steps have a duration and the phases follow the last step" classname="runtime-timeline-contract.spec.ts" time="0.03">
+</testcase>
+<testcase name="compiled build scripts in the served HTML › finds every step target in the page" classname="runtime-timeline-contract.spec.ts" time="0.019">
+</testcase>
+<testcase name="pages without a build › /projects/relay/ carries no build script and no runtime hook" classname="runtime-timeline-contract.spec.ts" time="0.027">
+</testcase>
+<testcase name="pages without a build › /no-such-page carries no build script and no runtime hook" classname="runtime-timeline-contract.spec.ts" time="0.018">
+</testcase>
+</testsuite>
+<testsuite name="subpages-axe.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="32" failures="0" skipped="0" time="61.687" errors="0">
+<testcase name="midnight theme › has no axe violations on /projects/relay at 1280x800" classname="subpages-axe.spec.ts" time="1.602">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/relay at 800x1024" classname="subpages-axe.spec.ts" time="1.762">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/relay at 375x812" classname="subpages-axe.spec.ts" time="1.549">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/ai-track-record at 1280x800" classname="subpages-axe.spec.ts" time="1.712">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/ai-track-record at 800x1024" classname="subpages-axe.spec.ts" time="1.676">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/ai-track-record at 375x812" classname="subpages-axe.spec.ts" time="1.88">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/praesto-sum at 1280x800" classname="subpages-axe.spec.ts" time="1.916">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/praesto-sum at 800x1024" classname="subpages-axe.spec.ts" time="1.683">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/praesto-sum at 375x812" classname="subpages-axe.spec.ts" time="1.704">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/site-pro at 1280x800" classname="subpages-axe.spec.ts" time="1.65">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/site-pro at 800x1024" classname="subpages-axe.spec.ts" time="2.137">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/site-pro at 375x812" classname="subpages-axe.spec.ts" time="2.089">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /nope at 1280x800" classname="subpages-axe.spec.ts" time="1.767">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /nope at 800x1024" classname="subpages-axe.spec.ts" time="1.712">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /nope at 375x812" classname="subpages-axe.spec.ts" time="1.77">
+</testcase>
+<testcase name="midnight theme › has no axe violations on /projects/relay at 375x812 with the mobile menu open" classname="subpages-axe.spec.ts" time="2.702">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 1280x800" classname="subpages-axe.spec.ts" time="1.803">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 800x1024" classname="subpages-axe.spec.ts" time="1.847">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 375x812" classname="subpages-axe.spec.ts" time="1.791">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/ai-track-record at 1280x800" classname="subpages-axe.spec.ts" time="2.38">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/ai-track-record at 800x1024" classname="subpages-axe.spec.ts" time="1.932">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/ai-track-record at 375x812" classname="subpages-axe.spec.ts" time="2.675">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/praesto-sum at 1280x800" classname="subpages-axe.spec.ts" time="1.818">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/praesto-sum at 800x1024" classname="subpages-axe.spec.ts" time="2.21">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/praesto-sum at 375x812" classname="subpages-axe.spec.ts" time="2.043">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/site-pro at 1280x800" classname="subpages-axe.spec.ts" time="1.891">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/site-pro at 800x1024" classname="subpages-axe.spec.ts" time="1.739">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/site-pro at 375x812" classname="subpages-axe.spec.ts" time="1.97">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /nope at 1280x800" classname="subpages-axe.spec.ts" time="2.435">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /nope at 800x1024" classname="subpages-axe.spec.ts" time="1.873">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /nope at 375x812" classname="subpages-axe.spec.ts" time="1.964">
+</testcase>
+<testcase name="daylight theme › has no axe violations on /projects/relay at 375x812 with the mobile menu open" classname="subpages-axe.spec.ts" time="2.005">
+</testcase>
+</testsuite>
+<testsuite name="subpages-navigation.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="9" failures="0" skipped="0" time="8.212" errors="0">
+<testcase name="skip link on the new pages (AC-3) › /projects/relay: the first Tab focuses the skip link and Enter focuses main" classname="subpages-navigation.spec.ts" time="0.895">
+</testcase>
+<testcase name="skip link on the new pages (AC-3) › /projects/site-pro: the first Tab focuses the skip link and Enter focuses main" classname="subpages-navigation.spec.ts" time="0.796">
+</testcase>
+<testcase name="skip link on the new pages (AC-3) › /nope: the first Tab focuses the skip link and Enter focuses main" classname="subpages-navigation.spec.ts" time="0.614">
+</testcase>
+<testcase name="without JavaScript › the relay fork note is readable in the page text" classname="subpages-navigation.spec.ts" time="0.63">
+</testcase>
+<testcase name="without JavaScript › the back link lands on / with the projects heading in view" classname="subpages-navigation.spec.ts" time="0.826">
+</testcase>
+<testcase name="without JavaScript › the nav link /#about from a project page lands with that h2 in view" classname="subpages-navigation.spec.ts" time="1.531">
+</testcase>
+<testcase name="without JavaScript › the nav link /#contact from a project page lands with that h2 in view" classname="subpages-navigation.spec.ts" time="0.782">
+</testcase>
+<testcase name="without JavaScript › Go home on the 404 reaches the home page" classname="subpages-navigation.spec.ts" time="0.946">
+</testcase>
+<testcase name="mobile menu on a project page › opens with four home-prefixed links and navigates to the home section" classname="subpages-navigation.spec.ts" time="1.192">
+</testcase>
+</testsuite>
+<testsuite name="theme.spec.ts" timestamp="2026-11-10T14:43:27.492Z" hostname="chromium" tests="18" failures="0" skipped="0" time="12.672" errors="0">
+<testcase name="theme without a flash › serves Midnight in the HTML with the theme script before any stylesheet" classname="theme.spec.ts" time="0.037">
+</testcase>
+<testcase name="theme without a flash › starts in Midnight with a Daylight-offering toggle" classname="theme.spec.ts" time="1.001">
+</testcase>
+<testcase name="theme without a flash › switches theme, renames the toggle and keeps Daylight after reload" classname="theme.spec.ts" time="4.209">
+</testcase>
+<testcase name="theme without a flash › applies a stored Daylight preference before first paint" classname="theme.spec.ts" time="0.811">
+</testcase>
+<testcase name="theme without a flash › ignores an unknown stored value" classname="theme.spec.ts" time="0.626">
+</testcase>
+<testcase name="theme without a flash › exposes no theme control with JavaScript disabled" classname="theme.spec.ts" time="0.623">
+</testcase>
+<testcase name="focus and motion › rings the focused toggle with a 2px solid accent outline offset 2px" classname="theme.spec.ts" time="0.714">
+</testcase>
+<testcase name="focus and motion › runs the 150 ms hover transition only without reduced motion" classname="theme.spec.ts" time="0.664">
+</testcase>
+<testcase name="fonts › serves both self-hosted font files" classname="theme.spec.ts" time="0.056">
+</testcase>
+<testcase name="fonts › loads Geist for the page text" classname="theme.spec.ts" time="0.582">
+</testcase>
+<testcase name="fonts › preloads both fonts in the served head" classname="theme.spec.ts" time="0.086">
+</testcase>
+<testcase name="Backdrop › is decorative, absolutely positioned and adds no horizontal scroll" classname="theme.spec.ts" time="0.685">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 900px at 1440px wide" classname="theme.spec.ts" time="1.088">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 702px at 800px wide" classname="theme.spec.ts" time="0.715">
+</testcase>
+<testcase name="Backdrop › scales the first glow to 540px at 375px wide" classname="theme.spec.ts" time="0.718">
+</testcase>
+<testcase name="built dist/ styles › keeps the emitted CSS within 25 KB gzip" classname="theme.spec.ts" time="0.016">
+</testcase>
+<testcase name="built dist/ styles › references no remote font host" classname="theme.spec.ts" time="0.023">
+</testcase>
+<testcase name="built dist/ styles › inlines the generated grain and the JS-reveal rule in the CSS" classname="theme.spec.ts" time="0.018">
+</testcase>
+</testsuite>
+</testsuites>

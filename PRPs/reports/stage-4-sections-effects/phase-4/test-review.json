@@ -1,0 +1,29 @@
+{
+  "run_id": "57896bda-355c-4b78-9aef-bf73ba5521db",
+  "reviewed_at": "2026-11-10T18:37:55Z",
+  "base_branch": "8886a291c61d63467fec05dbfe33240bf10c46d9 (Phase 4 start tree)",
+  "verdict": "APPROVED",
+  "analyzed_files": 2,
+  "concerns": [],
+  "notes": [
+    "coverage baseline unavailable (no PRPs/reports/coverage-baseline.json); weakening detection limited to structural checks",
+    {
+      "type": "accepted_removal",
+      "file": "tests/unit/content-copy.test.ts",
+      "function": "gives relay the fork note as its body",
+      "classification": "EXISTING_TEST_UPDATED"
+    },
+    {
+      "type": "accepted_removal",
+      "file": "tests/unit/content-copy.test.ts",
+      "function": "leaves the %s body empty",
+      "classification": "EXISTING_TEST_UPDATED"
+    },
+    {
+      "type": "accepted_removal",
+      "file": "tests/e2e/project-pages.spec.ts",
+      "function": "renders the fork note inside the prose body / renders no body",
+      "classification": "EXISTING_TEST_UPDATED"
+    }
+  ]
+}
